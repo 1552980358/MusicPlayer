@@ -24,6 +24,7 @@ android {
         main {
             res.srcDirs =
                     [
+                            'src/main/main',
                             'src/main/intro',
                             'src/main/player',
                             'src/main/application'
