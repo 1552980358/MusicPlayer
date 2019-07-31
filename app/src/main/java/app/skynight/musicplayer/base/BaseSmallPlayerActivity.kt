@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -71,8 +72,8 @@ open class BaseSmallPlayerActivity : BaseAppCompatActivity() {
                     }, RelativeLayout.LayoutParams(MATCH_PARENT, UnitUtil.getPx(50)).apply {
                         addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
                     })
+                    addView(view!!, layoutParams)
                 }, RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT))
-                addView(view!!, layoutParams)
             }, DrawerLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT))
         })
 

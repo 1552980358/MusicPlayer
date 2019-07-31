@@ -2,6 +2,7 @@ package app.skynight.musicplayer
 
 import android.app.Application
 import android.content.*
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -36,11 +37,10 @@ class MainApplication : Application() {
         fun sendBroadcast(broadcast: String) {
             mainApplication!!.sendBroadcast(Intent(broadcast))
         }
-        val sharedPreferences by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { mainApplication!!.getSharedPreferences("user", Context.MODE_PRIVATE) }
+        val sharedPreferences by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { mainApplication!!.getSharedPreferences("user", Context.MODE_PRIVATE)!! }
 
         var customize = false
         var bgDrawable = null as Drawable?
-
     }
 
     override fun onCreate() {
@@ -49,14 +49,12 @@ class MainApplication : Application() {
             mainApplication = this
             Player.getPlayer
             sharedPreferences
-            customize = MainApplication.sharedPreferences.getBoolean("customize", false)
+            customize = sharedPreferences.getBoolean("customize", false)
             bgDrawable = if (customize) {
                 if (MainApplication.sharedPreferences.getBoolean("img", false)) {
                     BitmapDrawable(resources, cacheDir.toString() + File.separator + "bg.img")
                 } else {
-                    ColorDrawable(255 shl 24 + sharedPreferences.getString("R", "123")!!.toInt() shl 16 +
-                            sharedPreferences.getString("G", "31")!!.toInt() shl 8 +
-                            sharedPreferences.getString("B", "162")!!.toInt())
+                    ColorDrawable(Color.parseColor(sharedPreferences.getString("RGB", "#7b1fa2")))
                 }
             } else {
                 ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimaryDark))

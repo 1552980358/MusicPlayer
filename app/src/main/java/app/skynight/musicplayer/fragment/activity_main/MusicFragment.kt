@@ -20,7 +20,11 @@ class MusicFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return LinearLayout(context!!).apply {
-
+            orientation = LinearLayout.VERTICAL
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 }
