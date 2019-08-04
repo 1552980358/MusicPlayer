@@ -43,20 +43,20 @@ class FirstFragment : Fragment() {
                 addView(TextView(context).apply {
                     setTextColor(ContextCompat.getColor(context, android.R.color.white))
                     text = "欢迎来到"
-                    textSize = getPx(12f)
+                    textSize = resources.getDimension(R.dimen.intro_firstFragment_nor)
                 }, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
                     gravity = Gravity.CENTER
                 })
                 addView(TextView(context).apply {
                     text = "~  狸歌  ~"
-                    textSize = getPx(25f)
+                    textSize = resources.getDimension(R.dimen.intro_firstFragment_title)
                     setTextColor(ContextCompat.getColor(context, android.R.color.white))
                 }, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
                     gravity = Gravity.CENTER
                 })
                 addView(TextView(context).apply {
                     text = "为您呈现"
-                    textSize = getPx(12f)
+                    textSize = resources.getDimension(R.dimen.intro_firstFragment_nor)
                     paint.flags = Paint.UNDERLINE_TEXT_FLAG
                     setTextColor(ContextCompat.getColor(context, android.R.color.white))
                 }, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {

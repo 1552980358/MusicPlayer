@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+
+    <item
+        android:id="@+id/range"
+        app:showAsAction="withText"
+        android:title="range" />
+    <item
+        android:id="@+id/changeCover"
+        app:showAsAction="withText"
+        android:title="ChangeCover" />
+
+    <item
+        android:id="@+id/search"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="90"
+        android:title="search"
+        />
+
+</menu >

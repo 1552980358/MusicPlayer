@@ -87,7 +87,7 @@ class CheckPermissionActivity : BaseAppCompatActivity() {
                         setSingleLine()
                     }, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT))
                 }, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
-                    setMargins(0, getPx(15), 0, 0)
+                    setMargins(0, resources.getDimensionPixelSize(R.dimen.checkPermissionActivity_marginTop), 0, 0)
                 })
                 addView(LinearLayout(this@CheckPermissionActivity).apply {
                     orientation = LinearLayout.HORIZONTAL
@@ -103,7 +103,7 @@ class CheckPermissionActivity : BaseAppCompatActivity() {
                         setSingleLine()
                     }, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT))
                 }, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
-                    setMargins(0, getPx(5), 0, 0)
+                    setMargins(0, resources.getDimensionPixelSize(R.dimen.checkPermissionActivity_marginTop_item), 0, 0)
                 })
             })
         }

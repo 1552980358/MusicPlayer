@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources >
+    <array name="settingPreference_searchMusicThread_entries">
+        <item>Single Thread Mode</item>
+        <item>Double Thread Mode</item>
+        <item>Processors Number Thread Mode</item>
+        <item>Super Thread Mode (double processors number)</item>
+    </array>
+
+    <array name="settingPreference_searchMusicThread_entriesValue">
+        <item>SINGLE</item>
+        <item>DOUBLE</item>
+        <item>PROCESSOR</item>
+        <item>SUPER</item>
+    </array>
+</resources >

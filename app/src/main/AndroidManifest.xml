@@ -2,48 +2,54 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="app.skynight.musicplayer">
+    package="app.skynight.musicplayer" >
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
+        android:name=".MainApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name=".MainApplication"
         android:theme="@style/AppTheme"
-        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-
-        <!-- Activity  -->
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning" >
+        <!-- Activity -->
         <!-- 1st -->
-        <activity android:name=".activity.SplashActivity"
+        <activity
+            android:name=".activity.SplashActivity"
             android:theme="@android:style/Theme.NoDisplay" >
-            <intent-filter>
+            <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            </intent-filter >
+        </activity >
         <!-- 2nd -->
-        <activity android:name=".activity.IntroActivity"
+        <activity
+            android:name=".activity.IntroActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activity.CheckPermissionActivity"
+        <activity
+            android:name=".activity.CheckPermissionActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <!-- 3nd -->
         <activity
             android:name=".activity.MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.MusicListActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <!-- Player -->
         <activity
             android:name=".activity.PlayerActivity"
-            android:theme="@style/AppTheme.NoActionBar.TransparentBackground"
-            android:launchMode="singleInstance"/>
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme.NoActionBar.TransparentBackground" />
+    </application >
 
-    </application>
-
-</manifest>
+</manifest >

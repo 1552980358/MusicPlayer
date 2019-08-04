@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">MusicPlayer</string>
+
+    <string name="cancel">取消</string>
+
+    <string name="smallPlayerTitle">- 狸歌 -</string>
+    <string name="smallPlayerSubTitle">为你呈现</string>
+
+    <string name="checkPermission_title">哥哥/姐姐，我想要这个才能跑哦~</string>
+    <string name="checkPermission_read">读取存储内容 READ_EXTERNAL_STORAGE</string>
+    <string name="checkPermission_write">修改存储内容 WRITE_EXTERNAL_STORAGE</string>
+
+    <string name="checkPermission_allow">授权</string>
+
+    <string name="abc_main_list_full">全部歌曲</string>
+
+    <string name="adb_main_main_title">欢迎光临</string>
+    <string name="adb_main_list_title">歌单</string>
+</resources>

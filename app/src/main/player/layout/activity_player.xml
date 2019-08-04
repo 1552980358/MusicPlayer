@@ -89,7 +89,7 @@
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:button="@null"
-                        android:background="@drawable/ic_play_control"/>
+                        android:background="@drawable/ic_mini_play_control_def"/>
 
                     <ImageButton
                         android:layout_width="45dp"

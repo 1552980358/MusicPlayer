@@ -39,42 +39,43 @@ import java.lang.Exception
 @SuppressLint("Registered")
 open class BaseSmallPlayerActivity : BaseAppCompatActivity() {
 
-    private lateinit var drawerLayout: DrawerLayout
     private lateinit var smallPlayerBroadcastReceiver: BroadcastReceiver
     lateinit var bottomPlayerView: BottomPlayerView
+    lateinit var relativeLayout: RelativeLayout
 
     override fun setContentView(layoutResID: Int) {
         setContentView(LayoutInflater.from(this).inflate(layoutResID, null))
     }
 
+    /* Execute after setContentView when needed, otherwise useless */
+    fun setFitSystemWindows() {
+        try {
+            relativeLayout.fitsSystemWindows = true
+        } catch (e: Exception) {
+            throw Exception("LayoutNotInitException")
+        }
+    }
+
     override fun setContentView(view: View?) {
         val layoutParams: RelativeLayout.LayoutParams
 
-        super.setContentView(DrawerLayout(this).apply {
-            drawerLayout = this
-            background = MainApplication.bgDrawable!!
-            //background =
-            addView(RelativeLayout(this@BaseSmallPlayerActivity).apply {
-                fitsSystemWindows = true
-                addView(RelativeLayout(this@BaseSmallPlayerActivity).apply {
-                    background = ColorDrawable(if (MainApplication.customize) ContextCompat.getColor(this@BaseSmallPlayerActivity, android.R.color.transparent) else ContextCompat.getColor(this@BaseSmallPlayerActivity, R.color.activity_background))
-                    addView(BottomPlayerView(this@BaseSmallPlayerActivity).also {
-                        bottomPlayerView = it
-                        it.id = View.generateViewId()
-                        bottomPlayerView.setOnClickListener {
-                            MainApplication.playerForeground = true
-                            startActivity(Intent(this@BaseSmallPlayerActivity, PlayerActivity::class.java))
-                            overridePendingTransition(R.anim.anim_down2top, R.anim.anim_no_action)
-                        }
-                        layoutParams = RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT).apply {
-                            addRule(RelativeLayout.ABOVE, it.id)
-                        }
-                    }, RelativeLayout.LayoutParams(MATCH_PARENT, UnitUtil.getPx(50)).apply {
-                        addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
-                    })
-                    addView(view!!, layoutParams)
-                }, RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT))
-            }, DrawerLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT))
+        super.setContentView(RelativeLayout(this).apply {
+            addView(BottomPlayerView(this@BaseSmallPlayerActivity).also {
+                relativeLayout = this
+                bottomPlayerView = it
+                it.id = View.generateViewId()
+                bottomPlayerView.setOnClickListener {
+                    MainApplication.playerForeground = true
+                    startActivity(Intent(this@BaseSmallPlayerActivity, PlayerActivity::class.java))
+                    overridePendingTransition(R.anim.anim_down2top, R.anim.anim_no_action)
+                }
+                layoutParams = RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT).apply {
+                    addRule(RelativeLayout.ABOVE, it.id)
+                }
+            }, RelativeLayout.LayoutParams(MATCH_PARENT, resources.getDimensionPixelSize(R.dimen.bottomPlayerView_height)).apply {
+                addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+            })
+            addView(view!!, layoutParams)
         })
 
         smallPlayerBroadcastReceiver = object : BroadcastReceiver() {
@@ -93,16 +94,6 @@ open class BaseSmallPlayerActivity : BaseAppCompatActivity() {
                 }
             }
         }
-    }
-
-    @Suppress("unused")
-    fun setBackground(drawable: Drawable) {
-        drawerLayout.background = drawable
-    }
-
-    @Suppress("unused")
-    fun getBackground(): Drawable {
-        return drawerLayout.background
     }
 
     override fun onPause() {

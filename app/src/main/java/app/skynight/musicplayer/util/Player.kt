@@ -10,6 +10,7 @@ import android.media.MediaMetadataRetriever.METADATA_KEY_BITRATE
 import android.media.MediaMetadataRetriever.METADATA_KEY_DURATION
 import android.media.MediaPlayer
 import android.os.Environment
+import android.util.Log
 import app.skynight.musicplayer.MainApplication
 import app.skynight.musicplayer.broadcast.BroadcastList.Companion.PLAYER_BROADCAST_ONSTART
 import app.skynight.musicplayer.broadcast.BroadcastList.Companion.SERVER_BROADCAST_MUSICCHANGE
@@ -29,6 +30,7 @@ class Player private constructor() {
     private var mediaPlayer: MediaPlayer
 
     companion object {
+        const val TAG = "Player"
         val musicList = mutableListOf<MusicInfo>()
         fun createMusicInfo(path: String) {
             if (path.endsWith(".3gp") || path.endsWith(".m4a") || path.endsWith(".aac") || path.endsWith(
@@ -78,13 +80,24 @@ class Player private constructor() {
         }
 
         @Suppress("unused")
+        @Deprecated("Replace with map")
         const val THREAD_SINGLE = 1
         @Suppress("unused")
+        @Deprecated("Replace with map")
         const val THREAD_DOUBLE = 2
         @Suppress("MemberVisibilityCanBePrivate")
+        @Deprecated("Replace with map")
         val THREAD_CORE = Runtime.getRuntime().availableProcessors()
         @Suppress("unused")
+        @Deprecated("Replace with map")
         val THREAD_DOUBLE_CORE = THREAD_CORE * 2
+
+        val THREAD_NO = mapOf(
+            "SINGLE" to 1,
+            "DOUBLE" to 2,
+            "PROCESSOR" to Runtime.getRuntime().availableProcessors(),
+            "SUPER" to Runtime.getRuntime().availableProcessors() * 2
+        )
 
         val getPlayer by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
             Player()
@@ -117,6 +130,7 @@ class Player private constructor() {
     @Suppress("unused")
     fun onStart() {
         try {
+            mediaPlayer.prepare()
             mediaPlayer.start()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -204,17 +218,18 @@ class Player private constructor() {
         }
     }
 
-    @Suppress("unused", "unused", "unused")
+    @Suppress("unused")
     fun onUpdateMusicList(thread: Int) {
+        Log.e(TAG, "onUpdateMusicList($thread)")
         val file = Environment.getExternalStorageDirectory()
-
-        if (thread < 1) {
-            return
-        }
 
         if (thread == 1) {
             updateMusicList(file)
             return
+        }
+
+        if (thread < 1) {
+            throw Exception("")
         }
 
         val fileList = file.listFiles().toMutableList()
@@ -227,7 +242,7 @@ class Player private constructor() {
         for (i in 0 until thread) {
             Thread {
                 updateMusicList(getFile())
-            }
+            }.start()
         }
     }
 

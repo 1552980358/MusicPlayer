@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="mainFrame_view_margin">@dimen/dp_5</dimen>
+</resources>

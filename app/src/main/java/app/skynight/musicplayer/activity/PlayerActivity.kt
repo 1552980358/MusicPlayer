@@ -141,16 +141,22 @@ class PlayerActivity : AppCompatActivity() {
                             })
                         }, LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
 
-
                         addView(LinearLayout(this@PlayerActivity).apply {
                             orientation = LinearLayout.HORIZONTAL
                             gravity = Gravity.CENTER
 
+                            val playerActivity_subItem_marginLeftRightWider = resources.getDimensionPixelSize(R.dimen.playerActivity_subItem_marginLeftRightWider)
+                            val playerActivity_subItem_marginLeftRightNarrower = resources.getDimensionPixelSize(R.dimen.playerActivity_subItem_marginLeftRightNarrower)
+                            val playerActivity_subItem_size = resources.getDimensionPixelSize(R.dimen.playerActivity_subItem_size)
+                            val playerActivity_last_next_size = resources.getDimensionPixelSize(R.dimen.playerActivity_last_next_size)
+                            val playerActivity_controller_size = resources.getDimensionPixelSize(R.dimen.playerActivity_controller_size)
+                            val playerActivity_last_next_marginLeftRight = resources.getDimensionPixelSize(R.dimen.playerActivity_last_next_marginLeftRight)
+
                             // state
                             addView(AppCompatImageButton(this@PlayerActivity).apply {
                                 playForm = this
-                            }, LinearLayout.LayoutParams(getPx(30), getPx(30)).apply {
-                                setMargins(getPx(30), 0, getPx(10), 0)
+                            }, LinearLayout.LayoutParams(playerActivity_subItem_size, playerActivity_subItem_size).apply {
+                                setMargins(playerActivity_subItem_marginLeftRightWider, 0, playerActivity_subItem_marginLeftRightNarrower, 0)
                             })
 
                             // last
@@ -158,8 +164,8 @@ class PlayerActivity : AppCompatActivity() {
                                 playLast = this
                                 background = ContextCompat.getDrawable(this@PlayerActivity, R.drawable.ic_play_last)
                                 setOnClickListener { sendBroadcast(Intent(PLAYER_BROADCAST_LAST)) }
-                            }, LinearLayout.LayoutParams(getPx(45), getPx(45)).apply {
-                                setMargins(getPx(10), 0, getPx(5), 0)
+                            }, LinearLayout.LayoutParams(playerActivity_last_next_size, playerActivity_last_next_size).apply {
+                                setMargins(playerActivity_subItem_marginLeftRightNarrower, 0, playerActivity_last_next_marginLeftRight, 0)
                             })
 
                             // control
@@ -171,8 +177,8 @@ class PlayerActivity : AppCompatActivity() {
                                 setOnClickListener {
                                     sendBroadcast(Intent(if (isChecked) PLAYER_BROADCAST_ONSTART else PLAYER_BROADCAST_ONPAUSE))
                                 }
-                            }, LinearLayout.LayoutParams(getPx(60), getPx(60)).apply {
-                                setMargins(getPx(5), 0, getPx(5), 0)
+                            }, LinearLayout.LayoutParams(playerActivity_controller_size, playerActivity_controller_size).apply {
+                                setMargins(playerActivity_last_next_marginLeftRight, 0, playerActivity_last_next_marginLeftRight, 0)
                             })
 
                             // next
@@ -180,15 +186,15 @@ class PlayerActivity : AppCompatActivity() {
                                 playNext = this
                                 background = ContextCompat.getDrawable(this@PlayerActivity, R.drawable.ic_play_next)
                                 setOnClickListener { sendBroadcast(Intent(PLAYER_BROADCAST_NEXT)) }
-                            }, LinearLayout.LayoutParams(getPx(45), getPx(45)).apply {
-                                setMargins(getPx(5), 0, getPx(10), 0)
+                            }, LinearLayout.LayoutParams(playerActivity_last_next_size, playerActivity_last_next_size).apply {
+                                setMargins(playerActivity_last_next_marginLeftRight, 0, playerActivity_subItem_marginLeftRightNarrower, 0)
                             })
 
                             addView(AppCompatImageButton(this@PlayerActivity).apply {
                                 playList = this
                                 background = ContextCompat.getDrawable(this@PlayerActivity, R.drawable.ic_play_list)
-                            }, LinearLayout.LayoutParams(getPx(30), getPx(30)).apply {
-                                setMargins(getPx(10), getPx(2), getPx(30), 0)
+                            }, LinearLayout.LayoutParams(playerActivity_subItem_size, playerActivity_subItem_size).apply {
+                                setMargins(playerActivity_subItem_marginLeftRightNarrower, getPx(2), resources.getDimensionPixelSize(R.dimen.playerActivity_subItem_marginLeftRightWider), 0)
                             })
 
                         }, LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT))

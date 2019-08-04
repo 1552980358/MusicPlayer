@@ -2,6 +2,7 @@ package app.skynight.musicplayer.util
 
 import android.content.res.Resources
 import android.util.TypedValue
+import app.skynight.musicplayer.base.InitNotAllowedException
 
 /**
  * @FILE:   UnitUtil
@@ -10,8 +11,12 @@ import android.util.TypedValue
  * @TIME:   8:06 PM
  **/
  
-class UnitUtil {
+class UnitUtil private constructor(){
+    init {
+        throw InitNotAllowedException(TAG)
+    }
     companion object {
+        const val TAG = "UnitUtil"
         fun getPx(dp: Int): Int {
             return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                     dp.toFloat(), Resources.getSystem().displayMetrics).toInt()

@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPress">@android:color/white</color>
+    <color name="colorPress">@color/white</color>
     <color name="colorNor">#B3FFFFFF</color>
 
-    <color name="player_title">#FFFFFF</color>
+    <color name="player_title">@color/white</color>
     <color name="player_subtitle">#F0FFFFFF</color>
 
     <color name="player_widget_bg">#50FFFFFF</color>
 
-    <color name="ripple_outer">#40FFFFFF</color>
-    <color name="ripple_core">#80FFFFFF</color>
+    <color name="ripple_color">#FF606060</color>
 </resources>

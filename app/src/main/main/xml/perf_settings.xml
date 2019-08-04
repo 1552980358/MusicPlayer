@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="音乐文件搜索" >
+
+        <Preference
+            android:title="重新搜索音乐文件"
+            android:summary="重新做人?"
+            android:key="settingPreference_searchMusic" />
+
+        <ListPreference
+            android:key="settingPreference_searchMusicThread"
+            android:dialogTitle="选择搜索文件线程"
+            android:title="搜索文件线程"
+            android:summary="小心会炸哟~"
+            android:defaultValue="0"
+            android:entries="@array/settingPreference_searchMusicThread_entries"
+            android:entryValues="@array/settingPreference_searchMusicThread_entriesValue" />
+    </PreferenceCategory >
+
+    <PreferenceCategory android:title="已知问题" >
+        <Preference
+            android:title="外置SD卡暂时无法读取"
+            android:summary="从Android L每个版本适配到Android O,甚至Android Q又要改API...\n那么, 还是等Q正式发布再加吧..."/>
+    </PreferenceCategory >
+
+</PreferenceScreen >

@@ -1,14 +1,19 @@
 <resources>
     <string name="app_name">MusicPlayer</string>
 
-    <string name="cancel">取消</string>
+    <string name="cancel">Cancel</string>
 
-    <string name="smallPlayerTitle">- Cepheus -</string>
+    <string name="smallPlayerTitle">- Moe Music Player -</string>
     <string name="smallPlayerSubTitle">presents for you</string>
 
-    <string name="checkPermission_title">哥哥，我想要这个才能跑哦~</string>
-    <string name="checkPermission_read">读取存储内容 READ_EXTERNAL_STORAGE</string>
-    <string name="checkPermission_write">修改存储内容 WRITE_EXTERNAL_STORAGE</string>
+    <string name="checkPermission_title">Permission Authorization</string>
+    <string name="checkPermission_read">READ_EXTERNAL_STORAGE</string>
+    <string name="checkPermission_write">WRITE_EXTERNAL_STORAGE</string>
 
-    <string name="checkPermission_allow">授权</string>
+    <string name="checkPermission_allow">Authorize</string>
+
+    <string name="abc_main_list_full">All music</string>
+
+    <string name="adb_main_main_title">Welcome</string>
+    <string name="adb_main_list_title">Playlist</string>
 </resources>

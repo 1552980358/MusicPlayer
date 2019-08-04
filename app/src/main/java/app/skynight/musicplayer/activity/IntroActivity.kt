@@ -12,6 +12,7 @@ import android.widget.RelativeLayout.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.setPadding
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
@@ -22,7 +23,6 @@ import app.skynight.musicplayer.fragment.activity_intro.LastFragment
 import app.skynight.musicplayer.fragment.activity_intro.SecondFragment
 import app.skynight.musicplayer.util.FragmentPagerAdapter
 import app.skynight.musicplayer.util.PageTransformer
-import app.skynight.musicplayer.util.UnitUtil.Companion.getPx
 
 /**
  * @FILE:   IntroActivity
@@ -38,55 +38,76 @@ class IntroActivity : BaseAppCompatActivity() {
         return DrawerLayout(this).apply {
             background =
                 ColorDrawable(ContextCompat.getColor(this@IntroActivity, R.color.colorPrimaryDark))
-            val fragmentArrayList = arrayListOf(FirstFragment(), SecondFragment(), LastFragment().apply {
-                activity = this@IntroActivity
-            })
+            val fragmentArrayList =
+                arrayListOf(FirstFragment(), SecondFragment(), LastFragment().apply {
+                    activity = this@IntroActivity
+                })
 
             addView(RelativeLayout(this@IntroActivity).apply {
                 fitsSystemWindows = true
                 val relativeLayout: RelativeLayout
                 val textView_next: AppCompatTextView
                 val textView_last: AppCompatTextView
-                addView(RelativeLayout(this@IntroActivity).apply {
-                    relativeLayout = this
-                    id = View.generateViewId()
+                addView(
+                    RelativeLayout(this@IntroActivity).apply {
+                        relativeLayout = this
+                        id = View.generateViewId()
 
-                    addView(AppCompatTextView(this@IntroActivity).apply {
-                        textView_next = this
-                        isClickable = true
-                        isFocusable = true
-                        textSize = getPx(7f)
-                        setTextColor(ContextCompat.getColor(this@IntroActivity, android.R.color.white))
-                        background = ContextCompat.getDrawable(this@IntroActivity, R.drawable.ripple_effect)
-                        for (i in 0 until fragmentArrayList.size) {
-                            append("▶")
-                        }
-                        setPadding(getPx(10), getPx(10), getPx(10), getPx(10))
-                    }, LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
-                        addRule(ALIGN_PARENT_END)
-                        addRule(CENTER_VERTICAL)
+                        addView(AppCompatTextView(this@IntroActivity).apply {
+                            textView_next = this
+                            isClickable = true
+                            isFocusable = true
+                            textSize = resources.getDimension(R.dimen.introActivity_indicator_size)
+                            setTextColor(
+                                ContextCompat.getColor(
+                                    this@IntroActivity,
+                                    android.R.color.white
+                                )
+                            )
+                            background = ContextCompat.getDrawable(
+                                this@IntroActivity,
+                                R.drawable.ripple_effect
+                            )
+                            for (i in 0 until fragmentArrayList.size) {
+                                append("▶")
+                            }
+                            setPadding(resources.getDimensionPixelSize(R.dimen.introActivity_indicator_padding))
+                        }, LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
+                            addRule(ALIGN_PARENT_END)
+                            addRule(CENTER_VERTICAL)
+                        })
+                        addView(AppCompatTextView(this@IntroActivity).apply {
+                            textView_last = this
+                            isClickable = true
+                            isFocusable = true
+                            textSize = resources.getDimension(R.dimen.introActivity_indicator_size)
+                            setTextColor(
+                                ContextCompat.getColor(
+                                    this@IntroActivity,
+                                    android.R.color.white
+                                )
+                            )
+                            background = ContextCompat.getDrawable(
+                                this@IntroActivity,
+                                R.drawable.ripple_effect
+                            )
+                            setPadding(resources.getDimensionPixelSize(R.dimen.introActivity_indicator_padding))
+                        }, LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
+                            addRule(CENTER_VERTICAL)
+                        })
+                    },
+                    LayoutParams(
+                        MATCH_PARENT,
+                        resources.getDimensionPixelSize(R.dimen.introActivity_bottomBar_height)
+                    ).apply {
+                        addRule(ALIGN_PARENT_BOTTOM)
                     })
-                    addView(AppCompatTextView(this@IntroActivity).apply {
-                        textView_last = this
-                        isClickable = true
-                        isFocusable = true
-                        textSize = getPx(7f)
-                        setTextColor(ContextCompat.getColor(this@IntroActivity, android.R.color.white))
-                        background = ContextCompat.getDrawable(this@IntroActivity, R.drawable.ripple_effect)
-                        setPadding(getPx(10), getPx(10), getPx(10), getPx(10))
-                    }, LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
-                        addRule(CENTER_VERTICAL)
-                    })
-                }, LayoutParams(MATCH_PARENT, getPx(50)).apply {
-                    addRule(ALIGN_PARENT_BOTTOM)
-                })
 
                 addView(ViewPager(this@IntroActivity).apply {
                     id = View.generateViewId()
                     background = ColorDrawable(
                         ContextCompat.getColor(
-                            this@IntroActivity,
-                            R.color.colorPrimary
+                            this@IntroActivity, R.color.colorPrimary
                         )
                     )
                     viewPager = this
@@ -107,39 +128,35 @@ class IntroActivity : BaseAppCompatActivity() {
                         }
                     }
                     setPageTransformer(true, PageTransformer())
-                        addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                            override fun onPageScrollStateChanged(state: Int) {
-                            }
+                    addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                        override fun onPageScrollStateChanged(state: Int) {
+                        }
 
-                            override fun onPageScrolled(
-                                position: Int, positionOffset: Float, positionOffsetPixels: Int
-                            ) {
-                            }
+                        override fun onPageScrolled(
+                            position: Int, positionOffset: Float, positionOffsetPixels: Int
+                        ) {
+                        }
 
-                            override fun onPageSelected(position: Int) {
-                                textView_next.text = ""
-                                textView_last.text = ""
-                                for (i in 0 until fragmentArrayList.size - position) {
-                                    textView_next.append("▶")
-                                }
-                                for (i in 0 until position) {
-                                    textView_last.append("◀")
-                                }
+                        override fun onPageSelected(position: Int) {
+                            textView_next.text = ""
+                            textView_last.text = ""
+                            for (i in 0 until fragmentArrayList.size - position) {
+                                textView_next.append("▶")
                             }
-                        })
+                            for (i in 0 until position) {
+                                textView_last.append("◀")
+                            }
+                        }
+                    })
                 }, LayoutParams(MATCH_PARENT, MATCH_PARENT).apply {
                     addRule(ABOVE, relativeLayout.id)
                 })
             }, DrawerLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT))
         }
     }
-override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(createView())
-    /*setContentView(R.layout.activity_intro)
-    viewPager.adapter = FragmentPagerAdapter(
-        supportFragmentManager,
-        arrayListOf(FirstFragment(), FirstFragment())
-    )*/
-}
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(createView())
+    }
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources >
+    <array name="settingPreference_searchMusicThread_entries">
+        <item>单线程模式(这个最稳了)</item>
+        <item>双线程模式(有点快)</item>
+        <item>核心数量线程模式\n(速度与稳定达到平衡)</item>
+        <item>超线程模式(小心吃不消)</item>
+    </array>
+</resources >
