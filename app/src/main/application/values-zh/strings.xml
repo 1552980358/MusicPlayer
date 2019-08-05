@@ -9,11 +9,26 @@
     <string name="checkPermission_title">哥哥/姐姐，我想要这个才能跑哦~</string>
     <string name="checkPermission_read">读取存储内容 READ_EXTERNAL_STORAGE</string>
     <string name="checkPermission_write">修改存储内容 WRITE_EXTERNAL_STORAGE</string>
-
     <string name="checkPermission_allow">授权</string>
+
+    <string name="abc_intro_pg1_line1">欢迎来到</string>
+    <string name="abc_intro_pg1_line2">~  狸歌  ~</string>
+    <string name="abc_intro_pg1_line3">为您呈现</string>
 
     <string name="abc_main_list_full">全部歌曲</string>
 
     <string name="adb_main_main_title">欢迎光临</string>
     <string name="adb_main_list_title">歌单</string>
+
+    <string name="abc_settings_title">设置</string>
+    <string name="abc_settings_bgLoading">后台任务正在运行, 请等待完成再试!</string>
+    <string name="abc_settings_reloadFiles_title">音乐文件设置</string>
+    <string name="abc_settings_reloadFiles_tag1_title">重新搜索音乐文件</string>
+    <string name="abc_settings_reloadFiles_tag1_subtitle">重新做人?</string>
+    <string name="abc_settings_reloadFiles_tag2_title">搜索文件进程</string>
+    <string name="abc_settings_reloadFiles_tag2_subtitle">小心手机吃不消哦~</string>
+    <string name="abc_settings_reloadFiles_tag2_dialog">选择线程数量…</string>
+    <string name="abc_settings_knownIssues_title">已知问题</string>
+    <string name="abc_settings_knownIssues_tag1_title">外置SD卡媒体文件无法读取</string>
+    <string name="abc_settings_knownIssues_tag1_subtitle">从Android L每个版本适配到Android O,甚至Android Q又要改API…\n那么, 还是等Q正式发布再加吧…</string>
 </resources>

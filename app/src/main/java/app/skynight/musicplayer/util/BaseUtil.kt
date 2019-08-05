@@ -1,11 +1,8 @@
 package app.skynight.musicplayer.util
 
-import android.content.Context
 import android.widget.Toast
+import app.skynight.musicplayer.MainApplication
 import app.skynight.musicplayer.base.InitNotAllowedException
-import java.io.BufferedReader
-import java.io.InputStream
-import java.nio.charset.Charset
 
 /**
  * @File    : BaseUtil
@@ -22,4 +19,5 @@ class BaseUtil private constructor() {
     }
 }
 
-fun makeToast(context: Context, content: CharSequence): Unit = Toast.makeText(context, content, Toast.LENGTH_SHORT).show()
+fun makeToast(content: Int): Unit = makeToast(MainApplication.getMainApplication().getString(content))
+fun makeToast(content: CharSequence): Unit = Toast.makeText(MainApplication.getMainApplication(), content, Toast.LENGTH_SHORT).show()

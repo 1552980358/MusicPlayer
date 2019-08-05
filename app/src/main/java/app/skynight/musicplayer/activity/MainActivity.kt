@@ -132,6 +132,9 @@ class MainActivity : BaseSmallPlayerActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
+        if (MainApplication.customize) {
+            menu!!.findItem(R.id.action_settings).setIcon(R.drawable.ic_settings_cust)
+        }
         return super.onCreateOptionsMenu(menu)
     }
 

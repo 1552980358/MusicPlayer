@@ -42,20 +42,20 @@ class FirstFragment : Fragment() {
 
                 addView(TextView(context).apply {
                     setTextColor(ContextCompat.getColor(context, android.R.color.white))
-                    text = "欢迎来到"
+                    setText(R.string.abc_intro_pg1_line1)
                     textSize = resources.getDimension(R.dimen.intro_firstFragment_nor)
                 }, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
                     gravity = Gravity.CENTER
                 })
                 addView(TextView(context).apply {
-                    text = "~  狸歌  ~"
+                    setText(R.string.abc_intro_pg1_line2)
                     textSize = resources.getDimension(R.dimen.intro_firstFragment_title)
                     setTextColor(ContextCompat.getColor(context, android.R.color.white))
                 }, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
                     gravity = Gravity.CENTER
                 })
                 addView(TextView(context).apply {
-                    text = "为您呈现"
+                    setText(R.string.abc_intro_pg1_line3)
                     textSize = resources.getDimension(R.dimen.intro_firstFragment_nor)
                     paint.flags = Paint.UNDERLINE_TEXT_FLAG
                     setTextColor(ContextCompat.getColor(context, android.R.color.white))

@@ -79,6 +79,8 @@ class BroadcastList private constructor() {
         const val SERVER_BROADCAST_ONSTOP = "app.skynight.musicplayer.server.onstop"
         // CHANGE MUSIC
         const val SERVER_BROADCAST_MUSICCHANGE = "app.skynight.musicplayer.server.onmusicchange"
+        // PREPARING MUSIC LIST
+        const val SERVER_BROADCAST_PREPAREDONE = "app.skynight.musicplayer.server.onpreparedone"
 
         val BroadcastSignalList = arrayListOf(
                 /* MAIN PLAYER */

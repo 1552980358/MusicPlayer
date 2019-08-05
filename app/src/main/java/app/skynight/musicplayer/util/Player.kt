@@ -1,13 +1,6 @@
 package app.skynight.musicplayer.util
 
 import android.content.Context
-import android.graphics.BitmapFactory
-import android.media.MediaMetadataRetriever
-import android.media.MediaMetadataRetriever.METADATA_KEY_TITLE
-import android.media.MediaMetadataRetriever.METADATA_KEY_ARTIST
-import android.media.MediaMetadataRetriever.METADATA_KEY_ALBUM
-import android.media.MediaMetadataRetriever.METADATA_KEY_BITRATE
-import android.media.MediaMetadataRetriever.METADATA_KEY_DURATION
 import android.media.MediaPlayer
 import android.os.Environment
 import android.util.Log
@@ -16,7 +9,12 @@ import app.skynight.musicplayer.broadcast.BroadcastList.Companion.PLAYER_BROADCA
 import app.skynight.musicplayer.broadcast.BroadcastList.Companion.SERVER_BROADCAST_MUSICCHANGE
 import app.skynight.musicplayer.broadcast.BroadcastList.Companion.SERVER_BROADCAST_ONPAUSE
 import app.skynight.musicplayer.broadcast.BroadcastList.Companion.SERVER_BROADCAST_ONSTOP
+import app.skynight.musicplayer.broadcast.BroadcastList.Companion.SERVER_BROADCAST_PREPAREDONE
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import java.io.File
+import java.io.FileWriter
 
 /**
  * @FILE:   PlayerUtil
@@ -28,9 +26,15 @@ import java.io.File
 class Player private constructor() {
     @Suppress("JoinDeclarationAndAssignment")
     private var mediaPlayer: MediaPlayer
+    private val searchThreadList = mutableListOf<Thread>()
 
     companion object {
         const val TAG = "Player"
+        val AllMusicSavedPath =
+            MainApplication.getMainApplication().cacheDir.absolutePath + File.separator + "AllMusic.json"
+
+        var prepareDone = true
+
         val musicList = mutableListOf<MusicInfo>()
         fun createMusicInfo(path: String) {
             if (path.endsWith(".3gp") || path.endsWith(".m4a") || path.endsWith(".aac") || path.endsWith(
@@ -44,23 +48,7 @@ class Player private constructor() {
                 ) || path.endsWith(".wav") || path.endsWith(".ogg")
             ) {
                 try {
-                    val mediaMetadataRetriever = MediaMetadataRetriever()
-                    mediaMetadataRetriever.setDataSource(path)
-
-                    val musicInfo = MusicInfo(
-                        path,
-                        mediaMetadataRetriever.extractMetadata(METADATA_KEY_TITLE),
-                        mediaMetadataRetriever.extractMetadata(METADATA_KEY_ARTIST),
-                        mediaMetadataRetriever.extractMetadata(METADATA_KEY_ALBUM),
-                        if (mediaMetadataRetriever.embeddedPicture.size > 1) BitmapFactory.decodeByteArray(
-                            mediaMetadataRetriever.embeddedPicture,
-                            0,
-                            mediaMetadataRetriever.embeddedPicture.size
-                        ) else null,
-                        mediaMetadataRetriever.extractMetadata(METADATA_KEY_BITRATE),
-                        mediaMetadataRetriever.extractMetadata(METADATA_KEY_DURATION).toInt()
-                    )
-                    addMusic(musicInfo)
+                    addMusic(MusicInfo(path))
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -88,7 +76,7 @@ class Player private constructor() {
         @Suppress("MemberVisibilityCanBePrivate")
         @Deprecated("Replace with map")
         val THREAD_CORE = Runtime.getRuntime().availableProcessors()
-        @Suppress("unused")
+        @Suppress("unused", "DEPRECATION")
         @Deprecated("Replace with map")
         val THREAD_DOUBLE_CORE = THREAD_CORE * 2
 
@@ -105,6 +93,26 @@ class Player private constructor() {
     }
 
     init {
+        Thread {
+            prepareDone = false
+            val file = File(AllMusicSavedPath)
+            if (file.exists()) {
+                try {
+                    for (i in JsonParser().parse(file.inputStream().bufferedReader().readText()).asJsonObject.get(
+                        "FullList"
+                    ).asJsonArray) {
+                        addMusic(MusicInfo(i.asString))
+                    }
+                    prepareDone = true
+                    MainApplication.sendBroadcast(SERVER_BROADCAST_PREPAREDONE)
+                    return@Thread
+                } catch (e: Exception) {
+                    //e.printStackTrace()
+                    //file.delete()
+                }
+            }
+            prepareDone = true
+        }.start()
         mediaPlayer = MediaPlayer()
         mediaPlayer.setOnCompletionListener {
             when (playingType) {
@@ -119,7 +127,6 @@ class Player private constructor() {
                     }
                 }
                 Companion.PlayingType.RANDOM -> {
-
                 }
             }
         }
@@ -220,6 +227,7 @@ class Player private constructor() {
 
     @Suppress("unused")
     fun onUpdateMusicList(thread: Int) {
+        prepareDone = false
         Log.e(TAG, "onUpdateMusicList($thread)")
         val file = Environment.getExternalStorageDirectory()
 
@@ -240,10 +248,50 @@ class Player private constructor() {
             return tmp
         }
         for (i in 0 until thread) {
-            Thread {
+            searchThreadList.add(Thread {
                 updateMusicList(getFile())
-            }.start()
+            }.apply { start() })
         }
+        Thread {
+            whileLoop@ while (!prepareDone) {
+                try {
+                    Thread.sleep(20)
+                } catch (e: Exception) {
+                    //
+                }
+                for (i in searchThreadList) {
+                    if (i.isAlive) {
+                        continue@whileLoop
+                    }
+                }
+                // Complete flag
+                prepareDone = true
+            }
+            Log.e(TAG, "prepareDone: ${musicList.size}")
+            MainApplication.sendBroadcast(SERVER_BROADCAST_PREPAREDONE)
+
+            try {
+                FileWriter(File(AllMusicSavedPath).apply {
+                    if (exists()) {
+                        delete()
+                    }
+                    createNewFile()
+                }).apply {
+                    write(JsonObject().apply {
+                        add("FullList", JsonArray().apply {
+                            musicList.forEach { musicInfo ->
+                                add(musicInfo.path)
+                            }
+                        })
+                    }.toString())
+                    flush()
+                    close()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }.start()
     }
 
     @Suppress("unused")

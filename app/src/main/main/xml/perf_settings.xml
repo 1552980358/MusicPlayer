@@ -2,27 +2,27 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceCategory android:title="音乐文件搜索" >
+    <PreferenceCategory android:title="@string/abc_settings_reloadFiles_title" >
 
         <Preference
-            android:title="重新搜索音乐文件"
-            android:summary="重新做人?"
+            android:title="@string/abc_settings_reloadFiles_tag1_title"
+            android:summary="@string/abc_settings_reloadFiles_tag1_subtitle"
             android:key="settingPreference_searchMusic" />
 
         <ListPreference
             android:key="settingPreference_searchMusicThread"
-            android:dialogTitle="选择搜索文件线程"
-            android:title="搜索文件线程"
-            android:summary="小心会炸哟~"
-            android:defaultValue="0"
+            android:dialogTitle="@string/abc_settings_reloadFiles_tag2_dialog"
+            android:title="@string/abc_settings_reloadFiles_tag2_title"
+            android:summary="@string/abc_settings_reloadFiles_tag2_subtitle"
+            android:defaultValue="SINGLE"
             android:entries="@array/settingPreference_searchMusicThread_entries"
             android:entryValues="@array/settingPreference_searchMusicThread_entriesValue" />
     </PreferenceCategory >
 
-    <PreferenceCategory android:title="已知问题" >
+    <PreferenceCategory android:title="@string/abc_settings_knownIssues_title" >
         <Preference
-            android:title="外置SD卡暂时无法读取"
-            android:summary="从Android L每个版本适配到Android O,甚至Android Q又要改API...\n那么, 还是等Q正式发布再加吧..."/>
+            android:title="@string/abc_settings_knownIssues_tag1_title"
+            android:summary="@string/abc_settings_knownIssues_tag1_subtitle"/>
     </PreferenceCategory >
 
 </PreferenceScreen >

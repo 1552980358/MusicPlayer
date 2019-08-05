@@ -9,11 +9,26 @@
     <string name="checkPermission_title">Permission Authorization</string>
     <string name="checkPermission_read">READ_EXTERNAL_STORAGE</string>
     <string name="checkPermission_write">WRITE_EXTERNAL_STORAGE</string>
-
     <string name="checkPermission_allow">Authorize</string>
 
-    <string name="abc_main_list_full">All music</string>
+    <string name="abc_intro_pg1_line1">WELCOME TO</string>
+    <string name="abc_intro_pg1_line2">Moe Music Player</string>
+    <string name="abc_intro_pg1_line3">Presents for you</string>
 
+    <string name="abc_main_list_full">All music</string>
     <string name="adb_main_main_title">Welcome</string>
     <string name="adb_main_list_title">Playlist</string>
+
+    <string name="abc_settings_title">Settings</string>
+    <string name="abc_settings_bgLoading">Background Task is running, please wait until the completion!</string>
+    <string name="abc_settings_reloadFiles_title">Music File(s) settings</string>
+    <string name="abc_settings_reloadFiles_tag1_title">Reload All Music Files</string>
+    <string name="abc_settings_reloadFiles_tag1_subtitle">Click to reload all music files in your device</string>
+    <string name="abc_settings_reloadFiles_tag2_title">Reload Thread(s)</string>
+    <string name="abc_settings_reloadFiles_tag2_subtitle">Select number of thread(s) used to load music files</string>
+    <string name="abc_settings_reloadFiles_tag2_dialog">Select Number of Thread(s)…</string>
+    <string name="abc_settings_knownIssues_title">Known Issue(s)</string>
+    <string name="abc_settings_knownIssues_tag1_title">Removable Storage(Micro SDCard) not accessible</string>
+    <string name="abc_settings_knownIssues_tag1_subtitle">Requires adapting each version from Android L to Android O, even Android Q will change APIs about that…
+    So, adapts that when the official release of Android Q…</string>
 </resources>

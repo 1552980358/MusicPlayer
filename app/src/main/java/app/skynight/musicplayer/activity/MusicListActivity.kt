@@ -30,7 +30,6 @@ class MusicListActivity : BaseSmallPlayerActivity() {
         } catch (e: Exception) {
             //
         }
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -1,6 +1,5 @@
 package app.skynight.musicplayer.activity
 
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -8,11 +7,11 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.LinearLayout.VERTICAL
-import android.widget.Toolbar
+import androidx.appcompat.widget.Toolbar
 import app.skynight.musicplayer.base.BaseAppCompatActivity
 import app.skynight.musicplayer.fragment.activity_settings.SettingsFragment
 import com.google.android.material.appbar.AppBarLayout
-import kotlinx.android.synthetic.main.activity_musiclist.view.*
+import app.skynight.musicplayer.R
 
 class SettingsActivity : BaseAppCompatActivity() {
     private lateinit var frameLayout: FrameLayout
@@ -23,8 +22,12 @@ class SettingsActivity : BaseAppCompatActivity() {
             orientation = VERTICAL
             addView(AppBarLayout(this@SettingsActivity).apply {
                 addView(Toolbar(this@SettingsActivity).apply {
-                    setSupportActionBar(toolbar)
-                    title = "设置"
+                    setTitle(R.string.abc_settings_title)
+                    setSupportActionBar(this)
+                    supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+                    setNavigationOnClickListener {
+                        finish()
+                    }
                 }, AppBarLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
             })
             addView(FrameLayout(this@SettingsActivity).apply {

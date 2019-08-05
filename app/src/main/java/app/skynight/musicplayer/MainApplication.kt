@@ -51,6 +51,7 @@ class MainApplication : Application() {
             sharedPreferences
             customize = sharedPreferences.getBoolean("customize", false)
             bgDrawable = if (customize) {
+                setTheme(R.style.AppTheme_NoActionBar_Customize)
                 if (MainApplication.sharedPreferences.getBoolean("img", false)) {
                     BitmapDrawable(resources, cacheDir.toString() + File.separator + "bg.img")
                 } else {
