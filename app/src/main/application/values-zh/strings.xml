@@ -20,6 +20,8 @@
     <string name="adb_main_main_title">欢迎光临</string>
     <string name="adb_main_list_title">歌单</string>
 
+    <string name="abc_musicList_full">@string/abc_main_list_full</string>
+
     <string name="abc_settings_title">设置</string>
     <string name="abc_settings_bgLoading">后台任务正在运行, 请等待完成再试!</string>
     <string name="abc_settings_reloadFiles_title">音乐文件设置</string>
@@ -31,4 +33,8 @@
     <string name="abc_settings_knownIssues_title">已知问题</string>
     <string name="abc_settings_knownIssues_tag1_title">外置SD卡媒体文件无法读取</string>
     <string name="abc_settings_knownIssues_tag1_subtitle">从Android L每个版本适配到Android O,甚至Android Q又要改API…\n那么, 还是等Q正式发布再加吧…</string>
+
+    <string name="abc_musicList_unExpected_intent">Seems something goes wrong when getting playlist info data. </string>
+
+    <string name="abc_player_unExpected_intent">@string/abc_musicList_unExpected_intent</string>
 </resources>

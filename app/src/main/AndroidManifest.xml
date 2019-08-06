@@ -41,14 +41,15 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.MusicListActivity"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.SettingsActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar.Settings" />
         <!-- Player -->
         <activity
             android:name=".activity.PlayerActivity"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar.TransparentBackground" />
     </application >
 

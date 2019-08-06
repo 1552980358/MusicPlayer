@@ -19,6 +19,8 @@
     <string name="adb_main_main_title">Welcome</string>
     <string name="adb_main_list_title">Playlist</string>
 
+    <string name="abc_musicList_full">@string/abc_main_list_full</string>
+
     <string name="abc_settings_title">Settings</string>
     <string name="abc_settings_bgLoading">Background Task is running, please wait until the completion!</string>
     <string name="abc_settings_reloadFiles_title">Music File(s) settings</string>
@@ -31,4 +33,8 @@
     <string name="abc_settings_knownIssues_tag1_title">Removable Storage(Micro SDCard) not accessible</string>
     <string name="abc_settings_knownIssues_tag1_subtitle">Requires adapting each version from Android L to Android O, even Android Q will change APIs about that…
     So, adapts that when the official release of Android Q…</string>
+    
+    <string name="abc_musicList_unExpected_intent">Seems something goes wrong when getting playlist info data. </string>
+
+    <string name="abc_player_unExpected_intent">@string/abc_musicList_unExpected_intent</string>
 </resources>

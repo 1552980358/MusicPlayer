@@ -10,6 +10,7 @@
     <color name="colorPrimary">@color/white</color>
     <color name="colorPrimaryDark">@color/white</color>
     <color name="colorAccent">@color/black</color>
+    <color name="colorAccentSettings">#e040fb</color>
 
     <color name="white">@android:color/white</color>
     <color name="black">@android:color/black</color>

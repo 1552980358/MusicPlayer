@@ -15,10 +15,9 @@ import androidx.core.content.ContextCompat
 import app.skynight.musicplayer.MainApplication
 import app.skynight.musicplayer.R
 import app.skynight.musicplayer.util.UnitUtil.Companion.getPx
-import app.skynight.musicplayer.view.StyledTextView
-import app.skynight.musicplayer.broadcast.BroadcastList.Companion.PLAYER_BROADCAST_ONPAUSE
-import app.skynight.musicplayer.broadcast.BroadcastList.Companion.PLAYER_BROADCAST_ONSTART
-import app.skynight.musicplayer.broadcast.BroadcastList.Companion.PLAYER_BROADCAST_ONSTOP
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_ONPAUSE
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_ONSTART
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_ONSTOP
 
 /**
  * @FILE:   BottomPlayerView
@@ -35,7 +34,6 @@ class BottomPlayerView : LinearLayout {
     lateinit var textView_title: StyledTextView
     lateinit var textView_subTitle: StyledTextView
 
-    //lateinit var imageButton_list : AppCompatImageButton
     lateinit var checkBox_controller: AppCompatCheckBox
 
     private lateinit var linearLayout_Root: LinearLayout
@@ -117,7 +115,7 @@ class BottomPlayerView : LinearLayout {
                     addView(AppCompatImageButton(context).apply {
                         //imageButton_last = this
                         background =
-                            ContextCompat.getDrawable(context, R.drawable.ic_mini_play_last_def)
+                            ContextCompat.getDrawable(context, R.drawable.ic_mini_play_last)
                     }, LayoutParams(getPx(30), getPx(30)).apply {
                         //setMargins(getPx(5), getPx(7), getPx(5), getPx(5))
                     })
@@ -126,12 +124,12 @@ class BottomPlayerView : LinearLayout {
                         checkBox_controller = this
                         buttonDrawable = null
                         background =
-                            ContextCompat.getDrawable(context, R.drawable.ic_mini_play_control_def)
+                            ContextCompat.getDrawable(context, R.drawable.ic_mini_play_control)
                         setOnClickListener {
-                            context.sendBroadcast(Intent(if (isChecked) PLAYER_BROADCAST_ONSTART else PLAYER_BROADCAST_ONPAUSE))
+                            context.sendBroadcast(Intent(if (isChecked) CLIENT_BROADCAST_ONSTART else CLIENT_BROADCAST_ONPAUSE))
                         }
                         setOnLongClickListener {
-                            context.sendBroadcast(Intent(PLAYER_BROADCAST_ONSTOP))
+                            context.sendBroadcast(Intent(CLIENT_BROADCAST_ONSTOP))
                             true
                         }
                     }, LayoutParams(getPx(35), getPx(35)).apply {
@@ -141,7 +139,7 @@ class BottomPlayerView : LinearLayout {
                     addView(AppCompatImageButton(context).apply {
                         //imageButton_next = this
                         background =
-                            ContextCompat.getDrawable(context, R.drawable.ic_mini_play_next_def)
+                            ContextCompat.getDrawable(context, R.drawable.ic_mini_play_next)
                         setOnClickListener {
 
                         }

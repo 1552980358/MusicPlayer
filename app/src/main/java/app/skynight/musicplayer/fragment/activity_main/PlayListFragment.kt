@@ -13,6 +13,8 @@ import app.skynight.musicplayer.view.PlayListContainerView
 import app.skynight.musicplayer.view.PlayListView
 import app.skynight.musicplayer.R
 import app.skynight.musicplayer.activity.MusicListActivity
+import app.skynight.musicplayer.util.Player.Companion.EXTRA_LIST
+import app.skynight.musicplayer.util.Player.Companion.LIST_ALL
 
 /**
  * @File    : PlayListFragment
@@ -30,9 +32,11 @@ class PlayListFragment: Fragment() {
             orientation = LinearLayout.VERTICAL
             addView(PlayListContainerView(context).apply {
                 addView(PlayListView(context).apply {
-                    setUp(R.drawable.ic_main_full_def, R.string.abc_main_list_full)
+                    setUp(R.drawable.ic_main_full, R.string.abc_main_list_full)
                     setOnClickListener {
-                        startActivity(Intent(context, MusicListActivity::class.java))
+                        startActivity(Intent(context, MusicListActivity::class.java)
+                            .putExtra(EXTRA_LIST, LIST_ALL)
+                        )
                     }
                 })
             }, LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))

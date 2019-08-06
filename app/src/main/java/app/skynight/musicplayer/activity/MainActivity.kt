@@ -2,18 +2,9 @@ package app.skynight.musicplayer.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
+//import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.view.menu.MenuItemImpl
-import android.view.View
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import app.skynight.musicplayer.MainApplication
 import app.skynight.musicplayer.R
@@ -21,11 +12,53 @@ import app.skynight.musicplayer.base.BaseSmallPlayerActivity
 import app.skynight.musicplayer.fragment.activity_main.MainFragment
 import app.skynight.musicplayer.fragment.activity_main.PlayListFragment
 import app.skynight.musicplayer.util.FragmentPagerAdapter
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.tabs.TabLayout
-import java.lang.Exception
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseSmallPlayerActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val title = arrayOf(R.string.adb_main_main_title, R.string.adb_main_list_title)
+
+        setContentView(R.layout.activity_main)
+        if (MainApplication.customize) {
+            appBarLayout.stateListAnimator = null
+        }
+
+        setSupportActionBar(toolbar)
+
+        viewPager.apply {
+            adapter = FragmentPagerAdapter(supportFragmentManager, arrayListOf(MainFragment(), PlayListFragment()))
+            tabLayout.apply {
+                setupWithViewPager(viewPager)
+                getTabAt(0)!!.setIcon(R.drawable.ic_tab_music)
+                getTabAt(1)!!.setIcon(R.drawable.ic_tab_play_list)
+            }
+            addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                override fun onPageScrollStateChanged(state: Int) {
+                }
+
+                override fun onPageScrolled(
+                    position: Int, positionOffset: Float, positionOffsetPixels: Int
+                ) {
+                }
+
+                override fun onPageSelected(position: Int) {
+                    /*
+                    try {
+                        (toolbar::class.java.getDeclaredField("mTitleTextView").apply { isAccessible = true }.get(toolbar) as TextView).setText(title[position])
+                    } catch (e: Exception) {
+                        //
+                    }
+                     */
+                    toolbar.setTitle(title[position])
+                }
+
+            })
+        }
+    }
+
+    /*
     override fun onCreate(savedInstanceState: Bundle?) {
         val toolbar: Toolbar
         val title = arrayOf(R.string.adb_main_main_title, R.string.adb_main_list_title)
@@ -129,16 +162,17 @@ class MainActivity : BaseSmallPlayerActivity() {
         })
         setFitSystemWindows()
     }
+*/
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        //Log.e("MainActivity", "onCreateOptionsMenu")
         menuInflater.inflate(R.menu.menu_main, menu)
-        if (MainApplication.customize) {
-            menu!!.findItem(R.id.action_settings).setIcon(R.drawable.ic_settings_cust)
-        }
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        super.onOptionsItemSelected(item)
+        //Log.e("MainActivity", "onOptionsItemSelected")
         when (item!!.itemId) {
             R.id.action_settings -> {
                 startActivity(Intent(this, SettingsActivity::class.java))

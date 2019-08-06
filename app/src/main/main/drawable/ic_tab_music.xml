@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:drawable="@drawable/ic_tab_music_press" android:state_pressed="true" android:state_checked="true" android:state_selected="true"/>
-
-    <item android:drawable="@drawable/ic_tab_music_nor" android:state_pressed="false" android:state_checked="false" android:state_selected="false" />
-
-    <item android:drawable="@drawable/ic_tab_music_nor" />
-
-</selector>
+<vector
+    android:height="24dp"
+    android:tint="?attr/colorAccent"
+    android:viewportHeight="24.0"
+    android:viewportWidth="24.0"
+    android:width="24dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <path
+        android:fillColor="?attr/colorAccent"
+        android:pathData="M12,3v9.28c-0.47,-0.17 -0.97,-0.28 -1.5,-0.28C8.01,12 6,14.01 6,16.5S8.01,21 10.5,21c2.31,0 4.2,-1.75 4.45,-4H15V6h4V3h-7z" />
+</vector>

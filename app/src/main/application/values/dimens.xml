@@ -8,6 +8,7 @@
 
     <dimen name="toolbar_height">50dp</dimen>
 
+    <dimen name="dp_0">0dp</dimen>
     <dimen name="dp_5">5dp</dimen>
     <dimen name="dp_1">1dp</dimen>
     <dimen name="dp_10">10dp</dimen>

@@ -19,5 +19,5 @@
 
     <dimen name="musicView_height">50dp</dimen>
     <dimen name="musicView_title_size">7sp</dimen>
-    <dimen name="musicView_subTitle_size">7sp</dimen>
+    <dimen name="musicView_subTitle_size">4sp</dimen>
 </resources >

@@ -13,6 +13,7 @@
         android:title="ChangeCover" />
 
     <item
+        android:icon="@drawable/ic_search"
         android:id="@+id/search"
         app:showAsAction="ifRoom"
         android:orderInCategory="90"

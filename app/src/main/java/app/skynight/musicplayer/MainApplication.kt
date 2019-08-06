@@ -7,17 +7,22 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
-import app.skynight.musicplayer.broadcast.BroadcastList.Companion.BroadcastSignalList
-import app.skynight.musicplayer.broadcast.BroadcastList.Companion.PLAYER_BROADCAST_CYCLE
-import app.skynight.musicplayer.broadcast.BroadcastList.Companion.PLAYER_BROADCAST_LAST
-import app.skynight.musicplayer.broadcast.BroadcastList.Companion.PLAYER_BROADCAST_NEXT
-import app.skynight.musicplayer.broadcast.BroadcastList.Companion.PLAYER_BROADCAST_ONPAUSE
-import app.skynight.musicplayer.broadcast.BroadcastList.Companion.PLAYER_BROADCAST_ONSTART
-import app.skynight.musicplayer.broadcast.BroadcastList.Companion.PLAYER_BROADCAST_ONSTOP
-import app.skynight.musicplayer.broadcast.BroadcastList.Companion.PLAYER_BROADCAST_RANDOM
-import app.skynight.musicplayer.broadcast.BroadcastList.Companion.PLAYER_BROADCAST_SINGLE
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.BROADCAST_INTENT_MUSIC
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.BROADCAST_INTENT_PLAYLIST
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.BroadcastSignalList
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_CHANGE
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_CYCLE
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_LAST
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_NEXT
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_ONPAUSE
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_ONSTART
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_ONSTOP
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_RANDOM
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_SINGLE
 import app.skynight.musicplayer.util.Player
+import app.skynight.musicplayer.util.Player.Companion.ERROR_CODE
 import java.io.File
+import java.lang.Exception
 
 /**
  * @FILE:   MainApplication
@@ -29,6 +34,7 @@ import java.io.File
 @Suppress("unused")
 class MainApplication : Application() {
     companion object {
+        //const val TAG = "MainApplication"
         var playerForeground = false
         private var mainApplication: MainApplication? = null
         fun getMainApplication(): MainApplication {
@@ -65,31 +71,22 @@ class MainApplication : Application() {
         registerReceiver(object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 intent?: return
+                //Log.e(TAG, intent.action)
                 when (intent.action) {
-                    PLAYER_BROADCAST_ONSTART -> {
-                        Player.getPlayer.onStart()
+                    CLIENT_BROADCAST_ONSTART -> { Player.getPlayer.onStart() }
+                    CLIENT_BROADCAST_ONSTOP -> { Player.getPlayer.onStop() }
+                    CLIENT_BROADCAST_ONPAUSE -> { Player.getPlayer.onPause() }
+                    CLIENT_BROADCAST_LAST -> { Player.getPlayer.playLast() }
+                    CLIENT_BROADCAST_NEXT-> { Player.getPlayer.playNext() }
+                    CLIENT_BROADCAST_CHANGE -> {
+                        Player.getPlayer.playChange(intent
+                            .getIntExtra(BROADCAST_INTENT_PLAYLIST, ERROR_CODE),
+                            intent.getIntExtra(BROADCAST_INTENT_MUSIC, ERROR_CODE)
+                        )
                     }
-                    PLAYER_BROADCAST_ONSTOP -> {
-                        Player.getPlayer.onStop()
-                    }
-                    PLAYER_BROADCAST_ONPAUSE -> {
-                        Player.getPlayer.onPause()
-                    }
-                    PLAYER_BROADCAST_LAST -> {
-                        Player.getPlayer.playLast()
-                    }
-                    PLAYER_BROADCAST_NEXT-> {
-                        Player.getPlayer.playNext()
-                    }
-                    PLAYER_BROADCAST_SINGLE -> {
-                        Player.getPlayer.setPlayingType(Player.Companion.PlayingType.SINGLE)
-                    }
-                    PLAYER_BROADCAST_CYCLE -> {
-                        Player.getPlayer.setPlayingType()
-                    }
-                    PLAYER_BROADCAST_RANDOM -> {
-                        Player.getPlayer.setPlayingType(Player.Companion.PlayingType.RANDOM)
-                    }
+                    CLIENT_BROADCAST_SINGLE -> { Player.getPlayer.setPlayingType(Player.Companion.PlayingType.SINGLE) }
+                    CLIENT_BROADCAST_CYCLE -> { Player.getPlayer.setPlayingType() }
+                    CLIENT_BROADCAST_RANDOM -> { Player.getPlayer.setPlayingType(Player.Companion.PlayingType.RANDOM) }
                 }
             }
         }, IntentFilter().apply {

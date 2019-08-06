@@ -13,9 +13,9 @@
     <!-- 播放 选中 -->
     <!--item android:drawable="@drawable/ic_play_press" android:state_pressed="true" android:state_selected="true" /-->
 
-    <item android:state_checked="false" android:drawable="@drawable/ic_mini_play_press_def" />
+    <item android:state_checked="false" android:drawable="@drawable/ic_mini_play" />
 
-    <item android:state_checked="true" android:drawable="@drawable/ic_mini_pause_press_def" />
+    <item android:state_checked="true" android:drawable="@drawable/ic_mini_pause" />
 
     <!-- item android:drawable="@drawable/ic_pause" /-->
 
