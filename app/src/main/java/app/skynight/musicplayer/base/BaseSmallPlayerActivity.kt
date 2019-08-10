@@ -16,6 +16,7 @@ import app.skynight.musicplayer.activity.PlayerActivity
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_MUSICCHANGE
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONPAUSE
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONSTART
+import app.skynight.musicplayer.util.Player
 import app.skynight.musicplayer.view.BottomPlayerView
 import java.lang.Exception
 
@@ -38,6 +39,7 @@ open class BaseSmallPlayerActivity : BaseAppCompatActivity() {
     }
 
     /* Execute after setContentView when needed, otherwise useless */
+    @Suppress("unused")
     fun setFitSystemWindows() {
         try {
             relativeLayout.fitsSystemWindows = true
@@ -46,57 +48,63 @@ open class BaseSmallPlayerActivity : BaseAppCompatActivity() {
         }
     }
 
+    /* Filter the origin method with */
     override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
         throw Exception("SetViewGroupLayoutParamsNotAllowed")
     }
+
     override fun setContentView(view: View?) {
         val layoutParams: RelativeLayout.LayoutParams
 
         super.setContentView(RelativeLayout(this).apply {
-            addView(
-                BottomPlayerView(this@BaseSmallPlayerActivity).also {
-                    relativeLayout = this
-                    bottomPlayerView = it
-                    it.id = View.generateViewId()
-                    bottomPlayerView.setOnClickListener {
-                        MainApplication.playerForeground = true
-                        startActivity(
-                            Intent(
-                                this@BaseSmallPlayerActivity,
-                                PlayerActivity::class.java
-                            )
+            addView(BottomPlayerView(this@BaseSmallPlayerActivity).also {
+                relativeLayout = this
+                bottomPlayerView = it
+                it.id = View.generateViewId()
+                bottomPlayerView.setRootOnClickListener(View.OnClickListener {
+                    //MainApplication.playerForeground = true
+                    startActivity(
+                        Intent(
+                            this@BaseSmallPlayerActivity,
+                            PlayerActivity::class.java
                         )
-                        overridePendingTransition(R.anim.anim_down2top, R.anim.anim_no_action)
-                    }
-                    layoutParams = RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT).apply {
-                        addRule(RelativeLayout.ABOVE, it.id)
-                    }
-                },
-                RelativeLayout.LayoutParams(
-                    MATCH_PARENT,
-                    resources.getDimensionPixelSize(R.dimen.bottomPlayerView_height)
-                ).apply {
-                    addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+                    )
+                    overridePendingTransition(R.anim.anim_player_down2top, R.anim.anim_last_down2top)
                 })
+                layoutParams = RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT).apply {
+                    addRule(RelativeLayout.ABOVE, it.id)
+                }
+            }, RelativeLayout.LayoutParams(
+                MATCH_PARENT, resources.getDimensionPixelSize(R.dimen.bottomPlayerView_height)
+            ).apply {
+                addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+            })
             addView(view!!, layoutParams)
         })
 
-        smallPlayerBroadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                intent ?: return
-                when (intent.action) {
-                    SERVER_BROADCAST_ONSTART -> {
-                        bottomPlayerView.checkBox_controller.isChecked = true
-                    }
-                    SERVER_BROADCAST_ONPAUSE -> {
-                        bottomPlayerView.checkBox_controller.isChecked = false
-                    }
-                    SERVER_BROADCAST_MUSICCHANGE -> {
+        Thread {
+            smallPlayerBroadcastReceiver = object : BroadcastReceiver() {
+                override fun onReceive(context: Context?, intent: Intent?) {
+                    intent ?: return
+                    when (intent.action) {
+                        SERVER_BROADCAST_ONSTART -> {
+                            bottomPlayerView.checkBox_controller.isChecked = true
+                        }
+                        SERVER_BROADCAST_ONPAUSE -> {
+                            bottomPlayerView.checkBox_controller.isChecked = false
+                        }
+                        SERVER_BROADCAST_MUSICCHANGE -> {
+                            val info = Player.getCurrentMusicInfo()
+                            bottomPlayerView.checkBox_controller.isChecked = Player.getPlayer.isPlaying()
+                            bottomPlayerView.textView_title.text = info.title()
+                            bottomPlayerView.textView_subTitle.text = info.artist()
+                            bottomPlayerView.imageView_album.setImageBitmap(info.albumPic())
 
+                        }
                     }
                 }
             }
-        }
+        }.start()
     }
 
     override fun onPause() {
@@ -112,16 +120,25 @@ open class BaseSmallPlayerActivity : BaseAppCompatActivity() {
             addAction(SERVER_BROADCAST_ONSTART)
             addAction(SERVER_BROADCAST_ONPAUSE)
         })
-    }
-/*
-    override fun onStart() {
-        if (MainApplication.playerForeground) {
-            startActivity(Intent(this, PlayerActivity::class.java))
-            overridePendingTransition(R.anim.anim_down2top, R.anim.anim_no_action)
+        try {
+            val info = Player.getCurrentMusicInfo()
+            bottomPlayerView.textView_title.text = info.title()
+            bottomPlayerView.textView_subTitle.text = info.artist()
+            bottomPlayerView.imageView_album.setImageBitmap(info.albumPic())
+        } catch (e: Exception) {
+            //
         }
-        super.onStart()
     }
-*/
+
+    /*
+        override fun onStart() {
+            if (MainApplication.playerForeground) {
+                startActivity(Intent(this, PlayerActivity::class.java))
+                overridePendingTransition(R.anim.anim_player_down2top, R.anim.anim_last_down2top)
+            }
+            super.onStart()
+        }
+    */
     override fun onDestroy() {
         try {
             unregisterReceiver(smallPlayerBroadcastReceiver)

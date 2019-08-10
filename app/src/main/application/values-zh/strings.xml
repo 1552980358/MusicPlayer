@@ -10,6 +10,9 @@
     <string name="checkPermission_read">读取存储内容 READ_EXTERNAL_STORAGE</string>
     <string name="checkPermission_write">修改存储内容 WRITE_EXTERNAL_STORAGE</string>
     <string name="checkPermission_allow">授权</string>
+    <string name="checkPermission_checking">检查限权中…</string>
+    <string name="checkPermission_authorizing">限权获取中…</string>
+    <string name="checkPermission_loadingMusic">加载本地音乐…</string>
 
     <string name="abc_intro_pg1_line1">欢迎来到</string>
     <string name="abc_intro_pg1_line2">~  狸歌  ~</string>

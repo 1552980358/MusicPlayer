@@ -2,5 +2,5 @@
 <set
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <translate android:toYDelta="0" android:toXDelta="0" android:duration="250" />
+    <translate android:fromYDelta="0%" android:toYDelta="-100%" android:duration="250" />
 </set>

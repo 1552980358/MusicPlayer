@@ -21,8 +21,8 @@ import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCA
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_SINGLE
 import app.skynight.musicplayer.util.Player
 import app.skynight.musicplayer.util.Player.Companion.ERROR_CODE
+import app.skynight.musicplayer.util.log
 import java.io.File
-import java.lang.Exception
 
 /**
  * @FILE:   MainApplication
@@ -35,7 +35,7 @@ import java.lang.Exception
 class MainApplication : Application() {
     companion object {
         //const val TAG = "MainApplication"
-        var playerForeground = false
+        //var playerForeground = false
         private var mainApplication: MainApplication? = null
         fun getMainApplication(): MainApplication {
             return mainApplication as MainApplication
@@ -50,49 +50,52 @@ class MainApplication : Application() {
     }
 
     override fun onCreate() {
+        log("MainApplication", "onCreate\n==========")
         super.onCreate()
+        mainApplication = this
         Thread {
-            mainApplication = this
-            Player.getPlayer
-            sharedPreferences
-            customize = sharedPreferences.getBoolean("customize", false)
-            bgDrawable = if (customize) {
-                setTheme(R.style.AppTheme_NoActionBar_Customize)
-                if (MainApplication.sharedPreferences.getBoolean("img", false)) {
-                    BitmapDrawable(resources, cacheDir.toString() + File.separator + "bg.img")
-                } else {
-                    ColorDrawable(Color.parseColor(sharedPreferences.getString("RGB", "#7b1fa2")))
+            registerReceiver(object : BroadcastReceiver() {
+                override fun onReceive(context: Context?, intent: Intent?) {
+                    intent?: return
+                    log("MainApplication", intent.action)
+                    when (intent.action) {
+                        CLIENT_BROADCAST_ONSTART -> { Player.getPlayer.onStart() }
+                        CLIENT_BROADCAST_ONSTOP -> { Player.getPlayer.onStop() }
+                        CLIENT_BROADCAST_ONPAUSE -> { Player.getPlayer.onPause() }
+                        CLIENT_BROADCAST_LAST -> { Player.getPlayer.playLast() }
+                        CLIENT_BROADCAST_NEXT-> { Player.getPlayer.playNext() }
+                        CLIENT_BROADCAST_CHANGE -> {
+                            Player.getPlayer.playChange(intent
+                                .getIntExtra(BROADCAST_INTENT_PLAYLIST, ERROR_CODE),
+                                intent.getIntExtra(BROADCAST_INTENT_MUSIC, ERROR_CODE)
+                            )
+                        }
+                        CLIENT_BROADCAST_SINGLE -> { Player.getPlayer.setPlayingType(Player.Companion.PlayingType.SINGLE) }
+                        CLIENT_BROADCAST_CYCLE -> { Player.getPlayer.setPlayingType() }
+                        CLIENT_BROADCAST_RANDOM -> { Player.getPlayer.setPlayingType(Player.Companion.PlayingType.RANDOM) }
+                    }
                 }
-            } else {
-                ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimaryDark))
-            }
+            }, IntentFilter().apply {
+                BroadcastSignalList.forEach {
+                    addAction(it)
+                }
+            })
+            log("MainApplication", "RegisterBroadcast")
         }.start()
 
-        registerReceiver(object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                intent?: return
-                //Log.e(TAG, intent.action)
-                when (intent.action) {
-                    CLIENT_BROADCAST_ONSTART -> { Player.getPlayer.onStart() }
-                    CLIENT_BROADCAST_ONSTOP -> { Player.getPlayer.onStop() }
-                    CLIENT_BROADCAST_ONPAUSE -> { Player.getPlayer.onPause() }
-                    CLIENT_BROADCAST_LAST -> { Player.getPlayer.playLast() }
-                    CLIENT_BROADCAST_NEXT-> { Player.getPlayer.playNext() }
-                    CLIENT_BROADCAST_CHANGE -> {
-                        Player.getPlayer.playChange(intent
-                            .getIntExtra(BROADCAST_INTENT_PLAYLIST, ERROR_CODE),
-                            intent.getIntExtra(BROADCAST_INTENT_MUSIC, ERROR_CODE)
-                        )
-                    }
-                    CLIENT_BROADCAST_SINGLE -> { Player.getPlayer.setPlayingType(Player.Companion.PlayingType.SINGLE) }
-                    CLIENT_BROADCAST_CYCLE -> { Player.getPlayer.setPlayingType() }
-                    CLIENT_BROADCAST_RANDOM -> { Player.getPlayer.setPlayingType(Player.Companion.PlayingType.RANDOM) }
-                }
+        sharedPreferences
+        log("MainApplication", "SharedPreference")
+        customize = sharedPreferences.getBoolean("customize", false)
+        bgDrawable = if (customize) {
+            setTheme(R.style.AppTheme_NoActionBar_Customize)
+            if (MainApplication.sharedPreferences.getBoolean("img", false)) {
+                BitmapDrawable(resources, cacheDir.toString() + File.separator + "bg.img")
+            } else {
+                ColorDrawable(Color.parseColor(sharedPreferences.getString("RGB", "#7b1fa2")))
             }
-        }, IntentFilter().apply {
-            BroadcastSignalList.forEach {
-                addAction(it)
-            }
-        })
+        } else {
+            ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimaryDark))
+        }
+        log("MainApplication", "GetTheme")
     }
 }

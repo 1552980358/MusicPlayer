@@ -2,9 +2,11 @@ package app.skynight.musicplayer.util
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.MediaExtractor
 import android.media.MediaMetadataRetriever
 import android.util.Log
 import app.skynight.musicplayer.MainApplication
+import java.io.Serializable
 
 /**
  * @FILE:   MusicInfo
@@ -13,91 +15,104 @@ import app.skynight.musicplayer.MainApplication
  * @TIME:   7:50 PM
  **/
 
-class MusicInfo {
-    constructor(path: String) : super() {
-        val mediaMetadataRetriever = MediaMetadataRetriever().apply {
-            setDataSource(path)
-        }
+class MusicInfo : Serializable {
+    lateinit var path: String
+    private var title = "-"
+    private var artist = "-"
+    private var album = "-"
+    private var duration = 0
+    //private var bitRate = 0
 
-        this.path = path
-        this.title =
-            mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
-        this.artist =
-            mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
-        this.album =
-            mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM)
-        this.albumPic = try {
-            if (mediaMetadataRetriever.embeddedPicture.size > 1) BitmapFactory.decodeByteArray(
-                mediaMetadataRetriever.embeddedPicture,
-                0,
-                mediaMetadataRetriever.embeddedPicture.size
-            ) else null
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
+    constructor(p: String, t: String?, ar: String?, al: String?, d: Int?): super() {
+        path = p
+        t?.let {
+            title = it
         }
-
-        this.bitRate =
-            mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE)
-                .toInt()
-        this.duration =
-            mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-                .toInt()
-        Log.e(TAG, "\n\n$title $artist $album $bitRate $duration\n$path")
+        ar?.let {
+            artist = it
+        }
+        al?.let {
+            album = it
+        }
+        d?.let {
+            duration = d
+        }
+        /*
+        b?.let {
+            b
+        }
+         */
     }
 
-    constructor(
-        path: String?,
-        title: String?,
-        artist: String?,
-        album: String?,
-        albumPic: Bitmap?,
-        bitRate: Int?,
-        duration: Int?
-    ) : super() {
-        path?.let {
-            this.path = it
+    @Deprecated("")
+    private lateinit var mediaMetadataRetriever: MediaMetadataRetriever
+    @Suppress("DEPRECATION")
+    @Deprecated("")
+    constructor(path: String): super() {
+        this.path = path
+        mediaMetadataRetriever = MediaMetadataRetriever().apply {
+            try {
+                setDataSource(path)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Log.e("MediaMetadataRetrieverE", path)
+            }
         }
-        title?.let {
-            this.title = it
-        }
-        artist?.let {
-            this.artist = it
-        }
-        album?.let {
-            this.album = it
-        }
-        albumPic?.let {
-            this.albumPic = it
-        }
-        bitRate?.let {
-            this.bitRate = it
-        }
-        duration?.let {
-            this.duration = it
-        }
-        Log.e(TAG, "\n\n$title $artist $album $bitRate $duration\n$path")
+    }
+
+    @Deprecated("")
+    constructor(): super() {
+        throw Exception("???")
     }
 
     companion object {
-        const val TAG = "MusicInfo"
-        val preLoadedAlbumPic =
-            BitmapFactory.decodeStream(MainApplication.getMainApplication().assets.open("unknown.png"))!!
+        val preLoadedAlbumPic by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) { BitmapFactory.decodeStream(MainApplication.getMainApplication().assets.open("unknown.png"))!! }
     }
-
-    var path = "PATH"
-    var title = "TITLE"
-    var artist = "-"
-    var album = "-"
-    var albumPic = null as Bitmap?
-    var bitRate = 0
-    var duration = 0
 
     @Suppress("unused")
     fun albumPic(): Bitmap {
-        albumPic ?: return preLoadedAlbumPic
-
-        return albumPic as Bitmap
+        /*
+        return try {
+            BitmapFactory.decodeByteArray(mediaMetadataRetriever.embeddedPicture, 0, mediaMetadataRetriever.embeddedPicture.size)
+        } catch (e: Exception) {
+            preLoadedAlbumPic
+        }
+        */
+        try {
+            MediaMetadataRetriever().apply { setDataSource(path) }.embeddedPicture.apply {
+                return BitmapFactory.decodeByteArray(this, 0, size)
+            }
+        } catch (e: Exception) {
+            return preLoadedAlbumPic
+        }
     }
 
+    fun title(): String {
+        //return mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
+        return title
+    }
+
+    fun artist(): String {
+        //return mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
+        return artist
+    }
+
+    fun album(): String {
+        //return mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM)
+        return album
+    }
+
+    fun duration(): Int {
+        //return mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toInt()
+        return duration / 1000
+    }
+
+    fun bitRate(): Int {
+        //return mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE).toInt()
+        return try {
+            MediaMetadataRetriever().apply { setDataSource(path) }.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE).toInt()
+        } catch (e: Exception) {
+            0
+        }
+    }
 }

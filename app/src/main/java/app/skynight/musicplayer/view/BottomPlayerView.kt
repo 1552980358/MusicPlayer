@@ -2,6 +2,7 @@ package app.skynight.musicplayer.view
 
 import android.content.Context
 import android.content.Intent
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
@@ -26,19 +27,19 @@ import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCA
  * @TIME:   8:42 AM
  **/
 
-@Suppress("PrivatePropertyName", "MemberVisibilityCanBePrivate", "PropertyName")
+@Suppress("PropertyName")
 class BottomPlayerView : LinearLayout {
 
-    lateinit var imageView_album: AppCompatImageView
+     lateinit var imageView_album: AppCompatImageView
 
-    lateinit var textView_title: StyledTextView
-    lateinit var textView_subTitle: StyledTextView
+     lateinit var textView_title: StyledTextView
+     lateinit var textView_subTitle: StyledTextView
 
-    lateinit var checkBox_controller: AppCompatCheckBox
+     lateinit var checkBox_controller: AppCompatCheckBox
 
-    private lateinit var linearLayout_Root: LinearLayout
+     lateinit var linearLayout_Root: LinearLayout
 
-    private fun createView() {
+     private fun createView() {
         orientation = VERTICAL
         addView(
             View(context).apply {
@@ -66,7 +67,7 @@ class BottomPlayerView : LinearLayout {
 
                     addView(AppCompatImageView(context).apply {
                         imageView_album = this
-                        setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_play))
+                        //setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_play))
                     }, LayoutParams(
                         resources.getDimensionPixelSize(R.dimen.bottomPlayerView_size),
                         resources.getDimensionPixelSize(R.dimen.bottomPlayerView_size)
@@ -87,19 +88,26 @@ class BottomPlayerView : LinearLayout {
                             textView_title = this
                             textSize = resources.getDimension(R.dimen.bottomPlayerView_title_size)
                             //text = "title"
+                            setSingleLine()
+                            setHorizontallyScrolling(true)
+                            marqueeRepeatLimit = -1
+                            ellipsize = TextUtils.TruncateAt.MARQUEE
+                            isSelected = true
                         }, LayoutParams(MATCH_PARENT, WRAP_CONTENT))
+
                         addView(StyledTextView(context).apply {
                             textView_subTitle = this
                             //text = "subtitle"
-                            textSize =
-                                resources.getDimension(R.dimen.bottomPlayerView_subTitle_size)
+                            textSize = resources.getDimension(R.dimen.bottomPlayerView_subTitle_size)
+                            setSingleLine()
+                            ellipsize = TextUtils.TruncateAt.END
                         }, LayoutParams(MATCH_PARENT, WRAP_CONTENT))
 
                     }, LayoutParams(MATCH_PARENT, MATCH_PARENT).apply {
                         setMargins(
                             resources.getDimensionPixelSize(R.dimen.bottomPlayerView_text_margin),
                             resources.getDimensionPixelSize(R.dimen.bottomPlayerView_text_margin),
-                            resources.getDimensionPixelSize(R.dimen.bottomPlayerView_text_margin),
+                            0,//resources.getDimensionPixelSize(R.dimen.bottomPlayerView_text_margin),
                             resources.getDimensionPixelSize(R.dimen.bottomPlayerView_text_margin)
                         )
                     })
@@ -166,7 +174,7 @@ class BottomPlayerView : LinearLayout {
         createView()
     }
 
-    override fun setOnClickListener(l: OnClickListener) {
+    fun setRootOnClickListener(l: OnClickListener) {
         linearLayout_Root.setOnClickListener(l)
     }
 }

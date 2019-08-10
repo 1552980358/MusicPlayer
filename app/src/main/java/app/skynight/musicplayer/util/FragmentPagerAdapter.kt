@@ -11,7 +11,11 @@ import androidx.fragment.app.FragmentPagerAdapter
  * @TIME:   10:45 AM
  **/
 
-class FragmentPagerAdapter(fragmentManager: FragmentManager,private val fragmentList: ArrayList<Fragment>): FragmentPagerAdapter(fragmentManager) {
+class FragmentPagerAdapter(
+    fragmentManager: FragmentManager,
+    behavior: Int,
+    private val fragmentList: ArrayList<Fragment>
+) : FragmentPagerAdapter(fragmentManager, behavior) {
     override fun getItem(position: Int): Fragment {
         return fragmentList[position]
     }

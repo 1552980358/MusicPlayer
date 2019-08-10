@@ -5,6 +5,8 @@
 
     <dimen name="checkPermissionActivity_marginTop">15dp</dimen>
     <dimen name="checkPermissionActivity_marginTop_item">5dp</dimen>
+    <dimen name="checkPermissionActivity_timer">5sp</dimen>
+    <dimen name="checkPermissionActivity_state">7sp</dimen>
 
     <dimen name="toolbar_height">50dp</dimen>
 

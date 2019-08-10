@@ -8,6 +8,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import app.skynight.musicplayer.util.log
 
 /**
  * @File    : MusicFragment
@@ -20,6 +21,7 @@ class MainFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
+        log("MainFragment", "onCreateView")
         return LinearLayout(context!!).apply {
             orientation = LinearLayout.VERTICAL
 
@@ -29,7 +31,12 @@ class MainFragment : Fragment() {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onStart() {
+        log("MainFragment", "onStart")
+        super.onStart()
+    }
+    override fun onResume() {
+        log("MainFragment", "onResume")
+        super.onResume()
     }
 }

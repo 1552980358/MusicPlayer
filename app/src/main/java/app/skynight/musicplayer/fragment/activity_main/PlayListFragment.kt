@@ -15,6 +15,7 @@ import app.skynight.musicplayer.R
 import app.skynight.musicplayer.activity.MusicListActivity
 import app.skynight.musicplayer.util.Player.Companion.EXTRA_LIST
 import app.skynight.musicplayer.util.Player.Companion.LIST_ALL
+import app.skynight.musicplayer.util.log
 
 /**
  * @File    : PlayListFragment
@@ -29,6 +30,7 @@ class PlayListFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return LinearLayout(context!!).apply {
+            log("PlayListFragment", "onCreateView")
             orientation = LinearLayout.VERTICAL
             addView(PlayListContainerView(context).apply {
                 addView(PlayListView(context).apply {
@@ -41,5 +43,14 @@ class PlayListFragment: Fragment() {
                 })
             }, LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
         }
+    }
+
+    override fun onStart() {
+        log("PlayListFragment", "onStart")
+        super.onStart()
+    }
+    override fun onResume() {
+        log("PlayListFragment", "onResume")
+        super.onResume()
     }
 }

@@ -1,8 +1,10 @@
 package app.skynight.musicplayer.util
 
+import android.util.Log
 import android.widget.Toast
 import app.skynight.musicplayer.MainApplication
 import app.skynight.musicplayer.base.InitNotAllowedException
+import java.lang.Exception
 
 /**
  * @File    : BaseUtil
@@ -10,14 +12,8 @@ import app.skynight.musicplayer.base.InitNotAllowedException
  * @Date    : 5 Aug 2019
  * @TIME    : 1:19 AM
  **/
-class BaseUtil private constructor() {
-    companion object {
-        const val TAG = "BaseUtil"
-    }
-    init {
-        throw InitNotAllowedException(TAG)
-    }
-}
 
 fun makeToast(content: Int): Unit = makeToast(MainApplication.getMainApplication().getString(content))
 fun makeToast(content: CharSequence): Unit = Toast.makeText(MainApplication.getMainApplication(), content, Toast.LENGTH_SHORT).show()
+
+fun log(tag: String, msg: Any?): Any = try { Log.e(tag, msg.toString()) } catch (e: Exception) { e.printStackTrace() }

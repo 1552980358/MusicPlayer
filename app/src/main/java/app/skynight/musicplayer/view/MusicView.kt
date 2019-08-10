@@ -24,6 +24,7 @@ import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCA
  * @Date    : 4 Aug 2019
  * @TIME    : 9:35 AM
  **/
+
 class MusicView: LinearLayout {
     private lateinit var textView_title: StyledTextView
     private lateinit var textView_subTitle: StyledTextView
@@ -46,7 +47,7 @@ class MusicView: LinearLayout {
             addView(StyledTextView(context).apply {
                 textView_title = this
                 setSingleLine()
-                text = musicInfo.title
+                text = musicInfo.title()
                 textSize = resources.getDimension(R.dimen.musicView_title_size)
                 setHorizontallyScrolling(true)
                 marqueeRepeatLimit = -1
@@ -58,7 +59,7 @@ class MusicView: LinearLayout {
             addView(StyledTextView(context).apply {
                 textView_subTitle = this
                 setSingleLine()
-                text = musicInfo.artist
+                text = musicInfo.artist()
                 textSize = resources.getDimension(R.dimen.musicView_subTitle_size)
                 marqueeRepeatLimit = -1
                 ellipsize = TextUtils.TruncateAt.MARQUEE
@@ -76,6 +77,7 @@ class MusicView: LinearLayout {
 
     /* Not allowed */
     constructor(context: Context): this(context, null)
+    @Suppress("UNUSED_PARAMETER")
     constructor(context: Context, attributeSet: AttributeSet?): super(context) {
         throw InitConstructorNotAllowedException()
     }

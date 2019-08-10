@@ -3,18 +3,15 @@ package app.skynight.musicplayer.activity
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.RelativeLayout.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.setPadding
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
 import androidx.viewpager.widget.ViewPager
 import app.skynight.musicplayer.R
 import app.skynight.musicplayer.base.BaseAppCompatActivity
@@ -113,7 +110,7 @@ class IntroActivity : BaseAppCompatActivity() {
                     viewPager = this
                     fitsSystemWindows = true
                     adapter = FragmentPagerAdapter(
-                        supportFragmentManager, fragmentArrayList
+                        supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, fragmentArrayList
                     )
                     textView_next.setOnClickListener {
                         if (viewPager.currentItem != fragmentArrayList.size) {

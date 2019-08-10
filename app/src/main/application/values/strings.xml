@@ -10,6 +10,9 @@
     <string name="checkPermission_read">READ_EXTERNAL_STORAGE</string>
     <string name="checkPermission_write">WRITE_EXTERNAL_STORAGE</string>
     <string name="checkPermission_allow">Authorize</string>
+    <string name="checkPermission_checking">Checking Permission…</string>
+    <string name="checkPermission_authorizing">Authorizing Permission…</string>
+    <string name="checkPermission_loadingMusic">Loading Local Music…</string>
 
     <string name="abc_intro_pg1_line1">WELCOME TO</string>
     <string name="abc_intro_pg1_line2">Moe Music Player</string>

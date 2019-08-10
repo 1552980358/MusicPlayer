@@ -11,7 +11,6 @@ import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import app.skynight.musicplayer.MainApplication
 import app.skynight.musicplayer.R
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_LAST
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_NEXT
@@ -43,7 +42,7 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var broadcastReceiver: BroadcastReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.e("PlayerActivity", "onCreate")
+        //Log.e("PlayerActivity", "onCreate")
         super.onCreate(savedInstanceState)
         //setContentView(createView())
         setBackgroundProp()
@@ -54,7 +53,7 @@ class PlayerActivity : AppCompatActivity() {
             setTitleTextColor(ContextCompat.getColor(this@PlayerActivity, R.color.player_title))
             setSubtitleTextColor(ContextCompat.getColor(this@PlayerActivity, R.color.player_subtitle))
             setNavigationOnClickListener {
-                onBackPressed()
+                finish()
             }
         }
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -88,14 +87,15 @@ class PlayerActivity : AppCompatActivity() {
                     SERVER_BROADCAST_ONSTART -> { checkBox_playControl.isChecked = true }
                     SERVER_BROADCAST_ONPAUSE -> { checkBox_playControl.isChecked = false }
                     SERVER_BROADCAST_MUSICCHANGE -> {
-                        val musicInfo = Player.musicList[Player.currentMusic]
-                        toolbar.title = musicInfo.title
-                        toolbar.subtitle = musicInfo.artist
+                        val musicInfo = Player.getCurrentMusicInfo()
+                        toolbar.title = musicInfo.title()
+                        toolbar.subtitle = musicInfo.artist()
                         //musicAlbum.setImageBitmap(musicInfo.albumPic())
-                        textView_timeTotal.text = getTime(musicInfo.duration)
+                        textView_timeTotal.text = getTime(musicInfo.duration())
                     }
                 }
             }
+
         }.apply { broadcastReceiver = this }}, IntentFilter().apply {
             addAction(SERVER_BROADCAST_ONSTART)
             addAction(SERVER_BROADCAST_ONPAUSE)
@@ -121,12 +121,17 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         //Log.e("PlayerActivity", "onBackPressed")
-        //overridePendingTransition(0, R.anim.anim_top2down)
+        //overridePendingTransition(0, R.anim.anim_player_top2down)
         //MainApplication.playerForeground = false
         //startActivity(Intent(this, MainActivity::class.java))
         //super.onBackPressed()
         finish()
-        overridePendingTransition(R.anim.anim_no_action, R.anim.anim_top2down)
+        //overridePendingTransition(R.anim.anim_last_down2top, R.anim.anim_player_top2down)
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.anim_last_top2down, R.anim.anim_player_top2down)
     }
 
     override fun onDestroy() {

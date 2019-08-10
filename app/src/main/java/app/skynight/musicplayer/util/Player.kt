@@ -2,18 +2,12 @@ package app.skynight.musicplayer.util
 
 import android.content.Context
 import android.media.MediaPlayer
-import android.os.Environment
 import app.skynight.musicplayer.MainApplication
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_MUSICCHANGE
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONPAUSE
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONSTART
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONSTOP
-import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_PREPAREDONE
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import java.io.File
-import java.io.FileWriter
 import app.skynight.musicplayer.R
 
 /**
@@ -26,78 +20,27 @@ import app.skynight.musicplayer.R
 class Player private constructor() {
     @Suppress("JoinDeclarationAndAssignment")
     private var mediaPlayer: MediaPlayer
-    private val searchThreadList = mutableListOf<Thread>()
 
     companion object {
-        //const val TAG = "Player"
-        val AllMusicSavedPath =
-            MainApplication.getMainApplication().cacheDir.absolutePath + File.separator + "AllMusic.json"
 
         const val EXTRA_LIST = "MusicList"
         const val ERROR_CODE = Int.MIN_VALUE
         const val LIST_ALL = -1
         const val LIST_HEART = -2
 
-        var prepareDone = true
-
-        val musicList = mutableListOf<MusicInfo>()
-        fun createMusicInfo(path: String) {
-            if (path.endsWith(".3gp") || path.endsWith(".m4a") || path.endsWith(".aac") || path.endsWith(
-                    ".ts"
-                ) || path.endsWith(
-                    ".flac"
-                ) || path.endsWith(".gsm") || path.endsWith(".mid") || path.endsWith(".xmf") || path.endsWith(
-                    ".mxmf"
-                ) || path.endsWith(".rtttl") || path.endsWith(".rtx") || path.endsWith(".mp3") || path.endsWith(
-                    ".mkv"
-                ) || path.endsWith(".wav") || path.endsWith(".ogg")
-            ) {
-                try {
-                    addMusic(MusicInfo(path))
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        }
-
-        private val playListList = mutableListOf<PlayList>()
-        @Synchronized
-        fun addPlayList(playList: PlayList) {
-            playListList.add(playList)
-        }
-        fun getPlayList(index: Int): PlayList {
-            return playListList[index]
-        }
-
-        @Synchronized
-        private fun addMusic(musicInfo: MusicInfo) {
-            musicList.add(musicInfo)
-        }
+        var fullList = false
+        var playList = false
 
         var currentMusic = 0
-        var currentList = -1
+        var currentList = LIST_ALL
 
         /* Cycle / Single / Random */
         enum class PlayingType {
             CYCLE, SINGLE, RANDOM
         }
 
-        @Suppress("unused")
-        @Deprecated("Replace with map")
-        const val THREAD_SINGLE = 1
-        @Suppress("unused")
-        @Deprecated("Replace with map")
-        const val THREAD_DOUBLE = 2
-        @Suppress("MemberVisibilityCanBePrivate")
-        @Deprecated("Replace with map")
-        val THREAD_CORE = Runtime.getRuntime().availableProcessors()
-        @Suppress("unused", "DEPRECATION")
-        @Deprecated("Replace with map")
-        val THREAD_DOUBLE_CORE = THREAD_CORE * 2
-
         val THREAD_NO = mapOf(
-            "SINGLE" to 1,
-            "DOUBLE" to 2,
+            "HALF" to Runtime.getRuntime().availableProcessors() / 2,
             "PROCESSOR" to Runtime.getRuntime().availableProcessors(),
             "SUPER" to Runtime.getRuntime().availableProcessors() * 2
         )
@@ -105,28 +48,24 @@ class Player private constructor() {
         val getPlayer by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
             Player()
         }
+
+        fun getCurrentMusicInfo(): MusicInfo {
+            return when (currentList) {
+                LIST_ALL -> MusicClass.getMusicClass.fullList[currentMusic]
+                //LIST_HEART -> {}
+                else -> PlayList.playListList[currentList].getPlayList()[currentMusic]
+            }
+        }
     }
 
     init {
         Thread {
-            prepareDone = false
-            val file = File(AllMusicSavedPath)
-            if (file.exists()) {
-                try {
-                    for (i in JsonParser().parse(file.inputStream().bufferedReader().readText()).asJsonObject.get(
-                        "FullList"
-                    ).asJsonArray) {
-                        addMusic(MusicInfo(i.asString))
-                    }
-                    prepareDone = true
-                    MainApplication.sendBroadcast(SERVER_BROADCAST_PREPAREDONE)
-                    return@Thread
-                } catch (e: Exception) {
-                    //e.printStackTrace()
-                    //file.delete()
-                }
-            }
-            prepareDone = true
+            MusicClass.getMusicClass
+            fullList = true
+        }.start()
+        Thread {
+            PlayList.loadAllPlayLists()
+            playList = true
         }.start()
         mediaPlayer = MediaPlayer()
         mediaPlayer.setOnCompletionListener {
@@ -150,6 +89,7 @@ class Player private constructor() {
     private var playingType = PlayingType.CYCLE
 
     @Suppress("unused")
+    @Synchronized
     fun onStart() {
         try {
             mediaPlayer.prepare()
@@ -161,6 +101,7 @@ class Player private constructor() {
     }
 
     @Suppress("unused")
+    @Synchronized
     fun onPause() {
         try {
             mediaPlayer.pause()
@@ -171,6 +112,7 @@ class Player private constructor() {
     }
 
     @Suppress("unused")
+    @Synchronized
     fun onStop() {
         try {
             mediaPlayer.stop()
@@ -183,11 +125,13 @@ class Player private constructor() {
     }
 
     @Suppress("unused")
+    @Synchronized
     fun setWakeMode(context: Context, mode: Int) {
         mediaPlayer.setWakeMode(context, mode)
     }
 
     @Suppress("unused")
+    @Synchronized
     fun setPlayingType(playingType: PlayingType = Companion.PlayingType.CYCLE) {
         this.playingType = playingType
     }
@@ -220,10 +164,11 @@ class Player private constructor() {
         try {
             mediaPlayer.stop()
             mediaPlayer.reset()
+
             mediaPlayer.setDataSource(when (currentList) {
-                LIST_ALL -> { musicList[currentMusic].path }
+                LIST_ALL -> { getCurrentMusicInfo().path }
                 LIST_HEART -> { throw Exception("NotImplemented") }
-                else -> { playListList[currentList].getPlayList()[currentMusic].path }
+                else -> { getCurrentMusicInfo().path }
             })
             mediaPlayer.prepare()
             mediaPlayer.start()
@@ -233,90 +178,8 @@ class Player private constructor() {
         MainApplication.sendBroadcast(SERVER_BROADCAST_MUSICCHANGE)
     }
 
-    private fun updateMusicList(path: File) {
-        if (!path.isDirectory) {
-            createMusicInfo(path.toString())
-            return
-        }
-
-        for (i in path.listFiles()) {
-            if (i.isDirectory) {
-                updateMusicList(i)
-            } else {
-                createMusicInfo(i.toString())
-            }
-        }
-    }
-
-    @Suppress("unused")
-    fun onUpdateMusicList(thread: Int) {
-        prepareDone = false
-        //Log.e(TAG, "onUpdateMusicList($thread)")
-        val file = Environment.getExternalStorageDirectory()
-
-        if (thread == 1) {
-            updateMusicList(file)
-            return
-        }
-
-        if (thread < 1) {
-            throw Exception("")
-        }
-
-        val fileList = file.listFiles().toMutableList()
-        @Synchronized
-        fun getFile(): File {
-            val tmp = fileList.last()
-            fileList.removeAt(fileList.lastIndex)
-            return tmp
-        }
-
-        for (i in 0 until thread) {
-            searchThreadList.add(Thread {
-                updateMusicList(getFile())
-            }.apply { start() })
-        }
-        Thread {
-            whileLoop@ while (!prepareDone) {
-                try {
-                    Thread.sleep(20)
-                } catch (e: Exception) {
-                    //
-                }
-                for (i in searchThreadList) {
-                    if (i.isAlive) {
-                        continue@whileLoop
-                    }
-                }
-                // Complete flag
-                prepareDone = true
-            }
-            //Log.e(TAG, "prepareDone: ${musicList.size}")
-            makeToast("Complete")
-            MainApplication.sendBroadcast(SERVER_BROADCAST_PREPAREDONE)
-
-            try {
-                FileWriter(File(AllMusicSavedPath).apply {
-                    if (exists()) {
-                        delete()
-                    }
-                    createNewFile()
-                }).apply {
-                    write(JsonObject().apply {
-                        add("FullList", JsonArray().apply {
-                            musicList.forEach { musicInfo ->
-                                add(musicInfo.path)
-                            }
-                        })
-                    }.toString())
-                    flush()
-                    close()
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
-        }.start()
+    fun isPlaying(): Boolean {
+        return mediaPlayer.isPlaying
     }
 
     @Suppress("unused")

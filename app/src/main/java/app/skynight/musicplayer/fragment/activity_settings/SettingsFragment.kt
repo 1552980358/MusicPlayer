@@ -21,20 +21,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         addPreferencesFromResource(R.xml.perf_settings)
         findPreference<Preference>("settingPreference_searchMusic")?.let {
             it.setOnPreferenceClickListener {
-                Log.e("sf", Player.prepareDone.toString())
-                if (Player.prepareDone) {
-                    Thread {
-                        Player.getPlayer.onUpdateMusicList(
-                            try {
-                                Player.THREAD_NO[PreferenceManager.getDefaultSharedPreferences(
-                                    context
-                                ).getString("settingPreference_searchMusicThread", "SINGLE")!!]
-                                    ?: error("")
-                            } catch (e: Exception) {
-                                1
-                            }
-                        )
-                    }.start()
+                if (Player.fullList) {
+                    makeToast("功能施工中...")
                 } else {
                     makeToast(R.string.abc_settings_bgLoading)
                 }
