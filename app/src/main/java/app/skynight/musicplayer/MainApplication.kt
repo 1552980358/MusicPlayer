@@ -57,7 +57,7 @@ class MainApplication : Application() {
             registerReceiver(object : BroadcastReceiver() {
                 override fun onReceive(context: Context?, intent: Intent?) {
                     intent?: return
-                    log("MainApplication", intent.action)
+                    log("MainApplication", "onReceive: ${intent.action}")
                     when (intent.action) {
                         CLIENT_BROADCAST_ONSTART -> { Player.getPlayer.onStart() }
                         CLIENT_BROADCAST_ONSTOP -> { Player.getPlayer.onStop() }
@@ -96,6 +96,6 @@ class MainApplication : Application() {
         } else {
             ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimaryDark))
         }
-        log("MainApplication", "GetTheme")
+        log("MainApplication", "startSplashActivity\n==========")
     }
 }

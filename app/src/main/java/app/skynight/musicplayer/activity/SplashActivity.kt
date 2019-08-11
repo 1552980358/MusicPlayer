@@ -15,7 +15,7 @@ import app.skynight.musicplayer.util.log
 
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        log("SplashActivity", "onCreate\n==========")
+        log("SplashActivity", "onCreate")
         super.onCreate(savedInstanceState)
         startActivity(
             Intent(
@@ -25,10 +25,10 @@ class SplashActivity : AppCompatActivity() {
                         false
                     )
                 ) {
-                    log("SplashActivity", "startIntroActivity")
+                    log("SplashActivity", "startIntroActivity\n==========")
                     IntroActivity::class.java
                 } else {
-                    log("SplashActivity", "startCheckPermissionActivity")
+                    log("SplashActivity", "startCheckPermissionActivity\n==========")
                     CheckPermissionActivity::class.java
                 }
             )

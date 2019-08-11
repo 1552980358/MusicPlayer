@@ -80,7 +80,17 @@ class MusicInfo : Serializable {
         */
         try {
             MediaMetadataRetriever().apply { setDataSource(path) }.embeddedPicture.apply {
-                return BitmapFactory.decodeByteArray(this, 0, size)
+                val b1 =  BitmapFactory.decodeByteArray(this, 0, size)
+                if (b1 != null) {
+                    return b1
+                }
+                MediaMetadataRetriever().apply { setDataSource(path) }.embeddedPicture.apply {
+                    val b2 =  BitmapFactory.decodeByteArray(this, 0, size)
+                    if (b2 != null) {
+                        return b2
+                    }
+                    return preLoadedAlbumPic
+                }
             }
         } catch (e: Exception) {
             return preLoadedAlbumPic

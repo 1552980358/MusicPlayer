@@ -27,7 +27,8 @@ class UnitUtil private constructor(){
         }
 
         fun getTime(duration: Int): String {
-            return "${duration / 1000 / 60}:${duration / 1000 % 60}"
+            val s = (duration % 60).toString()
+            return "${duration / 60}:${if (s.length == 1) "0$s" else s}"
         }
     }
 }

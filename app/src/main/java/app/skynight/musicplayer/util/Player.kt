@@ -182,6 +182,10 @@ class Player private constructor() {
         return mediaPlayer.isPlaying
     }
 
+    fun getCurrent(): Int {
+        return mediaPlayer.currentPosition / 1000
+    }
+
     @Suppress("unused")
     fun onSeekChange(pos: Int) {
         try {

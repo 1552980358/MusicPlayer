@@ -11,7 +11,6 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatImageButton
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import app.skynight.musicplayer.MainApplication
 import app.skynight.musicplayer.R
@@ -30,7 +29,7 @@ import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCA
 @Suppress("PropertyName")
 class BottomPlayerView : LinearLayout {
 
-     lateinit var imageView_album: AppCompatImageView
+     lateinit var imageView_album: MusicAlbumRoundedImageView
 
      lateinit var textView_title: StyledTextView
      lateinit var textView_subTitle: StyledTextView
@@ -65,7 +64,7 @@ class BottomPlayerView : LinearLayout {
                 addView(LinearLayout(context).apply {
                     orientation = HORIZONTAL
 
-                    addView(AppCompatImageView(context).apply {
+                    addView(MusicAlbumRoundedImageView(context).apply {
                         imageView_album = this
                         //setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_play))
                     }, LayoutParams(

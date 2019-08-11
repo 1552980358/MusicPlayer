@@ -35,7 +35,7 @@ class CheckPermissionActivity : AppCompatActivity() {
     //private lateinit var textView_timer: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        log("CheckPermissionActivity", "onCreate\n==========")
+        log("CheckPermissionActivity", "onCreate")
         super.onCreate(savedInstanceState)
         val textView_timer: TextView
         setContentView(RelativeLayout(this).apply {
@@ -235,7 +235,7 @@ class CheckPermissionActivity : AppCompatActivity() {
                     //
                 }
             }
-            log("CheckPermissionActivity", "startMainActivity")
+            log("CheckPermissionActivity", "startMainActivity\n==========")
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }.start()

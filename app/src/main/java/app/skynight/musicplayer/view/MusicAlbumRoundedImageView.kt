@@ -5,11 +5,12 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
-import app.skynight.musicplayer.R
+import androidx.core.graphics.drawable.toBitmap
 
 /**
  * @File    : CircleImageView
@@ -20,6 +21,7 @@ import app.skynight.musicplayer.R
 
 class MusicAlbumRoundedImageView: AppCompatImageView {
     constructor(context: Context): this(context, null)
+    @Suppress("UNUSED_PARAMETER")
     constructor(context: Context, attributeSet: AttributeSet?): super(context) {
         //setImageDrawable(ContextCompat.getDrawable(context, R.drawable.unknown))
         background = ColorDrawable(ContextCompat.getColor(context, android.R.color.transparent))
@@ -27,7 +29,7 @@ class MusicAlbumRoundedImageView: AppCompatImageView {
     }
 
     override fun setImageBitmap(bm: Bitmap) {
-        setImageDrawable(RoundedBitmapDrawableFactory.create(context.resources, bm).apply {
+        super.setImageDrawable(RoundedBitmapDrawableFactory.create(context.resources, bm).apply {
             isCircular = true
         })
     }

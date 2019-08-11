@@ -20,6 +20,7 @@ import app.skynight.musicplayer.fragment.activity_intro.LastFragment
 import app.skynight.musicplayer.fragment.activity_intro.SecondFragment
 import app.skynight.musicplayer.util.FragmentPagerAdapter
 import app.skynight.musicplayer.util.PageTransformer
+import app.skynight.musicplayer.util.log
 
 /**
  * @FILE:   IntroActivity
@@ -153,6 +154,7 @@ class IntroActivity : BaseAppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        log("IntroActivity", "- onCreate")
         super.onCreate(savedInstanceState)
         setContentView(createView())
     }

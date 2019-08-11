@@ -62,6 +62,7 @@ open class BaseSmallPlayerActivity : BaseAppCompatActivity() {
                 bottomPlayerView = it
                 it.id = View.generateViewId()
                 bottomPlayerView.setRootOnClickListener(View.OnClickListener {
+                    bottomPlayerView.linearLayout_Root.isClickable = false
                     //MainApplication.playerForeground = true
                     startActivity(
                         Intent(
@@ -125,20 +126,13 @@ open class BaseSmallPlayerActivity : BaseAppCompatActivity() {
             bottomPlayerView.textView_title.text = info.title()
             bottomPlayerView.textView_subTitle.text = info.artist()
             bottomPlayerView.imageView_album.setImageBitmap(info.albumPic())
+            bottomPlayerView.checkBox_controller.isChecked = Player.getPlayer.isPlaying()
+            bottomPlayerView.linearLayout_Root.isClickable = true
         } catch (e: Exception) {
             //
         }
     }
 
-    /*
-        override fun onStart() {
-            if (MainApplication.playerForeground) {
-                startActivity(Intent(this, PlayerActivity::class.java))
-                overridePendingTransition(R.anim.anim_player_down2top, R.anim.anim_last_down2top)
-            }
-            super.onStart()
-        }
-    */
     override fun onDestroy() {
         try {
             unregisterReceiver(smallPlayerBroadcastReceiver)

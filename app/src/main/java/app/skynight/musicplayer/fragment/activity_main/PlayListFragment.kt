@@ -30,7 +30,7 @@ class PlayListFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return LinearLayout(context!!).apply {
-            log("PlayListFragment", "onCreateView")
+            log("PlayListFragment", "- onCreateView")
             orientation = LinearLayout.VERTICAL
             addView(PlayListContainerView(context).apply {
                 addView(PlayListView(context).apply {
@@ -46,11 +46,11 @@ class PlayListFragment: Fragment() {
     }
 
     override fun onStart() {
-        log("PlayListFragment", "onStart")
+        log("PlayListFragment", "- onStart")
         super.onStart()
     }
     override fun onResume() {
-        log("PlayListFragment", "onResume")
+        log("PlayListFragment", "- onResume")
         super.onResume()
     }
 }

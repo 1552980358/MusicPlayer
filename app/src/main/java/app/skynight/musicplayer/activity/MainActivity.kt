@@ -19,11 +19,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : BaseSmallPlayerActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        log("MainActivity", "onCreate\n==========")
+        log("MainActivity", "onCreate")
         super.onCreate(savedInstanceState)
         val title = arrayOf(R.string.adb_main_main_title, R.string.adb_main_list_title)
 
-        log("MainActivity", "setContentView")
+        log("MainActivity", "- setContentView")
         setContentView(R.layout.activity_main)
         if (MainApplication.customize) {
             appBarLayout.stateListAnimator = null
@@ -75,7 +75,13 @@ class MainActivity : BaseSmallPlayerActivity() {
         return true
     }
 
+    override fun onResume() {
+        log("MainActivity", "onResume")
+        super.onResume()
+    }
+
     override fun onBackPressed() {
+        log("MainActivity", "onBackPressed")
         startActivity(Intent().apply {
             action = Intent.ACTION_MAIN
             flags = Intent.FLAG_ACTIVITY_NEW_TASK

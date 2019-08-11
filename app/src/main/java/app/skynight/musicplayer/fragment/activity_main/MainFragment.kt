@@ -21,7 +21,7 @@ class MainFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        log("MainFragment", "onCreateView")
+        log("MainFragment", "- onCreateView")
         return LinearLayout(context!!).apply {
             orientation = LinearLayout.VERTICAL
 
@@ -32,11 +32,11 @@ class MainFragment : Fragment() {
     }
 
     override fun onStart() {
-        log("MainFragment", "onStart")
+        log("MainFragment", "- onStart")
         super.onStart()
     }
     override fun onResume() {
-        log("MainFragment", "onResume")
+        log("MainFragment", "- onResume")
         super.onResume()
     }
 }

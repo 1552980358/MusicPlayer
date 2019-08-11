@@ -12,6 +12,7 @@ import app.skynight.musicplayer.base.BaseAppCompatActivity
 import app.skynight.musicplayer.fragment.activity_settings.SettingsFragment
 import com.google.android.material.appbar.AppBarLayout
 import app.skynight.musicplayer.R
+import app.skynight.musicplayer.util.log
 
 class SettingsActivity : BaseAppCompatActivity() {
     private lateinit var frameLayout: FrameLayout
@@ -39,7 +40,13 @@ class SettingsActivity : BaseAppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        log("SettingsActivity","onCreate")
         super.onCreate(savedInstanceState)
         setContentView(createView())
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        log("SettingsActivity", "onBackPressed")
     }
 }

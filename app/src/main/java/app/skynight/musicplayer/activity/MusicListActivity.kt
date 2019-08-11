@@ -6,7 +6,6 @@ import android.view.Menu
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import app.skynight.musicplayer.MainApplication
 import kotlinx.android.synthetic.main.activity_musiclist.*
 import app.skynight.musicplayer.R
 import app.skynight.musicplayer.base.BaseSmallPlayerActivity
@@ -22,23 +21,20 @@ class MusicListActivity : BaseSmallPlayerActivity() {
         log("MusicListActivity", "onCreate")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_musiclist)
+        val code = try {
+            intent.getIntExtra(
+                EXTRA_LIST, ERROR_CODE
+            ).apply {
+                log("MusicListActivity", "intent.getIntExtra")
+            }
+        } catch (e: Exception) {
+            ERROR_CODE
+        }
         Thread {
             try {
-                val code = intent.getIntExtra(
-                    EXTRA_LIST, ERROR_CODE
-                ).apply {
-                    log("MusicListActivity", "intent.getIntExtra")
-                }
                 val list = when (code) {
                     LIST_ALL -> {
                         log("MusicListActivity", "LIST_ALL")
-                        runOnUiThread {
-                            toolbar.setTitle(R.string.abc_musicList_full)
-                            textView_title.setText(R.string.abc_musicList_full)
-                            setSupportActionBar(toolbar)
-                            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-                        }
-
                         while (!Player.fullList) {
                             try {
                                 Thread.sleep(20)
@@ -54,13 +50,7 @@ class MusicListActivity : BaseSmallPlayerActivity() {
                     else -> {
                         log("MusicListActivity", code)
                         PlayList.playListList[code].apply {
-                            runOnUiThread {
-                                toolbar.title = playListName
-                                textView_title.text = playListName
-                                textView_subTitle.text = date
-                                setSupportActionBar(toolbar)
-                                supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-                            }
+                            runOnUiThread { textView_size.text = getPlayList().size.toString() }
                             while (!Player.playList) {
                                 try {
                                     Thread.sleep(20)
@@ -90,11 +80,33 @@ class MusicListActivity : BaseSmallPlayerActivity() {
             }
         }.start()
         try {
-            toolbar.setNavigationOnClickListener { finish() }
+            when (code) {
+                LIST_ALL -> {
+                    toolbar.setTitle(R.string.abc_musicList_full)
+                    textView_title.setText(R.string.abc_musicList_full)
+                }
+                ERROR_CODE -> {
+                    //
+                }
+                else -> {
+                    PlayList.playListList[code].apply {
+                        toolbar.title = playListName
+                        textView_title.text = playListName
+                        textView_subTitle.text = date
+                    }
+                }
+            }
+
+            setSupportActionBar(toolbar)
+            toolbar.setNavigationOnClickListener {
+                log("MusicListActivity", "setNavigationOnClickListener")
+                onBackPressed()
+            }
             toolbar.overflowIcon = ContextCompat.getDrawable(
-                this,
-                if (MainApplication.customize) R.drawable.ic_more_cust else R.drawable.ic_more_def
+                this@MusicListActivity,
+                R.drawable.ic_toolbar_more
             )
+            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
             (toolbar::class.java.getDeclaredField("mTitleTextView").apply {
                 isAccessible = true
@@ -112,10 +124,5 @@ class MusicListActivity : BaseSmallPlayerActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_musiclist, menu)
         return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onBackPressed() {
-        linearLayout_container.removeAllViews()
-        super.onBackPressed()
     }
 }

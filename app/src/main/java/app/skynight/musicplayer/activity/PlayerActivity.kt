@@ -5,10 +5,12 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.graphics.Color
 import android.text.TextUtils
-import android.util.Log
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+import android.widget.RelativeLayout
+import android.widget.RelativeLayout.CENTER_HORIZONTAL
+import android.widget.RelativeLayout.CENTER_VERTICAL
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import app.skynight.musicplayer.R
@@ -21,6 +23,8 @@ import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCA
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONSTART
 import app.skynight.musicplayer.util.Player
 import app.skynight.musicplayer.util.UnitUtil.Companion.getTime
+import app.skynight.musicplayer.util.log
+import app.skynight.musicplayer.view.MusicAlbumRoundedImageView
 import kotlinx.android.synthetic.main.activity_player.*
 
 /**
@@ -32,21 +36,31 @@ import kotlinx.android.synthetic.main.activity_player.*
 
 class PlayerActivity : AppCompatActivity() {
 
+
+    
+    private lateinit var broadcastReceiver: BroadcastReceiver
+    private lateinit var albumPic: MusicAlbumRoundedImageView
+    private lateinit var thread: Thread
+
     private fun setBackgroundProp() {
         window.decorView.systemUiVisibility = (SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or SYSTEM_UI_FLAG_LAYOUT_STABLE)
 
         window.statusBarColor = Color.TRANSPARENT
         window.navigationBarColor = Color.TRANSPARENT
     }
-    
-    private lateinit var broadcastReceiver: BroadcastReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //Log.e("PlayerActivity", "onCreate")
+        log("PlayerActivity", "onCreate")
         super.onCreate(savedInstanceState)
-        //setContentView(createView())
         setBackgroundProp()
         setContentView(R.layout.activity_player)
+
+        relativeLayout.addView(MusicAlbumRoundedImageView(this).apply {
+            albumPic = this
+        }, RelativeLayout.LayoutParams(resources.displayMetrics.widthPixels / 2, resources.displayMetrics.widthPixels / 2).apply {
+            addRule(CENTER_HORIZONTAL)
+            addRule(CENTER_VERTICAL)
+        })
 
         toolbar.apply {
             setSupportActionBar(this)
@@ -66,7 +80,7 @@ class PlayerActivity : AppCompatActivity() {
         }
         imageButton_next.setOnClickListener { sendBroadcast(Intent(CLIENT_BROADCAST_NEXT)) }
 
-        registerReceiver()
+        //registerReceiver()
         try {
             (toolbar.javaClass.getDeclaredField("mTitleTextView").apply { isAccessible = true }.get(toolbar) as TextView).apply {
                 setHorizontallyScrolling(true)
@@ -77,21 +91,39 @@ class PlayerActivity : AppCompatActivity() {
         } catch (e: Exception) {
             //e.printStackTrace()
         }
+        startThread()
     }
-    
+
+    private fun startThread() {
+        thread = Thread {
+            while (Player.getPlayer.isPlaying()) {
+                textView_timePass.text = getTime(Player.getPlayer.getCurrent())
+                try {
+                    Thread.sleep(500)
+                } catch (e: Exception) {
+                    //e.printStackTrace()
+                }
+            }
+        }.apply { start() }
+    }
+
     private fun registerReceiver() {
         registerReceiver(if (::broadcastReceiver.isInitialized) {broadcastReceiver} else {object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 intent?:return
                 when (intent.action) {
-                    SERVER_BROADCAST_ONSTART -> { checkBox_playControl.isChecked = true }
+                    SERVER_BROADCAST_ONSTART -> {
+                        startThread()
+                        checkBox_playControl.isChecked = true
+                    }
                     SERVER_BROADCAST_ONPAUSE -> { checkBox_playControl.isChecked = false }
                     SERVER_BROADCAST_MUSICCHANGE -> {
                         val musicInfo = Player.getCurrentMusicInfo()
                         toolbar.title = musicInfo.title()
                         toolbar.subtitle = musicInfo.artist()
-                        //musicAlbum.setImageBitmap(musicInfo.albumPic())
+                        albumPic.setImageBitmap(musicInfo.albumPic())
                         textView_timeTotal.text = getTime(musicInfo.duration())
+                        startThread()
                     }
                 }
             }
@@ -108,34 +140,36 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
+        log("PlayerActivity", "onResume")
         super.onResume()
-        //Log.e("PlayerActivity", "onResume")
         registerReceiver()
+        val musicInfo = Player.getCurrentMusicInfo()
+        toolbar.title = musicInfo.title()
+        toolbar.subtitle = musicInfo.artist()
+        albumPic.setImageBitmap(musicInfo.albumPic())
+        textView_timeTotal.text = getTime(musicInfo.duration())
+        checkBox_playControl.isChecked = Player.getPlayer.isPlaying()
     }
 
     override fun onPause() {
-        //Log.e("PlayerActivity", "onPause")
+        log("PlayerActivity", "onPause")
         super.onPause()
         unregisterReceiver()
     }
 
     override fun onBackPressed() {
-        //Log.e("PlayerActivity", "onBackPressed")
-        //overridePendingTransition(0, R.anim.anim_player_top2down)
-        //MainApplication.playerForeground = false
-        //startActivity(Intent(this, MainActivity::class.java))
-        //super.onBackPressed()
+        log("PlayerActivity", "onBackPressed")
         finish()
-        //overridePendingTransition(R.anim.anim_last_down2top, R.anim.anim_player_top2down)
     }
 
     override fun finish() {
+        log("PlayerActivity", "finish")
         super.finish()
         overridePendingTransition(R.anim.anim_last_top2down, R.anim.anim_player_top2down)
     }
 
     override fun onDestroy() {
-        //Log.e("PlayerActivity", "onDestroy")
+        log("PlayerActivity", "onDestroy")
         try {
             unregisterReceiver()
         } catch (e: Exception) {
