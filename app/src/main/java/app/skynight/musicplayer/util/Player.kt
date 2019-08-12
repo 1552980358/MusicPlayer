@@ -195,6 +195,10 @@ class Player private constructor() {
         }
     }
 
+    fun getIndexMusic(index: Int): MusicInfo {
+        return MusicClass.getMusicClass.fullList[index]
+    }
+
     fun onSeekChange(pos: Int) {
         try {
             mediaPlayer.seekTo(pos * 1000)

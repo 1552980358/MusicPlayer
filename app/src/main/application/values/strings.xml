@@ -40,4 +40,10 @@
     <string name="abc_musicList_unExpected_intent">Seems something goes wrong when getting playlist info data. </string>
 
     <string name="abc_player_unExpected_intent">@string/abc_musicList_unExpected_intent</string>
+
+    <string name="abc_main_timer_time_24">HH:mm</string>
+    <string name="abc_main_timer_time_12">hh:mm</string>
+    <string name="abc_main_timer_date_24">yyyy-MM-dd\nEEEE</string>
+    <string name="abc_main_timer_date_12">yyyy-MM-dd\na • EEEE</string>
+
 </resources>
