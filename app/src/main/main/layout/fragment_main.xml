@@ -46,11 +46,18 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_5"
+        app:elevation="0dp"
+        android:layout_margin="@dimen/dp_5">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:selectableItemBackground"
+            android:padding="@dimen/dp_5">
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -62,6 +69,8 @@
                 android:gravity="center"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView_status"
+                android:textSize="15sp"
+                android:layout_margin="@dimen/dp_5"
                 android:textColor="?attr/colorAccent"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
