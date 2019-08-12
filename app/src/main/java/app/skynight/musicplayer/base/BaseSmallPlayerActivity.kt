@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.RelativeLayout
-import app.skynight.musicplayer.MainApplication
 import app.skynight.musicplayer.R
 import app.skynight.musicplayer.activity.PlayerActivity
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_MUSICCHANGE
@@ -70,7 +69,7 @@ open class BaseSmallPlayerActivity : BaseAppCompatActivity() {
                             PlayerActivity::class.java
                         )
                     )
-                    overridePendingTransition(R.anim.anim_player_down2top, R.anim.anim_last_down2top)
+                    //overridePendingTransition(R.anim.anim_player_down2top, R.anim.anim_last_down2top)
                 })
                 layoutParams = RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT).apply {
                     addRule(RelativeLayout.ABOVE, it.id)

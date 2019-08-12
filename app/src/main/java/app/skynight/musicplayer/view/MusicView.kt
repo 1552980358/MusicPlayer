@@ -14,6 +14,7 @@ import app.skynight.musicplayer.MainApplication
 import app.skynight.musicplayer.base.InitConstructorNotAllowedException
 import app.skynight.musicplayer.util.MusicInfo
 import app.skynight.musicplayer.R
+import app.skynight.musicplayer.activity.PlayerActivity
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.BROADCAST_INTENT_MUSIC
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.BROADCAST_INTENT_PLAYLIST
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_CHANGE
@@ -68,10 +69,15 @@ class MusicView: LinearLayout {
             weight = 9f
         })
         setOnClickListener {
-            MainApplication.getMainApplication().sendBroadcast(
-                Intent(CLIENT_BROADCAST_CHANGE).putExtra(BROADCAST_INTENT_PLAYLIST, playList)
-                    .putExtra(BROADCAST_INTENT_MUSIC, index)
-            )
+            MainApplication.getMainApplication().apply {
+                sendBroadcast(
+                    Intent(CLIENT_BROADCAST_CHANGE).putExtra(BROADCAST_INTENT_PLAYLIST, playList)
+                        .putExtra(BROADCAST_INTENT_MUSIC, index)
+                )
+                startActivity(Intent(this, PlayerActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                })
+            }
         }
     }
 

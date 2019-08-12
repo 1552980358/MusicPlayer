@@ -53,6 +53,7 @@ class PlayList(val playListName: String): Serializable {
             return playListList.size
         }
     }
+    @Suppress("JoinDeclarationAndAssignment")
     private var musicInfoList: MutableList<MusicInfo>
     lateinit var date: String
 
@@ -60,6 +61,7 @@ class PlayList(val playListName: String): Serializable {
         this.musicInfoList = mutableListOf()
     }
 
+    @Suppress("JoinDeclarationAndAssignment")
     @Synchronized
     fun addMusicInfo(musicInfo: MusicInfo) {
         musicInfoList.add(musicInfo)

@@ -92,22 +92,26 @@ class Player private constructor() {
     @Synchronized
     fun onStart() {
         try {
-            mediaPlayer.prepare()
-            mediaPlayer.start()
+            changeMusic()
+            mediaPlayer.seekTo(paused)
         } catch (e: Exception) {
             e.printStackTrace()
         }
+        log("player", "onStart")
         MainApplication.sendBroadcast(SERVER_BROADCAST_ONSTART)
     }
 
+    private var paused = 0
     @Suppress("unused")
     @Synchronized
     fun onPause() {
         try {
+            paused = mediaPlayer.currentPosition
             mediaPlayer.pause()
         } catch (e: Exception) {
             e.printStackTrace()
         }
+        log("player", "onPause")
         MainApplication.sendBroadcast(SERVER_BROADCAST_ONPAUSE)
     }
 
@@ -150,6 +154,7 @@ class Player private constructor() {
 
     @Synchronized
     fun playChange(list: Int, index: Int) {
+        paused = 0
         if (list == ERROR_CODE || index == ERROR_CODE) {
             makeToast(R.string.abc_player_unExpected_intent)
             return
@@ -183,10 +188,13 @@ class Player private constructor() {
     }
 
     fun getCurrent(): Int {
-        return mediaPlayer.currentPosition / 1000
+        return if (mediaPlayer.isPlaying) {
+            mediaPlayer.currentPosition / 1000
+        } else {
+            paused / 1000
+        }
     }
 
-    @Suppress("unused")
     fun onSeekChange(pos: Int) {
         try {
             mediaPlayer.seekTo(pos * 1000)
