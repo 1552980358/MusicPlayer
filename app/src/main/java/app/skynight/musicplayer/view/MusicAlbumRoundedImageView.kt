@@ -11,6 +11,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.graphics.drawable.toBitmap
+import app.skynight.musicplayer.util.makeScaledBitmap
 
 /**
  * @File    : CircleImageView
@@ -19,18 +20,31 @@ import androidx.core.graphics.drawable.toBitmap
  * @TIME    : 11:56 AM
  **/
 
-class MusicAlbumRoundedImageView: AppCompatImageView {
-    constructor(context: Context): this(context, null)
+class MusicAlbumRoundedImageView : AppCompatImageView {
+    constructor(context: Context) : this(context, null)
     @Suppress("UNUSED_PARAMETER")
-    constructor(context: Context, attributeSet: AttributeSet?): super(context) {
+    constructor(context: Context, attributeSet: AttributeSet?) : super(context) {
         //setImageDrawable(ContextCompat.getDrawable(context, R.drawable.unknown))
         background = ColorDrawable(ContextCompat.getColor(context, android.R.color.transparent))
-        setImageDrawable(BitmapDrawable(context.resources, BitmapFactory.decodeStream(context.assets.open("unknown.png"))))
+        setImageDrawable(
+            BitmapDrawable(
+                context.resources,
+                BitmapFactory.decodeStream(context.assets.open("unknown.png"))
+            )
+        )
     }
 
     override fun setImageBitmap(bm: Bitmap) {
-        super.setImageDrawable(RoundedBitmapDrawableFactory.create(context.resources, bm).apply {
-            isCircular = true
-        })
+        val bitmap = makeScaledBitmap(
+            bm,
+            resources.displayMetrics.widthPixels / 3 * 2
+        )
+        super.setImageDrawable(
+            RoundedBitmapDrawableFactory.create(
+                context.resources,
+                bitmap
+            ).apply {
+                isCircular = true
+            })
     }
 }

@@ -5,125 +5,125 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#123">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        android:orientation="vertical">
-
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            app:elevation="@dimen/dp_0">
-            <androidx.appcompat.widget.Toolbar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/transparent"
-                app:navigationIcon="@drawable/ic_player_exit"
-                android:id="@+id/toolbar"/>
-        </com.google.android.material.appbar.AppBarLayout>
+    android:id="@+id/backgroundDrawerLayout" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
             android:orientation="vertical" >
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_0"
-                android:layout_weight="8"
-                android:id="@+id/relativeLayout">
 
-            </RelativeLayout>
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                app:elevation="@dimen/dp_0" >
+                <androidx.appcompat.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    app:navigationIcon="@drawable/ic_player_exit"
+                    android:id="@+id/toolbar" />
+            </com.google.android.material.appbar.AppBarLayout >
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_0"
-                android:layout_weight="2"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_0"
+                    android:layout_weight="8"
+                    android:id="@+id/relativeLayout" >
+
+                </RelativeLayout >
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal" >
+                    android:layout_height="@dimen/dp_0"
+                    android:layout_weight="2"
+                    android:orientation="vertical" >
 
-                    <TextView
-                        android:layout_width="@dimen/dp_0"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textView_timePass"
-                        android:textColor="@color/white"
-                        android:layout_weight="1"
-                        android:gravity="end"/>
+                        android:orientation="horizontal" >
 
-                    <androidx.appcompat.widget.AppCompatSeekBar
-                        android:layout_width="@dimen/dp_0"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/seekBar"
-                        android:layout_weight="8" />
+                        <TextView
+                            android:layout_width="@dimen/dp_0"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textView_timePass"
+                            android:textColor="@color/white"
+                            android:layout_weight="1"
+                            android:gravity="end" />
 
-                    <TextView
-                        android:layout_width="@dimen/dp_0"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/textView_timeTotal"
-                        android:textColor="@color/white"
-                        android:layout_weight="1"
-                        android:gravity="start"/>
+                        <androidx.appcompat.widget.AppCompatSeekBar
+                            android:layout_width="@dimen/dp_0"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/seekBar"
+                            android:layout_weight="8" />
 
-                </LinearLayout>
+                        <TextView
+                            android:layout_width="@dimen/dp_0"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/textView_timeTotal"
+                            android:textColor="@color/white"
+                            android:layout_weight="1"
+                            android:gravity="start" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center">
+                    </LinearLayout >
 
-                    <androidx.appcompat.widget.AppCompatImageButton
-                        android:id="@+id/imageButton_playForm"
-                        android:layout_width="@dimen/playerActivity_subItem_size"
-                        android:layout_height="@dimen/playerActivity_subItem_size"
-                        android:layout_marginStart="@dimen/playerActivity_subItem_marginLeftRightWider"
-                        android:layout_marginEnd="@dimen/playerActivity_subItem_marginLeftRightWider"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center" >
 
-                    <androidx.appcompat.widget.AppCompatImageButton
-                        android:layout_width="@dimen/playerActivity_last_next_size"
-                        android:layout_height="@dimen/playerActivity_last_next_size"
-                        android:layout_marginStart="@dimen/playerActivity_subItem_marginLeftRightNarrower"
-                        android:layout_marginEnd="@dimen/playerActivity_last_next_marginLeftRight"
-                        android:background="@drawable/ic_play_last"
-                        android:id="@+id/imageButton_last"/>
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:id="@+id/imageButton_playForm"
+                            android:layout_width="@dimen/playerActivity_subItem_size"
+                            android:layout_height="@dimen/playerActivity_subItem_size"
+                            android:layout_marginStart="@dimen/playerActivity_subItem_marginLeftRightWider"
+                            android:layout_marginEnd="@dimen/playerActivity_subItem_marginLeftRightWider" />
 
-                    <androidx.appcompat.widget.AppCompatCheckBox
-                        android:layout_width="@dimen/playerActivity_controller_size"
-                        android:layout_height="@dimen/playerActivity_controller_size"
-                        android:layout_marginStart="@dimen/playerActivity_last_next_marginLeftRight"
-                        android:background="@drawable/ic_play_control"
-                        android:button="@null"
-                        android:id="@+id/checkBox_playControl"
-                        android:layout_marginEnd="@dimen/playerActivity_last_next_marginLeftRight"/>
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:layout_width="@dimen/playerActivity_last_next_size"
+                            android:layout_height="@dimen/playerActivity_last_next_size"
+                            android:layout_marginStart="@dimen/playerActivity_subItem_marginLeftRightNarrower"
+                            android:layout_marginEnd="@dimen/playerActivity_last_next_marginLeftRight"
+                            android:background="@drawable/ic_play_last"
+                            android:id="@+id/imageButton_last" />
 
-                    <androidx.appcompat.widget.AppCompatImageButton
-                        android:layout_width="@dimen/playerActivity_last_next_size"
-                        android:layout_height="@dimen/playerActivity_last_next_size"
-                        android:layout_marginStart="@dimen/playerActivity_last_next_marginLeftRight"
-                        android:layout_marginEnd="@dimen/playerActivity_subItem_marginLeftRightNarrower"
-                        android:background="@drawable/ic_play_next"
-                        android:id="@+id/imageButton_next"/>
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:layout_width="@dimen/playerActivity_controller_size"
+                            android:layout_height="@dimen/playerActivity_controller_size"
+                            android:layout_marginStart="@dimen/playerActivity_last_next_marginLeftRight"
+                            android:background="@drawable/ic_play_control"
+                            android:button="@null"
+                            android:id="@+id/checkBox_playControl"
+                            android:layout_marginEnd="@dimen/playerActivity_last_next_marginLeftRight" />
 
-                    <androidx.appcompat.widget.AppCompatImageButton
-                        android:layout_width="@dimen/playerActivity_subItem_size"
-                        android:layout_height="@dimen/playerActivity_subItem_size"
-                        android:background="@drawable/ic_play_list"
-                        android:layout_marginStart="@dimen/playerActivity_subItem_marginLeftRightWider"
-                        android:layout_marginEnd="@dimen/playerActivity_subItem_marginLeftRightWider"/>
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:layout_width="@dimen/playerActivity_last_next_size"
+                            android:layout_height="@dimen/playerActivity_last_next_size"
+                            android:layout_marginStart="@dimen/playerActivity_last_next_marginLeftRight"
+                            android:layout_marginEnd="@dimen/playerActivity_subItem_marginLeftRightNarrower"
+                            android:background="@drawable/ic_play_next"
+                            android:id="@+id/imageButton_next" />
 
-                </LinearLayout>
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:layout_width="@dimen/playerActivity_subItem_size"
+                            android:layout_height="@dimen/playerActivity_subItem_size"
+                            android:background="@drawable/ic_play_list"
+                            android:layout_marginStart="@dimen/playerActivity_subItem_marginLeftRightWider"
+                            android:layout_marginEnd="@dimen/playerActivity_subItem_marginLeftRightWider" />
 
-            </LinearLayout>
+                    </LinearLayout >
 
-        </LinearLayout>
+                </LinearLayout >
 
-    </LinearLayout>
+            </LinearLayout >
 
-</androidx.drawerlayout.widget.DrawerLayout>
+        </LinearLayout >
+
+</androidx.drawerlayout.widget.DrawerLayout >

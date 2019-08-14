@@ -28,6 +28,7 @@ class MusicClass private constructor() {
 
         val getMusicClass by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { MusicClass() }
 
+        @Suppress("unused")
         private fun saveMusicList(list : MutableList<MusicInfo>, path: String): Boolean {
             if (!checkAndCreateExternalStorageFile(path)) {
                 return false
@@ -46,6 +47,8 @@ class MusicClass private constructor() {
                 false
             }
         }
+
+        @Suppress("unused")
         private fun loadFullMusicList(): MutableList<MusicInfo> {
             val target = File(TargetDir, FullList)
             if (checkAndCreateExternalStorageFile(target)) {
@@ -77,6 +80,7 @@ class MusicClass private constructor() {
                     return list
                 if (moveToFirst()) {
                     do {
+                        @Suppress("DEPRECATION")
                         val path = getString(getColumnIndex(MediaStore.Audio.Media.DATA))
                         if (path == "-1") {
                             //Log.e("MusicClass", "-1")
@@ -87,6 +91,7 @@ class MusicClass private constructor() {
                             getString(getColumnIndex(MediaStore.Audio.Media.TITLE)),
                             getString(getColumnIndex(MediaStore.Audio.Media.ARTIST)),
                             getString(getColumnIndex(MediaStore.Audio.Media.ALBUM)),
+                            //getString(getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)),
                             getInt(getColumnIndex(MediaStore.Audio.Media.DURATION))
                             ))
                         //Log.e("MusicClass", path)

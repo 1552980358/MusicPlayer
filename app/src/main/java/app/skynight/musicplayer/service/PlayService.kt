@@ -1,16 +1,25 @@
 package app.skynight.musicplayer.service
 
-import android.app.Service
+import android.app.*
 import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.media.MediaPlayer
-import android.net.Uri
+import android.graphics.Bitmap
+import android.os.Build
 import android.os.IBinder
-import android.os.PowerManager
-import java.io.File
-import java.io.FileWriter
-import java.net.URL
+import androidx.core.app.NotificationManagerCompat
+import androidx.media.app.NotificationCompat
+import app.skynight.musicplayer.R
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_LAST
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_NEXT
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_ONPAUSE
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_ONSTART
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_MUSICCHANGE
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONPAUSE
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONSTART
+import app.skynight.musicplayer.util.Player
+import app.skynight.musicplayer.util.log
 
 /**
  * @FILE:   PlayService
@@ -20,29 +29,83 @@ import java.net.URL
  **/
 
 class PlayService : Service() {
-    private lateinit var binder: PlayerBinder
-
+    companion object {
+        const val CHANNEL = "PlayService"
+    }
 
     override fun onBind(intent: Intent?): IBinder? {
-        return PlayerBinder().apply {
+        /*return PlayerBinder().apply {
             binder = this
         }
+
+         */
+        return null
     }
 
     override fun onCreate() {
         super.onCreate()
-/*
-        applicationContext.registerReceiver(, IntentFilter().apply {
+        log("PlayService", "~ onCreate")
+        val musicInfo = Player.getCurrentMusicInfo()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel(
+                CHANNEL, musicInfo.title(), NotificationManager.IMPORTANCE_NONE
+            ).also {
+                (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).apply {
+                    createNotificationChannel(it)
+                }
+            }
+        }
+        startForeground(1, updateNotify())
+        val notificationManager = NotificationManagerCompat.from(this)
+        registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(p0: Context?, p1: Intent?) {
+                notificationManager.notify(1, updateNotify())
+            }
 
-        })*/
+        }, IntentFilter().apply {
+            addAction(SERVER_BROADCAST_MUSICCHANGE)
+            addAction(SERVER_BROADCAST_ONPAUSE)
+            addAction(SERVER_BROADCAST_ONSTART)
+        })
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        return super.onStartCommand(intent, flags, startId)
+    private fun updateNotify(): Notification {
+        System.gc()
+        val musicInfo = Player.getCurrentMusicInfo()
+        return androidx.core.app.NotificationCompat.Builder(this, CHANNEL)
+            .setLargeIcon(Bitmap.createBitmap(musicInfo.albumPic()))
+            .setContentTitle(musicInfo.title()).setContentText(musicInfo.artist())
+            .setSmallIcon(R.mipmap.ic_launcher).setOnlyAlertOnce(true).setOngoing(true)
+            .setAutoCancel(false).setStyle(NotificationCompat.MediaStyle()).addAction(
+                R.drawable.ic_play_last,
+                CLIENT_BROADCAST_LAST,
+                PendingIntent.getBroadcast(this, 0, Intent(CLIENT_BROADCAST_LAST), 0)
+            ).apply {
+                if (Player.getPlayer.isPlaying()) {
+                    addAction(
+                        R.drawable.ic_pause, CLIENT_BROADCAST_ONPAUSE, PendingIntent.getBroadcast(
+                            this@PlayService, 0, Intent(
+                                CLIENT_BROADCAST_ONPAUSE
+                            ), 0
+                        )
+                    )
+                } else {
+                    addAction(
+                        R.drawable.ic_play, CLIENT_BROADCAST_ONSTART, PendingIntent.getBroadcast(
+                            this@PlayService, 0, Intent(
+                                CLIENT_BROADCAST_ONSTART
+                            ), 0
+                        )
+                    )
+                }
+            }.addAction(
+                R.drawable.ic_play_next,
+                CLIENT_BROADCAST_NEXT,
+                PendingIntent.getBroadcast(this, 0, Intent(CLIENT_BROADCAST_NEXT), 0)
+            ).build()
     }
+
     override fun onDestroy() {
-
         super.onDestroy()
     }
-
 }

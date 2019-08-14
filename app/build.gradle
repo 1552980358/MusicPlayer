@@ -56,6 +56,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
     sourceSets {
         main {
             res.srcDirs =
@@ -76,9 +79,10 @@ dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.google.code.gson:gson:2.8.5'
+    //implementation 'com.google.code.gson:gson:2.8.5'
+    //implementation 'io.alterac.blurkit:blurkit:1.1.0'
     implementation "androidx.appcompat:appcompat:${androidX}"
-    implementation "androidx.core:core-ktx:1.2.0-alpha02"
+    implementation "androidx.core:core-ktx:1.2.0-alpha03"
     implementation "androidx.preference:preference:${androidX}"
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

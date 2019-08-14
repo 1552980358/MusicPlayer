@@ -1,9 +1,14 @@
 package app.skynight.musicplayer.activity
 
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.text.TextUtils
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -22,12 +27,13 @@ import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCA
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_MUSICCHANGE
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONPAUSE
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONSTART
-import app.skynight.musicplayer.util.Player
 import app.skynight.musicplayer.util.UnitUtil.Companion.getTime
-import app.skynight.musicplayer.util.log
 import app.skynight.musicplayer.view.MusicAlbumRoundedImageView
 import kotlinx.android.synthetic.main.activity_player.*
 import android.widget.SeekBar.OnSeekBarChangeListener
+import app.skynight.musicplayer.util.log
+import app.skynight.musicplayer.util.Player
+import app.skynight.musicplayer.util.blurBitmap
 
 /**
  * @FILE:   PlayerActivity
@@ -58,25 +64,22 @@ class PlayerActivity : AppCompatActivity() {
         setBackgroundProp()
         setContentView(R.layout.activity_player)
 
-        relativeLayout.addView(
-            MusicAlbumRoundedImageView(this).apply {
-                albumPic = this
-            },
-            RelativeLayout.LayoutParams(
-                resources.displayMetrics.widthPixels * 2 / 3,
-                resources.displayMetrics.widthPixels * 2 / 3
-            ).apply {
-                addRule(CENTER_HORIZONTAL)
-                addRule(CENTER_VERTICAL)
-            })
+        relativeLayout.addView(MusicAlbumRoundedImageView(this).apply {
+            albumPic = this
+        }, RelativeLayout.LayoutParams(
+            resources.displayMetrics.widthPixels * 2 / 3,
+            resources.displayMetrics.widthPixels * 2 / 3
+        ).apply {
+            addRule(CENTER_HORIZONTAL)
+            addRule(CENTER_VERTICAL)
+        })
 
         toolbar.apply {
             setSupportActionBar(this)
             setTitleTextColor(ContextCompat.getColor(this@PlayerActivity, R.color.player_title))
             setSubtitleTextColor(
                 ContextCompat.getColor(
-                    this@PlayerActivity,
-                    R.color.player_subtitle
+                    this@PlayerActivity, R.color.player_subtitle
                 )
             )
             setNavigationOnClickListener {
@@ -147,45 +150,38 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun registerReceiver() {
-        registerReceiver(
-            if (::broadcastReceiver.isInitialized) {
-                broadcastReceiver
-            } else {
-                object : BroadcastReceiver() {
-                    override fun onReceive(context: Context?, intent: Intent?) {
-                        intent ?: return
-                        when (intent.action) {
-                            SERVER_BROADCAST_ONSTART -> {
-                                checkBox_playControl.isChecked = true
-                                startThread()
+        registerReceiver(if (::broadcastReceiver.isInitialized) {
+            broadcastReceiver
+        } else {
+            object : BroadcastReceiver() {
+                override fun onReceive(context: Context?, intent: Intent?) {
+                    intent ?: return
+                    when (intent.action) {
+                        SERVER_BROADCAST_ONSTART -> {
+                            checkBox_playControl.isChecked = true
+                            startThread()
+                        }
+                        SERVER_BROADCAST_ONPAUSE -> {
+                            try {
+                                thread!!.interrupt()
+                                thread = null
+                            } catch (e: Exception) {
+                                //e.printStackTrace()
                             }
-                            SERVER_BROADCAST_ONPAUSE -> {
-                                try {
-                                    thread!!.interrupt()
-                                    thread = null
-                                } catch (e: Exception) {
-                                    //e.printStackTrace()
-                                }
-                                checkBox_playControl.isChecked = false
-                            }
-                            SERVER_BROADCAST_MUSICCHANGE -> {
-                                val musicInfo = Player.getCurrentMusicInfo()
-                                toolbar.title = musicInfo.title()
-                                toolbar.subtitle = musicInfo.artist()
-                                albumPic.setImageBitmap(musicInfo.albumPic())
-                                textView_timeTotal.text = getTime(musicInfo.duration())
-                                checkBox_playControl.isChecked = true
-                                startThread()
-                            }
+                            checkBox_playControl.isChecked = false
+                        }
+                        SERVER_BROADCAST_MUSICCHANGE -> {
+                            onUpdateMusic()
                         }
                     }
+                }
 
-                }.apply { broadcastReceiver = this }
-            }, IntentFilter().apply {
-                addAction(SERVER_BROADCAST_ONSTART)
-                addAction(SERVER_BROADCAST_ONPAUSE)
-                addAction(SERVER_BROADCAST_MUSICCHANGE)
-            })
+            }.apply { broadcastReceiver = this }
+        }, IntentFilter().apply {
+            addAction(SERVER_BROADCAST_ONSTART)
+            addAction(SERVER_BROADCAST_ONPAUSE)
+            addAction(SERVER_BROADCAST_MUSICCHANGE)
+        })
     }
 
     private fun unregisterReceiver() {
@@ -196,7 +192,38 @@ class PlayerActivity : AppCompatActivity() {
         log("PlayerActivity", "onResume")
         super.onResume()
         registerReceiver()
+        onUpdateMusic()
+    }
+
+    fun onUpdateMusic() {
         val musicInfo = Player.getCurrentMusicInfo()
+        Thread {
+            try {
+                val pic = musicInfo.albumPic()
+                val tmp = Bitmap.createScaledBitmap(
+                    pic,
+                    resources.displayMetrics.heightPixels / pic.height * pic.width,
+                    resources.displayMetrics.heightPixels,
+                    false
+                )
+                val drawable = BitmapDrawable(
+                    resources, blurBitmap(
+                        this, Bitmap.createBitmap(
+                            tmp,
+                            if (tmp.width <= resources.displayMetrics.widthPixels) 0 else (tmp.width - resources.displayMetrics.widthPixels) / 2,
+                            0,
+                            resources.displayMetrics.widthPixels,
+                            tmp.height,
+                            null,
+                            false
+                        ), 25f
+                    )
+                )
+                runOnUiThread { backgroundDrawerLayout.background = drawable }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }.start()
         toolbar.title = musicInfo.title()
         toolbar.subtitle = musicInfo.artist()
         albumPic.setImageBitmap(musicInfo.albumPic())
@@ -232,4 +259,5 @@ class PlayerActivity : AppCompatActivity() {
         }
         super.onDestroy()
     }
+
 }

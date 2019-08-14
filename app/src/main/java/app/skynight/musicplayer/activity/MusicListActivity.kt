@@ -25,7 +25,7 @@ class MusicListActivity : BaseSmallPlayerActivity() {
             intent.getIntExtra(
                 EXTRA_LIST, ERROR_CODE
             ).apply {
-                log("MusicListActivity", "intent.getIntExtra")
+                log("MusicListActivity", "intent.getIntExtra： ${this}")
             }
         } catch (e: Exception) {
             ERROR_CODE

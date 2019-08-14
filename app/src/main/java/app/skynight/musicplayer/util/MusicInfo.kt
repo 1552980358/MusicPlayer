@@ -2,7 +2,6 @@ package app.skynight.musicplayer.util
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.media.MediaExtractor
 import android.media.MediaMetadataRetriever
 import android.util.Log
 import app.skynight.musicplayer.MainApplication
@@ -20,10 +19,11 @@ class MusicInfo : Serializable {
     private var title = "-"
     private var artist = "-"
     private var album = "-"
+    //private var albumId = null as String?
     private var duration = 0
     //private var bitRate = 0
 
-    constructor(p: String, t: String?, ar: String?, al: String?, d: Int?): super() {
+    constructor(p: String, t: String?, ar: String?, al: String?, /*alId: String?,*/ d: Int?) : super() {
         path = p
         t?.let {
             title = it
@@ -42,13 +42,19 @@ class MusicInfo : Serializable {
             b
         }
          */
+        /*
+        alId?.let {
+            albumId = alId
+        }
+         */
     }
 
     @Deprecated("")
     private lateinit var mediaMetadataRetriever: MediaMetadataRetriever
+
     @Suppress("DEPRECATION")
     @Deprecated("")
-    constructor(path: String): super() {
+    constructor(path: String) : super() {
         this.path = path
         mediaMetadataRetriever = MediaMetadataRetriever().apply {
             try {
@@ -61,12 +67,16 @@ class MusicInfo : Serializable {
     }
 
     @Deprecated("")
-    constructor(): super() {
+    constructor() : super() {
         throw Exception("???")
     }
 
     companion object {
-        val preLoadedAlbumPic by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) { BitmapFactory.decodeStream(MainApplication.getMainApplication().assets.open("unknown.png"))!! }
+        val preLoadedAlbumPic by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
+            BitmapFactory.decodeStream(
+                MainApplication.getMainApplication().assets.open("unknown.png")
+            )!!
+        }
     }
 
     @Suppress("unused")
@@ -78,6 +88,7 @@ class MusicInfo : Serializable {
             preLoadedAlbumPic
         }
         */
+
         try {
             MediaMetadataRetriever().apply { setDataSource(path) }.embeddedPicture.apply {
                 val b1 =  BitmapFactory.decodeByteArray(this, 0, size)
@@ -95,6 +106,34 @@ class MusicInfo : Serializable {
         } catch (e: Exception) {
             return preLoadedAlbumPic
         }
+
+        /*
+        albumId ?: return preLoadedAlbumPic
+        try {
+            var path = null as String?
+            MainApplication.getMainApplication().contentResolver.query(
+                MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+                arrayOf(MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART),
+                MediaStore.Audio.Albums._ID + "=?",
+                arrayOf(albumId),
+                null
+            ).apply {
+                this?:return preLoadedAlbumPic
+
+                if (moveToNext()) {
+                    path = getStringOrNull(getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART))
+                }
+                close()
+            }
+            path?:return preLoadedAlbumPic
+            val bitmap = BitmapFactory.decodeFile(path)
+            //bitmap?:return preLoadedAlbumPic
+            return bitmap
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return preLoadedAlbumPic
+        }
+         */
     }
 
     fun title(): String {
@@ -107,6 +146,7 @@ class MusicInfo : Serializable {
         return artist
     }
 
+    @Suppress("unused")
     fun album(): String {
         //return mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM)
         return album
@@ -117,10 +157,12 @@ class MusicInfo : Serializable {
         return duration / 1000
     }
 
+    @Suppress("unused")
     fun bitRate(): Int {
         //return mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE).toInt()
         return try {
-            MediaMetadataRetriever().apply { setDataSource(path) }.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE).toInt()
+            MediaMetadataRetriever().apply { setDataSource(path) }
+                .extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE).toInt()
         } catch (e: Exception) {
             0
         }

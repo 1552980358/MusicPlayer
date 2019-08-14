@@ -31,19 +31,32 @@ class MainFragment : Fragment() {
         log("MainFragment", "- onViewCreated")
         super.onViewCreated(view, savedInstanceState)
         try {
+            /*
             when (SimpleDateFormat("HH", Locale.getDefault()).format(Date(System.currentTimeMillis())).toInt()) {
                 6,7,8, 12, 13, 14, 18, 19, 20 -> {
                     textView_status.text = "~ 每一天的营养从好好把自己次了开始 ~"
                     imageView_status.setImageBitmap(BitmapFactory.decodeStream(context!!.assets.open("ic_eating.jpg")))
                 }
                 22, 23, 24, 0, 1, 2, 3, 4, 5-> {
-                    textView_status.text = "~ 去睡觉觉咯 ~"
+                    textView_status.text = "~ 早睡晚起身体好 ~"
                     imageView_status.setImageBitmap(BitmapFactory.decodeStream(context!!.assets.open("ic_sleep.jpg")))
                 }
                 else -> {
                     textView_status.text = "~ 早睡晚起身体好 ~"
                     imageView_status.setImageBitmap(BitmapFactory.decodeStream(context!!.assets.open("ic_touch_fish.jpg")))
                 }
+            }
+             */
+            val hr = SimpleDateFormat("HH", Locale.getDefault()).format(Date(System.currentTimeMillis())).toInt()
+            if ((hr in 6..8) || (hr in 12..14) || (hr in 18..20))  {
+                textView_status.text = "~ 每一天的营养从好好把自己次了开始 ~"
+                imageView_status.setImageBitmap(BitmapFactory.decodeStream(context!!.assets.open("ic_eating.jpg")))
+            } else if ((hr in 22 .. 24) || (hr in 0 .. 5)) {
+                textView_status.text = "~ 早睡晚起身体好 ~"
+                imageView_status.setImageBitmap(BitmapFactory.decodeStream(context!!.assets.open("ic_sleep.jpg")))
+            } else {
+                textView_status.text = "~ 世界上最快乐的莫过于摸鱼鱼了 ~"
+                imageView_status.setImageBitmap(BitmapFactory.decodeStream(context!!.assets.open("ic_touch_fish.jpg")))
             }
         } catch (e: Exception) {
             //

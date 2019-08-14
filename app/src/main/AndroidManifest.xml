@@ -6,6 +6,7 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:testOnly="false"
@@ -49,6 +50,13 @@
         <activity
             android:name=".activity.PlayerActivity"
             android:theme="@style/AppTheme.NoActionBar.TransparentBackground" />
+
+        <!-- Service -->
+        <service
+            android:name=".service.PlayService"
+            android:enabled="true"
+            android:exported="true"
+            tools:ignore="ExportedService" />
     </application >
 
 </manifest >
