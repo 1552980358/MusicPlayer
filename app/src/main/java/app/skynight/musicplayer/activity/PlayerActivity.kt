@@ -33,7 +33,6 @@ import kotlinx.android.synthetic.main.activity_player.*
 import android.widget.SeekBar.OnSeekBarChangeListener
 import app.skynight.musicplayer.util.log
 import app.skynight.musicplayer.util.Player
-import app.skynight.musicplayer.util.blurBitmap
 
 /**
  * @FILE:   PlayerActivity
@@ -59,7 +58,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         log("PlayerActivity", "onCreate")
-        overridePendingTransition(R.anim.anim_player_down2top, R.anim.anim_last_down2top)
+        overridePendingTransition(R.anim.anim_static, R.anim.anim_top2down)
         super.onCreate(savedInstanceState)
         setBackgroundProp()
         setContentView(R.layout.activity_player)
@@ -88,6 +87,37 @@ class PlayerActivity : AppCompatActivity() {
         }
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
+        imageButton_playForm.setBackgroundResource(
+            when (Player.getPlayer.getPlayingType()) {
+                Player.Companion.PlayingType.CYCLE -> {
+                    R.drawable.ic_play_cycle
+                }
+                Player.Companion.PlayingType.SINGLE -> {
+                    R.drawable.ic_play_single
+                }
+                else -> {
+                    R.drawable.ic_play_random
+                }
+            }
+        )
+
+        imageButton_playForm.setOnClickListener {
+            when (Player.getPlayer.getPlayingType()) {
+                Player.Companion.PlayingType.CYCLE -> {
+                    Player.getPlayer.setPlayingType(Player.Companion.PlayingType.SINGLE)
+                    imageButton_playForm.setBackgroundResource(R.drawable.ic_play_single)
+                }
+                Player.Companion.PlayingType.SINGLE -> {
+                    Player.getPlayer.setPlayingType(Player.Companion.PlayingType.RANDOM)
+                    imageButton_playForm.setBackgroundResource(R.drawable.ic_play_random)
+                }
+                Player.Companion.PlayingType.RANDOM -> {
+                    Player.getPlayer.setPlayingType(Player.Companion.PlayingType.CYCLE)
+                    imageButton_playForm.setBackgroundResource(R.drawable.ic_play_cycle)
+                }
+            }
+        }
+
         imageButton_last.setOnClickListener { sendBroadcast(Intent(CLIENT_BROADCAST_LAST)) }
         checkBox_playControl.apply {
             setOnClickListener {
@@ -95,6 +125,13 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
         imageButton_next.setOnClickListener { sendBroadcast(Intent(CLIENT_BROADCAST_NEXT)) }
+        imageButton_list.setOnClickListener {
+            startActivity(
+                Intent(
+                    this, BottomListActivity::class.java
+                )
+            )
+        }
 
         try {
             (toolbar.javaClass.getDeclaredField("mTitleTextView").apply { isAccessible = true }.get(
@@ -198,14 +235,14 @@ class PlayerActivity : AppCompatActivity() {
     fun onUpdateMusic() {
         val musicInfo = Player.getCurrentMusicInfo()
         Thread {
-            try {
+            try {/*
                 val pic = musicInfo.albumPic()
                 val tmp = Bitmap.createScaledBitmap(
                     pic,
                     resources.displayMetrics.heightPixels / pic.height * pic.width,
                     resources.displayMetrics.heightPixels,
                     false
-                )
+                )*//*
                 val drawable = BitmapDrawable(
                     resources, blurBitmap(
                         this, Bitmap.createBitmap(
@@ -218,7 +255,26 @@ class PlayerActivity : AppCompatActivity() {
                             false
                         ), 25f
                     )
+                )*/
+                val pic = musicInfo.albumPic()
+                val tmp = Bitmap.createScaledBitmap(
+                    pic,
+                    resources.displayMetrics.heightPixels / pic.height * pic.width,
+                    resources.displayMetrics.heightPixels,
+                    false
                 )
+                val drawable = BitmapDrawable(
+                    resources, Bitmap.createBitmap(
+                        tmp,
+                        if (tmp.width <= resources.displayMetrics.widthPixels) 0 else (tmp.width - resources.displayMetrics.widthPixels) / 2,
+                        0,
+                        resources.displayMetrics.widthPixels,
+                        tmp.height,
+                        null,
+                        false
+                    )
+                )
+
                 runOnUiThread { backgroundDrawerLayout.background = drawable }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -247,7 +303,7 @@ class PlayerActivity : AppCompatActivity() {
     override fun finish() {
         log("PlayerActivity", "finish")
         super.finish()
-        overridePendingTransition(R.anim.anim_last_top2down, R.anim.anim_player_top2down)
+        overridePendingTransition(R.anim.anim_static, R.anim.anim_top2down)
     }
 
     override fun onDestroy() {

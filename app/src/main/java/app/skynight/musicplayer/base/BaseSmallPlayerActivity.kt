@@ -69,7 +69,7 @@ open class BaseSmallPlayerActivity : BaseAppCompatActivity() {
                             PlayerActivity::class.java
                         )
                     )
-                    //overridePendingTransition(R.anim.anim_player_down2top, R.anim.anim_last_down2top)
+                    //overridePendingTransition(R.anim.anim_exit_down2top, R.anim.anim_enter_down2top)
                 })
                 layoutParams = RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT).apply {
                     addRule(RelativeLayout.ABOVE, it.id)

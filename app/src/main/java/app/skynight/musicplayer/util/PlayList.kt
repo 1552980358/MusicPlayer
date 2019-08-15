@@ -1,6 +1,5 @@
 package app.skynight.musicplayer.util
 
-import android.os.Environment
 import app.skynight.musicplayer.util.MusicClass.Companion.TargetDir
 import java.io.File
 import java.io.FileInputStream
@@ -15,10 +14,12 @@ import java.lang.Exception
  * @TIME    : 9:58 PM
  **/
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class PlayList(val playListName: String): Serializable {
     companion object {
         private const val PlayLists = "PlayLists"
         val playListList = mutableListOf<PlayList>()
+        @Suppress("unused")
         @Synchronized
         fun addPlayList(playList: PlayList) {
             playListList.add(playList)
@@ -30,7 +31,7 @@ class PlayList(val playListName: String): Serializable {
                 file.mkdirs()
                 return 0
             }
-            if (file.listFiles().isEmpty()) {
+            @Suppress("unused") if (file.listFiles().isEmpty()) {
                 return 0
             }
             file.listFiles().forEach {
@@ -61,11 +62,12 @@ class PlayList(val playListName: String): Serializable {
         this.musicInfoList = mutableListOf()
     }
 
-    @Suppress("JoinDeclarationAndAssignment")
+    @Suppress("unused")
     @Synchronized
     fun addMusicInfo(musicInfo: MusicInfo) {
         musicInfoList.add(musicInfo)
     }
+    @Suppress("unused")
     @Synchronized
     fun clearAllMusicInfo() {
         musicInfoList.clear()

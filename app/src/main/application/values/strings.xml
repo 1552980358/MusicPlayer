@@ -46,4 +46,12 @@
     <string name="abc_main_timer_date_24">yyyy-MM-dd\nEEEE</string>
     <string name="abc_main_timer_date_12">yyyy-MM-dd\na • EEEE</string>
 
+    <string name="abc_bottomList_header">Music Information</string>
+    <string name="abc_bottomList_title">Title</string>
+    <string name="abc_bottomList_artist">Artist</string>
+    <string name="abc_bottomList_album">Album</string>
+    <string name="abc_bottomList_format">Format</string>
+    <string name="abc_bottomList_bitRate">BitRate</string>
+    <string name="abc_bottomList_path">Path</string>
+
 </resources>

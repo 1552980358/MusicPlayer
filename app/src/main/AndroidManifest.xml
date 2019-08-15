@@ -49,6 +49,10 @@
         <!-- Player -->
         <activity
             android:name=".activity.PlayerActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar.TransparentBackground" />
+        <activity
+            android:name=".activity.BottomListActivity"
             android:theme="@style/AppTheme.NoActionBar.TransparentBackground" />
 
         <!-- Service -->

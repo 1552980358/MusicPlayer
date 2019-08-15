@@ -45,4 +45,12 @@
     <string name="abc_main_timer_time_12">hh时mm分</string>
     <string name="abc_main_timer_date_24">yyyy年MM月dd日\nEEEE</string>
     <string name="abc_main_timer_date_12">yyyy年MM月dd日\nEEEE • a</string>
+
+    <string name="abc_bottomList_header">单曲信息</string>
+    <string name="abc_bottomList_title">单曲名</string>
+    <string name="abc_bottomList_artist">歌手</string>
+    <string name="abc_bottomList_album">专辑</string>
+    <string name="abc_bottomList_format">格式</string>
+    <string name="abc_bottomList_bitRate">比特率</string>
+    <string name="abc_bottomList_path">路径</string>
 </resources>

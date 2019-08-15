@@ -11,6 +11,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationManagerCompat
 import androidx.media.app.NotificationCompat
 import app.skynight.musicplayer.R
+import app.skynight.musicplayer.activity.PlayerActivity
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_LAST
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_NEXT
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_ONPAUSE
@@ -33,12 +34,9 @@ class PlayService : Service() {
         const val CHANNEL = "PlayService"
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
-        /*return PlayerBinder().apply {
-            binder = this
-        }
+    private lateinit var broadcastReceiver: BroadcastReceiver
 
-         */
+    override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
@@ -62,7 +60,7 @@ class PlayService : Service() {
                 notificationManager.notify(1, updateNotify())
             }
 
-        }, IntentFilter().apply {
+        }.apply { broadcastReceiver = this }, IntentFilter().apply {
             addAction(SERVER_BROADCAST_MUSICCHANGE)
             addAction(SERVER_BROADCAST_ONPAUSE)
             addAction(SERVER_BROADCAST_ONSTART)
@@ -76,11 +74,14 @@ class PlayService : Service() {
             .setLargeIcon(Bitmap.createBitmap(musicInfo.albumPic()))
             .setContentTitle(musicInfo.title()).setContentText(musicInfo.artist())
             .setSmallIcon(R.mipmap.ic_launcher).setOnlyAlertOnce(true).setOngoing(true)
-            .setAutoCancel(false).setStyle(NotificationCompat.MediaStyle()).addAction(
+            .setAutoCancel(false).setStyle(NotificationCompat.MediaStyle())
+            .setContentIntent(PendingIntent.getActivity(this, 0, Intent(this, PlayerActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT))
+            .addAction(
                 R.drawable.ic_play_last,
                 CLIENT_BROADCAST_LAST,
                 PendingIntent.getBroadcast(this, 0, Intent(CLIENT_BROADCAST_LAST), 0)
-            ).apply {
+            )
+            .apply {
                 if (Player.getPlayer.isPlaying()) {
                     addAction(
                         R.drawable.ic_pause, CLIENT_BROADCAST_ONPAUSE, PendingIntent.getBroadcast(
@@ -106,6 +107,11 @@ class PlayService : Service() {
     }
 
     override fun onDestroy() {
+        try {
+            unregisterReceiver(broadcastReceiver)
+        } catch (e: Exception) {
+            //e.printStackTrace()
+        }
         super.onDestroy()
     }
 }

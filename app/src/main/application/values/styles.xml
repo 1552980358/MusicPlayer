@@ -26,6 +26,7 @@
 
     <style name="AppTheme.NoActionBar.TransparentBackground" parent="AppTheme.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/white</item>

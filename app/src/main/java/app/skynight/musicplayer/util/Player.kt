@@ -4,13 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Build
-import app.skynight.musicplayer.BuildConfig
 import app.skynight.musicplayer.MainApplication
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_MUSICCHANGE
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONPAUSE
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONSTART
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONSTOP
-import java.io.File
 import app.skynight.musicplayer.R
 import app.skynight.musicplayer.service.PlayService
 
@@ -78,19 +76,27 @@ class Player private constructor() {
                     playNext()
                 }
                 Companion.PlayingType.SINGLE -> {
-                    mediaPlayer.prepare()
+                    //mediaPlayer.prepare()
                     if (!mediaPlayer.isLooping) {
                         mediaPlayer.isLooping = true
                         onStart()
                     }
                 }
                 Companion.PlayingType.RANDOM -> {
+                    playChange(
+                        (0..when (currentList) {
+                            LIST_ALL -> {
+                                MusicClass.getMusicClass.fullList.size
+                            }
+                            else -> {
+                                PlayList.playListList[currentList].getPlayList().size
+                            }
+                        }).random()
+                    )
                 }
             }
         }
     }
-
-    private var playingType = PlayingType.CYCLE
 
     @Suppress("unused")
     @Synchronized
@@ -104,10 +110,16 @@ class Player private constructor() {
         log("player", "onStart")
         MainApplication.sendBroadcast(SERVER_BROADCAST_ONSTART)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            MainApplication.getMainApplication().startForegroundService(Intent(MainApplication.getMainApplication(), PlayService::class.java))
+            MainApplication.getMainApplication().startForegroundService(
+                Intent(
+                    MainApplication.getMainApplication(),
+                    PlayService::class.java
+                )
+            )
             return
         }
-        MainApplication.getMainApplication().startService(Intent(MainApplication.getMainApplication(), PlayService::class.java))
+        MainApplication.getMainApplication()
+            .startService(Intent(MainApplication.getMainApplication(), PlayService::class.java))
     }
 
     private var paused = 0
@@ -123,10 +135,16 @@ class Player private constructor() {
         log("player", "onPause")
         MainApplication.sendBroadcast(SERVER_BROADCAST_ONPAUSE)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            MainApplication.getMainApplication().startForegroundService(Intent(MainApplication.getMainApplication(), PlayService::class.java))
+            MainApplication.getMainApplication().startForegroundService(
+                Intent(
+                    MainApplication.getMainApplication(),
+                    PlayService::class.java
+                )
+            )
             return
         }
-        MainApplication.getMainApplication().startService(Intent(MainApplication.getMainApplication(), PlayService::class.java))
+        MainApplication.getMainApplication()
+            .startService(Intent(MainApplication.getMainApplication(), PlayService::class.java))
     }
 
     @Suppress("unused")
@@ -134,17 +152,22 @@ class Player private constructor() {
     fun onStop() {
         try {
             mediaPlayer.stop()
-            //mediaPlayer.release()
             mediaPlayer.reset()
         } catch (e: Exception) {
             e.printStackTrace()
         }
         MainApplication.sendBroadcast(SERVER_BROADCAST_ONSTOP)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            MainApplication.getMainApplication().startForegroundService(Intent(MainApplication.getMainApplication(), PlayService::class.java))
+            MainApplication.getMainApplication().startForegroundService(
+                Intent(
+                    MainApplication.getMainApplication(),
+                    PlayService::class.java
+                )
+            )
             return
         }
-        MainApplication.getMainApplication().startService(Intent(MainApplication.getMainApplication(), PlayService::class.java))
+        MainApplication.getMainApplication()
+            .startService(Intent(MainApplication.getMainApplication(), PlayService::class.java))
     }
 
     @Suppress("unused")
@@ -153,10 +176,17 @@ class Player private constructor() {
         mediaPlayer.setWakeMode(context, mode)
     }
 
+    private var playingType = PlayingType.CYCLE
+
     @Suppress("unused")
     @Synchronized
     fun setPlayingType(playingType: PlayingType = Companion.PlayingType.CYCLE) {
         this.playingType = playingType
+        mediaPlayer.isLooping = playingType == Companion.PlayingType.SINGLE
+    }
+
+    fun getPlayingType(): PlayingType {
+        return playingType
     }
 
     @Synchronized
@@ -192,6 +222,11 @@ class Player private constructor() {
             currentMusic--
         }
         changeMusic()
+    }
+
+    @Synchronized
+    fun playChange(index: Int) {
+        playChange(currentList, index)
     }
 
     @Synchronized
@@ -232,10 +267,16 @@ class Player private constructor() {
         }
         MainApplication.sendBroadcast(SERVER_BROADCAST_MUSICCHANGE)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            MainApplication.getMainApplication().startForegroundService(Intent(MainApplication.getMainApplication(), PlayService::class.java))
+            MainApplication.getMainApplication().startForegroundService(
+                Intent(
+                    MainApplication.getMainApplication(),
+                    PlayService::class.java
+                )
+            )
             return
         }
-        MainApplication.getMainApplication().startService(Intent(MainApplication.getMainApplication(), PlayService::class.java))
+        MainApplication.getMainApplication()
+            .startService(Intent(MainApplication.getMainApplication(), PlayService::class.java))
     }
 
     fun isPlaying(): Boolean {
@@ -250,6 +291,7 @@ class Player private constructor() {
         }
     }
 
+    @Suppress("unused")
     fun getIndexMusic(index: Int): MusicInfo {
         return MusicClass.getMusicClass.fullList[index]
     }
