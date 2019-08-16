@@ -2,7 +2,6 @@ package app.skynight.musicplayer.activity
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
@@ -73,7 +72,7 @@ class BottomListActivity : AppCompatActivity() {
         textView_title.text = info.title()
         textView_artist.text = info.artist()
         textView_album.text = info.album()
-        textView_bitrate.text = "${info.bitRate() / 1000}kBit/s"
+        textView_bitrate.text = "${info.bitRate() / 1000} kBit/s"
         textView_path.text = info.path
     }
 

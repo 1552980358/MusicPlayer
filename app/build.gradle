@@ -63,6 +63,7 @@ android {
         main {
             res.srcDirs =
                     [
+                            'src/main/noti',
                             'src/main/base',
                             'src/main/view',
                             'src/main/main',

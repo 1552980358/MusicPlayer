@@ -71,39 +71,42 @@ class PlayService : Service() {
         System.gc()
         val musicInfo = Player.getCurrentMusicInfo()
         return androidx.core.app.NotificationCompat.Builder(this, CHANNEL)
-            .setLargeIcon(Bitmap.createBitmap(musicInfo.albumPic()))
-            .setContentTitle(musicInfo.title()).setContentText(musicInfo.artist())
-            .setSmallIcon(R.mipmap.ic_launcher).setOnlyAlertOnce(true).setOngoing(true)
-            .setAutoCancel(false).setStyle(NotificationCompat.MediaStyle())
-            .setContentIntent(PendingIntent.getActivity(this, 0, Intent(this, PlayerActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT))
-            .addAction(
-                R.drawable.ic_play_last,
-                CLIENT_BROADCAST_LAST,
-                PendingIntent.getBroadcast(this, 0, Intent(CLIENT_BROADCAST_LAST), 0)
-            )
             .apply {
+                setLargeIcon(Bitmap.createBitmap(musicInfo.albumPic()))
+                setContentTitle(musicInfo.title()).setContentText(musicInfo.artist())
+                setSmallIcon(R.mipmap.ic_launcher).setOnlyAlertOnce(true).setOngoing(true)
+                setStyle(NotificationCompat.MediaStyle())
+                setContentIntent(PendingIntent.getActivity(this@PlayService, 0, Intent(this@PlayService, PlayerActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT))
+                addAction(
+                    R.drawable.ic_noti_last,
+                    CLIENT_BROADCAST_LAST,
+                    PendingIntent.getBroadcast(this@PlayService, 0, Intent(CLIENT_BROADCAST_LAST), 0)
+                )
                 if (Player.getPlayer.isPlaying()) {
+                    setAutoCancel(false)
                     addAction(
-                        R.drawable.ic_pause, CLIENT_BROADCAST_ONPAUSE, PendingIntent.getBroadcast(
+                        R.drawable.ic_noti_pause, CLIENT_BROADCAST_ONPAUSE, PendingIntent.getBroadcast(
                             this@PlayService, 0, Intent(
                                 CLIENT_BROADCAST_ONPAUSE
                             ), 0
                         )
                     )
                 } else {
+                    setAutoCancel(true)
                     addAction(
-                        R.drawable.ic_play, CLIENT_BROADCAST_ONSTART, PendingIntent.getBroadcast(
+                        R.drawable.ic_noti_play, CLIENT_BROADCAST_ONSTART, PendingIntent.getBroadcast(
                             this@PlayService, 0, Intent(
                                 CLIENT_BROADCAST_ONSTART
                             ), 0
                         )
                     )
                 }
-            }.addAction(
-                R.drawable.ic_play_next,
-                CLIENT_BROADCAST_NEXT,
-                PendingIntent.getBroadcast(this, 0, Intent(CLIENT_BROADCAST_NEXT), 0)
-            ).build()
+                addAction(
+                    R.drawable.ic_noti_next,
+                    CLIENT_BROADCAST_NEXT,
+                    PendingIntent.getBroadcast(this@PlayService, 0, Intent(CLIENT_BROADCAST_NEXT), 0)
+                )
+            }.build()
     }
 
     override fun onDestroy() {

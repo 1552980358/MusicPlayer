@@ -30,12 +30,13 @@
                 android:layout_height="wrap_content"
                 android:text="@string/abc_bottomList_header"
                 android:layout_toStartOf="@id/imageButton_close"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:layout_centerVertical="true"/>
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/imageButton_close"
-                android:background="@drawable/ic_close"
+                android:background="@drawable/ic_player_close"
                 android:layout_alignParentEnd="true"
                 tools:ignore="ContentDescription" />
         </RelativeLayout >

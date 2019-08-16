@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.graphics.Color
+import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
 import android.text.TextUtils
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -90,13 +91,13 @@ class PlayerActivity : AppCompatActivity() {
         imageButton_playForm.setBackgroundResource(
             when (Player.getPlayer.getPlayingType()) {
                 Player.Companion.PlayingType.CYCLE -> {
-                    R.drawable.ic_play_cycle
+                    R.drawable.ic_player_cycle
                 }
                 Player.Companion.PlayingType.SINGLE -> {
-                    R.drawable.ic_play_single
+                    R.drawable.ic_player_single
                 }
                 else -> {
-                    R.drawable.ic_play_random
+                    R.drawable.ic_player_random
                 }
             }
         )
@@ -105,15 +106,15 @@ class PlayerActivity : AppCompatActivity() {
             when (Player.getPlayer.getPlayingType()) {
                 Player.Companion.PlayingType.CYCLE -> {
                     Player.getPlayer.setPlayingType(Player.Companion.PlayingType.SINGLE)
-                    imageButton_playForm.setBackgroundResource(R.drawable.ic_play_single)
+                    imageButton_playForm.setBackgroundResource(R.drawable.ic_player_single)
                 }
                 Player.Companion.PlayingType.SINGLE -> {
                     Player.getPlayer.setPlayingType(Player.Companion.PlayingType.RANDOM)
-                    imageButton_playForm.setBackgroundResource(R.drawable.ic_play_random)
+                    imageButton_playForm.setBackgroundResource(R.drawable.ic_player_random)
                 }
                 Player.Companion.PlayingType.RANDOM -> {
                     Player.getPlayer.setPlayingType(Player.Companion.PlayingType.CYCLE)
-                    imageButton_playForm.setBackgroundResource(R.drawable.ic_play_cycle)
+                    imageButton_playForm.setBackgroundResource(R.drawable.ic_player_cycle)
                 }
             }
         }
@@ -256,23 +257,39 @@ class PlayerActivity : AppCompatActivity() {
                         ), 25f
                     )
                 )*/
+/*
                 val pic = musicInfo.albumPic()
+                val width = resources.displayMetrics.heightPixels / pic.height * pic.width
+                val height = resources.displayMetrics.heightPixels
+                log("w*h", "w:$width h:$height ")
                 val tmp = Bitmap.createScaledBitmap(
                     pic,
-                    resources.displayMetrics.heightPixels / pic.height * pic.width,
-                    resources.displayMetrics.heightPixels,
-                    false
+                    width,
+                    height,
+                    true
                 )
+
+ */
+
+                val pic = musicInfo.albumPic()
+                val tmp = Bitmap.createBitmap(pic, 0, 0, pic.width, pic.height, Matrix().apply {
+                    val scale = resources.displayMetrics.heightPixels / pic.height.toFloat()
+                    postScale(scale, scale)
+                }, true)
+
                 val drawable = BitmapDrawable(
                     resources, Bitmap.createBitmap(
                         tmp,
                         if (tmp.width <= resources.displayMetrics.widthPixels) 0 else (tmp.width - resources.displayMetrics.widthPixels) / 2,
+                        //0,
                         0,
                         resources.displayMetrics.widthPixels,
-                        tmp.height,
+                        resources.displayMetrics.heightPixels,
                         null,
-                        false
-                    )
+                        true
+                    ).apply {
+                        log("x,y", "$width $height")
+                    }
                 )
 
                 runOnUiThread { backgroundDrawerLayout.background = drawable }

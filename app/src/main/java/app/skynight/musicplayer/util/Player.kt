@@ -58,6 +58,7 @@ class Player private constructor() {
                 else -> PlayList.playListList[currentList].getPlayList()[currentMusic]
             }
         }
+
     }
 
     init {

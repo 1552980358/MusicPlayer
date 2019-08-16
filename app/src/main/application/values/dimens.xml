@@ -18,6 +18,7 @@
     <dimen name="dp_50">50dp</dimen>
     <dimen name="sp_7">7sp</dimen>
     <dimen name="dp_30">30dp</dimen>
+    <dimen name="dp_25">25dp</dimen>
     <dimen name="dp_60">60dp</dimen>
     <dimen name="dp_45">45dp</dimen>
 </resources>

@@ -66,7 +66,7 @@ class BottomPlayerView : LinearLayout {
 
                     addView(MusicAlbumRoundedImageView(context).apply {
                         imageView_album = this
-                        //setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_play))
+                        //setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_player_play))
                     }, LayoutParams(
                         resources.getDimensionPixelSize(R.dimen.bottomPlayerView_size),
                         resources.getDimensionPixelSize(R.dimen.bottomPlayerView_size)
@@ -122,16 +122,14 @@ class BottomPlayerView : LinearLayout {
                     addView(AppCompatImageButton(context).apply {
                         //imageButton_last = this
                         background =
-                            ContextCompat.getDrawable(context, R.drawable.ic_mini_play_last)
-                    }, LayoutParams(getPx(30), getPx(30)).apply {
-                        //setMargins(getPx(5), getPx(7), getPx(5), getPx(5))
-                    })
+                            ContextCompat.getDrawable(context, R.drawable.ic_playerbar_last)
+                    }, LayoutParams(getPx(20), getPx(20)))
 
                     addView(AppCompatCheckBox(context).apply {
                         checkBox_controller = this
                         buttonDrawable = null
                         background =
-                            ContextCompat.getDrawable(context, R.drawable.ic_mini_play_control)
+                            ContextCompat.getDrawable(context, R.drawable.ic_playerbar_ctrl)
                         setOnClickListener {
                             context.sendBroadcast(Intent(if (isChecked) CLIENT_BROADCAST_ONSTART else CLIENT_BROADCAST_ONPAUSE))
                         }
@@ -139,23 +137,16 @@ class BottomPlayerView : LinearLayout {
                             context.sendBroadcast(Intent(CLIENT_BROADCAST_ONSTOP))
                             true
                         }
-                    }, LayoutParams(getPx(35), getPx(35)).apply {
-                        // gravity = Gravity.CENTER_VERTICAL
-                        //setMargins(getPx(5), getPx(5), getPx(5), getPx(5))
-                    })
+                    }, LayoutParams(getPx(35), getPx(35)))
                     addView(AppCompatImageButton(context).apply {
                         //imageButton_next = this
                         background =
-                            ContextCompat.getDrawable(context, R.drawable.ic_mini_play_next)
+                            ContextCompat.getDrawable(context, R.drawable.ic_playerbar_next)
                         setOnClickListener {
 
                         }
-                    }, LayoutParams(getPx(30), getPx(30)).apply {
-                        //setMargins(getPx(5), getPx(7), getPx(5), getPx(5))
-                    })
-                }, LayoutParams(WRAP_CONTENT, MATCH_PARENT).apply {
-                    //weight = 72f
-                })
+                    }, LayoutParams(getPx(20), getPx(20)))
+                }, LayoutParams(WRAP_CONTENT, MATCH_PARENT))
             },
             LayoutParams(
                 MATCH_PARENT,

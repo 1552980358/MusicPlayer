@@ -4,7 +4,7 @@
     <dimen name="playerActivity_subItem_marginLeftRightWider">@dimen/dp_30</dimen>
     <dimen name="playerActivity_subItem_marginLeftRightNarrower">@dimen/dp_10</dimen>
     <dimen name="playerActivity_last_next_marginLeftRight">@dimen/dp_5</dimen>
-    <dimen name="playerActivity_subItem_size">@dimen/dp_30</dimen>
-    <dimen name="playerActivity_last_next_size">@dimen/dp_45</dimen>
+    <dimen name="playerActivity_subItem_size">@dimen/dp_25</dimen>
+    <dimen name="playerActivity_last_next_size">@dimen/dp_30</dimen>
     <dimen name="playerActivity_controller_size">@dimen/dp_60</dimen>
 </resources>
