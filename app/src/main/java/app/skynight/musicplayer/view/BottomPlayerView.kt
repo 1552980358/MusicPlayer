@@ -14,6 +14,8 @@ import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.content.ContextCompat
 import app.skynight.musicplayer.MainApplication
 import app.skynight.musicplayer.R
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_LAST
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_NEXT
 import app.skynight.musicplayer.util.UnitUtil.Companion.getPx
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_ONPAUSE
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_ONSTART
@@ -123,6 +125,11 @@ class BottomPlayerView : LinearLayout {
                         //imageButton_last = this
                         background =
                             ContextCompat.getDrawable(context, R.drawable.ic_playerbar_last)
+                        isClickable = true
+                        isFocusable = true
+                        setOnClickListener {
+                            context.sendBroadcast(Intent(CLIENT_BROADCAST_LAST))
+                        }
                     }, LayoutParams(getPx(20), getPx(20)))
 
                     addView(AppCompatCheckBox(context).apply {
@@ -142,8 +149,10 @@ class BottomPlayerView : LinearLayout {
                         //imageButton_next = this
                         background =
                             ContextCompat.getDrawable(context, R.drawable.ic_playerbar_next)
+                        isClickable = true
+                        isFocusable = true
                         setOnClickListener {
-
+                            context.sendBroadcast(Intent(CLIENT_BROADCAST_NEXT))
                         }
                     }, LayoutParams(getPx(20), getPx(20)))
                 }, LayoutParams(WRAP_CONTENT, MATCH_PARENT))
