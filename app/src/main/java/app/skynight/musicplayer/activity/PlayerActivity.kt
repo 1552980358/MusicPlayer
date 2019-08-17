@@ -1,5 +1,6 @@
 package app.skynight.musicplayer.activity
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -32,6 +33,7 @@ import app.skynight.musicplayer.util.UnitUtil.Companion.getTime
 import app.skynight.musicplayer.view.MusicAlbumRoundedImageView
 import kotlinx.android.synthetic.main.activity_player.*
 import android.widget.SeekBar.OnSeekBarChangeListener
+import androidx.core.app.ActivityCompat
 import app.skynight.musicplayer.util.log
 import app.skynight.musicplayer.util.Player
 
@@ -163,6 +165,7 @@ class PlayerActivity : AppCompatActivity() {
                 seekBarOnTouched = false
             }
         })
+
         startThread()
     }
 
@@ -281,15 +284,12 @@ class PlayerActivity : AppCompatActivity() {
                     resources, Bitmap.createBitmap(
                         tmp,
                         if (tmp.width <= resources.displayMetrics.widthPixels) 0 else (tmp.width - resources.displayMetrics.widthPixels) / 2,
-                        //0,
                         0,
                         resources.displayMetrics.widthPixels,
                         resources.displayMetrics.heightPixels,
                         null,
                         true
-                    ).apply {
-                        log("x,y", "$width $height")
-                    }
+                    )
                 )
 
                 runOnUiThread { backgroundDrawerLayout.background = drawable }
@@ -332,5 +332,4 @@ class PlayerActivity : AppCompatActivity() {
         }
         super.onDestroy()
     }
-
 }

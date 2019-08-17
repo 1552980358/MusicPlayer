@@ -72,6 +72,7 @@ class Player private constructor() {
         }.start()
         mediaPlayer = MediaPlayer()
         mediaPlayer.setOnCompletionListener {
+            paused = 0
             when (playingType) {
                 Companion.PlayingType.CYCLE -> {
                     playNext()
@@ -113,8 +114,7 @@ class Player private constructor() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             MainApplication.getMainApplication().startForegroundService(
                 Intent(
-                    MainApplication.getMainApplication(),
-                    PlayService::class.java
+                    MainApplication.getMainApplication(), PlayService::class.java
                 )
             )
             return
@@ -124,6 +124,7 @@ class Player private constructor() {
     }
 
     private var paused = 0
+
     @Suppress("unused")
     @Synchronized
     fun onPause() {
@@ -135,17 +136,6 @@ class Player private constructor() {
         }
         log("player", "onPause")
         MainApplication.sendBroadcast(SERVER_BROADCAST_ONPAUSE)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            MainApplication.getMainApplication().startForegroundService(
-                Intent(
-                    MainApplication.getMainApplication(),
-                    PlayService::class.java
-                )
-            )
-            return
-        }
-        MainApplication.getMainApplication()
-            .startService(Intent(MainApplication.getMainApplication(), PlayService::class.java))
     }
 
     @Suppress("unused")
@@ -158,17 +148,6 @@ class Player private constructor() {
             e.printStackTrace()
         }
         MainApplication.sendBroadcast(SERVER_BROADCAST_ONSTOP)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            MainApplication.getMainApplication().startForegroundService(
-                Intent(
-                    MainApplication.getMainApplication(),
-                    PlayService::class.java
-                )
-            )
-            return
-        }
-        MainApplication.getMainApplication()
-            .startService(Intent(MainApplication.getMainApplication(), PlayService::class.java))
     }
 
     @Suppress("unused")
@@ -244,6 +223,7 @@ class Player private constructor() {
 
     @Synchronized
     fun changeMusic() {
+        paused = 0
         try {
             mediaPlayer.stop()
             mediaPlayer.reset()
@@ -270,8 +250,7 @@ class Player private constructor() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             MainApplication.getMainApplication().startForegroundService(
                 Intent(
-                    MainApplication.getMainApplication(),
-                    PlayService::class.java
+                    MainApplication.getMainApplication(), PlayService::class.java
                 )
             )
             return
@@ -303,5 +282,9 @@ class Player private constructor() {
         } catch (e: Exception) {
             //
         }
+    }
+
+    fun getMediaPlayer(): MediaPlayer {
+        return mediaPlayer
     }
 }

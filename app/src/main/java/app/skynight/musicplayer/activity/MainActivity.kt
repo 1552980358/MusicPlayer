@@ -25,6 +25,7 @@ class MainActivity : BaseSmallPlayerActivity() {
 
         log("MainActivity", "- setContentView")
         setContentView(R.layout.activity_main)
+        setPlayerActivityFitsSystemWindows()
         if (MainApplication.customize) {
             appBarLayout.stateListAnimator = null
         }

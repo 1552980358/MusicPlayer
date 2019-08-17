@@ -39,7 +39,7 @@ open class BaseSmallPlayerActivity : BaseAppCompatActivity() {
 
     /* Execute after setContentView when needed, otherwise useless */
     @Suppress("unused")
-    fun setFitSystemWindows() {
+    fun setPlayerActivityFitsSystemWindows() {
         try {
             relativeLayout.fitsSystemWindows = true
         } catch (e: Exception) {
@@ -65,8 +65,7 @@ open class BaseSmallPlayerActivity : BaseAppCompatActivity() {
                     //MainApplication.playerForeground = true
                     startActivity(
                         Intent(
-                            this@BaseSmallPlayerActivity,
-                            PlayerActivity::class.java
+                            this@BaseSmallPlayerActivity, PlayerActivity::class.java
                         )
                     )
                     //overridePendingTransition(R.anim.anim_exit_down2top, R.anim.anim_enter_down2top)
@@ -95,7 +94,8 @@ open class BaseSmallPlayerActivity : BaseAppCompatActivity() {
                         }
                         SERVER_BROADCAST_MUSICCHANGE -> {
                             val info = Player.getCurrentMusicInfo()
-                            bottomPlayerView.checkBox_controller.isChecked = Player.getPlayer.isPlaying()
+                            bottomPlayerView.checkBox_controller.isChecked =
+                                Player.getPlayer.isPlaying()
                             bottomPlayerView.textView_title.text = info.title()
                             bottomPlayerView.textView_subTitle.text = info.artist()
                             bottomPlayerView.imageView_album.setImageBitmap(info.albumPic())

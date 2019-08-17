@@ -5,9 +5,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Bitmap
 import android.os.Build
 import android.os.IBinder
+import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.media.app.NotificationCompat
 import app.skynight.musicplayer.R
@@ -43,10 +43,9 @@ class PlayService : Service() {
     override fun onCreate() {
         super.onCreate()
         log("PlayService", "~ onCreate")
-        val musicInfo = Player.getCurrentMusicInfo()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel(
-                CHANNEL, musicInfo.title(), NotificationManager.IMPORTANCE_NONE
+                CHANNEL, "PlayerNotification", NotificationManager.IMPORTANCE_HIGH
             ).also {
                 (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).apply {
                     createNotificationChannel(it)
@@ -54,6 +53,7 @@ class PlayService : Service() {
             }
         }
         startForeground(1, updateNotify())
+
         val notificationManager = NotificationManagerCompat.from(this)
         registerReceiver(object : BroadcastReceiver() {
             override fun onReceive(p0: Context?, p1: Intent?) {
@@ -69,21 +69,27 @@ class PlayService : Service() {
 
     private fun updateNotify(): Notification {
         System.gc()
+        log("PlayService", "updateNotify ${Player.getPlayer.isPlaying()}")
         val musicInfo = Player.getCurrentMusicInfo()
         return androidx.core.app.NotificationCompat.Builder(this, CHANNEL)
             .apply {
-                setLargeIcon(Bitmap.createBitmap(musicInfo.albumPic()))
-                setContentTitle(musicInfo.title()).setContentText(musicInfo.artist())
-                setSmallIcon(R.mipmap.ic_launcher).setOnlyAlertOnce(true).setOngoing(true)
-                setStyle(NotificationCompat.MediaStyle())
-                setContentIntent(PendingIntent.getActivity(this@PlayService, 0, Intent(this@PlayService, PlayerActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT))
+                setLargeIcon(musicInfo.albumPic())
+                setContentTitle(musicInfo.title())
+                setContentText(musicInfo.artist())
+                setSmallIcon(R.mipmap.ic_launcher)
+                setStyle(NotificationCompat.MediaStyle()
+                    .setShowActionsInCompactView(0, 1, 2)
+                    .setShowCancelButton(true)
+                    .setMediaSession(MediaSessionCompat(this@PlayService, "MediaSessionCompat").sessionToken)
+                )
                 addAction(
                     R.drawable.ic_noti_last,
                     CLIENT_BROADCAST_LAST,
                     PendingIntent.getBroadcast(this@PlayService, 0, Intent(CLIENT_BROADCAST_LAST), 0)
                 )
                 if (Player.getPlayer.isPlaying()) {
-                    setAutoCancel(false)
+                    //setAutoCancel(true)
+                    //setOngoing(true)
                     addAction(
                         R.drawable.ic_noti_pause, CLIENT_BROADCAST_ONPAUSE, PendingIntent.getBroadcast(
                             this@PlayService, 0, Intent(
@@ -92,7 +98,8 @@ class PlayService : Service() {
                         )
                     )
                 } else {
-                    setAutoCancel(true)
+                    //setOngoing(false)
+                    //setAutoCancel(true)
                     addAction(
                         R.drawable.ic_noti_play, CLIENT_BROADCAST_ONSTART, PendingIntent.getBroadcast(
                             this@PlayService, 0, Intent(
@@ -106,6 +113,7 @@ class PlayService : Service() {
                     CLIENT_BROADCAST_NEXT,
                     PendingIntent.getBroadcast(this@PlayService, 0, Intent(CLIENT_BROADCAST_NEXT), 0)
                 )
+                setContentIntent(PendingIntent.getActivity(this@PlayService, 0, Intent(this@PlayService, PlayerActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT))
             }.build()
     }
 

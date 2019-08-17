@@ -81,6 +81,7 @@ class MainApplication : Application() {
                 }
             })
             log("MainApplication", "RegisterBroadcast")
+
         }.start()
 
         sharedPreferences
