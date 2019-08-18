@@ -1,22 +1,28 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--suppress DeprecatedClassUsageInspection -->
+<?xml version="1.0" encoding="utf-8"?><!--suppress DeprecatedClassUsageInspection -->
 <PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:iconSpaceReserved="false" >
 
     <!--suppress DeprecatedClassUsageInspection -->
-    <PreferenceCategory android:title="@string/abc_settings_player_title" >
+    <PreferenceCategory
+        android:title="@string/abc_settings_player_title"
+        app:iconSpaceReserved="false" >
 
         <SwitchPreference
             android:key="settingPreference_bgAlbum"
+            app:iconSpaceReserved="false"
             android:title="@string/abc_settings_player_bgAlbum_title"
-            android:summary="@string/abc_settings_player_bgAlbum_subtitle"/>
+            android:summary="@string/abc_settings_player_bgAlbum_subtitle" />
 
         <SwitchPreference
+            app:iconSpaceReserved="false"
             android:key="settingPreference_buttons"
             android:title="@string/abc_settings_player_buttons_title"
             android:summary="@string/abc_settings_player_buttons_subtitle" />
 
         <SwitchPreference
+            app:iconSpaceReserved="false"
             android:key="settingPreference_filter"
             android:title="@string/abc_settings_player_filter_title"
             android:summary="@string/abc_settings_player_filter_subtitle" />
@@ -24,10 +30,13 @@
     </PreferenceCategory >
 
     <!--suppress DeprecatedClassUsageInspection -->
-    <PreferenceCategory android:title="@string/abc_settings_knownIssues_title" >
+    <PreferenceCategory
+        android:title="@string/abc_settings_knownIssues_title"
+        app:iconSpaceReserved="false" >
         <Preference
+            app:iconSpaceReserved="false"
             android:title="@string/abc_settings_knownIssues_tag1_title"
-            android:summary="@string/abc_settings_knownIssues_tag1_subtitle"/>
+            android:summary="@string/abc_settings_knownIssues_tag1_subtitle" />
     </PreferenceCategory >
 
 </PreferenceScreen >

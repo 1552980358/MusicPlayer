@@ -11,6 +11,7 @@ import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
 import android.text.TextUtils
+import android.view.MotionEvent
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -70,15 +71,42 @@ class PlayerActivity : AppCompatActivity() {
             layout_filter.setBackgroundColor(ContextCompat.getColor(this, R.color.transparent))
         }
 
-        relativeLayout.addView(MusicAlbumRoundedImageView(this).apply {
-            albumPic = this
-        }, RelativeLayout.LayoutParams(
-            resources.displayMetrics.widthPixels * 2 / 3,
-            resources.displayMetrics.widthPixels * 2 / 3
-        ).apply {
-            addRule(CENTER_HORIZONTAL)
-            addRule(CENTER_VERTICAL)
-        })
+        relativeLayout.apply {
+            addView(MusicAlbumRoundedImageView(this@PlayerActivity).apply {
+                albumPic = this
+            }, RelativeLayout.LayoutParams(
+                resources.displayMetrics.widthPixels * 2 / 3,
+                resources.displayMetrics.widthPixels * 2 / 3
+            ).apply {
+                addRule(CENTER_HORIZONTAL)
+                addRule(CENTER_VERTICAL)
+            })
+            var last = 0f
+            val width = resources.displayMetrics.widthPixels / 10
+            setOnTouchListener { _, motionEvent ->
+                log("relativeLayout", "onTouch ${motionEvent.x} ${motionEvent.y}")
+                when (motionEvent.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        last = motionEvent.y
+                        return@setOnTouchListener true
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        log("ACTION_UP", "ACTION_UP")
+                        if (last - motionEvent.x < -width) {
+                            sendBroadcast(Intent(CLIENT_BROADCAST_LAST))
+                            return@setOnTouchListener true
+                        }
+                        if (last - motionEvent.x > width) {
+                            sendBroadcast(Intent(CLIENT_BROADCAST_NEXT))
+                            return@setOnTouchListener true
+                        }
+
+                        return@setOnTouchListener false
+                    }
+                    else -> return@setOnTouchListener false
+                }
+            }
+        }
 
         toolbar.apply {
             setSupportActionBar(this)

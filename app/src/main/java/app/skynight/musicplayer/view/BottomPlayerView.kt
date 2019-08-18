@@ -130,7 +130,7 @@ class BottomPlayerView : LinearLayout {
                         setOnClickListener {
                             context.sendBroadcast(Intent(CLIENT_BROADCAST_LAST))
                         }
-                    }, LayoutParams(getPx(20), getPx(20)))
+                    }, LayoutParams(getPx(30), getPx(30)))
 
                     addView(AppCompatCheckBox(context).apply {
                         checkBox_controller = this
@@ -144,7 +144,7 @@ class BottomPlayerView : LinearLayout {
                             context.sendBroadcast(Intent(CLIENT_BROADCAST_ONSTOP))
                             true
                         }
-                    }, LayoutParams(getPx(35), getPx(35)))
+                    }, LayoutParams(getPx(45), getPx(45)))
                     addView(AppCompatImageButton(context).apply {
                         //imageButton_next = this
                         background =
@@ -154,7 +154,7 @@ class BottomPlayerView : LinearLayout {
                         setOnClickListener {
                             context.sendBroadcast(Intent(CLIENT_BROADCAST_NEXT))
                         }
-                    }, LayoutParams(getPx(20), getPx(20)))
+                    }, LayoutParams(getPx(30), getPx(30)))
                 }, LayoutParams(WRAP_CONTENT, MATCH_PARENT))
             },
             LayoutParams(

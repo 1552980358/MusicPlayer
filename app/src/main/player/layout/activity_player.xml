@@ -36,6 +36,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_0"
                 android:layout_weight="8"
+                android:clickable="true"
+                android:focusable="true"
                 android:id="@+id/relativeLayout" >
 
             </RelativeLayout >
