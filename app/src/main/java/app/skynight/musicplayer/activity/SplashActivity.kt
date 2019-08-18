@@ -29,7 +29,7 @@ class SplashActivity : AppCompatActivity() {
                     IntroActivity::class.java
                 } else {
                     log("SplashActivity", "startCheckPermissionActivity\n==========")
-                    CheckPermissionActivity::class.java
+                    LoadingActivity::class.java
                 }
             )
         )

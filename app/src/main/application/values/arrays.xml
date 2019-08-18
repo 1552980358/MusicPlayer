@@ -1,14 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources >
-    <array name="settingPreference_searchMusicThread_entries">
-        <item>Half of Processors Number Thread Mode\n(Default)</item>
-        <item>Processors Number Thread Mode</item>
-        <item>Super Thread Mode (double processors number)</item>
-    </array>
 
-    <array name="settingPreference_searchMusicThread_entriesValue">
-        <item>HALF</item>
-        <item>PROCESSOR</item>
-        <item>SUPER</item>
-    </array>
 </resources >

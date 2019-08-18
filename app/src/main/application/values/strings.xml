@@ -25,13 +25,15 @@
     <string name="abc_musicList_full">@string/abc_main_list_full</string>
 
     <string name="abc_settings_title">Settings</string>
-    <string name="abc_settings_bgLoading">Background Task is running, please wait until the completion!</string>
-    <string name="abc_settings_reloadFiles_title">Music File(s) settings</string>
-    <string name="abc_settings_reloadFiles_tag1_title">Reload All Music Files</string>
-    <string name="abc_settings_reloadFiles_tag1_subtitle">Click to reload all music files in your device</string>
-    <string name="abc_settings_reloadFiles_tag2_title">Reload Thread(s)</string>
-    <string name="abc_settings_reloadFiles_tag2_subtitle">Select number of thread(s) used to load music files</string>
-    <string name="abc_settings_reloadFiles_tag2_dialog">Select Number of Thread(s)…</string>
+
+    <string name="abc_settings_player_title">Player Page</string>
+    <string name="abc_settings_player_bgAlbum_title">Player Page Background</string>
+    <string name="abc_settings_player_bgAlbum_subtitle">Switch off as album cover, else as color taken from album cover</string>
+    <string name="abc_settings_player_buttons_title">Colors of buttons</string>
+    <string name="abc_settings_player_buttons_subtitle">Switch off as static white, else as taken from album cover</string>
+    <string name="abc_settings_player_filter_title">Switch off gray half transparent filter</string>
+    <string name="abc_settings_player_filter_subtitle">Background gray and transparent filter, preventing overlap of statusbar icons</string>
+
     <string name="abc_settings_knownIssues_title">Known Issue(s)</string>
     <string name="abc_settings_knownIssues_tag1_title">Removable Storage(Micro SDCard) not accessible</string>
     <string name="abc_settings_knownIssues_tag1_subtitle">Requires adapting each version from Android L to Android O, even Android Q will change APIs about that…

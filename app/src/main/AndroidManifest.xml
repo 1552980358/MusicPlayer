@@ -34,7 +34,7 @@
             android:name=".activity.IntroActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.CheckPermissionActivity"
+            android:name=".activity.LoadingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <!-- 3nd -->
         <activity
@@ -55,12 +55,6 @@
             android:name=".activity.BottomListActivity"
             android:theme="@style/AppTheme.NoActionBar.TransparentBackground" />
 
-        <!-- Service -->
-        <service
-            android:name=".service.PlayService"
-            android:enabled="true"
-            android:exported="true"
-            tools:ignore="ExportedService" />
     </application >
 
 </manifest >

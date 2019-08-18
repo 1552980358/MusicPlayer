@@ -9,4 +9,6 @@
     <color name="player_widget_bg">#50FFFFFF</color>
 
     <color name="ripple_color">#FF606060</color>
+
+    <color name="player_filter">#80000000</color>
 </resources>

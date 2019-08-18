@@ -1,6 +1,5 @@
 package app.skynight.musicplayer.activity
 
-import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -33,9 +32,10 @@ import app.skynight.musicplayer.util.UnitUtil.Companion.getTime
 import app.skynight.musicplayer.view.MusicAlbumRoundedImageView
 import kotlinx.android.synthetic.main.activity_player.*
 import android.widget.SeekBar.OnSeekBarChangeListener
-import androidx.core.app.ActivityCompat
 import app.skynight.musicplayer.util.log
 import app.skynight.musicplayer.util.Player
+import app.skynight.musicplayer.util.setColorFilter
+import mkaflowski.mediastylepalette.MediaNotificationProcessor
 
 /**
  * @FILE:   PlayerActivity
@@ -50,6 +50,7 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var albumPic: MusicAlbumRoundedImageView
     private var thread: Thread? = null
     private var seekBarOnTouched = false
+    private var tintColor = 0
 
     private fun setBackgroundProp() {
         window.decorView.systemUiVisibility =
@@ -65,6 +66,9 @@ class PlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setBackgroundProp()
         setContentView(R.layout.activity_player)
+        if (Player.rmFilter) {
+            layout_filter.setBackgroundColor(ContextCompat.getColor(this, R.color.transparent))
+        }
 
         relativeLayout.addView(MusicAlbumRoundedImageView(this).apply {
             albumPic = this
@@ -119,6 +123,9 @@ class PlayerActivity : AppCompatActivity() {
                     imageButton_playForm.setBackgroundResource(R.drawable.ic_player_cycle)
                 }
             }
+            if (Player.buttons) {
+                imageButton_playForm.background.setTint(tintColor)
+            }
         }
 
         imageButton_last.setOnClickListener { sendBroadcast(Intent(CLIENT_BROADCAST_LAST)) }
@@ -165,8 +172,6 @@ class PlayerActivity : AppCompatActivity() {
                 seekBarOnTouched = false
             }
         })
-
-        startThread()
     }
 
     private fun startThread() {
@@ -212,7 +217,14 @@ class PlayerActivity : AppCompatActivity() {
                             checkBox_playControl.isChecked = false
                         }
                         SERVER_BROADCAST_MUSICCHANGE -> {
+                            try {
+                                thread!!.interrupt()
+                                thread = null
+                            } catch (e: Exception) {
+                                //e.printStackTrace()
+                            }
                             onUpdateMusic()
+                            startThread()
                         }
                     }
                 }
@@ -234,76 +246,80 @@ class PlayerActivity : AppCompatActivity() {
         super.onResume()
         registerReceiver()
         onUpdateMusic()
+        startThread()
     }
 
     fun onUpdateMusic() {
         val musicInfo = Player.getCurrentMusicInfo()
+        val alPic = musicInfo.albumPic()
         Thread {
-            try {/*
-                val pic = musicInfo.albumPic()
-                val tmp = Bitmap.createScaledBitmap(
-                    pic,
-                    resources.displayMetrics.heightPixels / pic.height * pic.width,
-                    resources.displayMetrics.heightPixels,
-                    false
-                )*//*
-                val drawable = BitmapDrawable(
-                    resources, blurBitmap(
-                        this, Bitmap.createBitmap(
+            try {
+
+                val mediaNotificationProcessor = MediaNotificationProcessor(this, alPic)
+
+                if (Player.bgColor) {
+                    runOnUiThread {
+                        backgroundDrawerLayout.setBackgroundColor(
+                            mediaNotificationProcessor.backgroundColor
+                        )
+                    }
+
+                } else {
+                    val tmp =
+                        Bitmap.createBitmap(alPic, 0, 0, alPic.width, alPic.height, Matrix().apply {
+                            val scale =
+                                resources.displayMetrics.heightPixels / alPic.height.toFloat()
+                            postScale(scale, scale)
+                        }, true)
+
+                    val drawable = BitmapDrawable(
+                        resources, Bitmap.createBitmap(
                             tmp,
                             if (tmp.width <= resources.displayMetrics.widthPixels) 0 else (tmp.width - resources.displayMetrics.widthPixels) / 2,
                             0,
                             resources.displayMetrics.widthPixels,
-                            tmp.height,
+                            resources.displayMetrics.heightPixels,
                             null,
-                            false
-                        ), 25f
+                            true
+                        )
                     )
-                )*/
-/*
-                val pic = musicInfo.albumPic()
-                val width = resources.displayMetrics.heightPixels / pic.height * pic.width
-                val height = resources.displayMetrics.heightPixels
-                log("w*h", "w:$width h:$height ")
-                val tmp = Bitmap.createScaledBitmap(
-                    pic,
-                    width,
-                    height,
-                    true
-                )
+                    runOnUiThread { backgroundDrawerLayout.background = drawable }
+                }
 
- */
+                tintColor = mediaNotificationProcessor.primaryTextColor
+                if (Player.buttons) {
+                    runOnUiThread {
+                        toolbar.setTitleTextColor(mediaNotificationProcessor.primaryTextColor)
+                        toolbar.setSubtitleTextColor(mediaNotificationProcessor.secondaryTextColor)
+                        toolbar.navigationIcon!!.setTint(mediaNotificationProcessor.secondaryTextColor)
+                        textView_timeTotal.setTextColor(mediaNotificationProcessor.primaryTextColor)
+                        textView_timePass.setTextColor(mediaNotificationProcessor.primaryTextColor)
+                        try {
+                            imageButton_last.background.setTint(mediaNotificationProcessor.primaryTextColor)
+                            imageButton_playForm.background.setTint(mediaNotificationProcessor.primaryTextColor)
+                            imageButton_next.background.setTint(mediaNotificationProcessor.primaryTextColor)
+                            imageButton_list.background.setTint(mediaNotificationProcessor.primaryTextColor)
+                            checkBox_playControl.background.setTint(mediaNotificationProcessor.primaryTextColor)
+                            seekBar.thumb.setColorFilter(mediaNotificationProcessor.primaryTextColor)
+                            seekBar.progressDrawable.setTint(mediaNotificationProcessor.primaryTextColor)
+                            seekBar.indeterminateDrawable.setTint(mediaNotificationProcessor.secondaryTextColor)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
 
-                val pic = musicInfo.albumPic()
-                val tmp = Bitmap.createBitmap(pic, 0, 0, pic.width, pic.height, Matrix().apply {
-                    val scale = resources.displayMetrics.heightPixels / pic.height.toFloat()
-                    postScale(scale, scale)
-                }, true)
-
-                val drawable = BitmapDrawable(
-                    resources, Bitmap.createBitmap(
-                        tmp,
-                        if (tmp.width <= resources.displayMetrics.widthPixels) 0 else (tmp.width - resources.displayMetrics.widthPixels) / 2,
-                        0,
-                        resources.displayMetrics.widthPixels,
-                        resources.displayMetrics.heightPixels,
-                        null,
-                        true
-                    )
-                )
-
-                runOnUiThread { backgroundDrawerLayout.background = drawable }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }.start()
         toolbar.title = musicInfo.title()
         toolbar.subtitle = musicInfo.artist()
-        albumPic.setImageBitmap(musicInfo.albumPic())
+        albumPic.setImageBitmap(alPic)
         textView_timeTotal.text = getTime(musicInfo.duration())
         seekBar.max = musicInfo.duration()
         checkBox_playControl.isChecked = Player.getPlayer.isPlaying()
-        startThread()
+        //startThread()
     }
 
     override fun onPause() {

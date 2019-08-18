@@ -35,13 +35,16 @@ class MusicListActivity : BaseSmallPlayerActivity() {
                 val list = when (code) {
                     LIST_ALL -> {
                         log("MusicListActivity", "LIST_ALL")
-                        while (!Player.fullList) {
+                        /*
+                        while (!Player.launchDone) {
                             try {
                                 Thread.sleep(20)
                             } catch (e: Exception) {
                                 //e.printStackTrace()
                             }
                         }
+
+                         */
                         MusicClass.getMusicClass.fullList
                     }
                     ERROR_CODE -> {
@@ -51,6 +54,7 @@ class MusicListActivity : BaseSmallPlayerActivity() {
                         log("MusicListActivity", code)
                         PlayList.playListList[code].apply {
                             runOnUiThread { textView_size.text = getPlayList().size.toString() }
+                            /*
                             while (!Player.playList) {
                                 try {
                                     Thread.sleep(20)
@@ -58,6 +62,7 @@ class MusicListActivity : BaseSmallPlayerActivity() {
                                     //e.printStackTrace()
                                 }
                             }
+                            */
                         }.getPlayList()
                     }
                 }
@@ -103,8 +108,7 @@ class MusicListActivity : BaseSmallPlayerActivity() {
                 onBackPressed()
             }
             toolbar.overflowIcon = ContextCompat.getDrawable(
-                this@MusicListActivity,
-                R.drawable.ic_toolbar_more
+                this@MusicListActivity, R.drawable.ic_toolbar_more
             )
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 

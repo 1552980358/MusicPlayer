@@ -1,24 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--suppress DeprecatedClassUsageInspection -->
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceCategory android:title="@string/abc_settings_reloadFiles_title" >
+    <!--suppress DeprecatedClassUsageInspection -->
+    <PreferenceCategory android:title="@string/abc_settings_player_title" >
 
-        <Preference
-            android:title="@string/abc_settings_reloadFiles_tag1_title"
-            android:summary="@string/abc_settings_reloadFiles_tag1_subtitle"
-            android:key="settingPreference_searchMusic" />
+        <SwitchPreference
+            android:key="settingPreference_bgAlbum"
+            android:title="@string/abc_settings_player_bgAlbum_title"
+            android:summary="@string/abc_settings_player_bgAlbum_subtitle"/>
 
-        <ListPreference
-            android:key="settingPreference_searchMusicThread"
-            android:dialogTitle="@string/abc_settings_reloadFiles_tag2_dialog"
-            android:title="@string/abc_settings_reloadFiles_tag2_title"
-            android:summary="@string/abc_settings_reloadFiles_tag2_subtitle"
-            android:defaultValue="SINGLE"
-            android:entries="@array/settingPreference_searchMusicThread_entries"
-            android:entryValues="@array/settingPreference_searchMusicThread_entriesValue" />
+        <SwitchPreference
+            android:key="settingPreference_buttons"
+            android:title="@string/abc_settings_player_buttons_title"
+            android:summary="@string/abc_settings_player_buttons_subtitle" />
+
+        <SwitchPreference
+            android:key="settingPreference_filter"
+            android:title="@string/abc_settings_player_filter_title"
+            android:summary="@string/abc_settings_player_filter_subtitle" />
+
     </PreferenceCategory >
 
+    <!--suppress DeprecatedClassUsageInspection -->
     <PreferenceCategory android:title="@string/abc_settings_knownIssues_title" >
         <Preference
             android:title="@string/abc_settings_knownIssues_tag1_title"

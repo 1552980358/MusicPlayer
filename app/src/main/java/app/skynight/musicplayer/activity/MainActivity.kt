@@ -13,6 +13,7 @@ import app.skynight.musicplayer.base.BaseSmallPlayerActivity
 import app.skynight.musicplayer.fragment.activity_main.MainFragment
 import app.skynight.musicplayer.fragment.activity_main.PlayListFragment
 import app.skynight.musicplayer.util.FragmentPagerAdapter
+import app.skynight.musicplayer.util.NotificationUtil
 import app.skynight.musicplayer.util.log
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -29,6 +30,8 @@ class MainActivity : BaseSmallPlayerActivity() {
         if (MainApplication.customize) {
             appBarLayout.stateListAnimator = null
         }
+
+        NotificationUtil.getNotificationUtil
 
         log("MainActivity", "supportActionBar")
         setSupportActionBar(toolbar)
@@ -66,6 +69,7 @@ class MainActivity : BaseSmallPlayerActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
         super.onOptionsItemSelected(item)
         log("MainActivity", "onOptionsItemSelected")
         when (item!!.itemId) {

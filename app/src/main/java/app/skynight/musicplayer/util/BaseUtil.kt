@@ -17,3 +17,4 @@ fun makeToast(content: Int): Unit = makeToast(MainApplication.getMainApplication
 fun makeToast(content: CharSequence): Unit = Toast.makeText(MainApplication.getMainApplication(), content, Toast.LENGTH_SHORT).show()
 
 fun log(tag: String, msg: Any?): Any = try { Log.e(tag, msg.toString()) } catch (e: Exception) { e.printStackTrace() }
+

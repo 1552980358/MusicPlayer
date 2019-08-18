@@ -1,6 +1,7 @@
 package app.skynight.musicplayer.util
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Build
@@ -10,7 +11,6 @@ import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCA
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONSTART
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONSTOP
 import app.skynight.musicplayer.R
-import app.skynight.musicplayer.service.PlayService
 
 /**
  * @FILE:   PlayerUtil
@@ -30,8 +30,7 @@ class Player private constructor() {
         const val LIST_ALL = -1
         const val LIST_HEART = -2
 
-        var fullList = false
-        var playList = false
+        var launchDone = false
 
         var currentMusic = 0
         var currentList = LIST_ALL
@@ -59,17 +58,27 @@ class Player private constructor() {
             }
         }
 
+        var bgColor = false
+        var buttons = false
+        var rmFilter = false
     }
 
     init {
-        Thread {
-            MusicClass.getMusicClass
-            fullList = true
-        }.start()
-        Thread {
-            PlayList.loadAllPlayLists()
-            playList = true
-        }.start()
+        //Thread {
+        MusicClass.getMusicClass
+        //}.start()
+        //Thread {
+        /*
+        PlayList.loadAllPlayLists()
+        playList = true
+         */
+        MainApplication.getMainApplication()
+            .getSharedPreferences("app.skynight.musicplayer_preferences", MODE_PRIVATE).apply {
+                bgColor = getBoolean("settingPreference_bgAlbum", false)
+                buttons = getBoolean("settingPreference_buttons", false)
+                rmFilter = getBoolean("settingPreference_filter", false)
+            }
+        //}.start()
         mediaPlayer = MediaPlayer()
         mediaPlayer.setOnCompletionListener {
             paused = 0
@@ -98,6 +107,28 @@ class Player private constructor() {
                 }
             }
         }
+        launchDone = true
+    }
+
+    private var paused = 0
+
+    @Suppress("unused")
+    @Synchronized
+    fun setWakeMode(context: Context, mode: Int) {
+        mediaPlayer.setWakeMode(context, mode)
+    }
+
+    private var playingType = PlayingType.CYCLE
+
+    @Suppress("unused")
+    @Synchronized
+    fun setPlayingType(playingType: PlayingType = Companion.PlayingType.CYCLE) {
+        this.playingType = playingType
+        mediaPlayer.isLooping = playingType == Companion.PlayingType.SINGLE
+    }
+
+    fun getPlayingType(): PlayingType {
+        return playingType
     }
 
     @Suppress("unused")
@@ -106,24 +137,13 @@ class Player private constructor() {
         try {
             changeMusic()
             mediaPlayer.seekTo(paused)
+            paused = 0
         } catch (e: Exception) {
             e.printStackTrace()
         }
         log("player", "onStart")
         MainApplication.sendBroadcast(SERVER_BROADCAST_ONSTART)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            MainApplication.getMainApplication().startForegroundService(
-                Intent(
-                    MainApplication.getMainApplication(), PlayService::class.java
-                )
-            )
-            return
-        }
-        MainApplication.getMainApplication()
-            .startService(Intent(MainApplication.getMainApplication(), PlayService::class.java))
     }
-
-    private var paused = 0
 
     @Suppress("unused")
     @Synchronized
@@ -150,27 +170,9 @@ class Player private constructor() {
         MainApplication.sendBroadcast(SERVER_BROADCAST_ONSTOP)
     }
 
-    @Suppress("unused")
-    @Synchronized
-    fun setWakeMode(context: Context, mode: Int) {
-        mediaPlayer.setWakeMode(context, mode)
-    }
-
-    private var playingType = PlayingType.CYCLE
-
-    @Suppress("unused")
-    @Synchronized
-    fun setPlayingType(playingType: PlayingType = Companion.PlayingType.CYCLE) {
-        this.playingType = playingType
-        mediaPlayer.isLooping = playingType == Companion.PlayingType.SINGLE
-    }
-
-    fun getPlayingType(): PlayingType {
-        return playingType
-    }
-
     @Synchronized
     fun playNext() {
+        paused = 0
         if (currentMusic == when (currentList) {
                 LIST_ALL -> {
                     MusicClass.getMusicClass.fullList.lastIndex
@@ -189,6 +191,7 @@ class Player private constructor() {
 
     @Synchronized
     fun playLast() {
+        paused = 0
         if (currentMusic == 0) {
             currentMusic = when (currentList) {
                 LIST_ALL -> {
@@ -223,7 +226,6 @@ class Player private constructor() {
 
     @Synchronized
     fun changeMusic() {
-        paused = 0
         try {
             mediaPlayer.stop()
             mediaPlayer.reset()
@@ -247,16 +249,6 @@ class Player private constructor() {
             e.printStackTrace()
         }
         MainApplication.sendBroadcast(SERVER_BROADCAST_MUSICCHANGE)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            MainApplication.getMainApplication().startForegroundService(
-                Intent(
-                    MainApplication.getMainApplication(), PlayService::class.java
-                )
-            )
-            return
-        }
-        MainApplication.getMainApplication()
-            .startService(Intent(MainApplication.getMainApplication(), PlayService::class.java))
     }
 
     fun isPlaying(): Boolean {
@@ -276,14 +268,17 @@ class Player private constructor() {
         return MusicClass.getMusicClass.fullList[index]
     }
 
+    @Synchronized
     fun onSeekChange(pos: Int) {
         try {
-            mediaPlayer.seekTo(pos * 1000)
+            if (mediaPlayer.isPlaying) mediaPlayer.seekTo(pos * 1000)
+            else paused = pos * 1000
         } catch (e: Exception) {
             //
         }
     }
 
+    @Suppress("unused")
     fun getMediaPlayer(): MediaPlayer {
         return mediaPlayer
     }

@@ -26,13 +26,15 @@
     <string name="abc_musicList_full">@string/abc_main_list_full</string>
 
     <string name="abc_settings_title">设置</string>
-    <string name="abc_settings_bgLoading">后台任务正在运行, 请等待完成再试!</string>
-    <string name="abc_settings_reloadFiles_title">音乐文件设置</string>
-    <string name="abc_settings_reloadFiles_tag1_title">重新搜索音乐文件</string>
-    <string name="abc_settings_reloadFiles_tag1_subtitle">重新做人?</string>
-    <string name="abc_settings_reloadFiles_tag2_title">搜索文件进程</string>
-    <string name="abc_settings_reloadFiles_tag2_subtitle">小心手机吃不消哦~</string>
-    <string name="abc_settings_reloadFiles_tag2_dialog">选择线程数量…</string>
+
+    <string name="abc_settings_player_title">播放页</string>
+    <string name="abc_settings_player_bgAlbum_title">播放页背景</string>
+    <string name="abc_settings_player_bgAlbum_subtitle">启用时从封面提取颜色, 禁用时使用专辑封面</string>
+    <string name="abc_settings_player_buttons_title">按钮颜色</string>
+    <string name="abc_settings_player_buttons_subtitle">启用时从专辑封面提取颜色, 禁用时静态白色</string>
+    <string name="abc_settings_player_filter_title">关闭灰色半透明滤镜</string>
+    <string name="abc_settings_player_filter_subtitle">背景的灰色滤镜, 防止白色背景影响状态栏</string>
+
     <string name="abc_settings_knownIssues_title">已知问题</string>
     <string name="abc_settings_knownIssues_tag1_title">外置SD卡媒体文件无法读取</string>
     <string name="abc_settings_knownIssues_tag1_subtitle">从Android L每个版本适配到Android O,甚至Android Q又要改API…\n那么, 还是等Q正式发布再加吧…</string>

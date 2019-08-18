@@ -24,26 +24,26 @@ import java.lang.Exception
 import kotlin.system.exitProcess
 
 /**
- * @FILE:   CheckPermissionActivity
+ * @FILE:   LoadingActivity
  * @AUTHOR: 1552980358
  * @DATE:   21 Jul 2019
  * @TIME:   9:16 PM
  **/
 
-class CheckPermissionActivity : AppCompatActivity() {
+class LoadingActivity : AppCompatActivity() {
     private lateinit var textView_state: TextView
     //private lateinit var textView_timer: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        log("CheckPermissionActivity", "onCreate")
+        log("LoadingActivity", "onCreate")
         super.onCreate(savedInstanceState)
         val textView_timer: TextView
         setContentView(RelativeLayout(this).apply {
             background =
-                ContextCompat.getDrawable(this@CheckPermissionActivity, R.color.activity_background)
-            log("CheckPermissionActivity", "setContentView")
+                ContextCompat.getDrawable(this@LoadingActivity, R.color.activity_background)
+            log("LoadingActivity", "setContentView")
             val imgId: Int
-            addView(AppCompatImageView(this@CheckPermissionActivity).apply {
+            addView(AppCompatImageView(this@LoadingActivity).apply {
                 setImageBitmap(BitmapFactory.decodeStream(assets.open("huli.png")))
                 id = View.generateViewId()
                 imgId = id
@@ -52,10 +52,10 @@ class CheckPermissionActivity : AppCompatActivity() {
                 addRule(RelativeLayout.CENTER_HORIZONTAL)
             })
 
-            addView(TextView(this@CheckPermissionActivity).apply {
+            addView(TextView(this@LoadingActivity).apply {
                 textView_state = this
                 id = View.generateViewId()
-                setTextColor(ContextCompat.getColor(this@CheckPermissionActivity, R.color.black))
+                setTextColor(ContextCompat.getColor(this@LoadingActivity, R.color.black))
                 textSize = resources.getDimension(R.dimen.checkPermissionActivity_state)
                 setText(R.string.checkPermission_checking)
             }, RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
@@ -63,25 +63,25 @@ class CheckPermissionActivity : AppCompatActivity() {
                 addRule(RelativeLayout.CENTER_HORIZONTAL)
             })
 
-            addView(LinearLayout(this@CheckPermissionActivity).apply {
+            addView(LinearLayout(this@LoadingActivity).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER
-                addView(TextView(this@CheckPermissionActivity).apply {
+                addView(TextView(this@LoadingActivity).apply {
                     textView_timer = this
                     text = "0"
                     setTextColor(
                         ContextCompat.getColor(
-                            this@CheckPermissionActivity,
+                            this@LoadingActivity,
                             R.color.black
                         )
                     )
                     textSize = resources.getDimension(R.dimen.checkPermissionActivity_timer)
                 })
-                addView(TextView(this@CheckPermissionActivity).apply {
+                addView(TextView(this@LoadingActivity).apply {
                     textSize = resources.getDimension(R.dimen.checkPermissionActivity_timer)
                     setTextColor(
                         ContextCompat.getColor(
-                            this@CheckPermissionActivity,
+                            this@LoadingActivity,
                             R.color.black
                         )
                     )
@@ -92,19 +92,19 @@ class CheckPermissionActivity : AppCompatActivity() {
                 addRule(RelativeLayout.CENTER_HORIZONTAL)
             })
             /*
-            addView(TextView(this@CheckPermissionActivity).apply {
+            addView(TextView(this@LoadingActivity).apply {
                 textView_timer = this
                 text = "0"
                 id = View.generateViewId()
-                setTextColor(ContextCompat.getColor(this@CheckPermissionActivity, R.color.black))
+                setTextColor(ContextCompat.getColor(this@LoadingActivity, R.color.black))
                 textSize = resources.getDimension(R.dimen.checkPermissionActivity_timer)
             }, RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
                 addRule(RelativeLayout.BELOW, textView_state.id)
                 addRule(RelativeLayout.CENTER_HORIZONTAL)
             })
-            addView(TextView(this@CheckPermissionActivity).apply {
+            addView(TextView(this@LoadingActivity).apply {
                 textSize = resources.getDimension(R.dimen.checkPermissionActivity_timer)
-                setTextColor(ContextCompat.getColor(this@CheckPermissionActivity, R.color.black))
+                setTextColor(ContextCompat.getColor(this@LoadingActivity, R.color.black))
                 text = "s"
             }, RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
                 addRule(RelativeLayout.RIGHT_OF, textView_timer.id)
@@ -115,7 +115,7 @@ class CheckPermissionActivity : AppCompatActivity() {
 
         Thread {
             var s = 0
-            while (!Player.fullList) {
+            while (!Player.launchDone) {
                 try {
                     Thread.sleep(1000)
                 } catch (e: Exception) {
@@ -127,14 +127,14 @@ class CheckPermissionActivity : AppCompatActivity() {
         }.start()
 
         Thread {
-            log("CheckPermissionActivity", "CheckPermission")
+            log("LoadingActivity", "CheckPermission")
             if (ActivityCompat.checkSelfPermission(
                     this, android.Manifest.permission.READ_EXTERNAL_STORAGE
                 ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                     this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
-                loadPlayer()
+                loadSettings()
             } else {
                 checkPermission()
             }
@@ -143,19 +143,19 @@ class CheckPermissionActivity : AppCompatActivity() {
 
     private fun createDialogView(): View {
         return ScrollView(this).apply {
-            addView(LinearLayout(this@CheckPermissionActivity).apply {
+            addView(LinearLayout(this@LoadingActivity).apply {
                 orientation = LinearLayout.VERTICAL
                 gravity = Gravity.CENTER
-                addView(LinearLayout(this@CheckPermissionActivity).apply {
+                addView(LinearLayout(this@LoadingActivity).apply {
                     orientation = LinearLayout.HORIZONTAL
-                    addView(AppCompatImageView(this@CheckPermissionActivity).apply {
+                    addView(AppCompatImageView(this@LoadingActivity).apply {
                         setImageDrawable(
                             ContextCompat.getDrawable(
-                                this@CheckPermissionActivity, R.drawable.ic_sd_card
+                                this@LoadingActivity, R.drawable.ic_sd_card
                             )
                         )
                     }, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT))
-                    addView(TextView(this@CheckPermissionActivity).apply {
+                    addView(TextView(this@LoadingActivity).apply {
                         text = getString(R.string.checkPermission_read)
                         setSingleLine()
                     }, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT))
@@ -167,16 +167,16 @@ class CheckPermissionActivity : AppCompatActivity() {
                         0
                     )
                 })
-                addView(LinearLayout(this@CheckPermissionActivity).apply {
+                addView(LinearLayout(this@LoadingActivity).apply {
                     orientation = LinearLayout.HORIZONTAL
-                    addView(AppCompatImageView(this@CheckPermissionActivity).apply {
+                    addView(AppCompatImageView(this@LoadingActivity).apply {
                         setImageDrawable(
                             ContextCompat.getDrawable(
-                                this@CheckPermissionActivity, R.drawable.ic_sd_card
+                                this@LoadingActivity, R.drawable.ic_sd_card
                             )
                         )
                     }, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT))
-                    addView(TextView(this@CheckPermissionActivity).apply {
+                    addView(TextView(this@LoadingActivity).apply {
                         text = getString(R.string.checkPermission_read)
                         setSingleLine()
                     }, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT))
@@ -206,7 +206,7 @@ class CheckPermissionActivity : AppCompatActivity() {
                 )
             }.setNegativeButton(R.string.cancel) { _, _ -> exitProcess(0) }.setCancelable(false)
             .apply {
-                this@CheckPermissionActivity.runOnUiThread { this.show() }
+                this@LoadingActivity.runOnUiThread { this.show() }
             }
     }
 
@@ -214,28 +214,28 @@ class CheckPermissionActivity : AppCompatActivity() {
         requestCode: Int, permissions: Array<out String>, grantResults: IntArray
     ) {
         textView_state.setText(R.string.checkPermission_checking)
-        log("CheckPermissionActivity", "onRequestPermissionsResult")
+        log("LoadingActivity", "onRequestPermissionsResult")
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-            loadPlayer()
+            loadSettings()
         } else {
             checkPermission()
         }
     }
 
-    private fun loadPlayer() {
+    private fun loadSettings() {
         Thread {
             runOnUiThread { textView_state.setText(R.string.checkPermission_loadingMusic) }
-            log("CheckPermissionActivity", "startPlayer")
+            log("LoadingActivity", "startPlayer")
             Player.getPlayer
-            while (!Player.fullList) {
+            while (!Player.launchDone) {
                 try {
                     Thread.sleep(10)
                 } catch (e: Exception) {
                     //
                 }
             }
-            log("CheckPermissionActivity", "startMainActivity\n==========")
+            log("LoadingActivity", "startMainActivity\n==========")
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }.start()
