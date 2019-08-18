@@ -82,16 +82,14 @@ class PlayerActivity : AppCompatActivity() {
                 addRule(CENTER_VERTICAL)
             })
             var last = 0f
-            val width = resources.displayMetrics.widthPixels / 10
+            val width = resources.displayMetrics.widthPixels / 5
             setOnTouchListener { _, motionEvent ->
-                log("relativeLayout", "onTouch ${motionEvent.x} ${motionEvent.y}")
                 when (motionEvent.action) {
                     MotionEvent.ACTION_DOWN -> {
-                        last = motionEvent.y
+                        last = motionEvent.x
                         return@setOnTouchListener true
                     }
                     MotionEvent.ACTION_UP -> {
-                        log("ACTION_UP", "ACTION_UP")
                         if (last - motionEvent.x < -width) {
                             sendBroadcast(Intent(CLIENT_BROADCAST_LAST))
                             return@setOnTouchListener true
