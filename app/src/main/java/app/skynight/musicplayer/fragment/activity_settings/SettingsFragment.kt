@@ -33,6 +33,20 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 Player.rmFilter = newValue as Boolean
                 return@setOnPreferenceChangeListener true
             }
+
+            // Headset
+            findPreference<SwitchPreference>("settingPreference_wired_plugin")!!.setOnPreferenceChangeListener { _, newValue ->
+                Player.wiredPlugIn = newValue as Boolean
+                return@setOnPreferenceChangeListener true
+            }
+            findPreference<SwitchPreference>("settingPreference_wired_pullout")!!.setOnPreferenceChangeListener { _, newValue ->
+                Player.wiredPullOut = newValue as Boolean
+                return@setOnPreferenceChangeListener true
+            }
+            findPreference<SwitchPreference>("settingPreference_wireless_disconnected")!!.setOnPreferenceChangeListener { _, newValue ->
+                Player.wirelessDis = newValue as Boolean
+                return@setOnPreferenceChangeListener true
+            }
         } catch (e: Exception) {
 
         }

@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?><!--suppress DeprecatedClassUsageInspection -->
+<?xml version="1.0" encoding="utf-8"?>
+<!--suppress DeprecatedClassUsageInspection -->
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:iconSpaceReserved="false" >
 
-    <!--suppress DeprecatedClassUsageInspection -->
     <PreferenceCategory
         android:title="@string/abc_settings_player_title"
         app:iconSpaceReserved="false" >
@@ -27,9 +27,45 @@
             android:title="@string/abc_settings_player_filter_title"
             android:summary="@string/abc_settings_player_filter_subtitle" />
 
+        <SwitchPreference
+            app:iconSpaceReserved="false"
+            android:key="settingPreference_statusBar"
+            android:title="@string/abc_settings_player_statusBar_title"
+            android:summary="@string/abc_settings_player_statusBar_subtitle" />
+
     </PreferenceCategory >
 
-    <!--suppress DeprecatedClassUsageInspection -->
+    <PreferenceCategory
+        android:title=""
+        app:iconSpaceReserved="false" >
+
+        <SwitchPreference
+            app:iconSpaceReserved="false"
+            android:key="settingPreference_wired_plugin"
+            android:title="@string/abc_settings_headset_wired_plugin_title"
+            android:summary="@string/abc_settings_headset_wired_plugin_subtitle" />
+
+        <SwitchPreference
+            app:iconSpaceReserved="false"
+            android:key="settingPreference_wired_pullout"
+            android:title="@string/abc_settings_headset_wired_pullout_title"
+            android:summary="@string/abc_settings_headset_wired_pullout_subtitle" />
+
+        <SwitchPreference
+            app:iconSpaceReserved="false"
+            android:key="settingPreference_wireless_connected"
+            android:title="@string/abc_settings_headset_wireless_connected_title"
+            android:summary="@string/abc_settings_headset_wireless_connected_subtitle"
+            android:selectable="false"/>
+
+        <SwitchPreference
+            app:iconSpaceReserved="false"
+            android:key="settingPreference_wireless_disconnected"
+            android:title="@string/abc_settings_headset_wireless_disconnected_title"
+            android:summary="@string/abc_settings_headset_wireless_disconnected_subtitle" />
+
+    </PreferenceCategory>
+
     <PreferenceCategory
         android:title="@string/abc_settings_knownIssues_title"
         app:iconSpaceReserved="false" >

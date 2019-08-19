@@ -40,12 +40,6 @@ class Player private constructor() {
             CYCLE, SINGLE, RANDOM
         }
 
-        val THREAD_NO = mapOf(
-            "HALF" to Runtime.getRuntime().availableProcessors() / 2,
-            "PROCESSOR" to Runtime.getRuntime().availableProcessors(),
-            "SUPER" to Runtime.getRuntime().availableProcessors() * 2
-        )
-
         val getPlayer by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
             Player()
         }
@@ -61,6 +55,14 @@ class Player private constructor() {
         var bgColor = false
         var buttons = false
         var rmFilter = false
+        var blackStatusBar = false
+
+        var wiredPlugIn = false
+        var wiredPullOut = false
+        var wirelessConn = false
+        var wirelessDis = false
+
+        var state = 0
     }
 
     init {
@@ -77,6 +79,11 @@ class Player private constructor() {
                 bgColor = getBoolean("settingPreference_bgAlbum", false)
                 buttons = getBoolean("settingPreference_buttons", false)
                 rmFilter = getBoolean("settingPreference_filter", false)
+                blackStatusBar = getBoolean("settingPreference_statusBar", false)
+
+                wiredPlugIn = getBoolean("settingPreference_wired_plugin", false)
+                wiredPullOut = getBoolean("settingPreference_wired_pullout", false)
+                wirelessDis = getBoolean("settingPreference_wireless_disconnected", false)
             }
         //}.start()
         mediaPlayer = MediaPlayer()
@@ -97,20 +104,21 @@ class Player private constructor() {
                     playChange(
                         (0..when (currentList) {
                             LIST_ALL -> {
-                                MusicClass.getMusicClass.fullList.size
+                                MusicClass.getMusicClass.fullList.lastIndex
                             }
                             else -> {
-                                PlayList.playListList[currentList].getPlayList().size
+                                PlayList.playListList[currentList].getPlayList().lastIndex
                             }
                         }).random()
                     )
                 }
             }
         }
+        PlayingControlUtil.getPlayingControlUtil
         launchDone = true
     }
 
-    private var paused = 0
+    private var paused = -1
 
     @Suppress("unused")
     @Synchronized
@@ -134,6 +142,19 @@ class Player private constructor() {
     @Suppress("unused")
     @Synchronized
     fun onStart() {
+        when (state) {
+            0 -> {
+                changeMusic()
+            }
+            2 -> {
+                mediaPlayer.start()
+                if (paused != -1) {
+                    mediaPlayer.seekTo(paused)
+                    paused = -1
+                }
+            }
+        }
+        /*
         try {
             changeMusic()
             mediaPlayer.seekTo(paused)
@@ -142,19 +163,15 @@ class Player private constructor() {
             e.printStackTrace()
         }
         log("player", "onStart")
+         */
         MainApplication.sendBroadcast(SERVER_BROADCAST_ONSTART)
     }
 
     @Suppress("unused")
     @Synchronized
     fun onPause() {
-        try {
-            paused = mediaPlayer.currentPosition
-            mediaPlayer.pause()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        log("player", "onPause")
+        mediaPlayer.pause()
+        state = 2
         MainApplication.sendBroadcast(SERVER_BROADCAST_ONPAUSE)
     }
 
@@ -172,7 +189,20 @@ class Player private constructor() {
 
     @Synchronized
     fun playNext() {
-        paused = 0
+        paused = -1
+        if (playingType == Companion.PlayingType.RANDOM) {
+            playChange(
+                (0..when (currentList) {
+                    LIST_ALL -> {
+                        MusicClass.getMusicClass.fullList.lastIndex
+                    }
+                    else -> {
+                        PlayList.playListList[currentList].getPlayList().lastIndex
+                    }
+                }).random()
+            )
+            return
+        }
         if (currentMusic == when (currentList) {
                 LIST_ALL -> {
                     MusicClass.getMusicClass.fullList.lastIndex
@@ -191,7 +221,7 @@ class Player private constructor() {
 
     @Synchronized
     fun playLast() {
-        paused = 0
+        paused = -1
         if (currentMusic == 0) {
             currentMusic = when (currentList) {
                 LIST_ALL -> {
@@ -214,7 +244,7 @@ class Player private constructor() {
 
     @Synchronized
     fun playChange(list: Int, index: Int) {
-        paused = 0
+        paused = -1
         if (list == ERROR_CODE || index == ERROR_CODE) {
             makeToast(R.string.abc_player_unExpected_intent)
             return
@@ -245,6 +275,7 @@ class Player private constructor() {
             )
             mediaPlayer.prepare()
             mediaPlayer.start()
+            state = 1
         } catch (e: Exception) {
             e.printStackTrace()
         }

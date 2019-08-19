@@ -31,13 +31,23 @@
     <string name="abc_settings_player_bgAlbum_subtitle">Switch off as album cover, else as color taken from album cover</string>
     <string name="abc_settings_player_buttons_title">Colors of buttons</string>
     <string name="abc_settings_player_buttons_subtitle">Switch off as static white, else as taken from album cover</string>
-    <string name="abc_settings_player_filter_title">Switch off gray half transparent filter</string>
+    <string name="abc_settings_player_filter_title">Switch off as gray half transparent filter</string>
     <string name="abc_settings_player_filter_subtitle">Background gray and transparent filter, preventing overlap of statusbar icons</string>
-
+    <string name="abc_settings_player_statusBar_title">Black status bar icons color</string>
+    <string name="abc_settings_player_statusBar_subtitle">Switch off icons as white color, else as black color</string>
     <string name="abc_settings_knownIssues_title">Known Issue(s)</string>
     <string name="abc_settings_knownIssues_tag1_title">Removable Storage(Micro SDCard) not accessible</string>
     <string name="abc_settings_knownIssues_tag1_subtitle">Requires adapting each version from Android L to Android O, even Android Q will change APIs about that…
     So, adapts that when the official release of Android Q…</string>
+    <string name="abc_settings_headset_title">Headset</string>
+    <string name="abc_settings_headset_wired_plugin_title">Wired headset plugin</string>
+    <string name="abc_settings_headset_wired_plugin_subtitle">Switch off continue playing, else pause</string>
+    <string name="abc_settings_headset_wired_pullout_title">Wired headset pull out</string>
+    <string name="abc_settings_headset_wired_pullout_subtitle">Switch off pause, else continue playing</string>
+    <string name="abc_settings_headset_wireless_connected_title">Bluetooth headset connected</string>
+    <string name="abc_settings_headset_wireless_connected_subtitle">~ TESTING ~</string>
+    <string name="abc_settings_headset_wireless_disconnected_title">Bluetooth headset disconnected</string>
+    <string name="abc_settings_headset_wireless_disconnected_subtitle">Switch off pause, else continue playing</string>
     
     <string name="abc_musicList_unExpected_intent">Seems something goes wrong when getting playlist info data. </string>
 

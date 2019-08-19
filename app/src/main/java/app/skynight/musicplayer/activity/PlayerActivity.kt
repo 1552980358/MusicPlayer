@@ -15,6 +15,7 @@ import android.view.MotionEvent
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 import android.widget.RelativeLayout
 import android.widget.RelativeLayout.CENTER_HORIZONTAL
 import android.widget.RelativeLayout.CENTER_VERTICAL
@@ -55,7 +56,14 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun setBackgroundProp() {
         window.decorView.systemUiVisibility =
-            (SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or SYSTEM_UI_FLAG_LAYOUT_STABLE)
+            if (Player.blackStatusBar)
+                (SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                    SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                    SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                    SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+            else (SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                    SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                    SYSTEM_UI_FLAG_LAYOUT_STABLE)
 
         window.statusBarColor = Color.TRANSPARENT
         window.navigationBarColor = Color.TRANSPARENT

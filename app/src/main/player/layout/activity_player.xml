@@ -13,7 +13,7 @@
         android:fitsSystemWindows="true"
         android:id="@+id/layout_filter"
         android:orientation="vertical"
-        android:background="#80000000">
+        android:background="#80000000" >
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -89,7 +89,7 @@
                         android:layout_height="@dimen/playerActivity_subItem_size"
                         android:layout_marginStart="@dimen/playerActivity_subItem_marginLeftRightWider"
                         android:layout_marginEnd="@dimen/playerActivity_subItem_marginLeftRightWider"
-                        android:background="@drawable/ic_player_cycle"/>
+                        android:background="@drawable/ic_player_cycle" />
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:layout_width="@dimen/playerActivity_last_next_size"

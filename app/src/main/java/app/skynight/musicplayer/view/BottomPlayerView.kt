@@ -31,27 +31,24 @@ import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCA
 @Suppress("PropertyName")
 class BottomPlayerView : LinearLayout {
 
-     lateinit var imageView_album: MusicAlbumRoundedImageView
+    lateinit var imageView_album: MusicAlbumRoundedImageView
 
-     lateinit var textView_title: StyledTextView
-     lateinit var textView_subTitle: StyledTextView
+    lateinit var textView_title: StyledTextView
+    lateinit var textView_subTitle: StyledTextView
 
-     lateinit var checkBox_controller: AppCompatCheckBox
+    lateinit var checkBox_controller: AppCompatCheckBox
 
-     lateinit var linearLayout_Root: LinearLayout
+    lateinit var linearLayout_Root: LinearLayout
 
-     private fun createView() {
+    private fun createView() {
         orientation = VERTICAL
         addView(
             View(context).apply {
                 background = ContextCompat.getDrawable(
-                    context,
-                    if (MainApplication.customize) R.color.white else R.color.black
+                    context, if (MainApplication.customize) R.color.white else R.color.black
                 )
-            },
-            LayoutParams(
-                MATCH_PARENT,
-                resources.getDimensionPixelSize(R.dimen.bottomPlayerView_divider)
+            }, LayoutParams(
+                MATCH_PARENT, resources.getDimensionPixelSize(R.dimen.bottomPlayerView_divider)
             )
         )
         addView(
@@ -99,7 +96,8 @@ class BottomPlayerView : LinearLayout {
                         addView(StyledTextView(context).apply {
                             textView_subTitle = this
                             //text = "subtitle"
-                            textSize = resources.getDimension(R.dimen.bottomPlayerView_subTitle_size)
+                            textSize =
+                                resources.getDimension(R.dimen.bottomPlayerView_subTitle_size)
                             setSingleLine()
                             ellipsize = TextUtils.TruncateAt.END
                         }, LayoutParams(MATCH_PARENT, WRAP_CONTENT))
@@ -108,7 +106,7 @@ class BottomPlayerView : LinearLayout {
                         setMargins(
                             resources.getDimensionPixelSize(R.dimen.bottomPlayerView_text_margin),
                             resources.getDimensionPixelSize(R.dimen.bottomPlayerView_text_margin),
-                            0,//resources.getDimensionPixelSize(R.dimen.bottomPlayerView_text_margin),
+                            0, //resources.getDimensionPixelSize(R.dimen.bottomPlayerView_text_margin),
                             resources.getDimensionPixelSize(R.dimen.bottomPlayerView_text_margin)
                         )
                     })
@@ -156,10 +154,8 @@ class BottomPlayerView : LinearLayout {
                         }
                     }, LayoutParams(getPx(30), getPx(30)))
                 }, LayoutParams(WRAP_CONTENT, MATCH_PARENT))
-            },
-            LayoutParams(
-                MATCH_PARENT,
-                resources.getDimensionPixelSize(R.dimen.bottomPlayerView_object)
+            }, LayoutParams(
+                MATCH_PARENT, resources.getDimensionPixelSize(R.dimen.bottomPlayerView_object)
             )
         )
     }

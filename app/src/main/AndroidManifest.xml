@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="app.skynight.musicplayer" >
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:testOnly="false"
@@ -50,7 +50,7 @@
         <activity
             android:name=".activity.PlayerActivity"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar.TransparentBackground" />
+            android:theme="@style/AppTheme.NoActionBar.Player" />
         <activity
             android:name=".activity.BottomListActivity"
             android:theme="@style/AppTheme.NoActionBar.TransparentBackground" />

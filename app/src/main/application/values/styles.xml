@@ -18,6 +18,12 @@
         <item name="colorAccent">@color/white</item>
     </style>
 
+    <style name="AppTheme.NoActionBar.Player" parent="AppTheme.NoActionBar">
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="colorAccent">@color/white</item>
+    </style>
+
     <style name="AppTheme.NoActionBar.Settings" parent="AppTheme.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
