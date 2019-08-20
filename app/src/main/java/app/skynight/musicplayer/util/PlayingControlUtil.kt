@@ -25,13 +25,14 @@ class PlayingControlUtil private constructor() {
     private var headsetPlugOutReceiver: BroadcastReceiver
 
     companion object {
-        val getPlayingControlUtil by lazy (LazyThreadSafetyMode.SYNCHRONIZED) { PlayingControlUtil() }
+        val getPlayingControlUtil by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { PlayingControlUtil() }
     }
+
     init {
         MainApplication.getMainApplication().apply {
             registerReceiver(object : BroadcastReceiver() {
                 override fun onReceive(p0: Context?, p1: Intent?) {
-                    p1?:return
+                    p1 ?: return
                     try {
                         when (p1.action) {
                             ACTION_HEADSET_PLUG -> {
@@ -56,19 +57,15 @@ class PlayingControlUtil private constructor() {
             val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
             registerReceiver(object : BroadcastReceiver() {
                 override fun onReceive(p0: Context?, p1: Intent?) {
-                    p1?:return
+                    p1 ?: return
                     when (p1.action) {
                         AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
+                            sendBroadcast(Intent(if (Player.wiredPullOut) CLIENT_BROADCAST_ONSTART else CLIENT_BROADCAST_ONPAUSE))
 
-                            if (Player.wiredPullOut) {
-                                sendBroadcast(Intent(CLIENT_BROADCAST_ONSTART))
-                            }
                         }
                         BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED -> {
-                            if (bluetoothAdapter.getProfileConnectionState(BluetoothProfile.HEADSET) ==
-                                BluetoothProfile.STATE_DISCONNECTED &&
-                                Player.getPlayer.isPlaying() && Player.wirelessDis) {
-                                sendBroadcast(Intent(CLIENT_BROADCAST_ONSTART))
+                            if (bluetoothAdapter.getProfileConnectionState(BluetoothProfile.HEADSET) == BluetoothProfile.STATE_DISCONNECTED && Player.getPlayer.isPlaying()) {
+                                sendBroadcast(Intent(if (Player.wirelessDis) CLIENT_BROADCAST_ONSTART else CLIENT_BROADCAST_ONPAUSE))
                             }
                         }
                     }

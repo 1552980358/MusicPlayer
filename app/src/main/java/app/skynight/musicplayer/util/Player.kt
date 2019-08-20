@@ -28,7 +28,8 @@ class Player private constructor() {
         const val EXTRA_LIST = "MusicList"
         const val ERROR_CODE = Int.MIN_VALUE
         const val LIST_ALL = -1
-        const val LIST_HEART = -2
+
+        const val LIST_HEART = -10
 
         var launchDone = false
 

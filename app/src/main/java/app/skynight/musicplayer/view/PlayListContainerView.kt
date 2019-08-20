@@ -26,6 +26,7 @@ class PlayListContainerView : LinearLayout {
         //background = ContextCompat.getDrawable(context, R.drawable.cardview_frame)
         super.addView(LinearLayout(context).apply {
             linearLayout = this
+            orientation = VERTICAL
             background = ContextCompat.getDrawable(context, R.color.transparent)
         }, LayoutParams(MATCH_PARENT, MATCH_PARENT).apply {
             setPadding(resources.getDimensionPixelSize(R.dimen.cardView_item_margin))

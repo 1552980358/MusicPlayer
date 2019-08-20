@@ -48,7 +48,7 @@
     <string name="abc_settings_headset_wireless_connected_subtitle">~ TESTING ~</string>
     <string name="abc_settings_headset_wireless_disconnected_title">Bluetooth headset disconnected</string>
     <string name="abc_settings_headset_wireless_disconnected_subtitle">Switch off pause, else continue playing</string>
-    
+
     <string name="abc_musicList_unExpected_intent">Seems something goes wrong when getting playlist info data. </string>
 
     <string name="abc_player_unExpected_intent">@string/abc_musicList_unExpected_intent</string>
@@ -62,8 +62,8 @@
     <string name="abc_bottomList_title">Title</string>
     <string name="abc_bottomList_artist">Artist</string>
     <string name="abc_bottomList_album">Album</string>
-    <string name="abc_bottomList_format">Format</string>
-    <string name="abc_bottomList_bitRate">BitRate</string>
     <string name="abc_bottomList_path">Path</string>
+    <string name="abc_bottomList_file">File</string>
+    <string name="abc_bottomList_data">Data</string>
 
 </resources>

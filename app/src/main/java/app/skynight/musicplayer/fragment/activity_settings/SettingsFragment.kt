@@ -33,6 +33,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 Player.rmFilter = newValue as Boolean
                 return@setOnPreferenceChangeListener true
             }
+            findPreference<SwitchPreference>("settingPreference_statusBar")!!.setOnPreferenceChangeListener { _, newValue ->
+                Player.blackStatusBar = newValue as Boolean
+                return@setOnPreferenceChangeListener true
+            }
 
             // Headset
             findPreference<SwitchPreference>("settingPreference_wired_plugin")!!.setOnPreferenceChangeListener { _, newValue ->

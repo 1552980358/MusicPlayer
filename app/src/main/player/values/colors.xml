@@ -11,4 +11,6 @@
     <color name="ripple_color">#FF606060</color>
 
     <color name="player_filter">#80000000</color>
+
+    <color name="playerInfo_title">#AFAFAF</color>
 </resources>

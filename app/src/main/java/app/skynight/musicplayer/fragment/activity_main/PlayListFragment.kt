@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import app.skynight.musicplayer.view.PlayListContainerView
 import app.skynight.musicplayer.view.PlayListView
 import app.skynight.musicplayer.R
+import app.skynight.musicplayer.activity.FindEncryptedMusicActivity
 import app.skynight.musicplayer.activity.MusicListActivity
 import app.skynight.musicplayer.util.Player.Companion.EXTRA_LIST
 import app.skynight.musicplayer.util.Player.Companion.LIST_ALL
@@ -39,6 +40,12 @@ class PlayListFragment: Fragment() {
                         startActivity(Intent(context, MusicListActivity::class.java)
                             .putExtra(EXTRA_LIST, LIST_ALL)
                         )
+                    }
+                })
+                addView(PlayListView(context).apply {
+                    setUp(R.drawable.ic_main_full, "转换qmc0/qmc3/qmcflac/ncm文件")
+                    setOnClickListener {
+                        startActivity(Intent(context, FindEncryptedMusicActivity::class.java))
                     }
                 })
             }, LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))

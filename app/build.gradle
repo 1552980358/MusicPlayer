@@ -62,6 +62,8 @@ android {
     }
     sourceSets {
         main {
+            jni.srcDirs = [] //disable automatic ndk-build
+            jniLibs.srcDirs = ['src/main/libs']
             res.srcDirs =
                     [
                             'src/main/noti',

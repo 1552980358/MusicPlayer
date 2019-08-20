@@ -59,10 +59,10 @@
     <string name="abc_main_timer_date_12">yyyy年MM月dd日\nEEEE • a</string>
 
     <string name="abc_bottomList_header">单曲信息</string>
-    <string name="abc_bottomList_title">单曲名</string>
-    <string name="abc_bottomList_artist">歌手</string>
+    <string name="abc_bottomList_title">标题</string>
+    <string name="abc_bottomList_artist">艺术家</string>
     <string name="abc_bottomList_album">专辑</string>
-    <string name="abc_bottomList_format">格式</string>
-    <string name="abc_bottomList_bitRate">比特率</string>
     <string name="abc_bottomList_path">路径</string>
+    <string name="abc_bottomList_file">文件</string>
+    <string name="abc_bottomList_data">数据</string>
 </resources>

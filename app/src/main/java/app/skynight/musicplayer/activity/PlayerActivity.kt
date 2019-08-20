@@ -72,8 +72,8 @@ class PlayerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         log("PlayerActivity", "onCreate")
         overridePendingTransition(R.anim.anim_static, R.anim.anim_top2down)
-        super.onCreate(savedInstanceState)
         setBackgroundProp()
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
         if (Player.rmFilter) {
             layout_filter.setBackgroundColor(ContextCompat.getColor(this, R.color.transparent))

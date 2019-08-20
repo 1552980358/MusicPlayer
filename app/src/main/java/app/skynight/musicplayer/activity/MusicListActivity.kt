@@ -22,11 +22,7 @@ class MusicListActivity : BaseSmallPlayerActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_musiclist)
         val code = try {
-            intent.getIntExtra(
-                EXTRA_LIST, ERROR_CODE
-            ).apply {
-                log("MusicListActivity", "intent.getIntExtra： ${this}")
-            }
+            intent.getIntExtra(EXTRA_LIST, ERROR_CODE)
         } catch (e: Exception) {
             ERROR_CODE
         }
@@ -35,18 +31,9 @@ class MusicListActivity : BaseSmallPlayerActivity() {
                 val list = when (code) {
                     LIST_ALL -> {
                         log("MusicListActivity", "LIST_ALL")
-                        /*
-                        while (!Player.launchDone) {
-                            try {
-                                Thread.sleep(20)
-                            } catch (e: Exception) {
-                                //e.printStackTrace()
-                            }
-                        }
-
-                         */
                         MusicClass.getMusicClass.fullList
                     }
+
                     ERROR_CODE -> {
                         throw Exception()
                     }
@@ -54,15 +41,6 @@ class MusicListActivity : BaseSmallPlayerActivity() {
                         log("MusicListActivity", code)
                         PlayList.playListList[code].apply {
                             runOnUiThread { textView_size.text = getPlayList().size.toString() }
-                            /*
-                            while (!Player.playList) {
-                                try {
-                                    Thread.sleep(20)
-                                } catch (e: Exception) {
-                                    //e.printStackTrace()
-                                }
-                            }
-                            */
                         }.getPlayList()
                     }
                 }
@@ -81,9 +59,9 @@ class MusicListActivity : BaseSmallPlayerActivity() {
             } catch (e: Exception) {
                 e.printStackTrace()
                 runOnUiThread { makeToast(R.string.abc_musicList_unExpected_intent) }
-                //finish()
             }
         }.start()
+
         try {
             when (code) {
                 LIST_ALL -> {
