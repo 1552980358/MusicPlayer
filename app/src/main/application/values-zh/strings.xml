@@ -48,8 +48,10 @@
     <string name="abc_settings_headset_wireless_connected_subtitle">~ 测试中 ~</string>
     <string name="abc_settings_headset_wireless_disconnected_title">无线耳机断连</string>
     <string name="abc_settings_headset_wireless_disconnected_subtitle">禁用时暂停播放, 启用时继续播放</string>
+    <string name="abc_settings_arrangement_title">音乐排序</string>
+    <string name="abc_settings_arrangement_dialogtitle">选择音乐排序</string>
 
-    <string name="abc_musicList_unExpected_intent">Seems something goes wrong when getting playlist info data. </string>
+    <string name="abc_musicList_unExpected_intent">似乎发生了什么可怕的事情, 所以暂时退回啦~</string>
 
     <string name="abc_player_unExpected_intent">@string/abc_musicList_unExpected_intent</string>
 
@@ -65,4 +67,15 @@
     <string name="abc_bottomList_path">路径</string>
     <string name="abc_bottomList_file">文件</string>
     <string name="abc_bottomList_data">数据</string>
+
+    <string name="abc_menu_search">Search</string>
+
+    <string name="abc_musicList_search">搜索</string>
+    <string name="abc_search_title">搜索你的音乐</string>
+
+    <string name="abc_range_title">歌曲排序</string>
+    <string name="abc_range_inTitle">按单曲名</string>
+    <string name="abc_range_inArtist">按歌手名</string>
+    <string name="abc_range_inAlbum">按专辑名</string>
+
 </resources>

@@ -56,14 +56,8 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun setBackgroundProp() {
         window.decorView.systemUiVisibility =
-            if (Player.blackStatusBar)
-                (SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                    SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                    SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                    SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
-            else (SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                    SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                    SYSTEM_UI_FLAG_LAYOUT_STABLE)
+            if (Player.settings[Player.StatusBar]!! as Boolean) (SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or SYSTEM_UI_FLAG_LAYOUT_STABLE or SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+            else (SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or SYSTEM_UI_FLAG_LAYOUT_STABLE)
 
         window.statusBarColor = Color.TRANSPARENT
         window.navigationBarColor = Color.TRANSPARENT
@@ -75,7 +69,7 @@ class PlayerActivity : AppCompatActivity() {
         setBackgroundProp()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
-        if (Player.rmFilter) {
+        if (Player.settings[Player.Filter]!! as Boolean) {
             layout_filter.setBackgroundColor(ContextCompat.getColor(this, R.color.transparent))
         }
 
@@ -157,7 +151,7 @@ class PlayerActivity : AppCompatActivity() {
                     imageButton_playForm.setBackgroundResource(R.drawable.ic_player_cycle)
                 }
             }
-            if (Player.buttons) {
+            if (Player.settings[Player.Button]!! as Boolean) {
                 imageButton_playForm.background.setTint(tintColor)
             }
         }
@@ -291,7 +285,7 @@ class PlayerActivity : AppCompatActivity() {
 
                 val mediaNotificationProcessor = MediaNotificationProcessor(this, alPic)
 
-                if (Player.bgColor) {
+                if (Player.settings[Player.BgColor]!! as Boolean) {
                     runOnUiThread {
                         backgroundDrawerLayout.setBackgroundColor(
                             mediaNotificationProcessor.backgroundColor
@@ -321,7 +315,7 @@ class PlayerActivity : AppCompatActivity() {
                 }
 
                 tintColor = mediaNotificationProcessor.primaryTextColor
-                if (Player.buttons) {
+                if (Player.settings[Player.BgColor]!! as Boolean) {
                     runOnUiThread {
                         toolbar.setTitleTextColor(mediaNotificationProcessor.primaryTextColor)
                         toolbar.setSubtitleTextColor(mediaNotificationProcessor.secondaryTextColor)

@@ -38,7 +38,7 @@ class PlayingControlUtil private constructor() {
                             ACTION_HEADSET_PLUG -> {
                                 when (p1.getIntExtra("state", -1)) {
                                     1 -> {
-                                        if (Player.getPlayer.isPlaying() && Player.wiredPlugIn) {
+                                        if (Player.getPlayer.isPlaying() && Player.settings[Player.WiredPlugIn]!! as Boolean) {
                                             sendBroadcast(Intent(CLIENT_BROADCAST_ONPAUSE))
                                         }
                                     }
@@ -60,12 +60,12 @@ class PlayingControlUtil private constructor() {
                     p1 ?: return
                     when (p1.action) {
                         AudioManager.ACTION_AUDIO_BECOMING_NOISY -> {
-                            sendBroadcast(Intent(if (Player.wiredPullOut) CLIENT_BROADCAST_ONSTART else CLIENT_BROADCAST_ONPAUSE))
+                            sendBroadcast(Intent(if (Player.settings[Player.WiredPullOut]!! as Boolean) CLIENT_BROADCAST_ONSTART else CLIENT_BROADCAST_ONPAUSE))
 
                         }
                         BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED -> {
                             if (bluetoothAdapter.getProfileConnectionState(BluetoothProfile.HEADSET) == BluetoothProfile.STATE_DISCONNECTED && Player.getPlayer.isPlaying()) {
-                                sendBroadcast(Intent(if (Player.wirelessDis) CLIENT_BROADCAST_ONSTART else CLIENT_BROADCAST_ONPAUSE))
+                                sendBroadcast(Intent(if (Player.settings[Player.WirelessDis]!! as Boolean) CLIENT_BROADCAST_ONSTART else CLIENT_BROADCAST_ONPAUSE))
                             }
                         }
                     }

@@ -6,6 +6,18 @@
     app:iconSpaceReserved="false" >
 
     <PreferenceCategory
+        android:title="@string/abc_settings_arrangement_title"
+        app:iconSpaceReserved="false" >
+        <ListPreference
+            android:key="settingPreference_arrangement"
+            android:entries="@array/array_arrangement"
+            android:title="@string/abc_settings_arrangement_title"
+            android:dialogTitle="@string/abc_settings_arrangement_dialogtitle"
+            android:entryValues="@array/array_arrangement_value"
+            android:defaultValue="TITLE"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="@string/abc_settings_player_title"
         app:iconSpaceReserved="false" >
 

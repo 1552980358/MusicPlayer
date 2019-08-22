@@ -27,8 +27,6 @@ import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCA
  **/
 
 class MusicView: LinearLayout {
-    private lateinit var textView_title: StyledTextView
-    private lateinit var textView_subTitle: StyledTextView
 
     constructor(context: Context, playList: Int, index: Int, musicInfo: MusicInfo): super(context) {
         background = ContextCompat.getDrawable(context, R.drawable.ripple_effect)
@@ -37,7 +35,7 @@ class MusicView: LinearLayout {
         orientation = HORIZONTAL
         addView(TextView(context).apply {
             gravity = Gravity.CENTER
-            text = index.toString()
+            text = index.plus(1).toString()
         }, LayoutParams(0, resources.getDimensionPixelSize(R.dimen.musicView_height)).apply {
             weight = 1f
         })
@@ -46,7 +44,6 @@ class MusicView: LinearLayout {
             gravity = Gravity.CENTER_VERTICAL
             // Title
             addView(StyledTextView(context).apply {
-                textView_title = this
                 setSingleLine()
                 text = musicInfo.title()
                 textSize = resources.getDimension(R.dimen.musicView_title_size)
@@ -58,7 +55,6 @@ class MusicView: LinearLayout {
 
             // Subtitle
             addView(StyledTextView(context).apply {
-                textView_subTitle = this
                 setSingleLine()
                 text = musicInfo.artist()
                 textSize = resources.getDimension(R.dimen.musicView_subTitle_size)

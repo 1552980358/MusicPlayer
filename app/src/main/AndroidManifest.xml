@@ -46,6 +46,9 @@
         <activity
             android:name=".activity.FindEncryptedMusicActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.SearchActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".activity.SettingsActivity"

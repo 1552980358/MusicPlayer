@@ -27,4 +27,5 @@ open class AppCompatActivity: androidx.appcompat.app.AppCompatActivity() {
         window.statusBarColor = Color.TRANSPARENT
         window.navigationBarColor = Color.TRANSPARENT
     }
+
 }

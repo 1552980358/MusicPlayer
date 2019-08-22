@@ -53,15 +53,21 @@ class Player private constructor() {
             }
         }
 
-        var bgColor = false
-        var buttons = false
-        var rmFilter = false
-        var blackStatusBar = false
+        val settings = mutableMapOf<String, Any>()
 
-        var wiredPlugIn = false
-        var wiredPullOut = false
-        var wirelessConn = false
-        var wirelessDis = false
+        const val BgColor = "BgColor"
+        const val Button = "Button"
+        const val Filter = "Filter"
+        const val StatusBar = "StatusBar"
+
+        const val WiredPlugIn = "WiredPlugIn"
+        const val WiredPullOut = "WiredPullOut"
+        const val WirelessCon = "WirelessCon"
+        const val WirelessDis = "WirelessDis"
+
+        // 歌曲排列
+        // 0: 标题, 1: 艺术家, 2: 专辑, 3: 原始排序
+        const val Arrangement = "Arrangement"
 
         var state = 0
     }
@@ -77,14 +83,16 @@ class Player private constructor() {
          */
         MainApplication.getMainApplication()
             .getSharedPreferences("app.skynight.musicplayer_preferences", MODE_PRIVATE).apply {
-                bgColor = getBoolean("settingPreference_bgAlbum", false)
-                buttons = getBoolean("settingPreference_buttons", false)
-                rmFilter = getBoolean("settingPreference_filter", false)
-                blackStatusBar = getBoolean("settingPreference_statusBar", false)
+                settings[BgColor] = getBoolean("settingPreference_bgAlbum", false)
+                settings[Button] = getBoolean("settingPreference_buttons", false)
+                settings[Filter] = getBoolean("settingPreference_filter", false)
+                settings[StatusBar] = getBoolean("settingPreference_statusBar", false)
 
-                wiredPlugIn = getBoolean("settingPreference_wired_plugin", false)
-                wiredPullOut = getBoolean("settingPreference_wired_pullout", false)
-                wirelessDis = getBoolean("settingPreference_wireless_disconnected", false)
+                settings[WiredPlugIn] = getBoolean("settingPreference_wired_plugin", false)
+                settings[WiredPullOut] = getBoolean("settingPreference_wired_pullout", false)
+                settings[WirelessDis] = getBoolean("settingPreference_wireless_disconnected", false)
+
+                settings[Arrangement] = getString("settingPreference_arrangement", "TITLE").toString()
             }
         //}.start()
         mediaPlayer = MediaPlayer()
@@ -264,13 +272,13 @@ class Player private constructor() {
             mediaPlayer.setDataSource(
                 when (currentList) {
                     LIST_ALL -> {
-                        getCurrentMusicInfo().path
+                        getCurrentMusicInfo().path()
                     }
                     LIST_HEART -> {
                         throw Exception("NotImplemented")
                     }
                     else -> {
-                        getCurrentMusicInfo().path
+                        getCurrentMusicInfo().path()
                     }
                 }
             )

@@ -4,9 +4,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <item
-        android:id="@+id/range"
         app:showAsAction="withText"
-        android:title="range" />
+        android:title="@string/abc_range_title" >
+        <menu>
+            <item
+                android:id="@+id/menu_inTitle"
+                android:title="@string/abc_range_inTitle"/>
+            <item
+                android:id="@+id/menu_inArtist"
+                android:title="@string/abc_range_inArtist" />
+            <item
+                android:id="@+id/menu_inAlbum"
+                android:title="@string/abc_range_inAlbum" />
+        </menu>
+    </item>
+
     <item
         android:id="@+id/changeCover"
         app:showAsAction="withText"
@@ -14,10 +26,9 @@
 
     <item
         android:icon="@drawable/ic_search"
-        android:id="@+id/search"
+        android:id="@+id/menu_search"
         app:showAsAction="ifRoom"
         android:orderInCategory="90"
-        android:title="search"
-        />
+        android:title="@string/abc_menu_search" />
 
 </menu >

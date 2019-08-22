@@ -17,19 +17,29 @@ import kotlin.Exception
  **/
 class MusicClass private constructor() {
     var fullList: MutableList<MusicInfo>
+
     init {
         fullList = scanMusicByDataBase()
     }
 
     companion object {
+        fun sortList(method: Int) {
+            when (Player.settings[Player.Arrangement]) {
+                    "TITLE" -> { getMusicClass.fullList.sortBy { it.titlePY() } }
+                    "ARTIST" -> { getMusicClass.fullList.sortBy { it.artistPY() } }
+                    "ALBUM" -> { getMusicClass.fullList.sortBy { it.albumPY() } }
+            }
+        }
+
         private const val MusicSaveDir = "app.skynight.musicplayer"
         private const val FullList = "MusicSaveFullList"
-        val TargetDir = Environment.getExternalStorageDirectory().absolutePath + File.separator + MusicSaveDir
+        val TargetDir =
+            Environment.getExternalStorageDirectory().absolutePath + File.separator + MusicSaveDir
 
         val getMusicClass by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { MusicClass() }
 
         @Suppress("unused")
-        private fun saveMusicList(list : MutableList<MusicInfo>, path: String): Boolean {
+        private fun saveMusicList(list: MutableList<MusicInfo>, path: String): Boolean {
             if (!checkAndCreateExternalStorageFile(path)) {
                 return false
             }
@@ -74,33 +84,54 @@ class MusicClass private constructor() {
         }
 
         fun scanMusicByDataBase(): MutableList<MusicInfo> {
-            val list =  mutableListOf<MusicInfo>()
-             MainApplication.getMainApplication().contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null, MediaStore.Audio.AudioColumns.IS_MUSIC).apply {
-                if (this == null)
-                    return list
-                if (moveToFirst()) {
-                    do {
-                        @Suppress("DEPRECATION")
-                        val path = getString(getColumnIndex(MediaStore.Audio.Media.DATA))
-                        if (path == "-1") {
-                            //Log.e("MusicClass", "-1")
-                            continue
+            val list = mutableListOf<MusicInfo>()
+            try {
+                MainApplication.getMainApplication().contentResolver.query(
+                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                    null,
+                    null,
+                    null,
+                    MediaStore.Audio.AudioColumns.IS_MUSIC
+                ).apply {
+                    if (this == null) return list
+                    if (moveToFirst()) {
+                        do {
+                            @Suppress("DEPRECATION") val path =
+                                getString(getColumnIndex(MediaStore.Audio.Media.DATA))
+                            if (path == "-1") {
+                                continue
+                            }
+                            //list.add(MusicInfo(path))
+                            list.add(
+                                MusicInfo(
+                                    path,
+                                    getString(getColumnIndex(MediaStore.Audio.Media.TITLE)),
+                                    getString(getColumnIndex(MediaStore.Audio.Media.ARTIST)),
+                                    getString(getColumnIndex(MediaStore.Audio.Media.ALBUM)),
+                                    getInt(getColumnIndex(MediaStore.Audio.Media.DURATION))
+                                )
+                            )
+                        } while (moveToNext())
+
+                        list.sortBy {
+                            when (Player.settings[Player.Arrangement]!!) {
+                                "TITLE" -> { it.titlePY() }
+                                "ARTIST" -> { it.artistPY() }
+                                "ALBUM" -> { it.albumPY() }
+                                else -> {
+                                    close()
+                                    throw Exception("")
+                                }
+                            }
                         }
-                        //list.add(MusicInfo(path))
-                        list.add(MusicInfo(path,
-                            getString(getColumnIndex(MediaStore.Audio.Media.TITLE)),
-                            getString(getColumnIndex(MediaStore.Audio.Media.ARTIST)),
-                            getString(getColumnIndex(MediaStore.Audio.Media.ALBUM)),
-                            //getString(getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)),
-                            getInt(getColumnIndex(MediaStore.Audio.Media.DURATION))
-                            ))
-                        //Log.e("MusicClass", path)
-                    } while (moveToNext())
+                    }
+                    close()
                 }
-                close()
+            } catch (e: Exception) {
+                //e.printStackTrace()
             }
 
-            Log.e("list", list.size.toString())
+            log("list", list.size)
             return list
         }
 

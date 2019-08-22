@@ -31,8 +31,8 @@ class BottomListActivity : AppCompatActivity() {
         upperView.setOnClickListener { onBackPressed() }
 
         val info = Player.getCurrentMusicInfo()
-        textView_path.text = info.path
-        File(info.path).apply {
+        textView_path.text = info.path()
+        File(info.path()).apply {
             textView_file.text = "$extension, ${length() / 1024}kB"
         }
         val duration = info.duration()

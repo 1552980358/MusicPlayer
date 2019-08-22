@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources >
+    <string-array name="array_arrangement">
+        <item>Alphabetic in Title</item>
+        <item>Alphabetic in Artist</item>
+        <item>Alphabetic in Album</item>
+    </string-array>
 
+    <string-array name="array_arrangement_value">
+        <item>TITLE</item>
+        <item>ARTIST</item>
+        <item>ALBUM</item>
+        <item>RANDOM</item>
+    </string-array>
 </resources >
