@@ -9,6 +9,7 @@
         android:title="@string/abc_settings_arrangement_title"
         app:iconSpaceReserved="false" >
         <ListPreference
+            app:iconSpaceReserved="false"
             android:key="settingPreference_arrangement"
             android:entries="@array/array_arrangement"
             android:title="@string/abc_settings_arrangement_title"
@@ -48,7 +49,7 @@
     </PreferenceCategory >
 
     <PreferenceCategory
-        android:title=""
+        android:title="@string/abc_settings_headset_title"
         app:iconSpaceReserved="false" >
 
         <SwitchPreference

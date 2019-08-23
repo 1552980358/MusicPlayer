@@ -23,7 +23,7 @@ class MusicClass private constructor() {
     }
 
     companion object {
-        fun sortList(method: Int) {
+        fun sortList() {
             when (Player.settings[Player.Arrangement]) {
                     "TITLE" -> { getMusicClass.fullList.sortBy { it.titlePY() } }
                     "ARTIST" -> { getMusicClass.fullList.sortBy { it.artistPY() } }

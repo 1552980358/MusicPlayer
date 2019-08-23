@@ -2,9 +2,7 @@ package app.skynight.musicplayer.util
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
-import android.content.Intent
 import android.media.MediaPlayer
-import android.os.Build
 import app.skynight.musicplayer.MainApplication
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_MUSICCHANGE
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONPAUSE
@@ -24,6 +22,23 @@ class Player private constructor() {
     private var mediaPlayer: MediaPlayer
 
     companion object {
+        fun changeSort(method: String) {
+            MainApplication.getMainApplication().getSharedPreferences(
+                "app.skynight.musicplayer_preferences", MODE_PRIVATE
+            ).edit().putString("settingPreference_arrangement", method).apply()
+            val info = getCurrentMusicInfo()
+            settings[Arrangement] = method
+            when (currentList) {
+                LIST_ALL -> {
+                    MusicClass.sortList()
+                    for ((j, i) in MusicClass.getMusicClass.fullList.withIndex()) {
+                        if (i == info) {
+                            currentList = j
+                        }
+                    }
+                }
+            }
+        }
 
         const val EXTRA_LIST = "MusicList"
         const val ERROR_CODE = Int.MIN_VALUE
@@ -72,6 +87,11 @@ class Player private constructor() {
         var state = 0
     }
 
+    private var playedList = mutableListOf<Music>()
+    private var pointer = 0
+
+    private class Music(val list: Int, val musicInfo: MusicInfo)
+
     init {
         //Thread {
         MusicClass.getMusicClass
@@ -92,7 +112,8 @@ class Player private constructor() {
                 settings[WiredPullOut] = getBoolean("settingPreference_wired_pullout", false)
                 settings[WirelessDis] = getBoolean("settingPreference_wireless_disconnected", false)
 
-                settings[Arrangement] = getString("settingPreference_arrangement", "TITLE").toString()
+                settings[Arrangement] =
+                    getString("settingPreference_arrangement", "TITLE").toString()
             }
         //}.start()
         mediaPlayer = MediaPlayer()
@@ -124,6 +145,7 @@ class Player private constructor() {
             }
         }
         PlayingControlUtil.getPlayingControlUtil
+        playedList.add(Music(LIST_ALL, getCurrentMusicInfo()))
         launchDone = true
     }
 
@@ -156,6 +178,7 @@ class Player private constructor() {
                 changeMusic()
             }
             2 -> {
+                //pointer = 0
                 mediaPlayer.start()
                 if (paused != -1) {
                     mediaPlayer.seekTo(paused)
@@ -199,19 +222,43 @@ class Player private constructor() {
     @Synchronized
     fun playNext() {
         paused = -1
-        if (playingType == Companion.PlayingType.RANDOM) {
-            playChange(
-                (0..when (currentList) {
-                    LIST_ALL -> {
-                        MusicClass.getMusicClass.fullList.lastIndex
-                    }
-                    else -> {
-                        PlayList.playListList[currentList].getPlayList().lastIndex
-                    }
-                }).random()
-            )
+
+        if (pointer != playedList.lastIndex) {
+            pointer++
+            currentList = playedList[pointer].list
+            for ((j, i) in when (currentList) {
+                LIST_ALL -> {
+                    MusicClass.getMusicClass.fullList
+                }
+                else -> {
+                    PlayList.playListList[currentList].getPlayList()
+                }
+            }.withIndex()) {
+                if (i == playedList[pointer].musicInfo) {
+                    currentMusic = j
+                    break
+                }
+            }
+            changeMusic()
             return
         }
+
+        if (playingType == Companion.PlayingType.RANDOM) {
+            currentMusic = (0..when (currentList) {
+                LIST_ALL -> {
+                    MusicClass.getMusicClass.fullList.lastIndex
+                }
+                else -> {
+                    PlayList.playListList[currentList].getPlayList().lastIndex
+                }
+            }).random()
+
+            playedList.add(Music(currentList, getCurrentMusicInfo()))
+            pointer++
+            changeMusic()
+            return
+        }
+
         if (currentMusic == when (currentList) {
                 LIST_ALL -> {
                     MusicClass.getMusicClass.fullList.lastIndex
@@ -225,12 +272,36 @@ class Player private constructor() {
         } else {
             currentMusic++
         }
+        playedList.add(Music(currentList, getCurrentMusicInfo()))
+        pointer++
         changeMusic()
     }
 
     @Synchronized
     fun playLast() {
         paused = -1
+        log("playLast", pointer)
+        if (pointer != 0) {
+            pointer--
+            currentList = playedList[pointer].list
+            for ((j, i) in when (currentList) {
+                LIST_ALL -> {
+                    MusicClass.getMusicClass.fullList
+                }
+                else -> {
+                    PlayList.playListList[currentList].getPlayList()
+                }
+            }.withIndex()) {
+                if (i == playedList[pointer].musicInfo) {
+                    currentMusic = j
+                    break
+                }
+            }
+            changeMusic()
+            log("playLast", pointer)
+            return
+        }
+
         if (currentMusic == 0) {
             currentMusic = when (currentList) {
                 LIST_ALL -> {
@@ -243,6 +314,9 @@ class Player private constructor() {
         } else {
             currentMusic--
         }
+
+        playedList.add(Music(currentList, getCurrentMusicInfo()))
+        pointer++
         changeMusic()
     }
 
@@ -260,6 +334,7 @@ class Player private constructor() {
         }
         currentList = list
         currentMusic = index
+        playedList.add(Music(currentList, getCurrentMusicInfo()))
         changeMusic()
     }
 

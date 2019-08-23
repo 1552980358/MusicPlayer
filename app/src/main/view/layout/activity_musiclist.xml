@@ -76,6 +76,7 @@
 
         </com.google.android.material.appbar.CollapsingToolbarLayout >
     </com.google.android.material.appbar.AppBarLayout >
+
     <!--
         <ListView
             android:layout_width="match_parent"

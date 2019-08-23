@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat

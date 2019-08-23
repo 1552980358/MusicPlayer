@@ -1,20 +1,16 @@
 package app.skynight.musicplayer.activity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.AdapterView
-import android.widget.SimpleAdapter
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_musiclist.*
 import app.skynight.musicplayer.R
 import app.skynight.musicplayer.base.BaseSmallPlayerActivity
-import app.skynight.musicplayer.broadcast.BroadcastBase
 import app.skynight.musicplayer.util.*
 import app.skynight.musicplayer.util.Player.Companion.ERROR_CODE
 import app.skynight.musicplayer.util.Player.Companion.EXTRA_LIST
@@ -145,20 +141,14 @@ class MusicListActivity : BaseSmallPlayerActivity() {
         when (item.itemId) {
             R.id.menu_search -> startActivity(
                 Intent(this, SearchActivity::class.java).putExtra(
-                    EXTRA_LIST,
-                    LIST_ALL
+                    EXTRA_LIST, LIST_ALL
                 )
             )
             R.id.menu_inTitle -> {
                 Thread {
-                    Player.settings[Player.Arrangement] = "TITLE"
-                    getSharedPreferences(
-                        "app.skynight.musicplayer_preferences",
-                        Context.MODE_PRIVATE
-                    ).edit().putString("settingPreference_arrangement", "TITLE").apply()
+                    Player.changeSort("TITLE")
                     when (code) {
                         LIST_ALL -> {
-                            MusicClass.sortList(0)
                             for ((index, musicInfo) in MusicClass.getMusicClass.fullList.withIndex()) {
                                 val info = MusicView(this, code, index, musicInfo)
                                 runOnUiThread { linearLayout_container.addView(info) }
@@ -169,34 +159,24 @@ class MusicListActivity : BaseSmallPlayerActivity() {
                 linearLayout_container.removeAllViews()
             }
             R.id.menu_inArtist -> {
-                Thread {
-                    Player.settings[Player.Arrangement] = "ARTIST"
-                    getSharedPreferences(
-                        "app.skynight.musicplayer_preferences",
-                        Context.MODE_PRIVATE
-                    ).edit().putString("settingPreference_arrangement", "ARTIST").apply()
-                    when (code) {
-                        LIST_ALL -> {
-                            MusicClass.sortList(1)
-                            for ((index, musicInfo) in MusicClass.getMusicClass.fullList.withIndex()) {
-                                val info = MusicView(this, code, index, musicInfo)
-                                runOnUiThread { linearLayout_container.addView(info) }
+                    Thread {
+                        Player.changeSort("ARTIST")
+                        when (code) {
+                            LIST_ALL -> {
+                                for ((index, musicInfo) in MusicClass.getMusicClass.fullList.withIndex()) {
+                                    val info = MusicView(this, code, index, musicInfo)
+                                    runOnUiThread { linearLayout_container.addView(info) }
+                                }
                             }
                         }
-                    }
-                }.start()
+                    }.start()
                 linearLayout_container.removeAllViews()
             }
             R.id.menu_inAlbum -> {
                 Thread {
-                    Player.settings[Player.Arrangement] = "ALBUM"
-                    getSharedPreferences(
-                        "app.skynight.musicplayer_preferences",
-                        Context.MODE_PRIVATE
-                    ).edit().putString("settingPreference_arrangement", "ALBUM").apply()
+                    Player.changeSort("ALBUM")
                     when (code) {
                         LIST_ALL -> {
-                            MusicClass.sortList(2)
                             for ((index, musicInfo) in MusicClass.getMusicClass.fullList.withIndex()) {
                                 val info = MusicView(this, code, index, musicInfo)
                                 runOnUiThread { linearLayout_container.addView(info) }
