@@ -131,16 +131,7 @@ class Player private constructor() {
                     }
                 }
                 Companion.PlayingType.RANDOM -> {
-                    playChange(
-                        (0..when (currentList) {
-                            LIST_ALL -> {
-                                MusicClass.getMusicClass.fullList.lastIndex
-                            }
-                            else -> {
-                                PlayList.playListList[currentList].getPlayList().lastIndex
-                            }
-                        }).random()
-                    )
+                    playNext()
                 }
             }
         }
@@ -318,11 +309,6 @@ class Player private constructor() {
         playedList.add(Music(currentList, getCurrentMusicInfo()))
         pointer++
         changeMusic()
-    }
-
-    @Synchronized
-    fun playChange(index: Int) {
-        playChange(currentList, index)
     }
 
     @Synchronized
