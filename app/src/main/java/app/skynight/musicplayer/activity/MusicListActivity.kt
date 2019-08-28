@@ -130,6 +130,7 @@ class MusicListActivity : BaseSmallPlayerActivity() {
         } catch (e: Exception) {
             //e.printStackTrace()
         }
+        setPlayerActivityFitsSystemWindows()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

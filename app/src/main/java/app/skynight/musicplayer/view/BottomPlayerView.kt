@@ -65,6 +65,7 @@ class BottomPlayerView : LinearLayout {
 
                     addView(MusicAlbumRoundedImageView(context).apply {
                         imageView_album = this
+                        size = resources.getDimensionPixelSize(R.dimen.bottomPlayerView_size)
                         //setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_player_play))
                     }, LayoutParams(
                         resources.getDimensionPixelSize(R.dimen.bottomPlayerView_size),

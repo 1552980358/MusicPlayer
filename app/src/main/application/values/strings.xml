@@ -35,6 +35,8 @@
     <string name="abc_settings_player_filter_subtitle">Background gray and transparent filter, preventing overlap of statusbar icons</string>
     <string name="abc_settings_player_statusBar_title">Black status bar icons color</string>
     <string name="abc_settings_player_statusBar_subtitle">Switch off icons as white color, else as black color</string>
+    <string name="abc_settings_player_pulse_title">Music Pulse</string>
+    <string name="abc_settings_player_pulse_subtitle">Visible Music</string>
     <string name="abc_settings_knownIssues_title">Known Issue(s)</string>
     <string name="abc_settings_knownIssues_tag1_title">Removable Storage(Micro SDCard) not accessible</string>
     <string name="abc_settings_knownIssues_tag1_subtitle">Requires adapting each version from Android L to Android O, even Android Q will change APIs about that…
@@ -50,6 +52,15 @@
     <string name="abc_settings_headset_wireless_disconnected_subtitle">Switch off pause, else continue playing</string>
     <string name="abc_settings_arrangement_title">Music Arrangement</string>
     <string name="abc_settings_arrangement_dialogtitle">Select Arrangement method</string>
+    <string name="abc_settings_application_title">Application</string>
+    <string name="abc_settings_application_locale_title">Language</string>
+    <string name="abc_settings_application_locale_subtitle">Select language</string>
+    <string name="abc_settings_application_locale_dialogtitle">Select language</string>
+    <string name="abc_settings_pulse_title">Music Pulse</string>
+    <string name="abc_settings_pulse_type_title">Pulse visible type</string>
+    <string name="abc_settings_pulse_thick_title">Reduce Pulse Density</string>
+    <string name="abc_settings_pulse_color_title">Color of visible pulse</string>
+    <string name="abc_settings_pulse_color_subtitle">Switch off as static white, else as taken from album cover</string>
 
     <string name="abc_musicList_unExpected_intent">Seems something goes wrong when getting playlist info data. </string>
 

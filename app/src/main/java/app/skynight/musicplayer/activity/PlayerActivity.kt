@@ -4,21 +4,22 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
+import android.media.audiofx.Visualizer
 import android.text.TextUtils
 import android.view.MotionEvent
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-import android.widget.RelativeLayout
-import android.widget.RelativeLayout.CENTER_HORIZONTAL
-import android.widget.RelativeLayout.CENTER_VERTICAL
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.widget.RelativeLayout.*
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -34,9 +35,13 @@ import app.skynight.musicplayer.util.UnitUtil.Companion.getTime
 import app.skynight.musicplayer.view.MusicAlbumRoundedImageView
 import kotlinx.android.synthetic.main.activity_player.*
 import android.widget.SeekBar.OnSeekBarChangeListener
+import androidx.core.app.ActivityCompat
 import app.skynight.musicplayer.util.log
 import app.skynight.musicplayer.util.Player
+import app.skynight.musicplayer.util.Player.Companion.Pulse
+import app.skynight.musicplayer.util.Player.Companion.PulseColor
 import app.skynight.musicplayer.util.setColorFilter
+import app.skynight.musicplayer.view.MusicVisiblePulseView
 import mkaflowski.mediastylepalette.MediaNotificationProcessor
 
 /**
@@ -53,6 +58,8 @@ class PlayerActivity : AppCompatActivity() {
     private var thread: Thread? = null
     private var seekBarOnTouched = false
     private var tintColor = 0
+    private lateinit var visualizer: Visualizer
+    private lateinit var musicVisiblePulseView: MusicVisiblePulseView
 
     private fun setBackgroundProp() {
         window.decorView.systemUiVisibility =
@@ -71,41 +78,6 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(R.layout.activity_player)
         if (Player.settings[Player.Filter]!! as Boolean) {
             layout_filter.setBackgroundColor(ContextCompat.getColor(this, R.color.transparent))
-        }
-
-        relativeLayout.apply {
-            addView(MusicAlbumRoundedImageView(this@PlayerActivity).apply {
-                albumPic = this
-            }, RelativeLayout.LayoutParams(
-                resources.displayMetrics.widthPixels * 2 / 3,
-                resources.displayMetrics.widthPixels * 2 / 3
-            ).apply {
-                addRule(CENTER_HORIZONTAL)
-                addRule(CENTER_VERTICAL)
-            })
-            var last = 0f
-            val width = resources.displayMetrics.widthPixels / 5
-            setOnTouchListener { _, motionEvent ->
-                when (motionEvent.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        last = motionEvent.x
-                        return@setOnTouchListener true
-                    }
-                    MotionEvent.ACTION_UP -> {
-                        if (last - motionEvent.x < -width) {
-                            sendBroadcast(Intent(CLIENT_BROADCAST_LAST))
-                            return@setOnTouchListener true
-                        }
-                        if (last - motionEvent.x > width) {
-                            sendBroadcast(Intent(CLIENT_BROADCAST_NEXT))
-                            return@setOnTouchListener true
-                        }
-
-                        return@setOnTouchListener false
-                    }
-                    else -> return@setOnTouchListener false
-                }
-            }
         }
 
         toolbar.apply {
@@ -200,15 +172,134 @@ class PlayerActivity : AppCompatActivity() {
                 seekBarOnTouched = false
             }
         })
+
+        relativeLayout.apply {
+            addView(MusicAlbumRoundedImageView(this@PlayerActivity).apply {
+                albumPic = this
+                size = resources.displayMetrics.widthPixels * 2 / 3
+            }, LayoutParams(
+                resources.displayMetrics.widthPixels * 2 / 3,
+                resources.displayMetrics.widthPixels * 2 / 3
+            ).apply {
+                addRule(CENTER_HORIZONTAL)
+                addRule(CENTER_VERTICAL)
+            })
+            var last = 0f
+            val width = resources.displayMetrics.widthPixels / 5
+
+            if (Player.settings[Pulse] as Boolean) {
+                log("MusicVisiblePulseView", "true")
+                addView(MusicVisiblePulseView(
+                    this@PlayerActivity, resources.displayMetrics.widthPixels, 400
+                ).apply {
+                    musicVisiblePulseView = this
+                    if (ActivityCompat.checkSelfPermission(
+                            this@PlayerActivity,
+                            android.Manifest.permission.MODIFY_AUDIO_SETTINGS
+                        ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                            this@PlayerActivity, android.Manifest.permission.RECORD_AUDIO
+                        ) == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        setUpVisualizer()
+                    } else {
+                        ActivityCompat.requestPermissions(
+                            this@PlayerActivity, arrayOf(
+                                android.Manifest.permission.MODIFY_AUDIO_SETTINGS,
+                                android.Manifest.permission.RECORD_AUDIO
+                            ), 0
+                        )
+                    }
+                }, LayoutParams(MATCH_PARENT, 400).apply {
+                    addRule(ALIGN_PARENT_BOTTOM)
+                })
+            }
+
+            setOnTouchListener { _, motionEvent ->
+                when (motionEvent.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        last = motionEvent.x
+                        return@setOnTouchListener true
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        if (last - motionEvent.x < -width) {
+                            sendBroadcast(Intent(CLIENT_BROADCAST_LAST))
+                            return@setOnTouchListener true
+                        }
+                        if (last - motionEvent.x > width) {
+                            sendBroadcast(Intent(CLIENT_BROADCAST_NEXT))
+                            return@setOnTouchListener true
+                        }
+
+                        return@setOnTouchListener false
+                    }
+                    else -> return@setOnTouchListener false
+                }
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        grantResults.forEach {
+            if (it != PackageManager.PERMISSION_GRANTED) {
+                onBackPressed()
+                return
+            }
+        }
+        setUpVisualizer()
+    }
+
+    private fun setUpVisualizer() {
+        visualizer = Visualizer(Player.getPlayer.getMediaPlayer().audioSessionId).apply {
+            setDataCaptureListener(object : Visualizer.OnDataCaptureListener {
+                override fun onWaveFormDataCapture(
+                    p0: Visualizer?, p1: ByteArray?, p2: Int
+                ) {
+                    //log("onWaveFormDataCapture", p1!!.toList())
+                    musicVisiblePulseView.setWaveData(p1!!)
+
+                }
+
+                override fun onFftDataCapture(
+                    p0: Visualizer?, p1: ByteArray?, p2: Int
+                ) {
+                    //log("onFftDataCapture", p1!!.toList())
+                }
+
+            }, Visualizer.getMaxCaptureRate() / 2, true, false)
+            captureSize =
+                Visualizer.getCaptureSizeRange()[if (Player.settings[Player.PulseDensity] as Boolean) 0 else 1]
+            //enabled = true
+        }
     }
 
     private fun startThread() {
         textView_timePass.text = getTime(Player.getPlayer.getCurrent())
         seekBar.progress = Player.getPlayer.getCurrent()
         thread = Thread {
+            /*
+            if (::musicVisiblePulseView.isInitialized) {
+                musicVisiblePulseView.start = true
+            }
+            if (::visualizer.isInitialized) {
+                visualizer.enabled = true
+            }
+            */
+
+            /* 提升执行效率 */
+            try {
+                musicVisiblePulseView.start = true
+                visualizer.enabled = true
+            } catch (e: java.lang.Exception) {
+                //e.printStackTrace()
+            }
+
             while (Player.getPlayer.isPlaying()) {
-                runOnUiThread {
-                    if (!seekBarOnTouched) {
+
+                if (!seekBarOnTouched) {
+                    runOnUiThread {
                         textView_timePass.text = getTime(Player.getPlayer.getCurrent())
                         seekBar.progress = Player.getPlayer.getCurrent()
                     }
@@ -219,6 +310,20 @@ class PlayerActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     //e.printStackTrace()
                 }
+            }
+            /*
+            if (::musicVisiblePulseView.isInitialized) {
+                musicVisiblePulseView.start = false
+            }
+            if (::visualizer.isInitialized) {
+                visualizer.enabled = false
+            }
+            */
+            try {
+                musicVisiblePulseView.start = false
+                visualizer.enabled = false
+            } catch (e: Exception) {
+                //e.printStackTrace()
             }
         }.apply { start() }
     }
@@ -282,7 +387,6 @@ class PlayerActivity : AppCompatActivity() {
         val alPic = musicInfo.albumPic()
         Thread {
             try {
-
                 val mediaNotificationProcessor = MediaNotificationProcessor(this, alPic)
 
                 if (Player.settings[Player.BgColor]!! as Boolean) {
@@ -315,11 +419,13 @@ class PlayerActivity : AppCompatActivity() {
                 }
 
                 tintColor = mediaNotificationProcessor.primaryTextColor
-                if (Player.settings[Player.BgColor]!! as Boolean) {
+                if (Player.settings[Player.Button]!! as Boolean) {
                     runOnUiThread {
-                        toolbar.setTitleTextColor(mediaNotificationProcessor.primaryTextColor)
-                        toolbar.setSubtitleTextColor(mediaNotificationProcessor.secondaryTextColor)
-                        toolbar.navigationIcon!!.setTint(mediaNotificationProcessor.secondaryTextColor)
+                        toolbar.apply {
+                            setTitleTextColor(mediaNotificationProcessor.primaryTextColor)
+                            setSubtitleTextColor(mediaNotificationProcessor.secondaryTextColor)
+                            navigationIcon!!.setTint(mediaNotificationProcessor.secondaryTextColor)
+                        }
                         textView_timeTotal.setTextColor(mediaNotificationProcessor.primaryTextColor)
                         textView_timePass.setTextColor(mediaNotificationProcessor.primaryTextColor)
                         try {
@@ -328,32 +434,62 @@ class PlayerActivity : AppCompatActivity() {
                             imageButton_next.background.setTint(mediaNotificationProcessor.primaryTextColor)
                             imageButton_list.background.setTint(mediaNotificationProcessor.primaryTextColor)
                             checkBox_playControl.background.setTint(mediaNotificationProcessor.primaryTextColor)
-                            seekBar.thumb.setColorFilter(mediaNotificationProcessor.primaryTextColor)
-                            seekBar.progressDrawable.setTint(mediaNotificationProcessor.primaryTextColor)
-                            seekBar.indeterminateDrawable.setTint(mediaNotificationProcessor.secondaryTextColor)
+                            seekBar.apply {
+                                thumb.apply {
+                                    runOnUiThread {
+                                        setColorFilter(
+                                            mediaNotificationProcessor.primaryTextColor
+                                        )
+                                    }
+                                }
+                                progressDrawable.apply {
+                                    runOnUiThread {
+                                        setTint(
+                                            mediaNotificationProcessor.primaryTextColor
+                                        )
+                                    }
+                                }
+                                indeterminateDrawable.apply {
+                                    runOnUiThread {
+                                        setTint(
+                                            mediaNotificationProcessor.secondaryTextColor
+                                        )
+                                    }
+                                }
+                            }
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
                     }
                 }
-
+                if (Player.settings[PulseColor] as Boolean) {
+                    musicVisiblePulseView.setPaintColor(mediaNotificationProcessor.primaryTextColor)
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }.start()
-        toolbar.title = musicInfo.title()
-        toolbar.subtitle = musicInfo.artist()
-        albumPic.setImageBitmap(alPic)
-        textView_timeTotal.text = getTime(musicInfo.duration())
-        seekBar.max = musicInfo.duration()
-        checkBox_playControl.isChecked = Player.getPlayer.isPlaying()
-        //startThread()
+        try {
+            toolbar.title = musicInfo.title()
+            toolbar.subtitle = musicInfo.artist()
+            albumPic.setImageBitmap(alPic)
+            textView_timeTotal.text = getTime(musicInfo.duration())
+            seekBar.max = musicInfo.duration()
+            checkBox_playControl.isChecked = Player.getPlayer.isPlaying()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun onPause() {
         log("PlayerActivity", "onPause")
         super.onPause()
-        unregisterReceiver()
+        try {
+            unregisterReceiver()
+            visualizer.enabled = false
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun onBackPressed() {
@@ -371,6 +507,8 @@ class PlayerActivity : AppCompatActivity() {
         log("PlayerActivity", "onDestroy")
         try {
             unregisterReceiver()
+            visualizer.enabled = false
+            visualizer.release()
         } catch (e: Exception) {
             e.printStackTrace()
         }

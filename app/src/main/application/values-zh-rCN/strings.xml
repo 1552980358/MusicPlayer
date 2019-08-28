@@ -29,7 +29,7 @@
 
     <string name="abc_settings_player_title">播放页</string>
     <string name="abc_settings_player_bgAlbum_title">播放页背景</string>
-    <string name="abc_settings_player_bgAlbum_subtitle">禁用时使用专辑封面, 启用时从封面提取颜色</string>
+    <string name="abc_settings_player_bgAlbum_subtitle">禁用时使用专辑封面, 启用时从专辑封面提取颜色</string>
     <string name="abc_settings_player_buttons_title">按钮颜色</string>
     <string name="abc_settings_player_buttons_subtitle">禁用时静态白色, 启用时从专辑封面提取颜色</string>
     <string name="abc_settings_player_filter_title">关闭灰色半透明滤镜</string>

@@ -1,7 +1,10 @@
 package app.skynight.musicplayer.activity
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import app.skynight.musicplayer.base.BaseSmallPlayerActivity
 import app.skynight.musicplayer.R
@@ -59,6 +62,7 @@ class SearchActivity : BaseSmallPlayerActivity() {
         toolbar.setNavigationOnClickListener { onBackPressed() }
         supportActionBar!!.setDisplayShowTitleEnabled(false)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        setPlayerActivityFitsSystemWindows()
     }
 
     override fun onBackPressed() {
@@ -69,11 +73,17 @@ class SearchActivity : BaseSmallPlayerActivity() {
         menuInflater.inflate(R.menu.menu_search, menu)
         menu.apply {
             (this!!.findItem(R.id.menu_s).actionView as SearchView).apply {
+                try {
+                    (this::class.java.getDeclaredField("mSearchPlate").apply { isAccessible = true }.get(this) as View).setBackgroundColor(Color.TRANSPARENT)
+                } catch (e: Exception) {
+                    //e.printStackTrace()
+                }
+
                 onActionViewExpanded()
                 isSubmitButtonEnabled = false
                 setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
-                        return onQueryTextSubmit(query)
+                        return false
                     }
 
                     override fun onQueryTextChange(newText: String?): Boolean {

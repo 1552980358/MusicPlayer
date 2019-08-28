@@ -132,6 +132,10 @@ class LoadingActivity : AppCompatActivity() {
                     this, android.Manifest.permission.READ_EXTERNAL_STORAGE
                 ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                     this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    this, android.Manifest.permission.RECORD_AUDIO
+                ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    this, android.Manifest.permission.MODIFY_AUDIO_SETTINGS
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
                 loadSettings()
@@ -201,7 +205,9 @@ class LoadingActivity : AppCompatActivity() {
                 ActivityCompat.requestPermissions(
                     this, arrayOf(
                         android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        android.Manifest.permission.RECORD_AUDIO,
+                        android.Manifest.permission.MODIFY_AUDIO_SETTINGS
                     ), 0
                 )
             }.setNegativeButton(R.string.cancel) { _, _ -> exitProcess(0) }.setCancelable(false)

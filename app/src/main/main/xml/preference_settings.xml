@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--suppress DeprecatedClassUsageInspection -->
+<?xml version="1.0" encoding="utf-8"?><!--suppress DeprecatedClassUsageInspection -->
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -10,13 +9,14 @@
         app:iconSpaceReserved="false" >
         <ListPreference
             app:iconSpaceReserved="false"
+            android:summary="%s"
             android:key="settingPreference_arrangement"
             android:entries="@array/array_arrangement"
             android:title="@string/abc_settings_arrangement_title"
             android:dialogTitle="@string/abc_settings_arrangement_dialogtitle"
             android:entryValues="@array/array_arrangement_value"
-            android:defaultValue="TITLE"/>
-    </PreferenceCategory>
+            android:defaultValue="TITLE" />
+    </PreferenceCategory >
 
     <PreferenceCategory
         android:title="@string/abc_settings_player_title"
@@ -26,25 +26,65 @@
             android:key="settingPreference_bgAlbum"
             app:iconSpaceReserved="false"
             android:title="@string/abc_settings_player_bgAlbum_title"
-            android:summary="@string/abc_settings_player_bgAlbum_subtitle" />
+            android:summary="@string/abc_settings_player_bgAlbum_subtitle"
+            android:defaultValue="false"/>
 
         <SwitchPreference
             app:iconSpaceReserved="false"
             android:key="settingPreference_buttons"
             android:title="@string/abc_settings_player_buttons_title"
-            android:summary="@string/abc_settings_player_buttons_subtitle" />
+            android:summary="@string/abc_settings_player_buttons_subtitle"
+            android:defaultValue="false"/>
 
         <SwitchPreference
             app:iconSpaceReserved="false"
             android:key="settingPreference_filter"
             android:title="@string/abc_settings_player_filter_title"
-            android:summary="@string/abc_settings_player_filter_subtitle" />
+            android:summary="@string/abc_settings_player_filter_subtitle"
+            android:defaultValue="false"/>
 
         <SwitchPreference
             app:iconSpaceReserved="false"
             android:key="settingPreference_statusBar"
             android:title="@string/abc_settings_player_statusBar_title"
-            android:summary="@string/abc_settings_player_statusBar_subtitle" />
+            android:summary="@string/abc_settings_player_statusBar_subtitle"
+            android:defaultValue="false"/>
+
+        <SwitchPreference
+            app:iconSpaceReserved="false"
+            android:key="settingPreference_pulse"
+            android:title="@string/abc_settings_player_pulse_title"
+            android:summary="@string/abc_settings_player_pulse_subtitle"
+            android:defaultValue="true" />
+
+    </PreferenceCategory >
+
+    <PreferenceCategory
+        android:title="@string/abc_settings_pulse_title"
+        android:key="settingPreference_pulse_opts"
+        app:iconSpaceReserved="false" >
+        <ListPreference
+            app:iconSpaceReserved="false"
+            android:summary="%s"
+            android:key="settingPreference_pulse_type"
+            android:title="@string/abc_settings_pulse_type_title"
+            android:defaultValue="PulseType_FillCylinder"
+            android:entries="@array/array_pulse_type"
+            android:entryValues="@array/array_pulse_type_value"
+            android:selectable="false"/>
+
+        <SwitchPreference
+            app:iconSpaceReserved="false"
+            android:key="settingPreference_pulse_density"
+            android:defaultValue="false"
+            android:title="@string/abc_settings_pulse_thick_title" />
+
+        <SwitchPreference
+            app:iconSpaceReserved="false"
+            android:key="settingPreference_pulse_color"
+            android:defaultValue="false"
+            android:title="@string/abc_settings_pulse_color_title"
+            android:summary="@string/abc_settings_pulse_color_subtitle"/>
 
     </PreferenceCategory >
 
@@ -69,7 +109,7 @@
             android:key="settingPreference_wireless_connected"
             android:title="@string/abc_settings_headset_wireless_connected_title"
             android:summary="@string/abc_settings_headset_wireless_connected_subtitle"
-            android:selectable="false"/>
+            android:selectable="false" />
 
         <SwitchPreference
             app:iconSpaceReserved="false"
@@ -77,7 +117,22 @@
             android:title="@string/abc_settings_headset_wireless_disconnected_title"
             android:summary="@string/abc_settings_headset_wireless_disconnected_subtitle" />
 
-    </PreferenceCategory>
+    </PreferenceCategory >
+
+    <PreferenceCategory
+        android:title="@string/abc_settings_application_title"
+        app:iconSpaceReserved="false" >
+        <ListPreference
+            app:iconSpaceReserved="false"
+            android:summary="%s"
+            android:title="@string/abc_settings_application_locale_title"
+            android:key="settingPreference_locale"
+            android:entryValues="@array/array_locale_value"
+            android:entries="@array/array_locale"
+            android:defaultValue="DEFAULT"
+            android:dialogTitle="@string/abc_settings_application_locale_dialogtitle" />
+
+    </PreferenceCategory >
 
     <PreferenceCategory
         android:title="@string/abc_settings_knownIssues_title"

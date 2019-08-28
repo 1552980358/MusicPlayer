@@ -73,9 +73,10 @@ class NotificationUtil private constructor() {
             setContentTitle(musicInfo.title())
             setContentText(musicInfo.artist())
             setSmallIcon(R.mipmap.ic_launcher)
+            priority = androidx.core.app.NotificationCompat.PRIORITY_MAX
             setStyle(
                 NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2)
-                    //.setShowCancelButton(true)
+                    .setShowCancelButton(true)
                     .setMediaSession(
                         MediaSessionCompat(
                             MainApplication.getMainApplication(),

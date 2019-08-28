@@ -12,4 +12,30 @@
         <item>ALBUM</item>
         <item>RANDOM</item>
     </string-array>
+
+    <string-array name="array_locale">
+        <item>跟随系统</item>
+        <item>中文(简体)</item>
+        <item>中文(繁體)</item>
+        <item>English</item>
+    </string-array>
+
+    <string-array name="array_locale_value">
+        <item>DEFAULT</item>
+        <item>zh-rCN</item>
+        <item>zh-rTW</item>
+        <item>en-rUS</item>
+    </string-array>
+
+    <string-array name="array_pulse_type">
+        <item>Cylinder(Fill Color)</item>
+        <item>Cylinder(Line Wrap)</item>
+        <item>Line</item>
+    </string-array>
+
+    <string-array name="array_pulse_type_value">
+        <item>PulseType_FillCylinder</item>
+        <item>PulseType_Cylinder</item>
+        <item>PulseType_Line</item>
+    </string-array>
 </resources >

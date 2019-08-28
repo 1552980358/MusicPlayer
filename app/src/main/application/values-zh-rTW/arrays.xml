@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources >
     <string-array name="array_arrangement">
-        <item>单曲名</item>
+        <item>單曲名</item>
         <item>歌手名</item>
-        <item>专辑名</item>
+        <item>專輯名</item>
     </string-array>
 
     <string-array name="array_pulse_type">
-        <item>柱体(实)</item>
-        <item>柱体(线)</item>
-        <item>线条</item>
+        <item>柱體(實)</item>
+        <item>主(綫)</item>
+        <item>綫條</item>
     </string-array>
 </resources >

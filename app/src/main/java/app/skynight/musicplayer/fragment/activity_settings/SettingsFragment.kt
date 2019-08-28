@@ -2,13 +2,16 @@ package app.skynight.musicplayer.fragment.activity_settings
 
 import android.os.Bundle
 import androidx.preference.ListPreference
-import androidx.preference.Preference
+import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import app.skynight.musicplayer.R
 import app.skynight.musicplayer.util.Player
+import app.skynight.musicplayer.util.Player.Companion.Pulse
+import app.skynight.musicplayer.util.Player.Companion.PulseColor
+import app.skynight.musicplayer.util.Player.Companion.PulseDensity
+import app.skynight.musicplayer.util.Player.Companion.PulseType
 import app.skynight.musicplayer.util.log
-import app.skynight.musicplayer.util.makeToast
 
 /**
  * @File    : SettingsFragment
@@ -20,7 +23,7 @@ import app.skynight.musicplayer.util.makeToast
 class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         log("SettingsFragment", "- onCreatePreferences")
-        addPreferencesFromResource(R.xml.perf_settings)
+        addPreferencesFromResource(R.xml.preference_settings)
         try {
             findPreference<SwitchPreference>("settingPreference_bgAlbum")!!.setOnPreferenceChangeListener { _, newValue ->
                 Player.settings[Player.BgColor] = newValue as Boolean
@@ -38,6 +41,33 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 Player.settings[Player.StatusBar] = newValue as Boolean
                 return@setOnPreferenceChangeListener true
             }
+            findPreference<SwitchPreference>("settingPreference_pulse")!!.apply {
+                setOnPreferenceChangeListener { _, newValue ->
+                    Player.settings[Pulse] = newValue as Boolean
+                    findPreference<PreferenceCategory>("settingPreference_pulse_opts")!!.isEnabled = newValue
+                    return@setOnPreferenceChangeListener true
+                }
+            }
+            findPreference<SwitchPreference>("settingPreference_pulse_density")!!.apply {
+                setOnPreferenceChangeListener { _, newValue ->
+                    Player.settings[PulseDensity] = newValue as Boolean
+                    return@setOnPreferenceChangeListener true
+                }
+            }
+            findPreference<ListPreference>("settingPreference_pulse_type")!!.apply {
+                setOnPreferenceChangeListener { _, newValue ->
+                    Player.settings[PulseType] = newValue as String
+                    return@setOnPreferenceChangeListener true
+                }
+            }
+            findPreference<SwitchPreference>("settingPreference_pulse_color")!!.apply {
+                setOnPreferenceChangeListener { _, newValue ->
+                    Player.settings[PulseColor] = newValue as Boolean
+                    return@setOnPreferenceChangeListener true
+                }
+            }
+
+            findPreference<PreferenceCategory>("settingPreference_pulse_opts")!!.isEnabled = Player.settings[Pulse] as Boolean
 
             // Headset
             findPreference<SwitchPreference>("settingPreference_wired_plugin")!!.setOnPreferenceChangeListener { _, newValue ->

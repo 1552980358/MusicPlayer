@@ -1,8 +1,10 @@
 package app.skynight.musicplayer.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.media.MediaPlayer
+import android.os.Build
 import app.skynight.musicplayer.MainApplication
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_MUSICCHANGE
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONPAUSE
@@ -74,6 +76,13 @@ class Player private constructor() {
         const val Button = "Button"
         const val Filter = "Filter"
         const val StatusBar = "StatusBar"
+        const val Pulse = "Pulse"
+        const val PulseType = "PulseType"
+        const val PulseType_FillCylinder = "PulseType_FillCylinder"
+        const val PulseType_Cylinder = "PulseType_Cylinder"
+        const val PulseType_Line = "PulseType_Line"
+        const val PulseDensity = "PulseDensity"
+        const val PulseColor = "PulseColor"
 
         const val WiredPlugIn = "WiredPlugIn"
         const val WiredPullOut = "WiredPullOut"
@@ -93,29 +102,30 @@ class Player private constructor() {
     private class Music(val list: Int, val musicInfo: MusicInfo)
 
     init {
-        //Thread {
-        MusicClass.getMusicClass
-        //}.start()
-        //Thread {
-        /*
-        PlayList.loadAllPlayLists()
-        playList = true
-         */
-        MainApplication.getMainApplication()
-            .getSharedPreferences("app.skynight.musicplayer_preferences", MODE_PRIVATE).apply {
-                settings[BgColor] = getBoolean("settingPreference_bgAlbum", false)
-                settings[Button] = getBoolean("settingPreference_buttons", false)
-                settings[Filter] = getBoolean("settingPreference_filter", false)
-                settings[StatusBar] = getBoolean("settingPreference_statusBar", false)
+        MainApplication.sharedPreferences.apply {
+            settings[BgColor] = getBoolean("settingPreference_bgAlbum", false)
+            settings[Button] = getBoolean("settingPreference_buttons", false)
+            settings[Filter] = getBoolean("settingPreference_filter", false)
+            settings[StatusBar] = getBoolean("settingPreference_statusBar", false)
 
-                settings[WiredPlugIn] = getBoolean("settingPreference_wired_plugin", false)
-                settings[WiredPullOut] = getBoolean("settingPreference_wired_pullout", false)
-                settings[WirelessDis] = getBoolean("settingPreference_wireless_disconnected", false)
+            settings[WiredPlugIn] = getBoolean("settingPreference_wired_plugin", false)
+            settings[WiredPullOut] = getBoolean("settingPreference_wired_pullout", false)
+            settings[WirelessDis] = getBoolean("settingPreference_wireless_disconnected", false)
 
-                settings[Arrangement] =
-                    getString("settingPreference_arrangement", "TITLE").toString()
+            settings[Arrangement] = getString("settingPreference_arrangement", "TITLE") as String
+            settings[Pulse] = getBoolean("settingPreference_pulse", true)
+            settings[PulseType] = getString("settingPreference_pulse_type", PulseType_FillCylinder) as String
+            settings[PulseDensity] = getBoolean("settingPreference_pulse_density", false)
+            settings[PulseColor] = getBoolean("settingPreference_pulse_color", false)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                settings.forEach { (string, any) ->
+                    log(string, any)
+                }
             }
-        //}.start()
+        }
+        MusicClass.getMusicClass
+
         mediaPlayer = MediaPlayer()
         mediaPlayer.setOnCompletionListener {
             paused = 0
@@ -127,7 +137,7 @@ class Player private constructor() {
                     //mediaPlayer.prepare()
                     if (!mediaPlayer.isLooping) {
                         mediaPlayer.isLooping = true
-                        onStart()
+                        //onStart()
                     }
                 }
                 Companion.PlayingType.RANDOM -> {
@@ -168,9 +178,11 @@ class Player private constructor() {
             0 -> {
                 changeMusic()
             }
-            2 -> {
+
+            1, 2 -> {
                 //pointer = 0
                 mediaPlayer.start()
+                mediaPlayer.setVolume(1f, 1f)
                 if (paused != -1) {
                     mediaPlayer.seekTo(paused)
                     paused = -1
