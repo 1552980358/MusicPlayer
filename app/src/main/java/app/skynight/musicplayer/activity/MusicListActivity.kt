@@ -36,7 +36,6 @@ class MusicListActivity : BaseSmallPlayerActivity() {
                         log("MusicListActivity", "LIST_ALL")
                         MusicClass.getMusicClass.fullList
                     }
-
                     ERROR_CODE -> {
                         throw Exception()
                     }
@@ -95,6 +94,7 @@ class MusicListActivity : BaseSmallPlayerActivity() {
             when (code) {
                 LIST_ALL -> {
                     toolbar.setTitle(R.string.abc_musicList_full)
+                    toolbar.subtitle = MusicClass.getMusicClass.fullList.size.toString()
                     textView_title.setText(R.string.abc_musicList_full)
                 }
                 ERROR_CODE -> {
@@ -103,6 +103,7 @@ class MusicListActivity : BaseSmallPlayerActivity() {
                 else -> {
                     PlayList.playListList[code].apply {
                         toolbar.title = playListName
+                        toolbar.subtitle = getPlayList().size.toString()
                         textView_title.text = playListName
                         textView_subTitle.text = date
                     }

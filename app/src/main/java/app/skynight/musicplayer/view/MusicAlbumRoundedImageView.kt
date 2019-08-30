@@ -3,6 +3,7 @@ package app.skynight.musicplayer.view
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
@@ -35,7 +36,11 @@ class MusicAlbumRoundedImageView : AppCompatImageView {
     override fun setImageBitmap(bm: Bitmap) {
         if (bm.width == bm.height) {
             super.setImageDrawable(RoundedBitmapDrawableFactory.create(
-                context.resources, Bitmap.createScaledBitmap(bm, size, size, true)
+                context.resources,
+                Bitmap.createBitmap(bm, 0, 0, bm.width, bm.width, Matrix().apply {
+                    val ratio = size / bm.width.toFloat()
+                    setScale(ratio, ratio)
+                }, true)
             ).apply {
                 isCircular = true
             })
@@ -44,15 +49,11 @@ class MusicAlbumRoundedImageView : AppCompatImageView {
 
         if (bm.width < bm.height) {
             super.setImageDrawable(RoundedBitmapDrawableFactory.create(
-                context.resources,
-                Bitmap.createScaledBitmap(
-                    Bitmap.createBitmap(
-                        bm,
-                        0,
-                        (bm.height - bm.width) / 2,
-                        bm.width,
-                        bm.width
-                    ), size, size, true
+                context.resources, Bitmap.createBitmap(
+                    bm, 0, (bm.height - bm.width) / 2, bm.width, bm.width, Matrix().apply {
+                        val ratio = size / bm.width.toFloat()
+                        setScale(ratio, ratio)
+                    }, true
                 )
             ).apply {
                 isCircular = true
@@ -62,14 +63,16 @@ class MusicAlbumRoundedImageView : AppCompatImageView {
 
         super.setImageDrawable(RoundedBitmapDrawableFactory.create(
             context.resources,
-            Bitmap.createScaledBitmap(
-                Bitmap.createBitmap(
-                    bm,
-                    (bm.width - bm.height) / 2,
-                    0,
-                    bm.width,
-                    bm.width
-                ), size, size, true
+            Bitmap.createBitmap(bm,
+                (bm.width - bm.height) / 2,
+                0,
+                bm.height,
+                bm.height,
+                Matrix().apply {
+                    val ratio = size / bm.width.toFloat()
+                    setScale(ratio, ratio)
+                },
+                true
             )
         ).apply {
             isCircular = true

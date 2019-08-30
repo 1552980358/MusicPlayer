@@ -28,14 +28,12 @@
     </string-array>
 
     <string-array name="array_pulse_type">
-        <item>Cylinder(Fill Color)</item>
-        <item>Cylinder(Line Wrap)</item>
-        <item>Line</item>
+        <item>Compat Wave</item>
+        <item>Electronic current</item>
     </string-array>
 
     <string-array name="array_pulse_type_value">
-        <item>PulseType_FillCylinder</item>
-        <item>PulseType_Cylinder</item>
-        <item>PulseType_Line</item>
+        <item>PulseType_CompatWave</item>
+        <item>PulseType_ElectricCurrent</item>
     </string-array>
 </resources >

@@ -36,12 +36,14 @@ import app.skynight.musicplayer.view.MusicAlbumRoundedImageView
 import kotlinx.android.synthetic.main.activity_player.*
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.core.app.ActivityCompat
+import app.skynight.musicplayer.pulse.*
 import app.skynight.musicplayer.util.log
 import app.skynight.musicplayer.util.Player
 import app.skynight.musicplayer.util.Player.Companion.Pulse
 import app.skynight.musicplayer.util.Player.Companion.PulseColor
 import app.skynight.musicplayer.util.setColorFilter
-import app.skynight.musicplayer.view.MusicVisiblePulseView
+import app.skynight.musicplayer.util.Player.Companion.PulseType
+import app.skynight.musicplayer.util.Player.Companion.PulseType_ElectricCurrent
 import mkaflowski.mediastylepalette.MediaNotificationProcessor
 
 /**
@@ -59,7 +61,7 @@ class PlayerActivity : AppCompatActivity() {
     private var seekBarOnTouched = false
     private var tintColor = 0
     private lateinit var visualizer: Visualizer
-    private lateinit var musicVisiblePulseView: MusicVisiblePulseView
+    private lateinit var musicVisiblePulse: BaseMusicVisiblePulse
 
     private fun setBackgroundProp() {
         window.decorView.systemUiVisibility =
@@ -184,49 +186,69 @@ class PlayerActivity : AppCompatActivity() {
                 addRule(CENTER_HORIZONTAL)
                 addRule(CENTER_VERTICAL)
             })
-            var last = 0f
-            val width = resources.displayMetrics.widthPixels / 5
 
             if (Player.settings[Pulse] as Boolean) {
-                log("MusicVisiblePulseView", "true")
-                addView(MusicVisiblePulseView(
-                    this@PlayerActivity, resources.displayMetrics.widthPixels, 400
-                ).apply {
-                    musicVisiblePulseView = this
-                    if (ActivityCompat.checkSelfPermission(
+                addView(when (Player.settings[PulseType]) {
+                    PulseType_ElectricCurrent -> ElectronicCurrentPulse(
+                        this@PlayerActivity,
+                        resources.displayMetrics.widthPixels,
+                        resources.getDimensionPixelSize(R.dimen.playerActivity_renderer_height)
+                    )
+                    else -> {
+                        CompatWavePulse(
                             this@PlayerActivity,
-                            android.Manifest.permission.MODIFY_AUDIO_SETTINGS
-                        ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                            this@PlayerActivity, android.Manifest.permission.RECORD_AUDIO
-                        ) == PackageManager.PERMISSION_GRANTED
-                    ) {
-                        setUpVisualizer()
-                    } else {
-                        ActivityCompat.requestPermissions(
-                            this@PlayerActivity, arrayOf(
-                                android.Manifest.permission.MODIFY_AUDIO_SETTINGS,
-                                android.Manifest.permission.RECORD_AUDIO
-                            ), 0
+                            resources.displayMetrics.widthPixels,
+                            resources.getDimensionPixelSize(R.dimen.playerActivity_renderer_height)
                         )
                     }
-                }, LayoutParams(MATCH_PARENT, 400).apply {
-                    addRule(ALIGN_PARENT_BOTTOM)
-                })
+                }.apply {
+                    musicVisiblePulse = this
+                    checkPermission()
+                },
+                    LayoutParams(
+                        MATCH_PARENT,
+                        resources.getDimensionPixelSize(R.dimen.playerActivity_renderer_height)
+                    ).apply {
+                        addRule(ALIGN_PARENT_BOTTOM)
+                        setMargins(
+                            0,
+                            0,
+                            0,
+                            resources.getDimensionPixelSize(R.dimen.playerActivity_renderer_marginBottom)
+                        )
+                    })
             }
 
+            var lastX = 0f
+            var lastY = 0F
+            var lastTime = 0L
+            val width = resources.displayMetrics.widthPixels / 5
+            val height = resources.displayMetrics.heightPixels / 5
             setOnTouchListener { _, motionEvent ->
                 when (motionEvent.action) {
                     MotionEvent.ACTION_DOWN -> {
-                        last = motionEvent.x
+                        lastX = motionEvent.x
+                        lastY = motionEvent.y
+                        System.currentTimeMillis().apply {
+                            if (this - lastTime < 300) {
+                                sendBroadcast(Intent(if (Player.getPlayer.isPlaying()) CLIENT_BROADCAST_ONPAUSE else CLIENT_BROADCAST_ONSTART))
+                            }
+                            lastTime = this
+                        }
                         return@setOnTouchListener true
                     }
                     MotionEvent.ACTION_UP -> {
-                        if (last - motionEvent.x < -width) {
+                        if (lastX - motionEvent.x < -width) {
                             sendBroadcast(Intent(CLIENT_BROADCAST_LAST))
                             return@setOnTouchListener true
                         }
-                        if (last - motionEvent.x > width) {
+                        if (lastX - motionEvent.x > width) {
                             sendBroadcast(Intent(CLIENT_BROADCAST_NEXT))
+                            return@setOnTouchListener true
+                        }
+
+                        if (lastY - motionEvent.y < -height) {
+                            onBackPressed()
                             return@setOnTouchListener true
                         }
 
@@ -235,6 +257,24 @@ class PlayerActivity : AppCompatActivity() {
                     else -> return@setOnTouchListener false
                 }
             }
+        }
+    }
+
+    private fun checkPermission() {
+        if (ActivityCompat.checkSelfPermission(
+                this, android.Manifest.permission.MODIFY_AUDIO_SETTINGS
+            ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this, android.Manifest.permission.RECORD_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            setUpVisualizer()
+        } else {
+            ActivityCompat.requestPermissions(
+                this, arrayOf(
+                    android.Manifest.permission.MODIFY_AUDIO_SETTINGS,
+                    android.Manifest.permission.RECORD_AUDIO
+                ), 0
+            )
         }
     }
 
@@ -258,7 +298,7 @@ class PlayerActivity : AppCompatActivity() {
                     p0: Visualizer?, p1: ByteArray?, p2: Int
                 ) {
                     //log("onWaveFormDataCapture", p1!!.toList())
-                    musicVisiblePulseView.setWaveData(p1!!)
+                    musicVisiblePulse.setData(p1!!)
 
                 }
 
@@ -266,6 +306,15 @@ class PlayerActivity : AppCompatActivity() {
                     p0: Visualizer?, p1: ByteArray?, p2: Int
                 ) {
                     //log("onFftDataCapture", p1!!.toList())
+                    /*
+                    val tmp = ByteArray(p1!!.size / 2 + 1)
+                    tmp[0] = abs(p1[1].toInt()).toByte()
+                    var j = 1
+                    for (i in 2 .. 17 step 2) {
+                        tmp[j] = hypot(p1[i].toDouble(), p1[i+1].toDouble()).toByte()
+                        j++
+                    }*/
+                    musicVisiblePulse.setData(p1!!)
                 }
 
             }, Visualizer.getMaxCaptureRate() / 2, true, false)
@@ -276,8 +325,16 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun startThread() {
-        textView_timePass.text = getTime(Player.getPlayer.getCurrent())
-        seekBar.progress = Player.getPlayer.getCurrent()
+        Player.getPlayer.getCurrent().apply {
+            if (this != -1) {
+                log("Player.getPlayer.getCurrent", this)
+                textView_timePass.text = getTime(this)
+                seekBar.progress = this
+            } else {
+                textView_timePass.text = getTime(0)
+                seekBar.progress = 0
+            }
+        }
         thread = Thread {
             /*
             if (::musicVisiblePulseView.isInitialized) {
@@ -290,9 +347,9 @@ class PlayerActivity : AppCompatActivity() {
 
             /* 提升执行效率 */
             try {
-                musicVisiblePulseView.start = true
+                musicVisiblePulse.start = true
                 visualizer.enabled = true
-            } catch (e: java.lang.Exception) {
+            } catch (e: Exception) {
                 //e.printStackTrace()
             }
 
@@ -320,7 +377,7 @@ class PlayerActivity : AppCompatActivity() {
             }
             */
             try {
-                musicVisiblePulseView.start = false
+                musicVisiblePulse.start = false
                 visualizer.enabled = false
             } catch (e: Exception) {
                 //e.printStackTrace()
@@ -463,7 +520,7 @@ class PlayerActivity : AppCompatActivity() {
                     }
                 }
                 if (Player.settings[PulseColor] as Boolean) {
-                    musicVisiblePulseView.setPaintColor(mediaNotificationProcessor.primaryTextColor)
+                    musicVisiblePulse.setPaintColor(mediaNotificationProcessor.primaryTextColor)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

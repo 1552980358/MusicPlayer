@@ -78,9 +78,8 @@ class Player private constructor() {
         const val StatusBar = "StatusBar"
         const val Pulse = "Pulse"
         const val PulseType = "PulseType"
-        const val PulseType_FillCylinder = "PulseType_FillCylinder"
-        const val PulseType_Cylinder = "PulseType_Cylinder"
-        const val PulseType_Line = "PulseType_Line"
+        const val PulseType_CompatWave = "PulseType_CompatWave"
+        const val PulseType_ElectricCurrent = "PulseType_ElectricCurrent"
         const val PulseDensity = "PulseDensity"
         const val PulseColor = "PulseColor"
 
@@ -114,7 +113,7 @@ class Player private constructor() {
 
             settings[Arrangement] = getString("settingPreference_arrangement", "TITLE") as String
             settings[Pulse] = getBoolean("settingPreference_pulse", true)
-            settings[PulseType] = getString("settingPreference_pulse_type", PulseType_FillCylinder) as String
+            settings[PulseType] = getString("settingPreference_pulse_type", PulseType_CompatWave) as String
             settings[PulseDensity] = getBoolean("settingPreference_pulse_density", false)
             settings[PulseColor] = getBoolean("settingPreference_pulse_color", false)
 
@@ -182,11 +181,11 @@ class Player private constructor() {
             1, 2 -> {
                 //pointer = 0
                 mediaPlayer.start()
-                mediaPlayer.setVolume(1f, 1f)
-                if (paused != -1) {
+                if (mediaPlayer.currentPosition - paused > 1000/* != -1*/) {
                     mediaPlayer.seekTo(paused)
-                    paused = -1
                 }
+                paused = -1
+                mediaPlayer.setVolume(1f, 1f)
             }
         }
         /*
@@ -205,6 +204,7 @@ class Player private constructor() {
     @Suppress("unused")
     @Synchronized
     fun onPause() {
+        paused = mediaPlayer.currentPosition
         mediaPlayer.pause()
         state = 2
         MainApplication.sendBroadcast(SERVER_BROADCAST_ONPAUSE)
@@ -372,7 +372,11 @@ class Player private constructor() {
         return if (mediaPlayer.isPlaying) {
             mediaPlayer.currentPosition / 1000
         } else {
-            paused / 1000
+            if (paused != -1) {
+                paused / 1000
+            } else {
+                -1
+            }
         }
     }
 

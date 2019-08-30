@@ -68,10 +68,9 @@
             android:summary="%s"
             android:key="settingPreference_pulse_type"
             android:title="@string/abc_settings_pulse_type_title"
-            android:defaultValue="PulseType_FillCylinder"
+            android:defaultValue="PulseType_CompatWave"
             android:entries="@array/array_pulse_type"
-            android:entryValues="@array/array_pulse_type_value"
-            android:selectable="false"/>
+            android:entryValues="@array/array_pulse_type_value"/>
 
         <SwitchPreference
             app:iconSpaceReserved="false"

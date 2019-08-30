@@ -1,8 +1,9 @@
 package app.skynight.musicplayer.util
 
-import android.annotation.SuppressLint
 import android.os.Environment
-import java.io.File
+import java.io.*
+import java.lang.Exception
+import java.lang.StringBuilder
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -13,34 +14,65 @@ import java.util.*
  * @TIME    : 4:32 PM
  **/
 
-class StackTraceLogger private constructor(){
+class StackTraceLogger private constructor() {
     companion object {
         private val getStackTraceLogger by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { StackTraceLogger() }
 
         @Suppress("ConstantLocale")
-        val simpleDateFormat by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()) }
-        fun takeLog(title: String, content: String) {
+        val simpleDateFormat by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+            SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss", Locale.getDefault()
+            )
+        }
+
+        fun takeLog(title: String, content: CharSequence) =
             getStackTraceLogger.takeLog("${simpleDateFormat.format(Date(System.currentTimeMillis()))} $title: $content")
+
+        fun takeLog(title: String, content: String) =
+            getStackTraceLogger.takeLog("${simpleDateFormat.format(Date(System.currentTimeMillis()))} $title: $content")
+
+        fun takeLog(title: String, e: Exception) {
+            try {
+                StringWriter().also {
+                    e.printStackTrace(PrintWriter(it).apply {
+                        Companion.takeLog(title, it.toString())
+                        close()
+                        it.close()
+                    })
+                }
+
+                @Suppress("DEPRECATION") File(
+                    Environment.getExternalStorageDirectory().absolutePath, SimpleDateFormat(
+                        "yyyyMMdd-HHmmss", Locale.getDefault()
+                    ).format(Date(System.currentTimeMillis())).plus(".txt")
+                ).writeText(getStackTraceLogger.getLogString())
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            }
         }
-        fun logToFile() {
-            getStackTraceLogger
+
+        fun getLogList(): MutableList<String> {
+            return getStackTraceLogger.getLogList()
         }
-        fun getLogs(): MutableList<String> {
-            return getStackTraceLogger.logs
+
+        fun getLogString(): String {
+            return getStackTraceLogger.getLogString()
         }
     }
 
     private val logs = mutableListOf<String>()
-
     @Synchronized
-    fun takeLog(log: String) {
+    private fun takeLog(log: String) {
         logs.add(log)
     }
 
-    @Synchronized
-    fun logToFile() {
-        Thread {
-            //File(Environment.getExternalStorageDirectory().absolutePath)
-        }.start()
+    private fun getLogString(): String {
+        return StringBuilder().apply {
+            logs.forEach { append(it.plus("\n")) }
+        }.toString()
+    }
+
+    private fun getLogList(): MutableList<String> {
+        return logs
     }
 }

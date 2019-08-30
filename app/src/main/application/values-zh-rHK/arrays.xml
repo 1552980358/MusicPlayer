@@ -7,8 +7,7 @@
     </string-array>
 
     <string-array name="array_pulse_type">
-        <item>柱體(實)</item>
-        <item>主(綫)</item>
-        <item>綫條</item>
+        <item>緊凑音波</item>
+        <item>電流</item>
     </string-array>
 </resources >
