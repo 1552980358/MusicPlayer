@@ -7,9 +7,15 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import app.skynight.musicplayer.R
 import app.skynight.musicplayer.util.Player
-import app.skynight.musicplayer.util.UnitUtil.Companion.getTime
+import app.skynight.musicplayer.util.getTime
 import app.skynight.musicplayer.util.log
-import kotlinx.android.synthetic.main.activity_bottomlist.*
+import kotlinx.android.synthetic.main.activity_bottomlist.upperView
+import kotlinx.android.synthetic.main.activity_bottomlist.textView_album
+import kotlinx.android.synthetic.main.activity_bottomlist.textView_artist
+import kotlinx.android.synthetic.main.activity_bottomlist.textView_path
+import kotlinx.android.synthetic.main.activity_bottomlist.textView_file
+import kotlinx.android.synthetic.main.activity_bottomlist.textView_data
+import kotlinx.android.synthetic.main.activity_bottomlist.textView_title
 import java.io.File
 
 /**

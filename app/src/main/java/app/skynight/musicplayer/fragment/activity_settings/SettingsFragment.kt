@@ -1,17 +1,25 @@
 package app.skynight.musicplayer.fragment.activity_settings
 
+import android.app.Activity
+import android.app.ActivityManager
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import androidx.preference.ListPreference
-import androidx.preference.PreferenceCategory
-import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SwitchPreference
+import androidx.preference.*
+import app.skynight.musicplayer.BuildConfig
 import app.skynight.musicplayer.R
+import app.skynight.musicplayer.activity.SplashActivity
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.BROADCAST_APPLICATION_RESTART
 import app.skynight.musicplayer.util.Player
 import app.skynight.musicplayer.util.Player.Companion.Pulse
 import app.skynight.musicplayer.util.Player.Companion.PulseColor
 import app.skynight.musicplayer.util.Player.Companion.PulseDensity
 import app.skynight.musicplayer.util.Player.Companion.PulseType
 import app.skynight.musicplayer.util.log
+import java.lang.System.exit
+import kotlin.system.exitProcess
 
 /**
  * @File    : SettingsFragment
@@ -44,7 +52,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
             findPreference<SwitchPreference>("settingPreference_pulse")!!.apply {
                 setOnPreferenceChangeListener { _, newValue ->
                     Player.settings[Pulse] = newValue as Boolean
-                    findPreference<PreferenceCategory>("settingPreference_pulse_opts")!!.isEnabled = newValue
+                    findPreference<PreferenceCategory>("settingPreference_pulse_opts")!!.isEnabled =
+                        newValue
                     return@setOnPreferenceChangeListener true
                 }
             }
@@ -67,7 +76,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 }
             }
 
-            findPreference<PreferenceCategory>("settingPreference_pulse_opts")!!.isEnabled = Player.settings[Pulse] as Boolean
+            findPreference<PreferenceCategory>("settingPreference_pulse_opts")!!.isEnabled =
+                Player.settings[Pulse] as Boolean
 
             // Headset
             findPreference<SwitchPreference>("settingPreference_wired_plugin")!!.setOnPreferenceChangeListener { _, newValue ->
@@ -87,8 +97,30 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 return@setOnPreferenceChangeListener true
             }
 
-        } catch (e: Exception) {
+            findPreference<Preference>("settingPreference_externalSD")!!.setOnPreferenceClickListener {
+                startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), 0)
+                return@setOnPreferenceClickListener true
+            }
 
+            findPreference<Preference>("settingPreference_theme")!!.setOnPreferenceChangeListener { _, _ ->
+                Thread {
+                    (context!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager).set(
+                        AlarmManager.RTC,
+                        System.currentTimeMillis() + 600,
+                        PendingIntent.getActivity(context, 1, Intent(context, SplashActivity::class.java), PendingIntent.FLAG_CANCEL_CURRENT)
+                    )
+                    context!!.sendBroadcast(Intent(BROADCAST_APPLICATION_RESTART))
+                    Thread.sleep(500)
+                    exitProcess(0)
+                }.start()
+                return@setOnPreferenceChangeListener true
+            }
+            findPreference<SwitchPreference>("settingPreference_extremeSimple")!!.setOnPreferenceChangeListener { _, newValue ->
+                Player.settings[Player.SimpleMode] = newValue as Boolean
+                return@setOnPreferenceChangeListener true
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }

@@ -27,6 +27,8 @@
     <string name="abc_settings_title">Settings</string>
 
     <string name="abc_settings_player_title">Player Page</string>
+    <string name="abc_settings_player_simple_title">Simple Mode</string>
+    <string name="abc_settings_player_simple_subtitle">Action with gesture</string>
     <string name="abc_settings_player_bgAlbum_title">Player Page Background</string>
     <string name="abc_settings_player_bgAlbum_subtitle">Switch off as album cover, else as color taken from album cover</string>
     <string name="abc_settings_player_buttons_title">Colors of buttons</string>
@@ -87,5 +89,9 @@
     <string name="abc_range_inTitle">Alphabetic Range in Title</string>
     <string name="abc_range_inArtist">Alphabetic Range in Artist</string>
     <string name="abc_range_inAlbum">Alphabetic Range in Album</string>
+
+    <string name="abc_simplePlayer_toast_cycle">Cycling Playlist</string>
+    <string name="abc_simplePlayer_toast_single">Single Cycling</string>
+    <string name="abc_simplePlayer_toast_randon">Playlist Random</string>
 
 </resources>

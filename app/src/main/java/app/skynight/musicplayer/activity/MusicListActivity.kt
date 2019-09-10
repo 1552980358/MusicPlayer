@@ -1,6 +1,7 @@
 package app.skynight.musicplayer.activity
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Menu
@@ -8,10 +9,19 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_musiclist.*
+import kotlinx.android.synthetic.main.activity_musiclist.toolbar
+import kotlinx.android.synthetic.main.activity_musiclist.linearLayout_container
+import kotlinx.android.synthetic.main.activity_musiclist.progressBar
+import kotlinx.android.synthetic.main.activity_musiclist.textView_size
+import kotlinx.android.synthetic.main.activity_musiclist.textView_subTitle
+import kotlinx.android.synthetic.main.activity_musiclist.textView_title
 import app.skynight.musicplayer.R
 import app.skynight.musicplayer.base.BaseSmallPlayerActivity
-import app.skynight.musicplayer.util.*
+import app.skynight.musicplayer.util.log
+import app.skynight.musicplayer.util.MusicClass
+import app.skynight.musicplayer.util.PlayList
+import app.skynight.musicplayer.util.makeToast
+import app.skynight.musicplayer.util.Player
 import app.skynight.musicplayer.util.Player.Companion.ERROR_CODE
 import app.skynight.musicplayer.util.Player.Companion.EXTRA_LIST
 import app.skynight.musicplayer.util.Player.Companion.LIST_ALL
@@ -21,6 +31,12 @@ class MusicListActivity : BaseSmallPlayerActivity() {
     private var code = -999
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (Player.settings[Player.Theme] != Player.Theme_0) {
+            setTheme(R.style.AppTheme_NoActionBar_Theme1)
+            window.navigationBarColor = ContextCompat.getColor(this, R.color.theme1_colorPrimary)
+        } else {
+            window.navigationBarColor = Color.WHITE
+        }
         log("MusicListActivity", "onCreate")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_musiclist)
@@ -33,7 +49,7 @@ class MusicListActivity : BaseSmallPlayerActivity() {
             try {
                 val list = when (code) {
                     LIST_ALL -> {
-                        log("MusicListActivity", "LIST_ALL")
+                        //log("MusicListActivity", "LIST_ALL")
                         MusicClass.getMusicClass.fullList
                     }
                     ERROR_CODE -> {
@@ -78,7 +94,7 @@ class MusicListActivity : BaseSmallPlayerActivity() {
                                     }
                                 }*/
 
-                log("MusicListActivity", "load to Layout")
+                //log("MusicListActivity", "load to Layout")
                 runOnUiThread {
                     progressBar.visibility = View.GONE
                     linearLayout_container.visibility = View.VISIBLE
@@ -110,23 +126,33 @@ class MusicListActivity : BaseSmallPlayerActivity() {
                 }
             }
 
-            setSupportActionBar(toolbar)
-            toolbar.setNavigationOnClickListener {
-                log("MusicListActivity", "setNavigationOnClickListener")
-                onBackPressed()
-            }
-            toolbar.overflowIcon = ContextCompat.getDrawable(
-                this@MusicListActivity, R.drawable.ic_toolbar_more
-            )
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-            (toolbar::class.java.getDeclaredField("mTitleTextView").apply {
-                isAccessible = true
-            }.get(toolbar) as TextView).apply {
-                setHorizontallyScrolling(true)
-                marqueeRepeatLimit = -1
-                ellipsize = TextUtils.TruncateAt.MARQUEE
-                isSelected = true
+            toolbar.apply {
+                setSupportActionBar(this)
+                setNavigationOnClickListener {
+                    //log("MusicListActivity", "setNavigationOnClickListener")
+                    onBackPressed()
+                }
+                navigationIcon =
+                    ContextCompat.getDrawable(this@MusicListActivity, R.drawable.ic_arrow_back).apply {
+                        this!!.setTint(Player.ThemeTextColor)
+                    }
+                setTitleTextColor(Player.ThemeTextColor)
+                overflowIcon = ContextCompat.getDrawable(
+                    this@MusicListActivity, R.drawable.ic_toolbar_more
+                )
+                supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+                if (Player.settings[Player.Theme] != Player.Theme_0) {
+                    navigationIcon!!.setTint(Color.WHITE)
+                }
+                (this::class.java.getDeclaredField("mTitleTextView").apply {
+                    isAccessible = true
+                }.get(toolbar) as TextView).apply {
+                    setHorizontallyScrolling(true)
+                    marqueeRepeatLimit = -1
+                    ellipsize = TextUtils.TruncateAt.MARQUEE
+                    isSelected = true
+                }
             }
         } catch (e: Exception) {
             //e.printStackTrace()

@@ -6,8 +6,6 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.os.Build
-import android.os.LocaleList
 import androidx.core.content.ContextCompat
 import app.skynight.musicplayer.base.BaseContextWrapper
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.BROADCAST_INTENT_MUSIC
@@ -58,7 +56,7 @@ class MainApplication : Application() {
         }
 
         var customize = false
-        var bgDrawable = null as Drawable?
+        //var bgDrawable = null as Drawable?
     }
 
     init {
@@ -139,7 +137,7 @@ class MainApplication : Application() {
         }.start()
 
         customize = sharedPreferences.getBoolean("customize", false)
-        bgDrawable = if (customize) {
+        /*bgDrawable = if (customize) {
             setTheme(R.style.AppTheme_NoActionBar_Customize)
             if (MainApplication.sharedPreferences.getBoolean("img", false)) {
                 BitmapDrawable(resources, cacheDir.toString() + File.separator + "bg.img")
@@ -148,7 +146,7 @@ class MainApplication : Application() {
             }
         } else {
             ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimaryDark))
-        }
+        }*/
         log("MainApplication", "startSplashActivity\n==========")
     }
 }

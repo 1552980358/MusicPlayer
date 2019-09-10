@@ -12,10 +12,13 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.RelativeLayout
 import app.skynight.musicplayer.R
 import app.skynight.musicplayer.activity.PlayerActivity
+import app.skynight.musicplayer.activity.SimplePlayerActivity
+import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.BROADCAST_APPLICATION_RESTART
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_MUSICCHANGE
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONPAUSE
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONSTART
 import app.skynight.musicplayer.util.Player
+import app.skynight.musicplayer.util.Player.Companion.SimpleMode
 import app.skynight.musicplayer.view.BottomPlayerView
 import java.lang.Exception
 
@@ -65,7 +68,8 @@ open class BaseSmallPlayerActivity : BaseAppCompatActivity() {
                     //MainApplication.playerForeground = true
                     startActivity(
                         Intent(
-                            this@BaseSmallPlayerActivity, PlayerActivity::class.java
+                            this@BaseSmallPlayerActivity,
+                            if (!(Player.settings[SimpleMode] as Boolean)) PlayerActivity::class.java else SimplePlayerActivity::class.java
                         )
                     )
                     //overridePendingTransition(R.anim.anim_exit_down2top, R.anim.anim_enter_down2top)
@@ -99,7 +103,9 @@ open class BaseSmallPlayerActivity : BaseAppCompatActivity() {
                             bottomPlayerView.textView_title.text = info.title()
                             bottomPlayerView.textView_subTitle.text = info.artist()
                             bottomPlayerView.imageView_album.setImageBitmap(info.albumPic())
-
+                        }
+                        BROADCAST_APPLICATION_RESTART -> {
+                            finish()
                         }
                     }
                 }
@@ -119,6 +125,7 @@ open class BaseSmallPlayerActivity : BaseAppCompatActivity() {
             addAction(SERVER_BROADCAST_MUSICCHANGE)
             addAction(SERVER_BROADCAST_ONSTART)
             addAction(SERVER_BROADCAST_ONPAUSE)
+            addAction(BROADCAST_APPLICATION_RESTART)
         })
         try {
             val info = Player.getCurrentMusicInfo()

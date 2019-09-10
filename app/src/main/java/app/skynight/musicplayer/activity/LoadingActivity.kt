@@ -31,12 +31,14 @@ import kotlin.system.exitProcess
  **/
 
 class LoadingActivity : AppCompatActivity() {
+    @Suppress("PrivatePropertyName")
     private lateinit var textView_state: TextView
-    //private lateinit var textView_timer: TextView
 
+    @Suppress("PrivatePropertyName")
     override fun onCreate(savedInstanceState: Bundle?) {
         log("LoadingActivity", "onCreate")
         super.onCreate(savedInstanceState)
+        @Suppress("LocalVariableName")
         val textView_timer: TextView
         setContentView(RelativeLayout(this).apply {
             background =
@@ -132,10 +134,6 @@ class LoadingActivity : AppCompatActivity() {
                     this, android.Manifest.permission.READ_EXTERNAL_STORAGE
                 ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                     this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    this, android.Manifest.permission.RECORD_AUDIO
-                ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    this, android.Manifest.permission.MODIFY_AUDIO_SETTINGS
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
                 loadSettings()
@@ -145,75 +143,14 @@ class LoadingActivity : AppCompatActivity() {
         }.start()
     }
 
-    private fun createDialogView(): View {
-        return ScrollView(this).apply {
-            addView(LinearLayout(this@LoadingActivity).apply {
-                orientation = LinearLayout.VERTICAL
-                gravity = Gravity.CENTER
-                addView(LinearLayout(this@LoadingActivity).apply {
-                    orientation = LinearLayout.HORIZONTAL
-                    addView(AppCompatImageView(this@LoadingActivity).apply {
-                        setImageDrawable(
-                            ContextCompat.getDrawable(
-                                this@LoadingActivity, R.drawable.ic_sd_card
-                            )
-                        )
-                    }, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT))
-                    addView(TextView(this@LoadingActivity).apply {
-                        text = getString(R.string.checkPermission_read)
-                        setSingleLine()
-                    }, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT))
-                }, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
-                    setMargins(
-                        0,
-                        resources.getDimensionPixelSize(R.dimen.checkPermissionActivity_marginTop),
-                        0,
-                        0
-                    )
-                })
-                addView(LinearLayout(this@LoadingActivity).apply {
-                    orientation = LinearLayout.HORIZONTAL
-                    addView(AppCompatImageView(this@LoadingActivity).apply {
-                        setImageDrawable(
-                            ContextCompat.getDrawable(
-                                this@LoadingActivity, R.drawable.ic_sd_card
-                            )
-                        )
-                    }, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT))
-                    addView(TextView(this@LoadingActivity).apply {
-                        text = getString(R.string.checkPermission_read)
-                        setSingleLine()
-                    }, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT))
-                }, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
-                    setMargins(
-                        0,
-                        resources.getDimensionPixelSize(R.dimen.checkPermissionActivity_marginTop_item),
-                        0,
-                        0
-                    )
-                })
-            })
-        }
-    }
-
     private fun checkPermission() {
         runOnUiThread { textView_state.setText(R.string.checkPermission_authorizing) }
-        AlertDialog.Builder(this).setTitle(R.string.checkPermission_title)
-            .setView(createDialogView()).setPositiveButton(
-                R.string.checkPermission_allow
-            ) { _, _ ->
-                ActivityCompat.requestPermissions(
-                    this, arrayOf(
-                        android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        android.Manifest.permission.RECORD_AUDIO,
-                        android.Manifest.permission.MODIFY_AUDIO_SETTINGS
-                    ), 0
-                )
-            }.setNegativeButton(R.string.cancel) { _, _ -> exitProcess(0) }.setCancelable(false)
-            .apply {
-                this@LoadingActivity.runOnUiThread { this.show() }
-            }
+        ActivityCompat.requestPermissions(
+            this, arrayOf(
+                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ), 0
+        )
     }
 
     override fun onRequestPermissionsResult(

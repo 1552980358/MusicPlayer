@@ -17,7 +17,7 @@ import kotlin.math.abs
 @SuppressLint("ViewConstructor")
 class ElectronicCurrentPulse(
     context: Context, width: Int, height: Int
-) : BaseMusicVisiblePulse(context, width, height, Paint.Style.FILL, getPx(2).toFloat()) {
+) : BaseMusicVisiblePulse(context, width, height, Paint.Style.FILL, getPx(2).toFloat(), true) {
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
@@ -29,11 +29,11 @@ class ElectronicCurrentPulse(
         var offsetX = 0f
         for (i in 0 until waveData.size - 1) {
             points[i * 4] = offsetX
-            points[i * 4 + 1] = abs(waveData[i].toInt()) * heightRatio
+            points[i * 4 + 1] = abs(waveData[i] * heightRatio)
             offsetX+=eachWidth
             points[i * 4 + 2] = offsetX
             offsetX+=eachWidth
-            points[i * 4 + 3] = abs(waveData[i + 1].toInt()) * heightRatio
+            points[i * 4 + 3] = abs(waveData[i + 1] * heightRatio)
         }
         canvas!!.drawLines(points, paint)
     }

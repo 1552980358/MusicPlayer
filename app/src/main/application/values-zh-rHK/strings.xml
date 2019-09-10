@@ -28,6 +28,8 @@
     <string name="abc_settings_title">設置</string>
 
     <string name="abc_settings_player_title">播放頁</string>
+    <string name="abc_settings_player_simple_title">極簡模式</string>
+    <string name="abc_settings_player_simple_subtitle">沒有花裏胡俏的UI, 只有無比簡單的手勢</string>
     <string name="abc_settings_player_bgAlbum_title">播放頁背景</string>
     <string name="abc_settings_player_bgAlbum_subtitle">禁用時使用專輯封面, 啓用時從專輯封面提取顔色</string>
     <string name="abc_settings_player_buttons_title">按鈕顔色</string>
@@ -88,5 +90,9 @@
     <string name="abc_range_inTitle">按單曲名</string>
     <string name="abc_range_inArtist">按歌手名</string>
     <string name="abc_range_inAlbum">按專輯名</string>
+
+    <string name="abc_simplePlayer_toast_cycle">列表循環</string>
+    <string name="abc_simplePlayer_toast_single">單曲循環</string>
+    <string name="abc_simplePlayer_toast_randon">隨即單曲</string>
 
 </resources>

@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:id="@+id/appBarLayout"
-        android:fitsSystemWindows="true" >
+        android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/toolbar"
             app:titleTextColor="?attr/colorAccent"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
             app:menu="@menu/menu_main"
             app:title="@string/adb_main_main_title" >
             <com.google.android.material.tabs.TabLayout
@@ -33,6 +33,7 @@
     <androidx.viewpager.widget.ViewPager
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/viewPager" />
+        android:id="@+id/viewPager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-</LinearLayout >
+</androidx.coordinatorlayout.widget.CoordinatorLayout >

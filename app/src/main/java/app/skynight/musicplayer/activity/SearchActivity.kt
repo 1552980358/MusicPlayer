@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
-import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import app.skynight.musicplayer.base.BaseSmallPlayerActivity
 import app.skynight.musicplayer.R
@@ -15,7 +14,8 @@ import app.skynight.musicplayer.util.Player.Companion.ERROR_CODE
 import app.skynight.musicplayer.util.Player.Companion.EXTRA_LIST
 import app.skynight.musicplayer.util.Player.Companion.LIST_ALL
 import app.skynight.musicplayer.view.SearchMusicView
-import kotlinx.android.synthetic.main.activity_search.*
+import kotlinx.android.synthetic.main.activity_search.toolbar
+import kotlinx.android.synthetic.main.activity_search.linearLayout
 
 /**
  * @File    : SearchActivity

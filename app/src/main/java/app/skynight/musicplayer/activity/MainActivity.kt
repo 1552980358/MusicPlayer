@@ -1,44 +1,54 @@
 package app.skynight.musicplayer.activity
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
-//import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
 import androidx.viewpager.widget.ViewPager
-import app.skynight.musicplayer.MainApplication
 import app.skynight.musicplayer.R
 import app.skynight.musicplayer.base.BaseSmallPlayerActivity
 import app.skynight.musicplayer.fragment.activity_main.MainFragment
 import app.skynight.musicplayer.fragment.activity_main.PlayListFragment
 import app.skynight.musicplayer.util.FragmentPagerAdapter
 import app.skynight.musicplayer.util.NotificationUtil
+import app.skynight.musicplayer.util.Player
 import app.skynight.musicplayer.util.log
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.viewPager
+import kotlinx.android.synthetic.main.activity_main.toolbar
+import kotlinx.android.synthetic.main.activity_main.tabLayout
 
 class MainActivity : BaseSmallPlayerActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         log("MainActivity", "onCreate")
+        if (Player.settings[Player.Theme] != Player.Theme_0) {
+            setTheme(R.style.AppTheme_NoActionBar_Theme1)
+            window.navigationBarColor = ContextCompat.getColor(this, R.color.theme1_colorPrimary)
+        } else {
+            window.navigationBarColor = Color.WHITE
+        }
         super.onCreate(savedInstanceState)
         val title = arrayOf(R.string.adb_main_main_title, R.string.adb_main_list_title)
 
-        log("MainActivity", "- setContentView")
+        //log("MainActivity", "- setContentView")
         setContentView(R.layout.activity_main)
         setPlayerActivityFitsSystemWindows()
-        if (MainApplication.customize) {
-            appBarLayout.stateListAnimator = null
-        }
 
         NotificationUtil.getNotificationUtil
 
-        log("MainActivity", "supportActionBar")
+        //log("MainActivity", "supportActionBar")
         setSupportActionBar(toolbar)
 
         viewPager.apply {
             log("MainActivity", "ViewPager Adapter")
-            adapter = FragmentPagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, arrayListOf(MainFragment(), PlayListFragment()))
+            adapter = FragmentPagerAdapter(
+                supportFragmentManager,
+                BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
+                arrayListOf(MainFragment(), PlayListFragment())
+            )
             tabLayout.apply {
                 log("MainActivity", "setupWithViewPager")
                 setupWithViewPager(viewPager)

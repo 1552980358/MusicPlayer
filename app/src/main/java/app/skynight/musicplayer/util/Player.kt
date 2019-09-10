@@ -1,10 +1,14 @@
 package app.skynight.musicplayer.util
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.graphics.Color
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Build
+import androidx.core.content.ContextCompat
 import app.skynight.musicplayer.MainApplication
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_MUSICCHANGE
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONPAUSE
@@ -23,6 +27,7 @@ class Player private constructor() {
     @Suppress("JoinDeclarationAndAssignment")
     private var mediaPlayer: MediaPlayer
 
+    @Suppress("unused")
     companion object {
         fun changeSort(method: String) {
             MainApplication.getMainApplication().getSharedPreferences(
@@ -80,8 +85,15 @@ class Player private constructor() {
         const val PulseType = "PulseType"
         const val PulseType_CompatWave = "PulseType_CompatWave"
         const val PulseType_ElectricCurrent = "PulseType_ElectricCurrent"
+        const val PulseType_VerticalColumn = "PulseType_VerticalColumn"
         const val PulseDensity = "PulseDensity"
         const val PulseColor = "PulseColor"
+        const val Theme = "Theme"
+        const val Theme_0 = "Theme_0"
+        const val Theme_1 = "Theme_1"
+        var ThemeTextColor = Color.BLACK
+        var ThemeBgColor = Color.WHITE
+        const val SimpleMode = "SimpleMode"
 
         const val WiredPlugIn = "WiredPlugIn"
         const val WiredPullOut = "WiredPullOut"
@@ -92,6 +104,7 @@ class Player private constructor() {
         // 0: 标题, 1: 艺术家, 2: 专辑, 3: 原始排序
         const val Arrangement = "Arrangement"
 
+        @Suppress("unused")
         var state = 0
     }
 
@@ -111,11 +124,21 @@ class Player private constructor() {
             settings[WiredPullOut] = getBoolean("settingPreference_wired_pullout", false)
             settings[WirelessDis] = getBoolean("settingPreference_wireless_disconnected", false)
 
-            settings[Arrangement] = getString("settingPreference_arrangement", "TITLE") as String
+            settings[Arrangement] = getString("settingPreference_arrangement", "TITLE")!!
             settings[Pulse] = getBoolean("settingPreference_pulse", true)
-            settings[PulseType] = getString("settingPreference_pulse_type", PulseType_CompatWave) as String
+            settings[PulseType] =
+                getString("settingPreference_pulse_type", PulseType_CompatWave)!!
             settings[PulseDensity] = getBoolean("settingPreference_pulse_density", false)
             settings[PulseColor] = getBoolean("settingPreference_pulse_color", false)
+
+            settings[Theme] = getString("settingPreference_theme", Theme_0)!!.apply {
+                if (this != Theme_0) {
+                    ThemeTextColor = Color.WHITE
+                    ThemeBgColor = ContextCompat.getColor(MainApplication.getMainApplication(), R.color.theme1_colorPrimary)
+                }
+            }
+
+            settings[SimpleMode] = getBoolean("settingPreference_extremeSimple", false)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 settings.forEach { (string, any) ->
@@ -136,7 +159,7 @@ class Player private constructor() {
                     //mediaPlayer.prepare()
                     if (!mediaPlayer.isLooping) {
                         mediaPlayer.isLooping = true
-                        //onStart()
+                        onStart()
                     }
                 }
                 Companion.PlayingType.RANDOM -> {
@@ -166,6 +189,7 @@ class Player private constructor() {
         mediaPlayer.isLooping = playingType == Companion.PlayingType.SINGLE
     }
 
+    @Suppress("unused")
     fun getPlayingType(): PlayingType {
         return playingType
     }
@@ -173,9 +197,31 @@ class Player private constructor() {
     @Suppress("unused")
     @Synchronized
     fun onStart() {
+        //mediaPlayer.setWakeMode(MainApplication.getMainApplication(), PowerManager.PARTIAL_WAKE_LOCK)
         when (state) {
             0 -> {
                 changeMusic()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).run {
+                        setAudioAttributes(AudioAttributes.Builder().run {
+                            setUsage(AudioAttributes.USAGE_MEDIA)
+                            setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            build()
+                        })
+                        setAcceptsDelayedFocusGain(true)
+                        setOnAudioFocusChangeListener { changeType: Int ->
+                            when (changeType) {
+                                AudioManager.AUDIOFOCUS_GAIN -> {
+
+                                }
+                                AudioManager.AUDIOFOCUS_LOSS -> {
+
+                                }
+                            }
+                        }
+                        build()
+                    }
+                }
             }
 
             1, 2 -> {
@@ -188,6 +234,7 @@ class Player private constructor() {
                 mediaPlayer.setVolume(1f, 1f)
             }
         }
+        state = 1
         /*
         try {
             changeMusic()
@@ -222,8 +269,10 @@ class Player private constructor() {
         MainApplication.sendBroadcast(SERVER_BROADCAST_ONSTOP)
     }
 
+    @Suppress("unused")
     @Synchronized
     fun playNext() {
+        state = 1
         paused = -1
 
         if (pointer != playedList.lastIndex) {
@@ -280,9 +329,11 @@ class Player private constructor() {
         changeMusic()
     }
 
+    @Suppress("unused")
     @Synchronized
     fun playLast() {
         paused = -1
+        state = 1
         log("playLast", pointer)
         if (pointer != 0) {
             pointer--
@@ -323,6 +374,7 @@ class Player private constructor() {
         changeMusic()
     }
 
+    @Suppress("unused")
     @Synchronized
     fun playChange(list: Int, index: Int) {
         paused = -1
@@ -336,6 +388,7 @@ class Player private constructor() {
         changeMusic()
     }
 
+    @Suppress("unused")
     @Synchronized
     fun changeMusic() {
         try {
@@ -368,6 +421,7 @@ class Player private constructor() {
         return mediaPlayer.isPlaying
     }
 
+    @Suppress("unused")
     fun getCurrent(): Int {
         return if (mediaPlayer.isPlaying) {
             mediaPlayer.currentPosition / 1000
@@ -385,6 +439,7 @@ class Player private constructor() {
         return MusicClass.getMusicClass.fullList[index]
     }
 
+    @Suppress("unused")
     @Synchronized
     fun onSeekChange(pos: Int) {
         try {

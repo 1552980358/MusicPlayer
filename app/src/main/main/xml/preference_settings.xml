@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--suppress DeprecatedClassUsageInspection -->
+<?xml version="1.0" encoding="utf-8"?>
+<!--suppress DeprecatedClassUsageInspection -->
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -21,6 +22,13 @@
     <PreferenceCategory
         android:title="@string/abc_settings_player_title"
         app:iconSpaceReserved="false" >
+
+        <SwitchPreference
+            android:key="settingPreference_extremeSimple"
+            android:title="@string/abc_settings_player_simple_title"
+            android:summary="@string/abc_settings_player_simple_subtitle"
+            android:defaultValue="false"
+            app:iconSpaceReserved="false" />
 
         <SwitchPreference
             android:key="settingPreference_bgAlbum"
@@ -68,7 +76,7 @@
             android:summary="%s"
             android:key="settingPreference_pulse_type"
             android:title="@string/abc_settings_pulse_type_title"
-            android:defaultValue="PulseType_CompatWave"
+            android:defaultValue="PulseType_VerticalColumn"
             android:entries="@array/array_pulse_type"
             android:entryValues="@array/array_pulse_type_value"/>
 
@@ -131,6 +139,19 @@
             android:defaultValue="DEFAULT"
             android:dialogTitle="@string/abc_settings_application_locale_dialogtitle" />
 
+        <ListPreference
+            app:iconSpaceReserved="false"
+            android:summary="%s"
+            android:title="主题"
+            android:key="settingPreference_theme"
+            android:entries="@array/array_theme"
+            android:entryValues="@array/array_theme_value"
+            android:defaultValue="Theme_0"/>
+
+        <Preference
+            app:iconSpaceReserved="false"
+            android:key="settingPreference_externalSD"
+            android:title="sdcard" />
     </PreferenceCategory >
 
     <PreferenceCategory

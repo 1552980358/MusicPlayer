@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment
 import app.skynight.musicplayer.R
 import app.skynight.musicplayer.activity.IntroActivity
 import app.skynight.musicplayer.activity.MainActivity
-import app.skynight.musicplayer.util.UnitUtil.Companion.getPx
+import app.skynight.musicplayer.util.getPx
 
 /**
  * @FILE:   LastFragment

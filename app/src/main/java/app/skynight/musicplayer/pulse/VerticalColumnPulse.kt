@@ -6,28 +6,29 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
 import app.skynight.musicplayer.util.getPx
-import java.lang.Math.abs
+import kotlin.math.abs
 
 /**
- * @File    : CompatWavePulse
+ * @File    : VerticalColumnPulse
  * @Author  : 1552980358
- * @Date    : 30 Aug 2019
- * @TIME    : 6:00 PM
+ * @Date    : 31 Aug 2019
+ * @TIME    : 11:18 AM
  **/
 
 @SuppressLint("ViewConstructor")
-class CompatWavePulse(context: Context, width: Int, height: Int):
+class VerticalColumnPulse(context: Context, width: Int, height: Int):
     BaseMusicVisiblePulse(context, width, height, Paint.Style.STROKE, getPx(2).toFloat(), false) {
 
     @Suppress("JoinDeclarationAndAssignment")
     private var path: Path
 
     init {
-         path = Path()
+        path = Path()
     }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
+
         if (!isInitialized()) {
             canvas!!.drawLine(0f, mHeight / 2, mWidth, mHeight / 2, paint)
             return
@@ -39,13 +40,9 @@ class CompatWavePulse(context: Context, width: Int, height: Int):
 
         var offsetX = 0F
         path.reset()
-        var tmp: Float
-        var hei: Float
         for (i in waveData) {
-            hei = abs(i * heightRatio)
-            tmp = (mHeight - hei) / 2
-            path.moveTo(offsetX, tmp)
-            path.lineTo(offsetX, tmp + hei)
+            path.moveTo(offsetX, mHeight - abs(i * heightRatio))
+            path.lineTo(offsetX, mHeight)
             offsetX += eachWidth
         }
         canvas!!.drawPath(path, paint)

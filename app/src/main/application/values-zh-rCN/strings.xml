@@ -28,6 +28,8 @@
     <string name="abc_settings_title">设置</string>
 
     <string name="abc_settings_player_title">播放页</string>
+    <string name="abc_settings_player_simple_title">极简模式</string>
+    <string name="abc_settings_player_simple_subtitle">没有花里胡俏的UI, 只有无比简单的手势</string>
     <string name="abc_settings_player_bgAlbum_title">播放页背景</string>
     <string name="abc_settings_player_bgAlbum_subtitle">禁用时使用专辑封面, 启用时从专辑封面提取颜色</string>
     <string name="abc_settings_player_buttons_title">按钮颜色</string>
@@ -88,5 +90,9 @@
     <string name="abc_range_inTitle">按单曲名</string>
     <string name="abc_range_inArtist">按歌手名</string>
     <string name="abc_range_inAlbum">按专辑名</string>
+
+    <string name="abc_simplePlayer_toast_cycle">列表循环</string>
+    <string name="abc_simplePlayer_toast_single">单曲循环</string>
+    <string name="abc_simplePlayer_toast_randon">随机单曲</string>
 
 </resources>

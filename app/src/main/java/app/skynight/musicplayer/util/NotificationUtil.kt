@@ -15,6 +15,7 @@ import androidx.media.app.NotificationCompat
 import app.skynight.musicplayer.MainApplication
 import app.skynight.musicplayer.R
 import app.skynight.musicplayer.activity.PlayerActivity
+import app.skynight.musicplayer.activity.SimplePlayerActivity
 import app.skynight.musicplayer.broadcast.BroadcastBase
 
 /**
@@ -66,8 +67,7 @@ class NotificationUtil private constructor() {
         val musicInfo = Player.getCurrentMusicInfo()
 
         return androidx.core.app.NotificationCompat.Builder(
-            MainApplication.getMainApplication(),
-            CHANNEL
+            MainApplication.getMainApplication(), CHANNEL
         ).apply {
             setLargeIcon(musicInfo.albumPic())
             setContentTitle(musicInfo.title())
@@ -75,12 +75,13 @@ class NotificationUtil private constructor() {
             setSmallIcon(R.mipmap.ic_launcher)
             priority = androidx.core.app.NotificationCompat.PRIORITY_MAX
             setStyle(
-                NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2)
-                    .setShowCancelButton(true)
-                    .setMediaSession(
+                NotificationCompat.MediaStyle().setShowActionsInCompactView(
+                    0,
+                    1,
+                    2
+                ).setShowCancelButton(true).setMediaSession(
                         MediaSessionCompat(
-                            MainApplication.getMainApplication(),
-                            "MediaSessionCompat"
+                            MainApplication.getMainApplication(), "MediaSessionCompat"
                         ).sessionToken
                     )
             )
@@ -131,10 +132,10 @@ class NotificationUtil private constructor() {
             )
             setContentIntent(
                 PendingIntent.getActivity(
-                    MainApplication.getMainApplication(),
-                    0,
-                    Intent(MainApplication.getMainApplication(), PlayerActivity::class.java),
-                    PendingIntent.FLAG_UPDATE_CURRENT
+                    MainApplication.getMainApplication(), 0, Intent(
+                        MainApplication.getMainApplication(),
+                        if (!(Player.settings[Player.SimpleMode] as Boolean)) PlayerActivity::class.java else SimplePlayerActivity::class.java
+                    ), PendingIntent.FLAG_UPDATE_CURRENT
                 )
             )
         }.build()

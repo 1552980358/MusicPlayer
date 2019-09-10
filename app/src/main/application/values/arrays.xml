@@ -28,12 +28,27 @@
     </string-array>
 
     <string-array name="array_pulse_type">
+        <item>Vertical Column</item>
         <item>Compat Wave</item>
-        <item>Electronic current</item>
+        <item>Electronic Current</item>
     </string-array>
 
     <string-array name="array_pulse_type_value">
+        <item>PulseType_VerticalColumn</item>
         <item>PulseType_CompatWave</item>
         <item>PulseType_ElectricCurrent</item>
     </string-array>
+
+    <string-array name="array_theme">
+        <item>Black and White</item>
+        <item>Violet</item>
+        <item>Mix Color</item>
+    </string-array>
+
+    <string-array name="array_theme_value">
+        <item>Theme_0</item>
+        <item>Theme_1</item>
+        <item>Theme_2</item>
+    </string-array>
+
 </resources >

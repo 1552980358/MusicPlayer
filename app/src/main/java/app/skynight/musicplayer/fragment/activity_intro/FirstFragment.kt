@@ -14,7 +14,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import app.skynight.musicplayer.R
-import app.skynight.musicplayer.util.UnitUtil.Companion.getPx
+import app.skynight.musicplayer.util.getPx
 
 /**
  * @FILE:   FirstFragment

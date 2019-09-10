@@ -2,6 +2,8 @@ package app.skynight.musicplayer.view
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.Gravity
@@ -11,15 +13,18 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import app.skynight.musicplayer.MainApplication
 import app.skynight.musicplayer.R
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_LAST
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_NEXT
-import app.skynight.musicplayer.util.UnitUtil.Companion.getPx
+import app.skynight.musicplayer.util.getPx
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_ONPAUSE
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_ONSTART
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCAST_ONSTOP
+import app.skynight.musicplayer.util.Player
+import app.skynight.musicplayer.util.Player.Companion.Theme_0
 
 /**
  * @FILE:   BottomPlayerView
@@ -33,8 +38,8 @@ class BottomPlayerView : LinearLayout {
 
     lateinit var imageView_album: MusicAlbumRoundedImageView
 
-    lateinit var textView_title: StyledTextView
-    lateinit var textView_subTitle: StyledTextView
+    lateinit var textView_title: AppCompatTextView
+    lateinit var textView_subTitle: AppCompatTextView
 
     lateinit var checkBox_controller: AppCompatCheckBox
 
@@ -83,8 +88,9 @@ class BottomPlayerView : LinearLayout {
                     addView(LinearLayout(context).apply {
                         orientation = VERTICAL
 
-                        addView(StyledTextView(context).apply {
+                        addView(AppCompatTextView(context).apply {
                             textView_title = this
+                            setTextColor(Player.ThemeTextColor)
                             textSize = resources.getDimension(R.dimen.bottomPlayerView_title_size)
                             //text = "title"
                             setSingleLine()
@@ -94,9 +100,10 @@ class BottomPlayerView : LinearLayout {
                             isSelected = true
                         }, LayoutParams(MATCH_PARENT, WRAP_CONTENT))
 
-                        addView(StyledTextView(context).apply {
+                        addView(AppCompatTextView(context).apply {
                             textView_subTitle = this
                             //text = "subtitle"
+                            setTextColor(Player.ThemeTextColor)
                             textSize =
                                 resources.getDimension(R.dimen.bottomPlayerView_subTitle_size)
                             setSingleLine()
@@ -164,9 +171,7 @@ class BottomPlayerView : LinearLayout {
     constructor(context: Context) : this(context, null)
     @Suppress("UNUSED_PARAMETER")
     constructor(context: Context, attributeSet: AttributeSet?) : super(context) {
-        background = if (MainApplication.customize) ContextCompat.getDrawable(
-            context, R.color.player_widget_bg
-        ) else ContextCompat.getDrawable(context, R.color.colorPrimaryDark)
+        background =  ContextCompat.getDrawable(context, if (Player.settings[Player.Theme] != Theme_0) R.color.theme1_colorPrimary else R.color.white)
         createView()
     }
 

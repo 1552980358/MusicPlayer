@@ -5,10 +5,16 @@
     package="app.skynight.musicplayer" >
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:testOnly="false"
@@ -19,7 +25,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="AllowBackup,GoogleAppIndexingWarning" >
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="m" >
         <!-- Activity -->
         <!-- 1st -->
         <activity
@@ -63,6 +71,10 @@
             android:theme="@style/AppTheme.NoActionBar.Player" />
         <activity
             android:name=".activity.BottomListActivity"
+            android:theme="@style/AppTheme.NoActionBar.TransparentBackground" />
+        <activity
+            android:launchMode="singleTask"
+            android:name=".activity.SimplePlayerActivity"
             android:theme="@style/AppTheme.NoActionBar.TransparentBackground" />
     </application >
 

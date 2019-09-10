@@ -13,13 +13,17 @@ import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
 import android.media.audiofx.Visualizer
 import android.text.TextUtils
+import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.widget.RelativeLayout.*
+import android.widget.RelativeLayout.LayoutParams
+import android.widget.RelativeLayout.CENTER_HORIZONTAL
+import android.widget.RelativeLayout.CENTER_VERTICAL
+import android.widget.RelativeLayout.ALIGN_PARENT_BOTTOM
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -31,12 +35,26 @@ import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCA
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_MUSICCHANGE
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONPAUSE
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONSTART
-import app.skynight.musicplayer.util.UnitUtil.Companion.getTime
+import app.skynight.musicplayer.util.getTime
 import app.skynight.musicplayer.view.MusicAlbumRoundedImageView
-import kotlinx.android.synthetic.main.activity_player.*
+import kotlinx.android.synthetic.main.activity_player.relativeLayout
+import kotlinx.android.synthetic.main.activity_player.textView_timePass
+import kotlinx.android.synthetic.main.activity_player.seekBar
+import kotlinx.android.synthetic.main.activity_player.layout_filter
+import kotlinx.android.synthetic.main.activity_player.imageButton_list
+import kotlinx.android.synthetic.main.activity_player.imageButton_next
+import kotlinx.android.synthetic.main.activity_player.imageButton_last
+import kotlinx.android.synthetic.main.activity_player.toolbar
+import kotlinx.android.synthetic.main.activity_player.backgroundDrawerLayout
+import kotlinx.android.synthetic.main.activity_player.textView_timeTotal
+import kotlinx.android.synthetic.main.activity_player.imageButton_playForm
+import kotlinx.android.synthetic.main.activity_player.checkBox_playControl
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.core.app.ActivityCompat
-import app.skynight.musicplayer.pulse.*
+import app.skynight.musicplayer.pulse.BaseMusicVisiblePulse
+import app.skynight.musicplayer.pulse.VerticalColumnPulse
+import app.skynight.musicplayer.pulse.ElectronicCurrentPulse
+import app.skynight.musicplayer.pulse.CompatWavePulse
 import app.skynight.musicplayer.util.log
 import app.skynight.musicplayer.util.Player
 import app.skynight.musicplayer.util.Player.Companion.Pulse
@@ -44,6 +62,7 @@ import app.skynight.musicplayer.util.Player.Companion.PulseColor
 import app.skynight.musicplayer.util.setColorFilter
 import app.skynight.musicplayer.util.Player.Companion.PulseType
 import app.skynight.musicplayer.util.Player.Companion.PulseType_ElectricCurrent
+import app.skynight.musicplayer.util.Player.Companion.PulseType_VerticalColumn
 import mkaflowski.mediastylepalette.MediaNotificationProcessor
 
 /**
@@ -55,7 +74,37 @@ import mkaflowski.mediastylepalette.MediaNotificationProcessor
 
 class PlayerActivity : AppCompatActivity() {
 
-    private lateinit var broadcastReceiver: BroadcastReceiver
+    private val broadcastReceiver by lazy { object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent ?: return
+            when (intent.action) {
+                SERVER_BROADCAST_ONSTART -> {
+                    checkBox_playControl.isChecked = true
+                    startThread()
+                }
+                SERVER_BROADCAST_ONPAUSE -> {
+                    try {
+                        thread!!.interrupt()
+                        thread = null
+                    } catch (e: Exception) {
+                        //e.printStackTrace()
+                    }
+                    checkBox_playControl.isChecked = false
+                }
+                SERVER_BROADCAST_MUSICCHANGE -> {
+                    try {
+                        thread!!.interrupt()
+                        thread = null
+                    } catch (e: Exception) {
+                        //e.printStackTrace()
+                    }
+                    onUpdateMusic()
+                    startThread()
+                }
+            }
+        }
+
+    } }
     private lateinit var albumPic: MusicAlbumRoundedImageView
     private var thread: Thread? = null
     private var seekBarOnTouched = false
@@ -194,6 +243,11 @@ class PlayerActivity : AppCompatActivity() {
                         resources.displayMetrics.widthPixels,
                         resources.getDimensionPixelSize(R.dimen.playerActivity_renderer_height)
                     )
+                    PulseType_VerticalColumn -> VerticalColumnPulse(
+                        this@PlayerActivity,
+                        resources.displayMetrics.widthPixels,
+                        resources.getDimensionPixelSize(R.dimen.playerActivity_renderer_height)
+                    )
                     else -> {
                         CompatWavePulse(
                             this@PlayerActivity,
@@ -204,27 +258,58 @@ class PlayerActivity : AppCompatActivity() {
                 }.apply {
                     musicVisiblePulse = this
                     checkPermission()
-                },
-                    LayoutParams(
-                        MATCH_PARENT,
-                        resources.getDimensionPixelSize(R.dimen.playerActivity_renderer_height)
-                    ).apply {
-                        addRule(ALIGN_PARENT_BOTTOM)
-                        setMargins(
-                            0,
-                            0,
-                            0,
-                            resources.getDimensionPixelSize(R.dimen.playerActivity_renderer_marginBottom)
-                        )
-                    })
+                }, LayoutParams(
+                    MATCH_PARENT,
+                    resources.getDimensionPixelSize(R.dimen.playerActivity_renderer_height)
+                ).apply {
+                    addRule(ALIGN_PARENT_BOTTOM)
+                    setMargins(
+                        0,
+                        0,
+                        0,
+                        resources.getDimensionPixelSize(R.dimen.playerActivity_renderer_marginBottom)
+                    )
+                })
             }
 
-            var lastX = 0f
-            var lastY = 0F
-            var lastTime = 0L
             val width = resources.displayMetrics.widthPixels / 5
             val height = resources.displayMetrics.heightPixels / 5
+            isLongClickable = true
+            val gestureDetector = GestureDetector(
+                this@PlayerActivity,
+                object : GestureDetector.SimpleOnGestureListener() {
+                    override fun onFling(
+                        e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float
+                    ): Boolean {
+                        try {
+                            if (e1!!.x - e2!!.x < -width) {
+                                sendBroadcast(Intent(CLIENT_BROADCAST_LAST))
+                                return true
+                            }
+                            if (e1.x - e2.x > width) {
+                                sendBroadcast(Intent(CLIENT_BROADCAST_NEXT))
+                                return true
+                            }
+
+                            if (e1.y - e2.y < -height) {
+                                onBackPressed()
+                                return true
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                        return false
+                    }
+
+                    override fun onDoubleTap(e: MotionEvent?): Boolean {
+                        sendBroadcast(Intent(if (Player.getPlayer.isPlaying()) CLIENT_BROADCAST_ONPAUSE else CLIENT_BROADCAST_ONSTART))
+                        return true
+                    }
+
+                })
             setOnTouchListener { _, motionEvent ->
+                return@setOnTouchListener gestureDetector.onTouchEvent(motionEvent)
+                /*
                 when (motionEvent.action) {
                     MotionEvent.ACTION_DOWN -> {
                         lastX = motionEvent.x
@@ -256,6 +341,7 @@ class PlayerActivity : AppCompatActivity() {
                     }
                     else -> return@setOnTouchListener false
                 }
+                */
             }
         }
     }
@@ -386,41 +472,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun registerReceiver() {
-        registerReceiver(if (::broadcastReceiver.isInitialized) {
-            broadcastReceiver
-        } else {
-            object : BroadcastReceiver() {
-                override fun onReceive(context: Context?, intent: Intent?) {
-                    intent ?: return
-                    when (intent.action) {
-                        SERVER_BROADCAST_ONSTART -> {
-                            checkBox_playControl.isChecked = true
-                            startThread()
-                        }
-                        SERVER_BROADCAST_ONPAUSE -> {
-                            try {
-                                thread!!.interrupt()
-                                thread = null
-                            } catch (e: Exception) {
-                                //e.printStackTrace()
-                            }
-                            checkBox_playControl.isChecked = false
-                        }
-                        SERVER_BROADCAST_MUSICCHANGE -> {
-                            try {
-                                thread!!.interrupt()
-                                thread = null
-                            } catch (e: Exception) {
-                                //e.printStackTrace()
-                            }
-                            onUpdateMusic()
-                            startThread()
-                        }
-                    }
-                }
-
-            }.apply { broadcastReceiver = this }
-        }, IntentFilter().apply {
+        registerReceiver(broadcastReceiver, IntentFilter().apply {
             addAction(SERVER_BROADCAST_ONSTART)
             addAction(SERVER_BROADCAST_ONPAUSE)
             addAction(SERVER_BROADCAST_MUSICCHANGE)

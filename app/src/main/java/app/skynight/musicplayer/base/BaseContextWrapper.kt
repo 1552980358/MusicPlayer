@@ -5,7 +5,7 @@ import android.content.ContextWrapper
 import android.content.res.Configuration
 import android.os.Build
 import android.os.LocaleList
-import java.util.*
+import java.util.Locale
 
 /**
  * @File    : BaseContextWrapper
@@ -27,6 +27,7 @@ class BaseContextWrapper private constructor(base: Context): ContextWrapper(base
                 return BaseContextWrapper(context.createConfigurationContext(configuration))
             }
             configuration.setLocale(locale)
+            @Suppress("DEPRECATION")
             resources.updateConfiguration(configuration, resources.displayMetrics)
             return BaseContextWrapper(context.createConfigurationContext(configuration))
         }

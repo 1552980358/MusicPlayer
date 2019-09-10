@@ -7,7 +7,14 @@
     </string-array>
 
     <string-array name="array_pulse_type">
+        <item>垂直頻譜</item>
         <item>緊凑音波</item>
         <item>電流</item>
+    </string-array>
+
+    <string-array name="array_theme">
+        <item>狐·渾沌初見</item>
+        <item>狸·妖氣幻見</item>
+        <item>歌·七彩斑斕</item>
     </string-array>
 </resources >

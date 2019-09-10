@@ -6,7 +6,11 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.RelativeLayout
-import android.widget.RelativeLayout.*
+import android.widget.RelativeLayout.ALIGN_PARENT_BOTTOM
+import android.widget.RelativeLayout.LayoutParams
+import android.widget.RelativeLayout.CENTER_VERTICAL
+import android.widget.RelativeLayout.ABOVE
+import android.widget.RelativeLayout.ALIGN_PARENT_END
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.setPadding

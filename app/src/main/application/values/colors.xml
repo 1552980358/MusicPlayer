@@ -12,6 +12,11 @@
     <color name="colorAccent">@color/black</color>
     <color name="colorAccentSettings">#e040fb</color>
 
+    <color name="theme1_colorPrimary">#673AB7</color>
+    <color name="theme1_colorPrimaryDark">#673AB7</color>
+    <color name="theme1_colorAccent">@color/white</color>
+    <color name="theme1_colorAccentSettings">#7c4dff</color>
+
     <color name="white">@android:color/white</color>
     <color name="black">@android:color/black</color>
 

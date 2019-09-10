@@ -1,8 +1,6 @@
 package app.skynight.musicplayer.base
 
 import android.annotation.SuppressLint
-import android.graphics.Color
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,10 +33,10 @@ open class BaseAppCompatActivity : AppCompatActivity() {
     override fun setContentView(view: View?) {
         super.setContentView(RelativeLayout(this).apply {
             relativeLayout = this
-            background =
+            /*background =
                 if (MainApplication.customize) MainApplication.bgDrawable else ContextCompat.getDrawable(
                     this@BaseAppCompatActivity, R.color.activity_background
-                )
+                )*/
             addView((view as ViewGroup).apply {
                 background =
                     ContextCompat.getDrawable(this@BaseAppCompatActivity, R.color.color_filter)

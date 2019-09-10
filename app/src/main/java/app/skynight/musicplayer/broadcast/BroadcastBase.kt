@@ -26,6 +26,8 @@ class BroadcastBase private constructor() {
          * 当接收者接收到广播后，接收者将会获取音乐信息并更新UI。
          **/
 
+        const val BROADCAST_APPLICATION_RESTART = "app.skynight.musicplayer.application.restart"
+
         const val BROADCAST_INTENT_PLAYLIST = "PLAYLIST"
         const val BROADCAST_INTENT_MUSIC = "MUSIC"
 
@@ -81,6 +83,7 @@ class BroadcastBase private constructor() {
         // CHANGE MUSIC
         const val SERVER_BROADCAST_MUSICCHANGE = "app.skynight.musicplayer.server.onmusicchange"
         // PREPARING MUSIC LIST
+        @Deprecated("")
         const val SERVER_BROADCAST_PREPAREDONE = "app.skynight.musicplayer.server.onpreparedone"
 
         val BroadcastSignalList = arrayListOf(

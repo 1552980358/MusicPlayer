@@ -30,7 +30,7 @@
                 android:gravity="center"
                 android:textSize="40sp"
                 android:id="@+id/time"
-                android:textColor="?attr/colorAccent"/>
+                android:textColor="@color/black"/>
             <TextClock
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
                 android:format24Hour="@string/abc_main_timer_date_24"
                 android:format12Hour="@string/abc_main_timer_date_12"
                 android:id="@+id/date"
-                android:textColor="?attr/colorAccent"/>
+                android:textColor="@color/black"/>
 
         </LinearLayout >
 
@@ -66,14 +66,14 @@
                 android:layout_gravity="center"
                 tools:ignore="ContentDescription" />
 
-            <app.skynight.musicplayer.view.StyledTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:gravity="center"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView_status"
                 android:textSize="15sp"
                 android:layout_margin="@dimen/dp_5"
-                android:textColor="?attr/colorAccent"/>
+                android:textColor="@color/black"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

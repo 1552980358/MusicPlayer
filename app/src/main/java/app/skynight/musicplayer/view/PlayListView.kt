@@ -2,6 +2,7 @@ package app.skynight.musicplayer.view
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.Gravity
@@ -9,9 +10,12 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import app.skynight.musicplayer.R
+import app.skynight.musicplayer.util.Player
 
 /**
  * @File    : PlayListView
@@ -21,7 +25,7 @@ import app.skynight.musicplayer.R
  **/
 class PlayListView: LinearLayout {
     private lateinit var imageView: AppCompatImageView
-    private lateinit var textView: StyledTextView
+    private lateinit var textView: AppCompatTextView
     private fun createView() {
         addView(AppCompatImageView(context).apply {
             imageView = this
@@ -29,8 +33,9 @@ class PlayListView: LinearLayout {
             setMargins(resources.getDimensionPixelSize(R.dimen.playListView_widget_margin), 0, 0, 0)
             gravity = Gravity.CENTER
         })
-        addView(StyledTextView(context).apply {
+        addView(AppCompatTextView(context).apply {
             textView = this
+            setTextColor(Color.BLACK)
         }, LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
             leftMargin = resources.getDimensionPixelSize(R.dimen.playListView_widget_margin)
             gravity = Gravity.CENTER
@@ -38,11 +43,15 @@ class PlayListView: LinearLayout {
     }
 
     fun setUp(icon: Int, text: String) {
-        imageView.setImageDrawable(ContextCompat.getDrawable(context, icon))
+        imageView.setImageDrawable(ContextCompat.getDrawable(context, icon).apply {
+            this!!.setTint(Color.BLACK)
+        })
         textView.text = text
     }
     fun setUp(icon: Int, text: Int) {
-        imageView.setImageDrawable(ContextCompat.getDrawable(context, icon))
+        imageView.setImageDrawable(ContextCompat.getDrawable(context, icon).apply {
+            this!!.setTint(Color.BLACK)
+        })
         textView.setText(text)
     }
 

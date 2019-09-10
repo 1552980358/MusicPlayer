@@ -15,7 +15,7 @@ import android.graphics.Paint
  **/
 
 @SuppressLint("ViewConstructor")
-open class BaseMusicVisiblePulse(context: Context, width: Int, height: Int, type: Paint.Style, thickness: Float = 0F) : View(context) {
+open class BaseMusicVisiblePulse(context: Context, width: Int, height: Int, type: Paint.Style, thickness: Float = 0F, private val point: Boolean) : View(context) {
 
     @Suppress("JoinDeclarationAndAssignment")
     var paint: Paint
@@ -46,7 +46,7 @@ open class BaseMusicVisiblePulse(context: Context, width: Int, height: Int, type
     fun setData(data: ByteArray) {
         if (start) {
             waveData = data//BaseUtil.treatBytes(data)
-            if (!::points.isInitialized) {
+            if (point && !::points.isInitialized) {
                 points = FloatArray(waveData.size * 4)
             }
             postInvalidate()

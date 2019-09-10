@@ -1,12 +1,13 @@
 package app.skynight.musicplayer.util
 
 import android.os.Environment
-import android.os.Environment.MEDIA_MOUNTED
 import android.provider.MediaStore
-import android.util.Log
 import app.skynight.musicplayer.MainApplication
-import app.skynight.musicplayer.util.FileUtil.Companion.checkAndCreateExternalStorageFile
-import java.io.*
+import java.io.FileOutputStream
+import java.io.ObjectOutputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.ObjectInputStream
 import kotlin.Exception
 
 /**
@@ -33,6 +34,7 @@ class MusicClass private constructor() {
 
         private const val MusicSaveDir = "app.skynight.musicplayer"
         private const val FullList = "MusicSaveFullList"
+        @Suppress("DEPRECATION")
         val TargetDir =
             Environment.getExternalStorageDirectory().absolutePath + File.separator + MusicSaveDir
 
