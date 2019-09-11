@@ -91,9 +91,15 @@ class Player private constructor() {
         const val Theme = "Theme"
         const val Theme_0 = "Theme_0"
         const val Theme_1 = "Theme_1"
+        const val SimpleMode = "SimpleMode"
+        const val Lyric = "Lyric"
+        const val LyricColor = "LyricColor"
+        const val LyricSupport = "LyricSupport"
+        const val LyricSupport_NetEase = "LyricSupport_NetEase"
+        const val LyricSupport_KuWo = "LyricSupport_KuWo"
+
         var ThemeTextColor = Color.BLACK
         var ThemeBgColor = Color.WHITE
-        const val SimpleMode = "SimpleMode"
 
         const val WiredPlugIn = "WiredPlugIn"
         const val WiredPullOut = "WiredPullOut"
@@ -139,6 +145,9 @@ class Player private constructor() {
             }
 
             settings[SimpleMode] = getBoolean("settingPreference_extremeSimple", false)
+            settings[Lyric] = getBoolean("settingPreference_lyric", true)
+            settings[LyricSupport] = getString("settingPreference_lyricSupplier", LyricSupport_NetEase)!!
+            settings[LyricColor] = getBoolean("settingPreference_lyricColor", false)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 settings.forEach { (string, any) ->
@@ -424,10 +433,10 @@ class Player private constructor() {
     @Suppress("unused")
     fun getCurrent(): Int {
         return if (mediaPlayer.isPlaying) {
-            mediaPlayer.currentPosition / 1000
+            mediaPlayer.currentPosition
         } else {
             if (paused != -1) {
-                paused / 1000
+                paused
             } else {
                 -1
             }

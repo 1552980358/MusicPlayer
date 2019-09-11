@@ -17,4 +17,9 @@
         <item>狸·妖气幻见</item>
         <item>歌·五彩斑斓</item>
     </string-array>
+
+    <string-array name="array_lyricSupplier">
+        <item>网易云音乐API(稳定推荐)</item>
+        <item>酷我音乐API(容易炸)</item>
+    </string-array>
 </resources >

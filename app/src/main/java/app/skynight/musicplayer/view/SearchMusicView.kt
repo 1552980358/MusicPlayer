@@ -22,47 +22,54 @@ import app.skynight.musicplayer.util.Player
  * @Date    : 21 Aug 2019
  * @TIME    : 5:32 PM
  **/
-class SearchMusicView: LinearLayout {
+class SearchMusicView : LinearLayout {
 
-    constructor(context: Context, playList: Int, index: Int, musicInfo: MusicInfo): super(context) {
+    constructor(
+        context: Context,
+        playList: Int,
+        index: Int,
+        musicInfo: MusicInfo
+    ) : super(context) {
         orientation = VERTICAL
         background = ContextCompat.getDrawable(context, R.drawable.ripple_effect)
         isClickable = true
         isFocusable = true
 
         // Title
-        addView(AppCompatTextView(context).apply {
-            setSingleLine()
-            setTextColor(Player.ThemeTextColor)
-            text = musicInfo.title()
-            textSize = resources.getDimension(R.dimen.musicView_title_size)
-            setHorizontallyScrolling(true)
-            marqueeRepeatLimit = -1
-            ellipsize = TextUtils.TruncateAt.MARQUEE
-            isSelected = true
-        }, LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        ))
+        addView(
+            AppCompatTextView(context).apply {
+                setSingleLine()
+                text = musicInfo.title()
+                textSize = resources.getDimension(R.dimen.musicView_title_size)
+                setHorizontallyScrolling(true)
+                marqueeRepeatLimit = -1
+                ellipsize = TextUtils.TruncateAt.MARQUEE
+                isSelected = true
+            }, LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        )
 
         // Subtitle
-        addView(AppCompatTextView(context).apply {
-            setSingleLine()
-            text = musicInfo.artist()
-            setTextColor(Player.ThemeTextColor)
-            textSize = resources.getDimension(R.dimen.musicView_subTitle_size)
-            marqueeRepeatLimit = -1
-            ellipsize = TextUtils.TruncateAt.MARQUEE
-        }, LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        ))
+        addView(
+            AppCompatTextView(context).apply {
+                setSingleLine()
+                text = musicInfo.artist()
+                textSize = resources.getDimension(R.dimen.musicView_subTitle_size)
+                marqueeRepeatLimit = -1
+                ellipsize = TextUtils.TruncateAt.MARQUEE
+            }, LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        )
 
         setOnClickListener {
             MainApplication.getMainApplication().apply {
                 sendBroadcast(
-                    Intent(BroadcastBase.CLIENT_BROADCAST_CHANGE).putExtra(BroadcastBase.BROADCAST_INTENT_PLAYLIST, playList)
-                        .putExtra(BroadcastBase.BROADCAST_INTENT_MUSIC, index)
+                    Intent(BroadcastBase.CLIENT_BROADCAST_CHANGE).putExtra(
+                        BroadcastBase.BROADCAST_INTENT_PLAYLIST,
+                        playList
+                    ).putExtra(BroadcastBase.BROADCAST_INTENT_MUSIC, index)
                 )
                 startActivity(Intent(this, PlayerActivity::class.java).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -72,9 +79,10 @@ class SearchMusicView: LinearLayout {
     }
 
     /* Not allowed */
-    constructor(context: Context): this(context, null)
+    constructor(context: Context) : this(context, null)
+
     @Suppress("UNUSED_PARAMETER")
-    constructor(context: Context, attributeSet: AttributeSet?): super(context) {
+    constructor(context: Context, attributeSet: AttributeSet?) : super(context) {
         throw InitConstructorNotAllowedException()
     }
 }

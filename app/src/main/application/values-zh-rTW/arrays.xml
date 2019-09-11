@@ -17,4 +17,9 @@
         <item>狸·妖氣幻見</item>
         <item>歌·七彩斑斕</item>
     </string-array>
+
+    <string-array name="array_lyricSupplier">
+        <item>網易雲音樂API(穩定)</item>
+        <item>酷我音樂API(非穩定)</item>
+    </string-array>
 </resources >

@@ -1,24 +1,27 @@
 package app.skynight.musicplayer.fragment.activity_settings
 
-import android.app.Activity
-import android.app.ActivityManager
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.preference.*
-import app.skynight.musicplayer.BuildConfig
+import androidx.preference.ListPreference
+import androidx.preference.SwitchPreference
+import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceCategory
+import androidx.preference.Preference
 import app.skynight.musicplayer.R
 import app.skynight.musicplayer.activity.SplashActivity
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.BROADCAST_APPLICATION_RESTART
 import app.skynight.musicplayer.util.Player
+import app.skynight.musicplayer.util.Player.Companion.Lyric
+import app.skynight.musicplayer.util.Player.Companion.LyricColor
+import app.skynight.musicplayer.util.Player.Companion.LyricSupport
 import app.skynight.musicplayer.util.Player.Companion.Pulse
 import app.skynight.musicplayer.util.Player.Companion.PulseColor
 import app.skynight.musicplayer.util.Player.Companion.PulseDensity
 import app.skynight.musicplayer.util.Player.Companion.PulseType
 import app.skynight.musicplayer.util.log
-import java.lang.System.exit
 import kotlin.system.exitProcess
 
 /**
@@ -117,6 +120,20 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
             findPreference<SwitchPreference>("settingPreference_extremeSimple")!!.setOnPreferenceChangeListener { _, newValue ->
                 Player.settings[Player.SimpleMode] = newValue as Boolean
+                return@setOnPreferenceChangeListener true
+            }
+
+            findPreference<SwitchPreference>("settingPreference_lyric")!!.setOnPreferenceChangeListener { _, newValue ->
+                Player.settings[Lyric] = newValue as Boolean
+                findPreference<Preference>("settingPreference_lyric_opts")!!.isEnabled = newValue
+                return@setOnPreferenceChangeListener true
+            }
+            findPreference<SwitchPreference>("settingPreference_lyricColor")!!.setOnPreferenceChangeListener { _, newValue ->
+                Player.settings[LyricColor] = newValue as Boolean
+                return@setOnPreferenceChangeListener true
+            }
+            findPreference<ListPreference>("settingPreference_lyricSupplier")!!.setOnPreferenceChangeListener { _, newValue ->
+                Player.settings[LyricSupport] = newValue as String
                 return@setOnPreferenceChangeListener true
             }
         } catch (e: Exception) {

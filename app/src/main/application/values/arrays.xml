@@ -51,4 +51,14 @@
         <item>Theme_2</item>
     </string-array>
 
+    <string-array name="array_lyricSupplier">
+        <item>Net Ease Music (Stable)</item>
+        <item>Ku Wo Music (Unstable)</item>
+    </string-array>
+
+    <string-array name="array_lyricSupplier_value">
+        <item>LyricSupport_NetEase</item>
+        <item>LyricSupport_KuWo</item>
+    </string-array>
+
 </resources >

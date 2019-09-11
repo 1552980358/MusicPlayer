@@ -211,7 +211,7 @@ class SimplePlayerActivity : AppCompatActivity() {
         thread = Thread {
 
             while (Player.getPlayer.isPlaying()) {
-                runOnUiThread { pass.text = getTime(Player.getPlayer.getCurrent()) }
+                runOnUiThread { pass.text = getTime(Player.getPlayer.getCurrent() / 1000) }
 
                 try {
                     Thread.sleep(500)

@@ -63,6 +63,12 @@
     <string name="abc_settings_pulse_thick_title">Reduce Pulse Density</string>
     <string name="abc_settings_pulse_color_title">Color of visible pulse</string>
     <string name="abc_settings_pulse_color_subtitle">Switch off as static white, else as taken from album cover</string>
+    <string name="abc_settings_player_lyric_title">Lyric</string>
+    <string name="abc_settings_player_lyric_subtitle">Get lyric from the internet</string>
+    <string name="abc_settings_lyric_title">Lyric</string>
+    <string name="abc_settings_lyric_lyricSupport_title">Lyric supplier</string>
+    <string name="abc_settings_lyric_lyricColor_title">Lyric Color</string>
+    <string name="abc_settings_lyric_lyricColor_subtitle">Switch off as white and half transparent white, else as taken from album cover</string>
 
     <string name="abc_musicList_unExpected_intent">Seems something goes wrong when getting playlist info data. </string>
 

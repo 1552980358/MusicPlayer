@@ -24,9 +24,11 @@ import app.skynight.musicplayer.util.Player
 import app.skynight.musicplayer.util.log
 import app.skynight.musicplayer.util.makeToast
 import kotlinx.android.synthetic.main.activity_settings.*
+import java.lang.Exception
 
 class SettingsActivity : BaseAppCompatActivity() {
     //private lateinit var frameLayout: FrameLayout
+    private lateinit var broadcastReceiver: BroadcastReceiver
 
     private fun createView(): View {
         return LinearLayout(this).apply {
@@ -82,12 +84,22 @@ class SettingsActivity : BaseAppCompatActivity() {
                 })
                 finish()
             }
-        }, IntentFilter(BROADCAST_APPLICATION_RESTART))
+        }.apply { broadcastReceiver = this }, IntentFilter(BROADCAST_APPLICATION_RESTART))
     }
 
     override fun onBackPressed() {
+        unregisterReceiver(broadcastReceiver)
         super.onBackPressed()
         log("SettingsActivity", "onBackPressed")
+    }
+
+    override fun onDestroy() {
+        try {
+            unregisterReceiver(broadcastReceiver)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        super.onDestroy()
     }
 
 }

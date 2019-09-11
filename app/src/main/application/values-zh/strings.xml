@@ -40,6 +40,8 @@
     <string name="abc_settings_player_statusBar_subtitle">禁用时使用白色图标, 启用时使用黑色图标</string>
     <string name="abc_settings_player_pulse_title">音乐脉冲</string>
     <string name="abc_settings_player_pulse_subtitle">跳动的音乐节奏</string>
+    <string name="abc_settings_player_lyric_title">歌词</string>
+    <string name="abc_settings_player_lyric_subtitle">从网路获取歌词</string>
     <string name="abc_settings_knownIssues_title">已知问题</string>
     <string name="abc_settings_knownIssues_tag1_title">外置SD卡媒体文件无法读取</string>
     <string name="abc_settings_knownIssues_tag1_subtitle">从Android L每个版本适配到Android O,甚至Android Q又要改API…\n那么, 还是等Q正式发布再加吧…</string>
@@ -63,8 +65,11 @@
     <string name="abc_settings_pulse_thick_title">降低脉冲密度</string>
     <string name="abc_settings_pulse_color_title">脉冲颜色</string>
     <string name="abc_settings_pulse_color_subtitle">禁用时静态白色, 启用时从专辑封面提取颜色</string>
-
+    <string name="abc_settings_lyric_lyricSupport_title">歌词API提供</string>
+    <string name="abc_settings_lyric_title">歌词</string>
     <string name="abc_musicList_unExpected_intent">似乎发生了什么可怕的事情, 所以暂时退回啦~</string>
+    <string name="abc_settings_lyric_lyricColor_title">歌词颜色</string>
+    <string name="abc_settings_lyric_lyricColor_subtitle">禁用时纯白与半透明白, 启用时从专辑封面提取颜色</string>
 
     <string name="abc_player_unExpected_intent">@string/abc_musicList_unExpected_intent</string>
 

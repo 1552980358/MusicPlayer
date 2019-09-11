@@ -60,6 +60,13 @@
 
         <SwitchPreference
             app:iconSpaceReserved="false"
+            android:title="@string/abc_settings_player_lyric_title"
+            android:summary="@string/abc_settings_player_lyric_subtitle"
+            android:key="settingPreference_lyric"
+            android:defaultValue="true" />
+
+        <SwitchPreference
+            app:iconSpaceReserved="false"
             android:key="settingPreference_pulse"
             android:title="@string/abc_settings_player_pulse_title"
             android:summary="@string/abc_settings_player_pulse_subtitle"
@@ -94,6 +101,28 @@
             android:summary="@string/abc_settings_pulse_color_subtitle"/>
 
     </PreferenceCategory >
+
+    <PreferenceCategory
+        android:title="@string/abc_settings_lyric_title"
+        android:key="settingPreference_lyric_opts"
+        app:iconSpaceReserved="false" >
+
+        <SwitchPreference
+            app:iconSpaceReserved="false"
+            android:key="settingPreference_lyricColor"
+            android:defaultValue="false"
+            android:title="@string/abc_settings_lyric_lyricColor_title"
+            android:summary="@string/abc_settings_lyric_lyricColor_subtitle"/>
+
+        <ListPreference
+            app:iconSpaceReserved="false"
+            android:key="settingPreference_lyricSupplier"
+            android:entries="@array/array_lyricSupplier"
+            android:entryValues="@array/array_lyricSupplier_value"
+            android:defaultValue="LyricSupport_NetEase"
+            android:title="@string/abc_settings_lyric_lyricSupport_title"
+            android:summary="%s" />
+    </PreferenceCategory>
 
     <PreferenceCategory
         android:title="@string/abc_settings_headset_title"

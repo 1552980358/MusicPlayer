@@ -40,6 +40,8 @@
     <string name="abc_settings_player_statusBar_subtitle">禁用時使用白色圖標, 啓用時時使用黑色圖標</string>
     <string name="abc_settings_player_pulse_title">音樂脈衝</string>
     <string name="abc_settings_player_pulse_subtitle">跳動的音樂節奏</string>
+    <string name="abc_settings_player_lyric_title">歌詞</string>
+    <string name="abc_settings_player_lyric_subtitle">從網絡獲取歌詞</string>
     <string name="abc_settings_knownIssues_title">已知問題</string>
     <string name="abc_settings_knownIssues_tag1_title">外置SD卡媒體文件無法讀取</string>
     <string name="abc_settings_knownIssues_tag1_subtitle">從Android L的每個版本適配到Android O, 甚至Android Q又要改API…\n那麽, 等Android Q再加吧…</string>
@@ -63,6 +65,10 @@
     <string name="abc_settings_pulse_thick_title">降低脈衝密度</string>
     <string name="abc_settings_pulse_color_title">脈衝顔色</string>
     <string name="abc_settings_pulse_color_subtitle">禁用時靜態白色, 啓用時從專輯封面提取顔色</string>
+    <string name="abc_settings_lyric_title">歌詞</string>
+    <string name="abc_settings_lyric_lyricSupport_title">歌詞API提供</string>
+    <string name="abc_settings_lyric_lyricColor_title">歌詞顔色</string>
+    <string name="abc_settings_lyric_lyricColor_subtitle">禁用時純白與半透明白, 啓用時從專輯封面提取顔色</string>
 
     <string name="abc_musicList_unExpected_intent">似乎发生了什么可怕的事情, 所以暂时退回啦~</string>
 

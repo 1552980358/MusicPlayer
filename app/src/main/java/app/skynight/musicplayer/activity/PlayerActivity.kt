@@ -13,6 +13,7 @@ import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
 import android.media.audiofx.Visualizer
 import android.text.TextUtils
+import android.util.Base64
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -35,7 +36,6 @@ import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.CLIENT_BROADCA
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_MUSICCHANGE
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONPAUSE
 import app.skynight.musicplayer.broadcast.BroadcastBase.Companion.SERVER_BROADCAST_ONSTART
-import app.skynight.musicplayer.util.getTime
 import app.skynight.musicplayer.view.MusicAlbumRoundedImageView
 import kotlinx.android.synthetic.main.activity_player.relativeLayout
 import kotlinx.android.synthetic.main.activity_player.textView_timePass
@@ -55,15 +55,24 @@ import app.skynight.musicplayer.pulse.BaseMusicVisiblePulse
 import app.skynight.musicplayer.pulse.VerticalColumnPulse
 import app.skynight.musicplayer.pulse.ElectronicCurrentPulse
 import app.skynight.musicplayer.pulse.CompatWavePulse
-import app.skynight.musicplayer.util.log
-import app.skynight.musicplayer.util.Player
+import app.skynight.musicplayer.util.*
+import app.skynight.musicplayer.util.Player.Companion.Lyric
+import app.skynight.musicplayer.util.Player.Companion.LyricColor
+import app.skynight.musicplayer.util.Player.Companion.LyricSupport
+import app.skynight.musicplayer.util.Player.Companion.LyricSupport_NetEase
 import app.skynight.musicplayer.util.Player.Companion.Pulse
 import app.skynight.musicplayer.util.Player.Companion.PulseColor
-import app.skynight.musicplayer.util.setColorFilter
 import app.skynight.musicplayer.util.Player.Companion.PulseType
 import app.skynight.musicplayer.util.Player.Companion.PulseType_ElectricCurrent
 import app.skynight.musicplayer.util.Player.Companion.PulseType_VerticalColumn
+import app.skynight.musicplayer.view.LrcView
+import com.google.gson.JsonParser
 import mkaflowski.mediastylepalette.MediaNotificationProcessor
+import okhttp3.*
+import java.io.IOException
+import java.net.URL
+import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 /**
  * @FILE:   PlayerActivity
@@ -74,43 +83,46 @@ import mkaflowski.mediastylepalette.MediaNotificationProcessor
 
 class PlayerActivity : AppCompatActivity() {
 
-    private val broadcastReceiver by lazy { object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            intent ?: return
-            when (intent.action) {
-                SERVER_BROADCAST_ONSTART -> {
-                    checkBox_playControl.isChecked = true
-                    startThread()
-                }
-                SERVER_BROADCAST_ONPAUSE -> {
-                    try {
-                        thread!!.interrupt()
-                        thread = null
-                    } catch (e: Exception) {
-                        //e.printStackTrace()
+    private val broadcastReceiver by lazy {
+        object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                intent ?: return
+                when (intent.action) {
+                    SERVER_BROADCAST_ONSTART -> {
+                        checkBox_playControl.isChecked = true
+                        startThread()
                     }
-                    checkBox_playControl.isChecked = false
-                }
-                SERVER_BROADCAST_MUSICCHANGE -> {
-                    try {
-                        thread!!.interrupt()
-                        thread = null
-                    } catch (e: Exception) {
-                        //e.printStackTrace()
+                    SERVER_BROADCAST_ONPAUSE -> {
+                        try {
+                            thread!!.interrupt()
+                            thread = null
+                        } catch (e: Exception) {
+                            //e.printStackTrace()
+                        }
+                        checkBox_playControl.isChecked = false
                     }
-                    onUpdateMusic()
-                    startThread()
+                    SERVER_BROADCAST_MUSICCHANGE -> {
+                        try {
+                            thread!!.interrupt()
+                            thread = null
+                        } catch (e: Exception) {
+                            //e.printStackTrace()
+                        }
+                        onUpdateMusic()
+                        startThread()
+                    }
                 }
             }
-        }
 
-    } }
+        }
+    }
     private lateinit var albumPic: MusicAlbumRoundedImageView
     private var thread: Thread? = null
     private var seekBarOnTouched = false
     private var tintColor = 0
     private lateinit var visualizer: Visualizer
     private lateinit var musicVisiblePulse: BaseMusicVisiblePulse
+    private lateinit var lrcView: LrcView
 
     private fun setBackgroundProp() {
         window.decorView.systemUiVisibility =
@@ -236,6 +248,23 @@ class PlayerActivity : AppCompatActivity() {
                 addRule(CENTER_VERTICAL)
             })
 
+            if ((Player.settings[Lyric] as Boolean)) {
+                addView(LrcView(this@PlayerActivity).apply {
+                    lrcView = this
+                }, LayoutParams(
+                    MATCH_PARENT,
+                    resources.getDimensionPixelSize(R.dimen.playerActivity_lyric_height)
+                ).apply {
+                    setMargins(
+                        0,
+                        0,
+                        0,
+                        resources.getDimensionPixelSize(R.dimen.playerActivity_lyric_margin)
+                    )
+                    addRule(ALIGN_PARENT_BOTTOM)
+                })
+            }
+
             if (Player.settings[Pulse] as Boolean) {
                 addView(when (Player.settings[PulseType]) {
                     PulseType_ElectricCurrent -> ElectronicCurrentPulse(
@@ -309,39 +338,6 @@ class PlayerActivity : AppCompatActivity() {
                 })
             setOnTouchListener { _, motionEvent ->
                 return@setOnTouchListener gestureDetector.onTouchEvent(motionEvent)
-                /*
-                when (motionEvent.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        lastX = motionEvent.x
-                        lastY = motionEvent.y
-                        System.currentTimeMillis().apply {
-                            if (this - lastTime < 300) {
-                                sendBroadcast(Intent(if (Player.getPlayer.isPlaying()) CLIENT_BROADCAST_ONPAUSE else CLIENT_BROADCAST_ONSTART))
-                            }
-                            lastTime = this
-                        }
-                        return@setOnTouchListener true
-                    }
-                    MotionEvent.ACTION_UP -> {
-                        if (lastX - motionEvent.x < -width) {
-                            sendBroadcast(Intent(CLIENT_BROADCAST_LAST))
-                            return@setOnTouchListener true
-                        }
-                        if (lastX - motionEvent.x > width) {
-                            sendBroadcast(Intent(CLIENT_BROADCAST_NEXT))
-                            return@setOnTouchListener true
-                        }
-
-                        if (lastY - motionEvent.y < -height) {
-                            onBackPressed()
-                            return@setOnTouchListener true
-                        }
-
-                        return@setOnTouchListener false
-                    }
-                    else -> return@setOnTouchListener false
-                }
-                */
             }
         }
     }
@@ -413,9 +409,8 @@ class PlayerActivity : AppCompatActivity() {
     private fun startThread() {
         Player.getPlayer.getCurrent().apply {
             if (this != -1) {
-                log("Player.getPlayer.getCurrent", this)
-                textView_timePass.text = getTime(this)
-                seekBar.progress = this
+                textView_timePass.text = getTime(this / 1000)
+                seekBar.progress = this / 1000
             } else {
                 textView_timePass.text = getTime(0)
                 seekBar.progress = 0
@@ -441,27 +436,22 @@ class PlayerActivity : AppCompatActivity() {
 
             while (Player.getPlayer.isPlaying()) {
 
-                if (!seekBarOnTouched) {
-                    runOnUiThread {
-                        textView_timePass.text = getTime(Player.getPlayer.getCurrent())
-                        seekBar.progress = Player.getPlayer.getCurrent()
+                Player.getPlayer.getCurrent().apply {
+                    if (!seekBarOnTouched) {
+                        runOnUiThread {
+                            textView_timePass.text = getTime(this / 1000)
+                            seekBar.progress = this / 1000
+                        }
                     }
+                    if ((Player.settings[Lyric] as Boolean)) lrcView.checkTime(this)
                 }
 
                 try {
-                    Thread.sleep(500)
+                    Thread.sleep(100)
                 } catch (e: Exception) {
                     //e.printStackTrace()
                 }
             }
-            /*
-            if (::musicVisiblePulseView.isInitialized) {
-                musicVisiblePulseView.start = false
-            }
-            if (::visualizer.isInitialized) {
-                visualizer.enabled = false
-            }
-            */
             try {
                 musicVisiblePulse.start = false
                 visualizer.enabled = false
@@ -491,10 +481,12 @@ class PlayerActivity : AppCompatActivity() {
         startThread()
     }
 
+    @Suppress("unused")
     fun onUpdateMusic() {
         val musicInfo = Player.getCurrentMusicInfo()
         val alPic = musicInfo.albumPic()
         Thread {
+            getLyric()
             try {
                 val mediaNotificationProcessor = MediaNotificationProcessor(this, alPic)
 
@@ -574,6 +566,9 @@ class PlayerActivity : AppCompatActivity() {
                 if (Player.settings[PulseColor] as Boolean) {
                     musicVisiblePulse.setPaintColor(mediaNotificationProcessor.primaryTextColor)
                 }
+                if (Player.settings[Lyric] as Boolean && Player.settings[LyricColor] as Boolean) {
+                    lrcView.updateColors(mediaNotificationProcessor.primaryTextColor, mediaNotificationProcessor.secondaryTextColor)
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -622,5 +617,127 @@ class PlayerActivity : AppCompatActivity() {
             e.printStackTrace()
         }
         super.onDestroy()
+    }
+
+    @Synchronized
+    private fun getLyric() {
+        if (!(Player.settings[Lyric] as Boolean)) return
+        Thread {
+
+            val musicInfo = Player.getCurrentMusicInfo()
+
+            lrcView.removeAllLines()
+
+            if (Player.settings[LyricSupport] as String == LyricSupport_NetEase) {
+
+                Request.Builder().header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36").url("http://music.163.com/api/search/pc")
+                    .post(FormBody.Builder().apply {
+                        add("s", musicInfo.title())
+                        add("offset", "0")
+                        add("limit", "1")
+                        add("type", "1")
+                    }.build()).build().apply {
+                        OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS)
+                            .writeTimeout(10, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS)
+                            .build().newCall(this).enqueue(object : Callback {
+                                override fun onFailure(call: Call, e: IOException) {
+                                    log("exception", e)
+                                }
+
+                                override fun onResponse(call: Call, response: Response) {
+                                    val s = response.body?.string()
+                                    log("onResponse", s)
+                                    try {
+                                        val id = JsonParser().parse(s).asJsonObject.get(
+                                            "result"
+                                        ).asJsonObject.get("songs").asJsonArray.first()
+                                            .asJsonObject.get(
+                                            "id"
+                                        ).asString
+
+                                        lrcView.updateLrc(
+                                            ArrayList(
+                                                listOf(
+                                                    *JsonParser().parse(URL("http://music.163.com/api/song/media?id=$id").openStream().bufferedReader().readText()).asJsonObject.get(
+                                                        "lyric"
+                                                    ).asString.apply { log("lrcView", this) }.split(("\n").toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                                                )
+                                            )
+                                        )
+                                    } catch (e: Exception) {
+                                        log("exception", e)
+                                        lrcView.updateLrc(arrayListOf())
+                                    }
+                                }
+
+                            })
+                    }
+                return@Thread
+            }
+
+            try {
+                var hash = ""
+                for (i in JsonParser().parse(
+                    URL(
+                        "http://mobilecdn.kugou.com/api/v3/search/song?keyword=" + musicInfo.title() + if (musicInfo.artist() != "-" || musicInfo.artist() != "<unknown artist>") " ".plus(
+                            musicInfo
+                        ) else "" + "&page=1&pagesize=10"
+                    ).openStream().bufferedReader().readText()
+                ).asJsonObject.get("data").asJsonObject.get("info").asJsonArray) {
+                    try {
+                        hash = i.asJsonObject.get("hash").asString
+                        break
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        continue
+                    }
+                }
+
+                if (hash.isEmpty()) {
+                    return@Thread
+                }
+
+                var accesskey = ""
+                var id = ""
+                for (i in JsonParser().parse(
+                    URL("http://krcs.kugou.com/search?ver=1&man=yes&client=mobi&keyword=&duration=&hash=$hash&album_audio_id=").openStream().bufferedReader().readText()
+                ).asJsonObject.get("candidates").asJsonArray) {
+                    try {
+                        accesskey = i.asJsonObject.get("accesskey").asString
+                        id = i.asJsonObject.get("id").asString
+                        break
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        continue
+                    }
+                }
+
+                if (accesskey.isEmpty() || id.isEmpty()) {
+                    return@Thread
+                }
+
+                val content = JsonParser().parse(
+                    URL("http://lyrics.kugou.com/download?ver=1&client=pc&id=$id&accesskey=$accesskey&fmt=lrc&charset=utf8").openStream().bufferedReader().readText()
+                ).asJsonObject.get("content").asString
+
+
+                lrcView.updateLrc(
+                    ArrayList(
+                        listOf(
+                            *String(
+                                Base64.decode(
+                                    content, Base64.DEFAULT
+                                )
+                            ).split(("\n").toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                        )
+                    )
+                )
+
+                System.gc()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                lrcView.updateLrc(arrayListOf())
+            }
+        }.start()
     }
 }
