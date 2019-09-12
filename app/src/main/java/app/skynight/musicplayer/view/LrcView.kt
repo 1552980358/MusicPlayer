@@ -55,7 +55,7 @@ class LrcView(context: Context) : View(context) {
 
         var first = -1
         for ((i, j) in list.withIndex()) {
-            if (j[1] in 'a'..'z' || j[1] in 'A'..'Z' || j[0] != '[') continue
+            if (j.isEmpty() || j[1] in 'a'..'z' || j[1] in 'A'..'Z' || j[0] != '[') continue
 
             first = i
             break
@@ -130,7 +130,7 @@ class LrcView(context: Context) : View(context) {
                 paintOther
             )
 
-            height += rect.height().plus(getPx(2))
+            height += rect.height().plus(getPx(5))
 
             paintCurrent.getTextBounds(lines[0], 0, lines[0].length, rect)
             canvas.drawText(
@@ -140,7 +140,7 @@ class LrcView(context: Context) : View(context) {
                 paintCurrent
             )
 
-            height += rect.height().plus(getPx(2))
+            height += rect.height().plus(getPx(5))
             paintOther.getTextBounds(lines[1], 0, lines[1].length, rect)
             canvas.drawText(
                 lines[1],
@@ -161,7 +161,7 @@ class LrcView(context: Context) : View(context) {
                 paintOther
             )
 
-            height += rect.height().plus(getPx(2))
+            height += rect.height().plus(getPx(5))
 
             paintCurrent.getTextBounds(lines[pointer], 0, lines[pointer].length, rect)
             canvas.drawText(
@@ -171,7 +171,7 @@ class LrcView(context: Context) : View(context) {
                 paintCurrent
             )
 
-            height += rect.height().plus(getPx(2))
+            height += rect.height().plus(getPx(5))
             paintOther.getTextBounds(lines[pointer + 1], 0, lines[pointer + 1].length, rect)
             canvas.drawText(
                 lines[pointer + 1],

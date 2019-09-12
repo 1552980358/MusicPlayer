@@ -1,6 +1,7 @@
 package app.skynight.musicplayer.base
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -18,6 +19,7 @@ import app.skynight.musicplayer.R
 
 @SuppressLint("Registered")
 open class AppCompatActivity: androidx.appcompat.app.AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val flags = if (Player.settings[Player.Theme] != Player.Theme_0) {

@@ -5,11 +5,13 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.View
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import app.skynight.musicplayer.base.BaseSmallPlayerActivity
 import app.skynight.musicplayer.R
 import app.skynight.musicplayer.util.MusicClass
 import app.skynight.musicplayer.util.MusicInfo
 import app.skynight.musicplayer.util.PlayList
+import app.skynight.musicplayer.util.Player
 import app.skynight.musicplayer.util.Player.Companion.ERROR_CODE
 import app.skynight.musicplayer.util.Player.Companion.EXTRA_LIST
 import app.skynight.musicplayer.util.Player.Companion.LIST_ALL
@@ -29,6 +31,12 @@ class SearchActivity : BaseSmallPlayerActivity() {
     private var code = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (Player.settings[Player.Theme] != Player.Theme_0) {
+            setTheme(R.style.AppTheme_NoActionBar_Theme1)
+            window.navigationBarColor = ContextCompat.getColor(this, R.color.theme1_colorPrimary)
+        } else {
+            window.navigationBarColor = Color.WHITE
+        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
@@ -62,6 +70,7 @@ class SearchActivity : BaseSmallPlayerActivity() {
         toolbar.setNavigationOnClickListener { onBackPressed() }
         supportActionBar!!.setDisplayShowTitleEnabled(false)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        toolbar.navigationIcon!!.setTint(Player.ThemeTextColor)
         setPlayerActivityFitsSystemWindows()
     }
 

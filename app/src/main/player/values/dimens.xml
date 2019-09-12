@@ -8,7 +8,7 @@
     <dimen name="playerActivity_controller_size">@dimen/dp_60</dimen>
     <dimen name="playerActivity_renderer_height">@dimen/dp_50</dimen>
     <dimen name="playerActivity_lyric_height">@dimen/dp_50</dimen>
-    <dimen name="playerActivity_lyric_margin">@dimen/dp_50</dimen>
+    <dimen name="playerActivity_lyric_margin">@dimen/dp_70</dimen>
     <dimen name="playerActivity_lyric_size">@dimen/sp_14</dimen>
     <dimen name="playerActivity_renderer_marginBottom">@dimen/dp_20</dimen>
 </resources>

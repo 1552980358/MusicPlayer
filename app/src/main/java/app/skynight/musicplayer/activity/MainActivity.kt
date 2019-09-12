@@ -43,18 +43,21 @@ class MainActivity : BaseSmallPlayerActivity() {
         setSupportActionBar(toolbar)
 
         viewPager.apply {
-            log("MainActivity", "ViewPager Adapter")
+            //log("MainActivity", "ViewPager Adapter")
+
             adapter = FragmentPagerAdapter(
                 supportFragmentManager,
                 BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
                 arrayListOf(MainFragment(), PlayListFragment())
             )
+
             tabLayout.apply {
                 log("MainActivity", "setupWithViewPager")
                 setupWithViewPager(viewPager)
                 getTabAt(0)!!.setIcon(R.drawable.ic_tab_music)
                 getTabAt(1)!!.setIcon(R.drawable.ic_tab_play_list)
             }
+
             addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                 override fun onPageScrollStateChanged(state: Int) {
                 }

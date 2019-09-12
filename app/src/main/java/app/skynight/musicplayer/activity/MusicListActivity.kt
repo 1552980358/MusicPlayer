@@ -50,13 +50,13 @@ class MusicListActivity : BaseSmallPlayerActivity() {
                 val list = when (code) {
                     LIST_ALL -> {
                         //log("MusicListActivity", "LIST_ALL")
-                        MusicClass.getMusicClass.fullList
+                        MusicClass.getMusicClass.fullList.apply { runOnUiThread { textView_size.text = size.toString() } }
                     }
                     ERROR_CODE -> {
                         throw Exception()
                     }
                     else -> {
-                        log("MusicListActivity", code)
+                        //log("MusicListActivity", code)
                         PlayList.playListList[code].apply {
                             runOnUiThread { textView_size.text = getPlayList().size.toString() }
                         }.getPlayList()
@@ -128,31 +128,29 @@ class MusicListActivity : BaseSmallPlayerActivity() {
 
 
             toolbar.apply {
+                overflowIcon = ContextCompat.getDrawable(
+                    this@MusicListActivity, R.drawable.ic_toolbar_more
+                )
+                (this::class.java.getDeclaredField("mTitleTextView").apply {
+                    isAccessible = true
+                }.get(this) as TextView).apply {
+                    setHorizontallyScrolling(true)
+                    marqueeRepeatLimit = -1
+                    ellipsize = TextUtils.TruncateAt.MARQUEE
+                    isSelected = true
+                    setTextColor(Color.WHITE)
+                }
                 setSupportActionBar(this)
                 setNavigationOnClickListener {
                     //log("MusicListActivity", "setNavigationOnClickListener")
                     onBackPressed()
                 }
-                navigationIcon =
-                    ContextCompat.getDrawable(this@MusicListActivity, R.drawable.ic_arrow_back).apply {
-                        this!!.setTint(Player.ThemeTextColor)
-                    }
-                setTitleTextColor(Player.ThemeTextColor)
-                overflowIcon = ContextCompat.getDrawable(
-                    this@MusicListActivity, R.drawable.ic_toolbar_more
-                )
+                
                 supportActionBar!!.setDisplayHomeAsUpEnabled(true)
                 if (Player.settings[Player.Theme] != Player.Theme_0) {
                     navigationIcon!!.setTint(Color.WHITE)
                 }
-                (this::class.java.getDeclaredField("mTitleTextView").apply {
-                    isAccessible = true
-                }.get(toolbar) as TextView).apply {
-                    setHorizontallyScrolling(true)
-                    marqueeRepeatLimit = -1
-                    ellipsize = TextUtils.TruncateAt.MARQUEE
-                    isSelected = true
-                }
+
             }
         } catch (e: Exception) {
             //e.printStackTrace()

@@ -68,7 +68,12 @@ import app.skynight.musicplayer.util.Player.Companion.PulseType_VerticalColumn
 import app.skynight.musicplayer.view.LrcView
 import com.google.gson.JsonParser
 import mkaflowski.mediastylepalette.MediaNotificationProcessor
-import okhttp3.*
+import okhttp3.FormBody
+import okhttp3.Response
+import okhttp3.Callback
+import okhttp3.Request
+import okhttp3.OkHttpClient
+import okhttp3.Call
 import java.io.IOException
 import java.net.URL
 import java.util.concurrent.TimeUnit
@@ -82,7 +87,6 @@ import kotlin.collections.ArrayList
  **/
 
 class PlayerActivity : AppCompatActivity() {
-
     private val broadcastReceiver by lazy {
         object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -300,12 +304,10 @@ class PlayerActivity : AppCompatActivity() {
                     )
                 })
             }
-
             val width = resources.displayMetrics.widthPixels / 5
             val height = resources.displayMetrics.heightPixels / 5
             isLongClickable = true
-            val gestureDetector = GestureDetector(
-                this@PlayerActivity,
+            val gestureDetector = GestureDetector(this@PlayerActivity,
                 object : GestureDetector.SimpleOnGestureListener() {
                     override fun onFling(
                         e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float
@@ -381,7 +383,6 @@ class PlayerActivity : AppCompatActivity() {
                 ) {
                     //log("onWaveFormDataCapture", p1!!.toList())
                     musicVisiblePulse.setData(p1!!)
-
                 }
 
                 override fun onFftDataCapture(
@@ -425,7 +426,6 @@ class PlayerActivity : AppCompatActivity() {
                 visualizer.enabled = true
             }
             */
-
             /* 提升执行效率 */
             try {
                 musicVisiblePulse.start = true
@@ -435,7 +435,6 @@ class PlayerActivity : AppCompatActivity() {
             }
 
             while (Player.getPlayer.isPlaying()) {
-
                 Player.getPlayer.getCurrent().apply {
                     if (!seekBarOnTouched) {
                         runOnUiThread {
@@ -504,7 +503,6 @@ class PlayerActivity : AppCompatActivity() {
                                 resources.displayMetrics.heightPixels / alPic.height.toFloat()
                             postScale(scale, scale)
                         }, true)
-
                     val drawable = BitmapDrawable(
                         resources, Bitmap.createBitmap(
                             tmp,
@@ -567,7 +565,10 @@ class PlayerActivity : AppCompatActivity() {
                     musicVisiblePulse.setPaintColor(mediaNotificationProcessor.primaryTextColor)
                 }
                 if (Player.settings[Lyric] as Boolean && Player.settings[LyricColor] as Boolean) {
-                    lrcView.updateColors(mediaNotificationProcessor.primaryTextColor, mediaNotificationProcessor.secondaryTextColor)
+                    lrcView.updateColors(
+                        mediaNotificationProcessor.primaryTextColor,
+                        mediaNotificationProcessor.secondaryTextColor
+                    )
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -623,55 +624,54 @@ class PlayerActivity : AppCompatActivity() {
     private fun getLyric() {
         if (!(Player.settings[Lyric] as Boolean)) return
         Thread {
-
             val musicInfo = Player.getCurrentMusicInfo()
 
             lrcView.removeAllLines()
 
             if (Player.settings[LyricSupport] as String == LyricSupport_NetEase) {
+                Request.Builder().header(
+                    "User-Agent",
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36"
+                ).url("http://music.163.com/api/search/pc").post(FormBody.Builder().apply {
+                    add("s", musicInfo.title())
+                    add("offset", "0")
+                    add("limit", "1")
+                    add("type", "1")
+                }.build()).build().apply {
+                    OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS)
+                        .writeTimeout(10, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS)
+                        .build().newCall(this).enqueue(object : Callback {
+                            override fun onFailure(call: Call, e: IOException) {
+                                log("PlayerActivity", e)
+                            }
 
-                Request.Builder().header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36").url("http://music.163.com/api/search/pc")
-                    .post(FormBody.Builder().apply {
-                        add("s", musicInfo.title())
-                        add("offset", "0")
-                        add("limit", "1")
-                        add("type", "1")
-                    }.build()).build().apply {
-                        OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS)
-                            .writeTimeout(10, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS)
-                            .build().newCall(this).enqueue(object : Callback {
-                                override fun onFailure(call: Call, e: IOException) {
-                                    log("exception", e)
-                                }
+                            override fun onResponse(call: Call, response: Response) {
+                                val s = response.body?.string()
+                                try {
+                                    val id = JsonParser().parse(s).asJsonObject.get(
+                                        "result"
+                                    ).asJsonObject.get("songs").asJsonArray.first()
+                                        .asJsonObject.get(
+                                        "id"
+                                    ).asString
 
-                                override fun onResponse(call: Call, response: Response) {
-                                    val s = response.body?.string()
-                                    log("onResponse", s)
-                                    try {
-                                        val id = JsonParser().parse(s).asJsonObject.get(
-                                            "result"
-                                        ).asJsonObject.get("songs").asJsonArray.first()
-                                            .asJsonObject.get(
-                                            "id"
-                                        ).asString
-
-                                        lrcView.updateLrc(
-                                            ArrayList(
-                                                listOf(
-                                                    *JsonParser().parse(URL("http://music.163.com/api/song/media?id=$id").openStream().bufferedReader().readText()).asJsonObject.get(
-                                                        "lyric"
-                                                    ).asString.apply { log("lrcView", this) }.split(("\n").toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                                                )
+                                    lrcView.updateLrc(
+                                        ArrayList(
+                                            listOf(
+                                                *JsonParser().parse(URL("http://music.163.com/api/song/media?id=$id").openStream().bufferedReader().readText()).asJsonObject.get(
+                                                    "lyric"
+                                                ).asString.split(("\n").toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                                             )
                                         )
-                                    } catch (e: Exception) {
-                                        log("exception", e)
-                                        lrcView.updateLrc(arrayListOf())
-                                    }
+                                    )
+                                } catch (e: Exception) {
+                                    log("PlayerActivity", e)
+                                    lrcView.updateLrc(arrayListOf())
                                 }
+                            }
 
-                            })
-                    }
+                        })
+                }
                 return@Thread
             }
 
@@ -696,7 +696,6 @@ class PlayerActivity : AppCompatActivity() {
                 if (hash.isEmpty()) {
                     return@Thread
                 }
-
                 var accesskey = ""
                 var id = ""
                 for (i in JsonParser().parse(
@@ -715,11 +714,9 @@ class PlayerActivity : AppCompatActivity() {
                 if (accesskey.isEmpty() || id.isEmpty()) {
                     return@Thread
                 }
-
                 val content = JsonParser().parse(
                     URL("http://lyrics.kugou.com/download?ver=1&client=pc&id=$id&accesskey=$accesskey&fmt=lrc&charset=utf8").openStream().bufferedReader().readText()
                 ).asJsonObject.get("content").asString
-
 
                 lrcView.updateLrc(
                     ArrayList(

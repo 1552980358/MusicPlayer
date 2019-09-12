@@ -26,23 +26,11 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_marginTop="75dp"
                 android:layout_marginStart="25dp"
                 app:layout_collapseMode="parallax" >
 
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:id="@+id/imageView_cover"
-                    android:src="@color/black"
-                    tools:ignore="ContentDescription" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:layout_marginStart="10dp" >
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -62,8 +50,6 @@
                         android:id="@+id/textView_size"
                         android:textColor="?attr/colorAccent" />
 
-                </LinearLayout >
-
             </LinearLayout >
 
             <androidx.appcompat.widget.Toolbar
@@ -71,6 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
+                app:titleTextColor="?attr/colorAccent"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout >

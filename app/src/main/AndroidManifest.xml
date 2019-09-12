@@ -27,7 +27,9 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning"
         android:usesCleartextTraffic="true"
-        tools:targetApi="m" >
+        tools:targetApi="m"
+        android:configChanges="orientation|keyboardHidden|screenSize"
+        android:screenOrientation="portrait" >
         <!-- Activity -->
         <!-- 1st -->
         <activity
@@ -42,40 +44,58 @@
         <!-- 2nd -->
         <activity
             android:name=".activity.IntroActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.LoadingActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
         <!-- 3nd -->
         <activity
             android:name=".activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.MusicListActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.FindEncryptedMusicActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.SearchActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".activity.SettingsActivity"
-            android:theme="@style/AppTheme.NoActionBar.Settings" />
+            android:theme="@style/AppTheme.NoActionBar.Settings"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
 
         <!-- Player -->
         <activity
             android:name=".activity.PlayerActivity"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar.Player" />
+            android:theme="@style/AppTheme.NoActionBar.Player"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.BottomListActivity"
             android:theme="@style/AppTheme.NoActionBar.TransparentBackground" />
         <activity
             android:launchMode="singleTask"
             android:name=".activity.SimplePlayerActivity"
-            android:theme="@style/AppTheme.NoActionBar.TransparentBackground" />
+            android:theme="@style/AppTheme.NoActionBar.TransparentBackground"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
     </application >
 
 </manifest >
