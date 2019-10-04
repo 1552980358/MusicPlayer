@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="introActivity_indicator_padding">@dimen/dp_10</dimen>
-    <dimen name="introActivity_bottomBar_height">@dimen/dp_50</dimen>
-    <dimen name="introActivity_indicator_size">@dimen/sp_7</dimen>
-
-    <dimen name="intro_firstFragment_nor">12sp</dimen>
-    <dimen name="intro_firstFragment_title">25sp</dimen>
-</resources>
