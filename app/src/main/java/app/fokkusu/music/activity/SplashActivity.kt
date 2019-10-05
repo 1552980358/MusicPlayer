@@ -2,22 +2,14 @@ package app.fokkusu.music.activity
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
-import android.view.View
-import android.widget.RelativeLayout
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import app.fokkusu.music.Application
+import app.fokkusu.music.base.activity.BaseAppCompatActivity
 import app.fokkusu.music.R
 import app.fokkusu.music.service.PlayService
 import kotlinx.android.synthetic.main.activity_splash.imageView
@@ -32,19 +24,14 @@ import kotlin.system.exitProcess
  * @TIME    : 7:11 PM
  **/
 
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : BaseAppCompatActivity() {
     
     private var complete = false
     
     @SuppressLint("InlinedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
-        /* Set window flags */
-        window.decorView.systemUiVisibility =
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-        window.navigationBarColor = Color.TRANSPARENT
-        window.statusBarColor = Color.TRANSPARENT
-        
         super.onCreate(savedInstanceState)
+        
         setContentView(R.layout.activity_splash)
         imageView.setImageBitmap(BitmapFactory.decodeStream(assets.open("huli.png")))
         
