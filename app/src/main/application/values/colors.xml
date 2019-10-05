@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources >
+    <color name="colorPrimary" >@android:color/white</color >
+    <color name="colorPrimaryDark" >@android:color/white</color >
+    <color name="colorAccent" >#D81B60</color >
+
+    <color name="ic_launcher_background">@color/white</color>
+
+    <color name="transparent">@android:color/transparent</color>
+
+    <color name="black" >@android:color/black</color >
+    <color name="white" >@android:color/white</color >
+
+    <color name="red" >#FF0000</color >
+    <color name="green" >#00FF00</color >
+
+    <color name="ripple_color" >#FF606060</color >
+    <color name="colorPress" >@color/white</color >
+    <color name="colorNor" >#B3FFFFFF</color >
+
+    <color name="player_title" >@color/white</color >
+    <color name="player_subtitle" >#F0FFFFFF</color >
+
+    <color name="player_widget_bg" >#50FFFFFF</color >
+
+    <color name="player_filter" >#80000000</color >
+
+    <color name="playerInfo_title" >#AFAFAF</color >
+
+</resources >

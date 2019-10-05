@@ -1,0 +1,65 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+def gitCommits = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
+
+android {
+    compileSdkVersion 29
+    defaultConfig {
+        applicationId "app.fokkusu.fokkusu"
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode gitCommits
+        versionName "初见${gitCommits}"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    sourceSets {
+        main {
+            res.srcDirs =
+                    [
+                            'src/main/application',
+                            'src/main/activity',
+                            'src/main/fragment',
+                            'src/main/player',
+                            'src/main/view',
+                    ]
+        }
+    }
+}
+
+dependencies {
+    def tinyPinYin = '2.0.3'
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.core:core-ktx:1.2.0-alpha04'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.preference:preference:1.1.0'
+
+    implementation 'com.google.android.material:material:1.0.0'
+
+    implementation "com.github.promeg:tinypinyin:${tinyPinYin}"
+    implementation "com.github.promeg:tinypinyin-lexicons-android-cncity:${tinyPinYin}"
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+}

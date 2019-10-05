@@ -4,7 +4,7 @@
     [中文](README_zh-rCN.md)
 - PackageName
 ```
-    app.skynight.musicplayer
+    fokkusu.musicplayer
 ```
 - Maintainer
 ```

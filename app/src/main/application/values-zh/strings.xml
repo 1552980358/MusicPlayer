@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Fokkusu</string>
+
+    <string name="abc_splash_checking">检查限权中…</string>
+    <string name="abc_splash_authorizing">限权获取中…</string>
+    <string name="abc_splash_loadingMusic">加载本地音乐…</string>
+</resources>

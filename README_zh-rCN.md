@@ -4,7 +4,7 @@
     [English](README.md)
 - 包名
 ```
-    app.skynight.musicplayer
+    fokkusu.musicplayer
 ```
 - 作者
 ```
