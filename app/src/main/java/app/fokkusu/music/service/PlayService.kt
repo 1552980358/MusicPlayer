@@ -10,8 +10,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.os.IBinder
+import android.provider.MediaStore
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -31,9 +34,12 @@ import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CHANGE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CHANGE_SOURCE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CHANGE_SOURCE_LOC
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CONTENT
+import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PAUSE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY
 import app.fokkusu.music.base.Constants.Companion.USER_BROADCAST_PLAY
 import app.fokkusu.music.base.MusicUtil
+import app.fokkusu.music.base.log
+import java.io.File
 
 /**
  * @File    : PlayService
@@ -59,11 +65,20 @@ class PlayService : Service() {
         /* Single Instance */
         private var playService = null as PlayService?
             get() = field as PlayService
+        private var init = false
         
         @Synchronized
         fun addMusic(music: MusicUtil) = musicList.add(music)
+        
         @Synchronized
-        fun addMusic(path: String, title: String, artist: String?, album: String?, duration: Int) = addMusic(MusicUtil(path, title, artist, album, duration))
+        fun addMusic(
+            path: String,
+            id: String,
+            title: String,
+            artist: String?,
+            album: String?,
+            duration: Int
+        ) = addMusic(MusicUtil(path, id, title, artist, album, duration))
         
         @Synchronized
         fun sortMusic() {
@@ -90,9 +105,25 @@ class PlayService : Service() {
             }
         }
         
-        fun getCurrentMusicInfo() = playService!!.playList[playService!!.musicLoc]
-        fun getCurrentMusic() = playService!!.musicLoc
-        fun getPlayList() = playService!!.playList
+        fun getCurrentMusicInfo(): MusicUtil {
+            if (!init) {
+                return musicList.first()
+            }
+            return playService!!.playList[playService!!.musicLoc]
+        }
+        
+        fun getCurrentMusic(): Int {
+            if (!init) {
+                return 0
+            }
+            return playService!!.musicLoc
+        }
+        
+        fun getPlayList(): MutableList<MusicUtil>? {
+            if (!init) return null
+            
+            return playService!!.playList
+        }
     }
     
     private val broadCastReceiver by lazy {
@@ -132,7 +163,7 @@ class PlayService : Service() {
     private var pauseLoc = -1       // Paused Loc
     private var pauseSeek = -1      // Seek change when pause
     private val playList = mutableListOf<MusicUtil>()
-    private var musicLoc = -1     // Pointer
+    private var musicLoc = 0     // Pointer
     
     private var playForm = PlayForm.CYCLE
     
@@ -142,10 +173,12 @@ class PlayService : Service() {
     
     /* onCreate */
     override fun onCreate() {
+        log("PlayService", "onCreate()")
         super.onCreate()
         
         /* Initialize all objects */
         playService = this
+        init = true
         mediaPlayer
         /* Set up notification channel */
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
@@ -170,6 +203,8 @@ class PlayService : Service() {
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        log("PlayService", "onStartCommand()")
+        
         startForeground(PlayServiceId, getNotification())
         
         if (intent == null) {
@@ -181,6 +216,10 @@ class PlayService : Service() {
         when (intent.getStringExtra(SERVICE_INTENT_CONTENT)) {
             SERVICE_INTENT_PLAY -> {
                 play()
+            }
+            
+            SERVICE_INTENT_PAUSE -> {
+                pause()
             }
             
             SERVICE_INTENT_CHANGE -> {
@@ -203,6 +242,7 @@ class PlayService : Service() {
     
     @Synchronized
     private fun play() {
+        log("PlayService", "play()")
         try {
             if (playerState == PlayState.PLAY) return
             
@@ -211,8 +251,24 @@ class PlayService : Service() {
                     playList.add(musicList.first())
                     musicLoc = 0
                 }
-                mediaPlayer.setDataSource(playList.first().path())
-                mediaPlayer.prepare()
+                try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        contentResolver.openAssetFileDescriptor(
+                            Uri.parse(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString() + File.separator + playList.first().id()),
+                            "r"
+                        )?.apply {
+                            mediaPlayer.setDataSource(fileDescriptor)
+                            mediaPlayer.prepare()
+                            close()
+                        }
+                    } else {
+                        mediaPlayer.setDataSource(playList.first().path())
+                        mediaPlayer.prepare()
+                    }
+                    
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
             }
             
             mediaPlayer.start()
@@ -230,6 +286,8 @@ class PlayService : Service() {
     
     @Synchronized
     private fun pause() {
+        log("PlayService", "pause()")
+        
         if (playerState == PlayState.PAUSE) return
         
         if (playerState == PlayState.PLAY) {
@@ -242,6 +300,7 @@ class PlayService : Service() {
     
     @Synchronized
     private fun seek(loc: Int) {
+        log("PlayService", "seek")
         if (playerState == PlayState.PLAY) {
             mediaPlayer.seekTo(loc)
             return
@@ -251,6 +310,7 @@ class PlayService : Service() {
     
     @Synchronized
     private fun next() {
+        log("PlayService", "next()")
         if (playList.lastIndex == musicLoc) {
             when (playForm) {
                 PlayForm.CYCLE, PlayForm.SINGLE -> {
@@ -286,6 +346,7 @@ class PlayService : Service() {
     
     @Synchronized
     private fun last() {
+        log("PlayService", "last()")
         /* Prevent overflow */
         if (musicLoc == 0) {
             musicLoc = playList.lastIndex
@@ -299,6 +360,7 @@ class PlayService : Service() {
     
     @Synchronized
     private fun setChange(source: Int, loc: Int) {
+        log("PlayService", "setChange()")
         if (source == ERROR_CODE_INT || loc == ERROR_CODE_INT) return
         
         if (source == MUSIC_LIST) {
@@ -314,6 +376,7 @@ class PlayService : Service() {
     
     @Synchronized
     private fun updateMusic() {
+        log("PlayService", "updateMusic()")
         try {
             /*  Remove all */
             mediaPlayer.reset()
@@ -330,11 +393,12 @@ class PlayService : Service() {
         }
     }
     
-    fun updateNotify() {
+    private fun updateNotify() {
         notificationManagerCompat.notify(PlayServiceId, getNotification())
     }
     
     override fun onDestroy() {
+        log("PlayService", "onDestroy()")
         try {
             unregisterReceiver(broadCastReceiver)
         } catch (e: Exception) {
@@ -379,6 +443,7 @@ class PlayService : Service() {
             /* Add control Button */
             when (playerState) {
                 PlayState.STOP, PlayState.PAUSE -> {
+                    setOngoing(false)
                     addAction(
                         R.drawable.ic_noti_last,
                         USER_BROADCAST_PLAY,

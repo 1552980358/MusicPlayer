@@ -77,6 +77,7 @@ class SplashActivity : BaseAppCompatActivity() {
         }.start()
     }
     
+    
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -112,10 +113,11 @@ class SplashActivity : BaseAppCompatActivity() {
                             
                             PlayService.addMusic(
                                 path,
-                                getString(getColumnIndex(MediaStore.Audio.Media.TITLE)),
-                                getString(getColumnIndex(MediaStore.Audio.Media.ARTIST)),
-                                getString(getColumnIndex(MediaStore.Audio.Media.ALBUM)),
-                                getInt(getColumnIndex(MediaStore.Audio.Media.DURATION))
+                                getString(getColumnIndex(MediaStore.Audio.AudioColumns._ID)),
+                                getString(getColumnIndex(MediaStore.Audio.AudioColumns.TITLE)),
+                                getString(getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST)),
+                                getString(getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM)),
+                                getInt(getColumnIndex(MediaStore.Audio.AudioColumns.DURATION))
                             )
                             
                         } while (moveToNext())

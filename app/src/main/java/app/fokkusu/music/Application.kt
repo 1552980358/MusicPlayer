@@ -13,11 +13,11 @@ import app.fokkusu.music.service.PlayService
 
 class Application : Application() {
     companion object {
-        var getApplication = null as app.fokkusu.music.Application?
+        var getApplication: app.fokkusu.music.Application? = null
             private set
             get() = field as app.fokkusu.music.Application
-        var loading = true
-            private set
+        
+        fun getContext() = getApplication!!
     }
     
     init {
@@ -26,6 +26,5 @@ class Application : Application() {
     
     override fun onCreate() {
         super.onCreate()
-        
     }
 }

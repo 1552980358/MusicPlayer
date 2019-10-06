@@ -3,6 +3,10 @@ package app.fokkusu.music.base
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import app.fokkusu.music.Application
 import app.fokkusu.music.base.Constants.Companion.Album
 import app.fokkusu.music.base.Constants.Companion.AlbumCover
 import app.fokkusu.music.base.Constants.Companion.AlbumPY
@@ -10,10 +14,12 @@ import app.fokkusu.music.base.Constants.Companion.Artist
 import app.fokkusu.music.base.Constants.Companion.ArtistPY
 import app.fokkusu.music.base.Constants.Companion.BitRate
 import app.fokkusu.music.base.Constants.Companion.Duration
+import app.fokkusu.music.base.Constants.Companion.Id
 import app.fokkusu.music.base.Constants.Companion.Path
 import app.fokkusu.music.base.Constants.Companion.Title
 import app.fokkusu.music.base.Constants.Companion.TitlePY
 import com.github.promeg.pinyinhelper.Pinyin
+import java.io.File
 import java.lang.Exception
 
 /**
@@ -23,12 +29,16 @@ import java.lang.Exception
  * @TIME    : 7:36 PM
  **/
 
-class MusicUtil(path: String, title: String, artist: String?, album: String?, duration: Int) {
+@Suppress("DuplicatedCode")
+class MusicUtil(
+    path: String, id: String, title: String, artist: String?, album: String?, duration: Int
+) {
     private val data = mutableMapOf<String, Any?>()
     var loc = -1
     
     init {
         data[Path] = path
+        data[Id] = id
         data[Title] = title
         data[Artist] = artist
         data[Album] = album
@@ -46,6 +56,8 @@ class MusicUtil(path: String, title: String, artist: String?, album: String?, du
     
     fun path() = data[Path] as String
     
+    fun id() = data[Id] as String
+    
     fun title() = data[Title] as String
     fun titlePY() = data[TitlePY] as String
     
@@ -59,7 +71,18 @@ class MusicUtil(path: String, title: String, artist: String?, album: String?, du
         return try {
             if (data[AlbumCover] == null && data[BitRate] == null) {
                 MediaMetadataRetriever().apply {
-                    setDataSource(path())
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        Application.getContext().contentResolver.openAssetFileDescriptor(
+                            Uri.parse(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString() + File.separator + id()),
+                            "r"
+                        )?.apply {
+                            setDataSource(fileDescriptor)
+                            close()
+                        }
+                    } else {
+                        setDataSource(path())
+                    }
+                    
                     if (data[BitRate] == null) {
                         data[BitRate] =
                             extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE).toInt()
@@ -85,12 +108,24 @@ class MusicUtil(path: String, title: String, artist: String?, album: String?, du
         return try {
             if (data[AlbumCover] == null && data[BitRate] == null) {
                 MediaMetadataRetriever().apply {
-                    setDataSource(path())
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        Application.getContext().contentResolver.openAssetFileDescriptor(
+                            Uri.parse(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString() + File.separator + id()),
+                            "r"
+                        )?.apply {
+                            setDataSource(fileDescriptor)
+                            close()
+                        }
+                    } else {
+                        setDataSource(path())
+                    }
                     embeddedPicture.apply {
-                        if (this != null || this!!.isNotEmpty() ) {
-                            data[AlbumCover] = BitmapFactory.decodeByteArray(this, 0, size)
+                        if (this != null && this.isEmpty()) {
+                            data[AlbumCover] = BitmapFactory.decodeByteArray(this, 0, this.size)
+                                .apply { data[AlbumCover] = this }
                         }
                     }
+                    
                 }.run {
                     extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE).toInt()
                         .apply { data[BitRate] = this }

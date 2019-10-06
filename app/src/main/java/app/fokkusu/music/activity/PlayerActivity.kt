@@ -32,7 +32,6 @@ class PlayerActivity : AppCompatActivity() {
         
         setSupportActionBar(toolbar)
         
-        
         startService(Intent(this, PlayService::class.java))
         relativeLayout_container.addView(
             ImageView(this).apply { imageView_album = this }, RelativeLayout.LayoutParams(

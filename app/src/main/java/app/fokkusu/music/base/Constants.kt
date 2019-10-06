@@ -40,6 +40,7 @@ class Constants private constructor() {
         /* SERVICE_START */
         const val SERVICE_INTENT_CONTENT = "SERVICE_INTENT_CONTENT"
         const val SERVICE_INTENT_PLAY = "SERVICE_INTENT_PLAY"
+        const val SERVICE_INTENT_PAUSE = "SERVICE_INTENT_PAUSE"
         const val SERVICE_INTENT_CHANGE = "SERVICE_INTENT_CHANGE"
         
         const val SERVICE_INTENT_CHANGE_SOURCE = "SERVICE_INTENT_CHANGE_SOURCE"
@@ -47,6 +48,7 @@ class Constants private constructor() {
         const val SERVICE_INTENT_CHANGE_SOURCE_LOC = "SERVICE_INTENT_CHANGE_SOURCE_LOC"
         
         const val Path = "Path"
+        const val Id = "Id"
         const val Title = "Title"
         const val Artist = "Artist"
         const val Album = "Album"

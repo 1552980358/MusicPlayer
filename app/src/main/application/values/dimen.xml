@@ -15,4 +15,6 @@
     <dimen name="playerActivity_lyric_size" >14sp</dimen >
     <dimen name="playerActivity_renderer_marginBottom" >20dp</dimen >
 
+    <dimen name="view_bottom_player_imageView">40dp</dimen>
+
 </resources >
