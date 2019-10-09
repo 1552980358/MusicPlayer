@@ -3,6 +3,10 @@ package app.fokkusu.music.activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -23,14 +27,19 @@ class PlayerActivity : AppCompatActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         
+        window.decorView.systemUiVisibility =
+            (SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or SYSTEM_UI_FLAG_LAYOUT_STABLE)
+    
         /* Set StatusBar & NavBar Color */
         window.statusBarColor = Color.TRANSPARENT
         window.navigationBarColor = Color.TRANSPARENT
-        
+    
+        overridePendingTransition(R.anim.anim_bottom2top, R.anim.anim_stay)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
         
         setSupportActionBar(toolbar)
+        toolbar.setNavigationOnClickListener { onBackPressed() }
         
         startService(Intent(this, PlayService::class.java))
         relativeLayout_container.addView(
@@ -39,6 +48,10 @@ class PlayerActivity : AppCompatActivity() {
                 resources.displayMetrics.widthPixels * 2 / 3
             )
         )
-        
+    }
+    
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.anim_stay, R.anim.anim_top2bottom)
     }
 }

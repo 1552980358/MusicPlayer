@@ -1,7 +1,5 @@
 package app.fokkusu.music.base
 
-import app.fokkusu.music.service.PlayService
-
 /**
  * @File    : Constants
  * @Author  : 1552980358
@@ -29,9 +27,9 @@ class Constants private constructor() {
         /* User control */
         const val USER_BROADCAST_PLAY = "USER_BROADCAST_PLAY"
         const val USER_BROADCAST_PAUSE = "USER_BROADCAST_PAUSE"
-        const val USER_BROADCAST_MUSIC_NEXT = "USER_BROADCAST_MUSIC_NEXT"
-        const val USER_BROADCAST_MUSIC_LAST = "USER_BROADCAST_MUSIC_LAST"
-        const val USER_BROADCAST_MUSIC_SELECTED = "USER_BROADCAST_MUSIC_SELECTED"
+        const val USER_BROADCAST_NEXT = "USER_BROADCAST_NEXT"
+        const val USER_BROADCAST_LAST = "USER_BROADCAST_LAST"
+        const val USER_BROADCAST_SELECTED = "USER_BROADCAST_SELECTED"
         
         /* Intent Extra */
         const val BROADCAST_EXTRA_MUSIC_SOURCE = "BROADCAST_EXTRA_MUSIC_SOURCE"
@@ -42,9 +40,7 @@ class Constants private constructor() {
         const val SERVICE_INTENT_PLAY = "SERVICE_INTENT_PLAY"
         const val SERVICE_INTENT_PAUSE = "SERVICE_INTENT_PAUSE"
         const val SERVICE_INTENT_CHANGE = "SERVICE_INTENT_CHANGE"
-        
         const val SERVICE_INTENT_CHANGE_SOURCE = "SERVICE_INTENT_CHANGE_SOURCE"
-        
         const val SERVICE_INTENT_CHANGE_SOURCE_LOC = "SERVICE_INTENT_CHANGE_SOURCE_LOC"
         
         const val Path = "Path"

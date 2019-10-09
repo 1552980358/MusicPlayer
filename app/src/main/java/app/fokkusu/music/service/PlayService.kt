@@ -12,33 +12,34 @@ import android.content.IntentFilter
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import android.os.IBinder
 import android.provider.MediaStore
+import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import app.fokkusu.music.base.Constants
+import app.fokkusu.music.R
 import app.fokkusu.music.base.Constants.Companion.PlayServiceChannelId
 import app.fokkusu.music.base.Constants.Companion.PlayServiceId
-import app.fokkusu.music.base.Constants.Companion.USER_BROADCAST_MUSIC_LAST
-import app.fokkusu.music.base.Constants.Companion.USER_BROADCAST_MUSIC_NEXT
-import app.fokkusu.music.base.Constants.Companion.USER_BROADCAST_MUSIC_SELECTED
 import app.fokkusu.music.base.Constants.Companion.USER_BROADCAST_PAUSE
-import app.fokkusu.music.R
 import app.fokkusu.music.base.Constants.Companion.BROADCAST_EXTRA_MUSIC_INDEX
 import app.fokkusu.music.base.Constants.Companion.BROADCAST_EXTRA_MUSIC_SOURCE
 import app.fokkusu.music.base.Constants.Companion.ERROR_CODE_INT
 import app.fokkusu.music.base.Constants.Companion.MUSIC_LIST
+import app.fokkusu.music.base.Constants.Companion.PlayService
+import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_CHANGED
+import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PAUSE
+import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PLAY
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CHANGE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CHANGE_SOURCE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CHANGE_SOURCE_LOC
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CONTENT
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PAUSE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY
+import app.fokkusu.music.base.Constants.Companion.USER_BROADCAST_LAST
+import app.fokkusu.music.base.Constants.Companion.USER_BROADCAST_NEXT
 import app.fokkusu.music.base.Constants.Companion.USER_BROADCAST_PLAY
+import app.fokkusu.music.base.Constants.Companion.USER_BROADCAST_SELECTED
 import app.fokkusu.music.base.MusicUtil
-import app.fokkusu.music.base.log
 import java.io.File
 
 /**
@@ -72,17 +73,18 @@ class PlayService : Service() {
         
         @Synchronized
         fun addMusic(
-            path: String,
-            id: String,
-            title: String,
-            artist: String?,
-            album: String?,
-            duration: Int
+            path: String, id: String, title: String, artist: String?, album: String?, duration: Int
         ) = addMusic(MusicUtil(path, id, title, artist, album, duration))
         
         @Synchronized
         fun sortMusic() {
             musicList.sortBy { it.titlePY() }
+        }
+        @Synchronized
+        fun assignLoc() {
+            for (i in 0 .. musicList.lastIndex) {
+                musicList[i].loc = i
+            }
         }
         
         val musicList = mutableListOf<MusicUtil>()
@@ -105,8 +107,9 @@ class PlayService : Service() {
             }
         }
         
-        fun getCurrentMusicInfo(): MusicUtil {
-            if (!init) {
+        fun getCurrentMusicInfo(): MusicUtil? {
+            if (!init || playService!!.musicLoc == -1) {
+                if (musicList.isEmpty()) return null
                 return musicList.first()
             }
             return playService!!.playList[playService!!.musicLoc]
@@ -132,19 +135,23 @@ class PlayService : Service() {
                 intent ?: return
                 
                 when (intent.action) {
+                    USER_BROADCAST_PLAY -> {
+                        play()
+                    }
+                    
                     USER_BROADCAST_PAUSE -> {
                         pause()
                     }
                     
-                    USER_BROADCAST_MUSIC_LAST -> {
+                    USER_BROADCAST_LAST -> {
                         last()
                     }
                     
-                    USER_BROADCAST_MUSIC_NEXT -> {
+                    USER_BROADCAST_NEXT -> {
                         next()
                     }
                     
-                    USER_BROADCAST_MUSIC_SELECTED -> {
+                    USER_BROADCAST_SELECTED -> {
                         setChange(
                             intent.getIntExtra(
                                 BROADCAST_EXTRA_MUSIC_SOURCE, ERROR_CODE_INT
@@ -154,6 +161,7 @@ class PlayService : Service() {
                         )
                     }
                 }
+                updateNotify()
             }
         }
     }
@@ -163,7 +171,7 @@ class PlayService : Service() {
     private var pauseLoc = -1       // Paused Loc
     private var pauseSeek = -1      // Seek change when pause
     private val playList = mutableListOf<MusicUtil>()
-    private var musicLoc = 0     // Pointer
+    private var musicLoc = -1     // Pointer
     
     private var playForm = PlayForm.CYCLE
     
@@ -173,17 +181,28 @@ class PlayService : Service() {
     
     /* onCreate */
     override fun onCreate() {
-        log("PlayService", "onCreate()")
         super.onCreate()
         
         /* Initialize all objects */
         playService = this
         init = true
-        mediaPlayer
+        mediaPlayer.setOnCompletionListener {
+            when (playForm) {
+                PlayForm.RANDOM, PlayForm.CYCLE -> {
+                    next()
+                }
+                PlayForm.SINGLE -> {
+                    if (!mediaPlayer.isLooping) {
+                        mediaPlayer.isLooping = true
+                        mediaPlayer.start()
+                    }
+                }
+            }
+        }
         /* Set up notification channel */
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
             NotificationChannel(
-                PlayServiceChannelId, Constants.PlayService, NotificationManager.IMPORTANCE_HIGH
+                PlayServiceChannelId, PlayService, NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
                     this
@@ -193,17 +212,16 @@ class PlayService : Service() {
         
         notificationManagerCompat = NotificationManagerCompat.from(this)
         
-        LocalBroadcastManager.getInstance(this)
-            .registerReceiver(broadCastReceiver, IntentFilter().apply {
-                addAction(USER_BROADCAST_PAUSE)
-                addAction(USER_BROADCAST_MUSIC_LAST)
-                addAction(USER_BROADCAST_MUSIC_NEXT)
-                addAction(USER_BROADCAST_MUSIC_SELECTED)
-            })
+        registerReceiver(broadCastReceiver, IntentFilter().apply {
+            addAction(USER_BROADCAST_PLAY)
+            addAction(USER_BROADCAST_PAUSE)
+            addAction(USER_BROADCAST_LAST)
+            addAction(USER_BROADCAST_NEXT)
+            addAction(USER_BROADCAST_SELECTED)
+        })
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        log("PlayService", "onStartCommand()")
         
         startForeground(PlayServiceId, getNotification())
         
@@ -217,11 +235,11 @@ class PlayService : Service() {
             SERVICE_INTENT_PLAY -> {
                 play()
             }
-            
+    
             SERVICE_INTENT_PAUSE -> {
                 pause()
             }
-            
+    
             SERVICE_INTENT_CHANGE -> {
                 setChange(
                     intent.getIntExtra(SERVICE_INTENT_CHANGE_SOURCE, ERROR_CODE_INT),
@@ -237,22 +255,22 @@ class PlayService : Service() {
         }
         
         updateNotify()
-        return super.onStartCommand(intent, flags, startId)
+        return super.onStartCommand(intent, START_REDELIVER_INTENT, startId)
     }
     
     @Synchronized
     private fun play() {
-        log("PlayService", "play()")
         try {
             if (playerState == PlayState.PLAY) return
             
             if (playerState == PlayState.STOP) {
-                if (playList.size == 0) {
-                    playList.add(musicList.first())
-                    musicLoc = 0
-                }
+                playList.add(musicList.first())
+                musicLoc = 0
+                updateMusic()
+                return
+                /*
                 try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                         contentResolver.openAssetFileDescriptor(
                             Uri.parse(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString() + File.separator + playList.first().id()),
                             "r"
@@ -265,10 +283,10 @@ class PlayService : Service() {
                         mediaPlayer.setDataSource(playList.first().path())
                         mediaPlayer.prepare()
                     }
-                    
                 } catch (e: java.lang.Exception) {
                     e.printStackTrace()
                 }
+                 */
             }
             
             mediaPlayer.start()
@@ -279,6 +297,7 @@ class PlayService : Service() {
                 pauseSeek = -1
                 pauseLoc = -1
             }
+            sendBroadcast(Intent(SERVICE_BROADCAST_PLAY))
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -286,8 +305,6 @@ class PlayService : Service() {
     
     @Synchronized
     private fun pause() {
-        log("PlayService", "pause()")
-        
         if (playerState == PlayState.PAUSE) return
         
         if (playerState == PlayState.PLAY) {
@@ -296,11 +313,11 @@ class PlayService : Service() {
         }
         
         playerState = PlayState.PAUSE
+        sendBroadcast(Intent(SERVICE_BROADCAST_PAUSE))
     }
     
     @Synchronized
     private fun seek(loc: Int) {
-        log("PlayService", "seek")
         if (playerState == PlayState.PLAY) {
             mediaPlayer.seekTo(loc)
             return
@@ -310,7 +327,6 @@ class PlayService : Service() {
     
     @Synchronized
     private fun next() {
-        log("PlayService", "next()")
         if (playList.lastIndex == musicLoc) {
             when (playForm) {
                 PlayForm.CYCLE, PlayForm.SINGLE -> {
@@ -346,7 +362,6 @@ class PlayService : Service() {
     
     @Synchronized
     private fun last() {
-        log("PlayService", "last()")
         /* Prevent overflow */
         if (musicLoc == 0) {
             musicLoc = playList.lastIndex
@@ -360,7 +375,6 @@ class PlayService : Service() {
     
     @Synchronized
     private fun setChange(source: Int, loc: Int) {
-        log("PlayService", "setChange()")
         if (source == ERROR_CODE_INT || loc == ERROR_CODE_INT) return
         
         if (source == MUSIC_LIST) {
@@ -376,18 +390,30 @@ class PlayService : Service() {
     
     @Synchronized
     private fun updateMusic() {
-        log("PlayService", "updateMusic()")
         try {
             /*  Remove all */
-            mediaPlayer.reset()
+            if (playerState != PlayState.STOP) mediaPlayer.reset()
+    
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                contentResolver.openAssetFileDescriptor(
+                    Uri.parse(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString() + File.separator + playList[musicLoc].id()),
+                    "r"
+                )?.apply {
+                    mediaPlayer.setDataSource(fileDescriptor)
+                    mediaPlayer.prepare()
+                    close()
+                }
+            } else {
+                mediaPlayer.setDataSource(playList[musicLoc].path())
+                mediaPlayer.prepare()
+            }
             
-            mediaPlayer.setDataSource(musicList[musicLoc].path())
-            mediaPlayer.prepare()
             mediaPlayer.start()
             playerState = PlayState.PLAY
             
             pauseLoc = -1
             pauseSeek = -1
+            sendBroadcast(Intent(SERVICE_BROADCAST_CHANGED))
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -398,7 +424,6 @@ class PlayService : Service() {
     }
     
     override fun onDestroy() {
-        log("PlayService", "onDestroy()")
         try {
             unregisterReceiver(broadCastReceiver)
         } catch (e: Exception) {
@@ -421,22 +446,34 @@ class PlayService : Service() {
         return NotificationCompat.Builder(this, PlayServiceChannelId).apply {
             notificationCompat = this
             
-            musicList[musicLoc].apply {
-                setContentTitle(title())                                    // Title
-                setContentText(artist().plus(" - ").plus(album()))    // Artist + Album
-                albumCover().apply {
-                    // Album Cover
-                    if (this != null) setLargeIcon(this)
+            if (musicLoc != -1) {
+                playList[musicLoc].apply {
+                    setContentTitle(title())                                    // Title
+                    setContentText(artist().plus(" - ").plus(album()))    // Artist + Album
+                    albumCover().apply {
+                        // Album Cover
+                        if (this != null) setLargeIcon(this)
+                    }
                 }
             }
             
             setSmallIcon(R.mipmap.ic_launcher_round)
             
+            setStyle(
+                androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(
+                    0, 1, 2
+                ).setShowCancelButton(true).setMediaSession(
+                    MediaSessionCompat(
+                        this@PlayService, PlayService
+                    ).sessionToken
+                )
+            )
+            
             priority = NotificationCompat.PRIORITY_MAX
             
             addAction(
-                R.drawable.ic_noti_last, USER_BROADCAST_MUSIC_LAST, PendingIntent.getBroadcast(
-                    this@PlayService, 0, Intent(USER_BROADCAST_MUSIC_LAST), 0
+                R.drawable.ic_noti_last, USER_BROADCAST_LAST, PendingIntent.getBroadcast(
+                    this@PlayService, 0, Intent(USER_BROADCAST_LAST), 0
                 )
             )
             
@@ -444,20 +481,19 @@ class PlayService : Service() {
             when (playerState) {
                 PlayState.STOP, PlayState.PAUSE -> {
                     setOngoing(false)
+                    setAutoCancel(true)
                     addAction(
-                        R.drawable.ic_noti_last,
-                        USER_BROADCAST_PLAY,
-                        PendingIntent.getForegroundService(
-                            this@PlayService, 0, Intent(
-                                this@PlayService, PlayService::class.java
-                            ), 0
+                        R.drawable.ic_noti_play, USER_BROADCAST_PLAY, PendingIntent.getBroadcast(
+                            this@PlayService, 0, Intent(USER_BROADCAST_PLAY), 0
                         )
                     )
                 }
                 
                 PlayState.PLAY -> {
+                    setOngoing(true)
+                    setAutoCancel(false)
                     addAction(
-                        R.drawable.ic_noti_next, USER_BROADCAST_PAUSE, PendingIntent.getBroadcast(
+                        R.drawable.ic_noti_pause, USER_BROADCAST_PAUSE, PendingIntent.getBroadcast(
                             this@PlayService, 0, Intent(USER_BROADCAST_PAUSE), 0
                         )
                     )
@@ -465,8 +501,8 @@ class PlayService : Service() {
             }
             
             addAction(
-                R.drawable.ic_noti_next, USER_BROADCAST_MUSIC_NEXT, PendingIntent.getBroadcast(
-                    this@PlayService, 0, Intent(USER_BROADCAST_MUSIC_NEXT), 0
+                R.drawable.ic_noti_next, USER_BROADCAST_NEXT, PendingIntent.getBroadcast(
+                    this@PlayService, 0, Intent(USER_BROADCAST_NEXT), 0
                 )
             )
             

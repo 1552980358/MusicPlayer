@@ -87,13 +87,16 @@ class MusicUtil(
                         data[BitRate] =
                             extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE).toInt()
                     }
-                }.embeddedPicture.run {
-                    if (this == null || this.isEmpty()) {
-                        null
-                    } else {
-                        BitmapFactory.decodeByteArray(this, 0, this.size)
-                            .apply { data[AlbumCover] = this }
+                }.run {
+                    val pic = embeddedPicture
+                    if (embeddedPicture == null) {
+                        return@run null
                     }
+                    BitmapFactory.decodeByteArray(embeddedPicture, 0, embeddedPicture.size).apply {
+                        data[AlbumCover] = this
+                        release()
+                    }
+                    
                 }
             } else {
                 data[AlbumCover] as Bitmap?
@@ -128,7 +131,7 @@ class MusicUtil(
                     
                 }.run {
                     extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE).toInt()
-                        .apply { data[BitRate] = this }
+                        .apply { data[BitRate] = this }.apply { release() }
                 }
             } else {
                 data[BitRate] as Int?

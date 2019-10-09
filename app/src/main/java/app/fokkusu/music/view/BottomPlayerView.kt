@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.Matrix
 import android.text.TextUtils.TruncateAt.MARQUEE
 import android.util.AttributeSet
@@ -15,6 +16,7 @@ import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_CHANGED
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PAUSE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PLAY
 import app.fokkusu.music.R
+import app.fokkusu.music.activity.PlayerActivity
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CONTENT
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PAUSE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY
@@ -24,6 +26,7 @@ import app.fokkusu.music.service.PlayService.Companion.playerState
 import app.fokkusu.music.service.PlayService.Companion.PlayState.PLAY
 import kotlinx.android.synthetic.main.view_bottom_player.view.checkBox_playControl
 import kotlinx.android.synthetic.main.view_bottom_player.view.imageView_album
+import kotlinx.android.synthetic.main.view_bottom_player.view.relativeLayout_container
 import kotlinx.android.synthetic.main.view_bottom_player.view.textView_info
 import kotlinx.android.synthetic.main.view_bottom_player.view.textView_title
 
@@ -84,12 +87,16 @@ class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
                 )
             )
         }
+        
+        relativeLayout_container.setOnClickListener { context.startActivity(Intent(context, PlayerActivity::class.java)) }
     }
     
     @Suppress("SetTextI18n", "DuplicatedCode")
     @Synchronized
     fun updateInfo() {
         getCurrentMusicInfo().apply {
+            this?:return
+            
             textView_title.text = title()
             textView_info.text = "${artist()} - ${album()}"
             checkBox_playControl.isChecked = playerState == PLAY
@@ -147,26 +154,38 @@ class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
                     )
                 ).apply { isCircular = true })
                 
-                return
+                checkBox_playControl.isChecked = false
             }
         }
     }
     
     @Synchronized
     fun onDestroy() {
-        context.unregisterReceiver(broadcastReceiver)
+        try {
+            context.unregisterReceiver(broadcastReceiver)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         updateInfo()
     }
     
     @Synchronized
     fun onResume() {
-        context.registerReceiver(broadcastReceiver, intentFilter)
+        try {
+            context.registerReceiver(broadcastReceiver, intentFilter)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         updateInfo()
     }
     
     @Synchronized
     fun onPause() {
-        context.unregisterReceiver(broadcastReceiver)
+        try {
+            context.unregisterReceiver(broadcastReceiver)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         updateInfo()
     }
 }

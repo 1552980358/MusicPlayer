@@ -5,6 +5,8 @@
     <string name="abc_splash_authorizing">Authorizing Permissions…</string>
     <string name="abc_splash_loadingMusic">Loading Music…</string>
 
+    <string name="abc_search_menu_title">Search Your Music</string>
+
     <string-array name="array_main_tab">
         <item>Setting</item>
         <item>Home</item>

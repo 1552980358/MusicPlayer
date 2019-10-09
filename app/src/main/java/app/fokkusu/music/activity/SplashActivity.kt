@@ -119,13 +119,13 @@ class SplashActivity : BaseAppCompatActivity() {
                                 getString(getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM)),
                                 getInt(getColumnIndex(MediaStore.Audio.AudioColumns.DURATION))
                             )
-                            
                         } while (moveToNext())
                     }
                     
                     close()
                 }
                 PlayService.sortMusic()
+                PlayService.assignLoc()
             } catch (e: Exception) {
                 e.printStackTrace()
             }

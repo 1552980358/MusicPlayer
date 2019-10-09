@@ -37,38 +37,22 @@
 
         </com.google.android.material.appbar.AppBarLayout >
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" >
-
-            <androidx.viewpager.widget.ViewPager
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/viewPager"
-                android:layout_above="@id/bottomPlayerView"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-            <app.fokkusu.music.view.BottomPlayerView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:id="@+id/bottomPlayerView"
-                android:layout_alignParentBottom="true" />
-
-        </RelativeLayout >
-
-        <ImageButton
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/bg_fab"
+        <!--com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_marginBottom="66dp"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/ic_fab_search"
             android:id="@+id/fab"
+            android:src="@drawable/ic_fab_search"
             android:clickable="true"
-            android:focusable="true"
-            android:alpha="0"/>
+            android:focusable="true" /-->
+
+        <app.fokkusu.music.view.ListMusicView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/listMusicView"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout >
 

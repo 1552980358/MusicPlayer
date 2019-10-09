@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import app.fokkusu.music.R
+import app.fokkusu.music.service.PlayService
+import kotlinx.android.synthetic.main.fragment_music.listMusicView
 
 /**
  * @File    : MusicFragment
@@ -14,12 +16,15 @@ import app.fokkusu.music.R
  * @TIME    : 8:58 AM
  **/
 
-class MusicFragment: Fragment() {
+class MusicFragment : Fragment() {
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_music, container, false)
+    }
+    
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        listMusicView.setUpAdapterWithMusicList(PlayService.musicList, 0)
     }
 }

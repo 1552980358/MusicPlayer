@@ -36,8 +36,12 @@
 
         <activity
             android:name=".activity.PlayerActivity"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.Player"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name=".activity.SearchMusicActivity"
+            android:theme="@style/AppTheme.Player" />
 
     </application >
 

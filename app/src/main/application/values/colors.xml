@@ -2,7 +2,7 @@
 <resources >
     <color name="colorPrimary" >@android:color/white</color >
     <color name="colorPrimaryDark" >@android:color/white</color >
-    <color name="colorAccent" >#D81B60</color >
+    <color name="colorAccent" >#0AAAFF</color >
 
     <color name="ic_launcher_background">@color/white</color>
 
