@@ -12,3 +12,5 @@ import app.fokkusu.music.Application
  
 fun log(tag: String, msg: String) = Log.e(tag, msg)
 fun log(tag: Int, msg: String) = Log.e(Application.getContext().getString(tag), msg)
+
+fun getTime(time: Int) = "${time / 60}:${time % 60}"

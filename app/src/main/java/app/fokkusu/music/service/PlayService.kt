@@ -107,6 +107,14 @@ class PlayService : Service() {
             }
         }
         
+        fun getMusicDuration(): Int {
+            return if (!init || playService!!.musicLoc == -1) {
+                0
+            } else {
+                playService!!.mediaPlayer.duration
+            }
+        }
+        
         fun getCurrentMusicInfo(): MusicUtil? {
             if (!init || playService!!.musicLoc == -1) {
                 if (musicList.isEmpty()) return null
