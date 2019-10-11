@@ -50,14 +50,15 @@ class MainActivity : BaseAppCompatActivity() {
         val onClickListener0 = View.OnClickListener {
             startActivity(Intent(this, SearchMusicActivity::class.java))
         }
+        
         val onClickListener1 = View.OnClickListener {
             viewPager.setCurrentItem(1, true)
         }
+        
         viewPager.apply {
             currentItem = 1
             addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                override fun onPageScrollStateChanged(state: Int) {
-                }
+                override fun onPageScrollStateChanged(state: Int) {}
                 
                 override fun onPageScrolled(
                     position: Int, positionOffset: Float, positionOffsetPixels: Int

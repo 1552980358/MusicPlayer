@@ -14,6 +14,7 @@ import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.graphics.drawable.toDrawable
@@ -21,6 +22,9 @@ import app.fokkusu.music.R
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_CHANGED
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PAUSE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PLAY
+import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CONTENT
+import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_SEEK_CHANGE
+import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_SEEK_CHANGE_POSITION
 import app.fokkusu.music.base.getTime
 import app.fokkusu.music.service.PlayService
 import kotlinx.android.synthetic.main.activity_player.checkBox_playControl
@@ -41,8 +45,18 @@ import kotlinx.android.synthetic.main.view_bottom_player.textView_title
  **/
 
 class PlayerActivity : AppCompatActivity() {
+    
+    @Suppress("PrivatePropertyName")
     private lateinit var imageView_album: ImageView
-    private lateinit var timeCount: Thread
+    
+    /* SeekBar Controlled by User */
+    private var seekBarFree = true
+    
+    /* Thread and flag */
+    private var timeCount: Thread? = null
+    private var threadStop = false
+    
+    /* Pre-Set Size */
     private val albumSize by lazy { resources.displayMetrics.widthPixels * 2 / 3 }
     private val screenHei by lazy { resources.displayMetrics.heightPixels }
     private val screenWid by lazy { resources.displayMetrics.widthPixels }
@@ -93,13 +107,37 @@ class PlayerActivity : AppCompatActivity() {
             ImageView(this).apply { imageView_album = this },
             RelativeLayout.LayoutParams(albumSize, albumSize)
         )
+        
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (!fromUser) {
+                    return
+                }
+                textView_timePass.text = getTime(progress)
+            }
+    
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                seekBarFree = false
+            }
+    
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                seekBar?:return
+    
+                startService(Intent(this@PlayerActivity, PlayService::class.java).putExtra(
+                    SERVICE_INTENT_CONTENT, SERVICE_INTENT_SEEK_CHANGE).putExtra(
+                    SERVICE_INTENT_SEEK_CHANGE_POSITION, seekBar.progress))
+                
+                seekBarFree = true
+            }
+    
+        })
     }
     
     @SuppressLint("SetTextI18n")
     @Synchronized
     private fun changeMusic() {
         try {
-            val info = PlayService.getCurrentMusicInfo().apply {
+            PlayService.getCurrentMusicInfo().apply {
                 this ?: return
                 (duration() / 1000).apply {
                     textView_timeTotal.text = getTime(this)
@@ -197,16 +235,23 @@ class PlayerActivity : AppCompatActivity() {
         
     }
     
+    @Synchronized
+    private fun getLyric() {
+    
+    }
+    
     override fun onResume() {
         super.onResume()
         registerReceiver(broadcastReceiver, intentFilter)
         timeCount = Thread {
-            
-            while (PlayService.playerState == PlayService.Companion.PlayState.PLAY) {
+            threadStop = true
+            while (PlayService.playerState == PlayService.Companion.PlayState.PLAY && !threadStop) {
                 
-                (PlayService.getCurrentPosition() / 1000).apply {
-                    seekBar.progress = this
-                    textView_timePass.text = getTime(this)
+                if (!seekBarFree) {
+                    (PlayService.getCurrentPosition() / 1000).apply {
+                        seekBar.progress = this
+                        textView_timePass.text = getTime(this)
+                    }
                 }
                 
                 try {
@@ -221,11 +266,37 @@ class PlayerActivity : AppCompatActivity() {
     
     override fun onPause() {
         super.onPause()
+        
+        // Stop Thread
+        threadStop = false
+        timeCount = null
+        
+        System.gc()
+        
+        // Remove receiver
         unregisterReceiver(broadcastReceiver)
+    }
+    
+    override fun onDestroy() {
+        
+        // Stop Thread
+        threadStop = false
+        timeCount = null
+    
+        // Remove receiver
+        try {
+            unregisterReceiver(broadcastReceiver)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        
+        System.gc()
+        super.onDestroy()
     }
     
     override fun onBackPressed() {
         super.onBackPressed()
         overridePendingTransition(R.anim.anim_stay, R.anim.anim_top2bottom)
     }
+    
 }

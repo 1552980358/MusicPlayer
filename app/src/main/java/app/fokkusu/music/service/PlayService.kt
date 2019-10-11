@@ -35,6 +35,8 @@ import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CHANGE_SOURCE_L
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CONTENT
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PAUSE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY
+import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_SEEK_CHANGE
+import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_SEEK_CHANGE_POSITION
 import app.fokkusu.music.base.Constants.Companion.USER_BROADCAST_LAST
 import app.fokkusu.music.base.Constants.Companion.USER_BROADCAST_NEXT
 import app.fokkusu.music.base.Constants.Companion.USER_BROADCAST_PLAY
@@ -80,6 +82,7 @@ class PlayService : Service() {
         fun sortMusic() {
             musicList.sortBy { it.titlePY() }
         }
+        
         @Synchronized
         fun assignLoc() {
             for (i in 0 .. musicList.lastIndex) {
@@ -255,6 +258,10 @@ class PlayService : Service() {
                 )
             }
             
+            SERVICE_INTENT_SEEK_CHANGE -> {
+                seek(intent.getIntExtra(SERVICE_INTENT_SEEK_CHANGE_POSITION, ERROR_CODE_INT))
+            }
+            
             else -> {
                 stopForeground(false)
                 updateNotify()
@@ -276,25 +283,6 @@ class PlayService : Service() {
                 musicLoc = 0
                 updateMusic()
                 return
-                /*
-                try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        contentResolver.openAssetFileDescriptor(
-                            Uri.parse(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString() + File.separator + playList.first().id()),
-                            "r"
-                        )?.apply {
-                            mediaPlayer.setDataSource(fileDescriptor)
-                            mediaPlayer.prepare()
-                            close()
-                        }
-                    } else {
-                        mediaPlayer.setDataSource(playList.first().path())
-                        mediaPlayer.prepare()
-                    }
-                } catch (e: java.lang.Exception) {
-                    e.printStackTrace()
-                }
-                 */
             }
             
             mediaPlayer.start()
@@ -326,6 +314,10 @@ class PlayService : Service() {
     
     @Synchronized
     private fun seek(loc: Int) {
+        if (loc == ERROR_CODE_INT) {
+            return
+        }
+        
         if (playerState == PlayState.PLAY) {
             mediaPlayer.seekTo(loc)
             return
@@ -519,4 +511,6 @@ class PlayService : Service() {
             System.gc()
         }
     }
+    
+    
 }

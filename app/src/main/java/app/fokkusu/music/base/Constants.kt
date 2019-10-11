@@ -42,6 +42,8 @@ class Constants private constructor() {
         const val SERVICE_INTENT_CHANGE = "SERVICE_INTENT_CHANGE"
         const val SERVICE_INTENT_CHANGE_SOURCE = "SERVICE_INTENT_CHANGE_SOURCE"
         const val SERVICE_INTENT_CHANGE_SOURCE_LOC = "SERVICE_INTENT_CHANGE_SOURCE_LOC"
+        const val SERVICE_INTENT_SEEK_CHANGE = "SERVICE_INTENT_SEEK_CHANGE"
+        const val SERVICE_INTENT_SEEK_CHANGE_POSITION = "SERVICE_INTENT_SEEK_CHANGE_POSITION"
         
         const val Path = "Path"
         const val Id = "Id"

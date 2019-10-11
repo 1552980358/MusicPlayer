@@ -69,6 +69,10 @@ class MusicUtil(
     
     fun duration() = data[Duration] as Int
     
+    fun addAlbumCover(bitmap: Bitmap) {
+        data[AlbumCover] = bitmap
+    }
+    
     fun albumCover(): Bitmap? {
         return try {
             if (data[AlbumCover] == null && data[BitRate] == null) {

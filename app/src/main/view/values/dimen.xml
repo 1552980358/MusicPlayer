@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources >
+    <dimen name="lyricView_textSize">14sp</dimen>
+    <dimen name="lyricView_textMargin">5dp</dimen>
+</resources >
