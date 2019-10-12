@@ -23,7 +23,7 @@ class LyricView(context: Context, attributeSet: AttributeSet?) : View(context, a
     private val textMargin by lazy { resources.getDimensionPixelSize(R.dimen.lyricView_textMargin) }
     private val constWidth by lazy { resources.displayMetrics.widthPixels.toFloat() }
     
-    private var current = 0
+    private var current = -1
     private val rect = Rect()
     private var drawHeight = 0F
     
@@ -51,7 +51,7 @@ class LyricView(context: Context, attributeSet: AttributeSet?) : View(context, a
     }
     
     @Synchronized
-    fun updateMusic(rawLyric: ArrayList<String>) {
+    fun updateMusicLyric(rawLyric: ArrayList<String>) {
         /* Remove all content */
         lyricList.clear()
         lyricTime.clear()
@@ -77,34 +77,96 @@ class LyricView(context: Context, attributeSet: AttributeSet?) : View(context, a
             /* Lyric */
             lyricList.add(j.substring(j.lastIndexOf(']') + 1))
         }
+        postInvalidate()
+    }
+    
+    @Synchronized
+    fun updateLyricLine(time: Int) {
+        if (lyricTime.isEmpty() || lyricList.isEmpty()) {
+            current = -1
+            
+            postInvalidate()
+            return
+        }
+        
+        for ((i, j) in lyricTime.withIndex()) {
+            if (j > time) {
+                current = (i - 1)
+                break
+            }
+        }
+        postInvalidate()
     }
     
     @Suppress("DuplicatedCode")
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         
-        canvas?:return
+        canvas ?: return
         
         /* Draw background */
         canvas.drawColor(Color.TRANSPARENT)
         
-        /* Check lyric List and time list size */
-        if (lyricList.isEmpty() || lyricTime.isEmpty()) return
-        
         drawHeight = 0F
+        
+        /* Pointer indicates empty list */
+        if (current == -1) {
+            // 1st line
+            paintOther.getTextBounds(empty, 0, empty.length, rect)
+            canvas.drawText(
+                empty,
+                (constWidth - rect.width()) / 2,
+                rect.height().toFloat(),
+                paintOther
+            )
+            
+            drawHeight += rect.height().plus(textMargin)
+            
+            // 2nd line
+            paintOther.getTextBounds(empty, 0, empty.length, rect)
+            canvas.drawText(
+                empty,
+                (constWidth - rect.width()) / 2,
+                rect.height().toFloat(),
+                paintCurrent
+            )
+            
+            drawHeight += rect.height().plus(textMargin)
+            
+            // 3rd line
+            paintOther.getTextBounds(empty, 0, empty.length, rect)
+            canvas.drawText(
+                empty,
+                (constWidth - rect.width()) / 2,
+                rect.height().toFloat(),
+                paintOther
+            )
+            
+            return
+        }
         
         /* First lyric line */
         if (current == 0) {
             // 1st line
             paintOther.getTextBounds(empty, 0, empty.length, rect)
-            canvas.drawText(empty, (constWidth - rect.width()) / 2, rect.height().toFloat(), paintOther)
+            canvas.drawText(
+                empty,
+                (constWidth - rect.width()) / 2,
+                rect.height().toFloat(),
+                paintOther
+            )
             
             drawHeight += rect.height().plus(textMargin)
             
             // 2nd line
             lyricList[current].apply {
                 paintOther.getTextBounds(this, 0, length, rect)
-                canvas.drawText(this, (constWidth - rect.width()) / 2, rect.height() + drawHeight, paintCurrent)
+                canvas.drawText(
+                    this,
+                    (constWidth - rect.width()) / 2,
+                    rect.height() + drawHeight,
+                    paintCurrent
+                )
             }
             
             drawHeight += rect.height().plus(textMargin)
@@ -112,7 +174,12 @@ class LyricView(context: Context, attributeSet: AttributeSet?) : View(context, a
             // 3rd line
             lyricList[current + 1].apply {
                 paintOther.getTextBounds(this, 0, length, rect)
-                canvas.drawText(this, (constWidth - rect.width()) / 2, rect.height() + drawHeight, paintOther)
+                canvas.drawText(
+                    this,
+                    (constWidth - rect.width()) / 2,
+                    rect.height() + drawHeight,
+                    paintOther
+                )
             }
             
             return
@@ -121,22 +188,37 @@ class LyricView(context: Context, attributeSet: AttributeSet?) : View(context, a
         if (current == lyricList.lastIndex) {
             lyricList[current - 1].apply {
                 paintOther.getTextBounds(this, 0, length, rect)
-                canvas.drawText(this, (constWidth - rect.width()) / 2, rect.height() + drawHeight, paintOther)
+                canvas.drawText(
+                    this,
+                    (constWidth - rect.width()) / 2,
+                    rect.height() + drawHeight,
+                    paintOther
+                )
             }
-    
+            
             drawHeight += rect.height().plus(textMargin)
-    
+            
             // 2nd line
             lyricList[current].apply {
                 paintOther.getTextBounds(this, 0, length, rect)
-                canvas.drawText(this, (constWidth - rect.width()) / 2, rect.height() + drawHeight, paintCurrent)
+                canvas.drawText(
+                    this,
+                    (constWidth - rect.width()) / 2,
+                    rect.height() + drawHeight,
+                    paintCurrent
+                )
             }
-    
+            
             drawHeight += rect.height().plus(textMargin)
-    
+            
             // 3rd line
             paintOther.getTextBounds(empty, 0, empty.length, rect)
-            canvas.drawText(empty, (constWidth - rect.width()) / 2, rect.height().toFloat(), paintOther)
+            canvas.drawText(
+                empty,
+                (constWidth - rect.width()) / 2,
+                rect.height().toFloat(),
+                paintOther
+            )
             
             return
         }
@@ -145,23 +227,38 @@ class LyricView(context: Context, attributeSet: AttributeSet?) : View(context, a
         // 1st line
         lyricList[current - 1].apply {
             paintOther.getTextBounds(this, 0, length, rect)
-            canvas.drawText(this, (constWidth - rect.width()) / 2, rect.height() + drawHeight, paintOther)
+            canvas.drawText(
+                this,
+                (constWidth - rect.width()) / 2,
+                rect.height() + drawHeight,
+                paintOther
+            )
         }
         
         drawHeight += rect.height().plus(textMargin)
-    
+        
         // 2nd line
         lyricList[current].apply {
             paintOther.getTextBounds(this, 0, length, rect)
-            canvas.drawText(this, (constWidth - rect.width()) / 2, rect.height() + drawHeight, paintCurrent)
+            canvas.drawText(
+                this,
+                (constWidth - rect.width()) / 2,
+                rect.height() + drawHeight,
+                paintCurrent
+            )
         }
-    
+        
         drawHeight += rect.height().plus(textMargin)
-    
+        
         // 3rd line
         lyricList[current + 1].apply {
             paintOther.getTextBounds(this, 0, length, rect)
-            canvas.drawText(this, (constWidth - rect.width()) / 2, rect.height() + drawHeight, paintOther)
+            canvas.drawText(
+                this,
+                (constWidth - rect.width()) / 2,
+                rect.height() + drawHeight,
+                paintOther
+            )
         }
         
     }

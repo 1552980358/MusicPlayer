@@ -23,19 +23,31 @@ import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_CHANGED
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PAUSE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PLAY
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CONTENT
+import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PAUSE
+import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_SEEK_CHANGE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_SEEK_CHANGE_POSITION
 import app.fokkusu.music.base.getTime
+import app.fokkusu.music.base.log
 import app.fokkusu.music.service.PlayService
+import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_player.checkBox_playControl
 import kotlinx.android.synthetic.main.activity_player.drawerLayout_container
+import kotlinx.android.synthetic.main.activity_player.lyricView
 import kotlinx.android.synthetic.main.activity_player.relativeLayout_container
 import kotlinx.android.synthetic.main.activity_player.seekBar
 import kotlinx.android.synthetic.main.activity_player.textView_timePass
 import kotlinx.android.synthetic.main.activity_player.textView_timeTotal
 import kotlinx.android.synthetic.main.activity_player.toolbar
-import kotlinx.android.synthetic.main.view_bottom_player.textView_info
-import kotlinx.android.synthetic.main.view_bottom_player.textView_title
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.FormBody
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import java.io.IOException
+import java.net.URL
+import java.util.concurrent.TimeUnit
 
 /**
  * @File    : PlayerActivity
@@ -55,6 +67,8 @@ class PlayerActivity : AppCompatActivity() {
     /* Thread and flag */
     private var timeCount: Thread? = null
     private var threadStop = false
+    
+    private var lyricFetch = false
     
     /* Pre-Set Size */
     private val albumSize by lazy { resources.displayMetrics.widthPixels * 2 / 3 }
@@ -108,6 +122,17 @@ class PlayerActivity : AppCompatActivity() {
             RelativeLayout.LayoutParams(albumSize, albumSize)
         )
         
+        checkBox_playControl.apply {
+            setOnClickListener {
+                startService(
+                    Intent(this@PlayerActivity, PlayService::class.java).putExtra(
+                        SERVICE_INTENT_CONTENT,
+                        if (isChecked) SERVICE_INTENT_PLAY else SERVICE_INTENT_PAUSE
+                    )
+                )
+            }
+        }
+        
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (!fromUser) {
@@ -115,21 +140,24 @@ class PlayerActivity : AppCompatActivity() {
                 }
                 textView_timePass.text = getTime(progress)
             }
-    
+            
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
                 seekBarFree = false
             }
-    
+            
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                seekBar?:return
-    
-                startService(Intent(this@PlayerActivity, PlayService::class.java).putExtra(
-                    SERVICE_INTENT_CONTENT, SERVICE_INTENT_SEEK_CHANGE).putExtra(
-                    SERVICE_INTENT_SEEK_CHANGE_POSITION, seekBar.progress))
+                seekBar ?: return
+                
+                startService(
+                    Intent(this@PlayerActivity, PlayService::class.java).putExtra(
+                        SERVICE_INTENT_CONTENT, SERVICE_INTENT_SEEK_CHANGE
+                    ).putExtra(
+                        SERVICE_INTENT_SEEK_CHANGE_POSITION, seekBar.progress * 1000
+                    )
+                )
                 
                 seekBarFree = true
             }
-    
         })
     }
     
@@ -143,9 +171,10 @@ class PlayerActivity : AppCompatActivity() {
                     textView_timeTotal.text = getTime(this)
                     seekBar.max = this
                 }
-                textView_title.text = title()
-                textView_info.text = "${artist()} - ${album()}"
+                toolbar.title = title()
+                toolbar.subtitle = "${artist()} - ${album()}"
             }
+            getLyric()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -237,20 +266,98 @@ class PlayerActivity : AppCompatActivity() {
     
     @Synchronized
     private fun getLyric() {
-    
+        if (lyricFetch) return
+        
+        Thread {
+            lyricFetch = true
+            val info = PlayService.getCurrentMusicInfo()
+            
+            info ?: return@Thread
+            
+            try {
+                Request.Builder().header(
+                    "User-Agent",
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36"
+                ).url("http://music.163.com/api/search/pc").post(FormBody.Builder().apply {
+                    add("s", info.title())
+                    add("offset", "0")
+                    add("limit", "1")
+                    add("type", "1")
+                }.build()).build().apply {
+                    OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS)
+                        .writeTimeout(5, TimeUnit.SECONDS).build().newCall(this)
+                        .enqueue(object : Callback {
+                            override fun onFailure(call: Call, e: IOException) {
+                                /* Error */
+                                e.printStackTrace()
+                            }
+                            
+                            override fun onResponse(call: Call, response: Response) {
+                                response.body ?: return
+                                
+                                /* Decode JSON code */
+                                JsonParser().parse(response.body!!.string())
+                                    .asJsonObject.get("result").asJsonObject.get("songs")
+                                    .asJsonArray.apply {
+                                    if (this.size() == 0) {
+                                        return
+                                    }
+                                    
+                                    var text: String
+                                    
+                                    /* Decode JSON code */
+                                    URL(
+                                        "http://music.163.com/api/song/media?id=${first().asJsonObject.get(
+                                            "id"
+                                        ).asString}"
+                                    ).openStream().apply {
+                                        bufferedReader().apply {
+                                            text = JsonParser().parse(readText())
+                                                .asJsonObject.get("lyric").asString
+                                            close()
+                                        }
+                                        close()
+                                    }
+                                    
+                                    if (text.isEmpty()) return
+                                    
+                                    /* Remove empty lines */
+                                    lyricView.updateMusicLyric(
+                                        ArrayList(
+                                            listOf(
+                                                *text.split(("\n").toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                                            )
+                                        )
+                                    )
+                                    
+                                }
+                            }
+                        })
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            lyricFetch = false
+        }.start()
     }
     
     override fun onResume() {
         super.onResume()
         registerReceiver(broadcastReceiver, intentFilter)
+        changeMusic()
+        checkBox_playControl.isChecked = PlayService.playerState == PlayService.Companion.PlayState.PLAY
         timeCount = Thread {
-            threadStop = true
+            threadStop = false
             while (PlayService.playerState == PlayService.Companion.PlayState.PLAY && !threadStop) {
-                
-                if (!seekBarFree) {
-                    (PlayService.getCurrentPosition() / 1000).apply {
-                        seekBar.progress = this
-                        textView_timePass.text = getTime(this)
+                if (seekBarFree) {
+                    (PlayService.getCurrentPosition()).apply {
+                        lyricView.updateLyricLine(this)
+                        (this / 1000).apply {
+                            runOnUiThread {
+                                seekBar.progress = this
+                                textView_timePass.text = getTime(this)
+                            }
+                        }
                     }
                 }
                 
@@ -268,7 +375,7 @@ class PlayerActivity : AppCompatActivity() {
         super.onPause()
         
         // Stop Thread
-        threadStop = false
+        threadStop = true
         timeCount = null
         
         System.gc()
@@ -282,7 +389,7 @@ class PlayerActivity : AppCompatActivity() {
         // Stop Thread
         threadStop = false
         timeCount = null
-    
+        
         // Remove receiver
         try {
             unregisterReceiver(broadcastReceiver)

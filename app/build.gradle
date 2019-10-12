@@ -59,8 +59,12 @@ dependencies {
 
     implementation 'com.google.android.material:material:1.0.0'
 
+    implementation 'com.google.code.gson:gson:2.8.5'
+
     implementation "com.github.promeg:tinypinyin:${tinyPinYin}"
     implementation "com.github.promeg:tinypinyin-lexicons-android-cncity:${tinyPinYin}"
+
+    implementation "com.squareup.okhttp3:okhttp:4.1.1"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'

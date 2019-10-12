@@ -22,7 +22,7 @@
             app:navigationIcon="@drawable/ic_player_exit"
             android:id="@+id/toolbar"
             app:titleTextColor="@color/white"
-            app:subtitleTextColor="@color/white"/>
+            app:subtitleTextColor="@color/white" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,7 +34,13 @@
                 android:layout_weight="8"
                 android:clickable="true"
                 android:focusable="true"
-                android:id="@+id/relativeLayout_container" />
+                android:id="@+id/relativeLayout_container" >
+
+                <app.fokkusu.music.view.LyricView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:id="@+id/lyricView" />
+            </RelativeLayout >
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -47,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp">
+                    android:layout_marginBottom="5dp" >
 
                     <TextView
                         android:layout_width="@dimen/dp_0"
