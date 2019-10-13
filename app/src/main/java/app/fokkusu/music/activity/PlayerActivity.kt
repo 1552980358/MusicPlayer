@@ -16,6 +16,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.graphics.drawable.toDrawable
 import app.fokkusu.music.R
@@ -23,16 +24,22 @@ import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_CHANGED
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PAUSE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PLAY
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CONTENT
+import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_LAST
+import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_NEXT
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PAUSE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY
+import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY_FORM
+import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY_FORM_CONTENT
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_SEEK_CHANGE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_SEEK_CHANGE_POSITION
 import app.fokkusu.music.base.getTime
-import app.fokkusu.music.base.log
 import app.fokkusu.music.service.PlayService
 import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_player.checkBox_playControl
 import kotlinx.android.synthetic.main.activity_player.drawerLayout_container
+import kotlinx.android.synthetic.main.activity_player.imageButton_last
+import kotlinx.android.synthetic.main.activity_player.imageButton_next
+import kotlinx.android.synthetic.main.activity_player.imageButton_playForm
 import kotlinx.android.synthetic.main.activity_player.lyricView
 import kotlinx.android.synthetic.main.activity_player.relativeLayout_container
 import kotlinx.android.synthetic.main.activity_player.seekBar
@@ -90,6 +97,7 @@ class PlayerActivity : AppCompatActivity() {
                 
                 SERVICE_BROADCAST_CHANGED -> {
                     changeMusic()
+                    getThreadStart()
                 }
             }
         }
@@ -116,7 +124,80 @@ class PlayerActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener { onBackPressed() }
         
-        startService(Intent(this, PlayService::class.java))
+        imageButton_next.setOnClickListener {
+            startService(
+                Intent(this, PlayService::class.java).putExtra(
+                    SERVICE_INTENT_CONTENT,
+                    SERVICE_INTENT_NEXT
+                )
+            )
+        }
+        
+        imageButton_last.setOnClickListener {
+            startService(
+                Intent(this, PlayService::class.java).putExtra(
+                    SERVICE_INTENT_CONTENT,
+                    SERVICE_INTENT_LAST
+                )
+            )
+        }
+    
+        val cycle = ContextCompat.getDrawable(this, R.drawable.ic_player_cycle)
+        val single = ContextCompat.getDrawable(this, R.drawable.ic_player_single)
+        val random = ContextCompat.getDrawable(this, R.drawable.ic_player_random)
+        
+        when (PlayService.playForm) {
+            PlayService.Companion.PlayForm.CYCLE -> {
+                imageButton_playForm.background = cycle
+            }
+            PlayService.Companion.PlayForm.SINGLE -> {
+                imageButton_playForm.background = single
+            }
+            PlayService.Companion.PlayForm.RANDOM -> {
+                imageButton_playForm.background = random
+            }
+        }
+        
+        imageButton_playForm.setOnClickListener {
+            when (PlayService.playForm) {
+                PlayService.Companion.PlayForm.CYCLE -> {
+                    imageButton_playForm.background = single
+                    startService(
+                        Intent(this, PlayService::class.java).putExtra(
+                            SERVICE_INTENT_CONTENT,
+                            SERVICE_INTENT_PLAY_FORM
+                        ).putExtra(
+                            SERVICE_INTENT_PLAY_FORM_CONTENT, PlayService.Companion.PlayForm.SINGLE
+                        )
+                    )
+                }
+                
+                PlayService.Companion.PlayForm.SINGLE -> {
+                    imageButton_playForm.background = random
+                    startService(
+                        Intent(this, PlayService::class.java).putExtra(
+                            SERVICE_INTENT_CONTENT,
+                            SERVICE_INTENT_PLAY_FORM
+                        ).putExtra(
+                            SERVICE_INTENT_PLAY_FORM_CONTENT, PlayService.Companion.PlayForm.RANDOM
+                        )
+                    )
+                }
+                
+                PlayService.Companion.PlayForm.RANDOM -> {
+                    imageButton_playForm.background = cycle
+                    startService(
+                        Intent(this, PlayService::class.java).putExtra(
+                            SERVICE_INTENT_CONTENT,
+                            SERVICE_INTENT_PLAY_FORM
+                        ).putExtra(
+                            SERVICE_INTENT_PLAY_FORM_CONTENT, PlayService.Companion.PlayForm.CYCLE
+                        )
+                    )
+                }
+            }
+        }
+        
         relativeLayout_container.addView(
             ImageView(this).apply { imageView_album = this },
             RelativeLayout.LayoutParams(albumSize, albumSize)
@@ -261,7 +342,33 @@ class PlayerActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+    
+    private fun getThreadStart() {
+        timeCount = Thread {
         
+            threadStop = false
+            while (PlayService.playerState == PlayService.Companion.PlayState.PLAY && !threadStop) {
+                if (seekBarFree) {
+                    (PlayService.getCurrentPosition()).apply {
+                        lyricView.updateLyricLine(this)
+                        (this / 1000).apply {
+                            runOnUiThread {
+                                seekBar.progress = this
+                                textView_timePass.text = getTime(this)
+                            }
+                        }
+                    }
+                }
+            
+                try {
+                    Thread.sleep(200)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+                System.gc()
+            }
+        }.apply { start() }
     }
     
     @Synchronized
@@ -345,30 +452,18 @@ class PlayerActivity : AppCompatActivity() {
         super.onResume()
         registerReceiver(broadcastReceiver, intentFilter)
         changeMusic()
-        checkBox_playControl.isChecked = PlayService.playerState == PlayService.Companion.PlayState.PLAY
-        timeCount = Thread {
-            threadStop = false
-            while (PlayService.playerState == PlayService.Companion.PlayState.PLAY && !threadStop) {
-                if (seekBarFree) {
-                    (PlayService.getCurrentPosition()).apply {
-                        lyricView.updateLyricLine(this)
-                        (this / 1000).apply {
-                            runOnUiThread {
-                                seekBar.progress = this
-                                textView_timePass.text = getTime(this)
-                            }
-                        }
-                    }
+        checkBox_playControl.isChecked =
+            PlayService.playerState == PlayService.Companion.PlayState.PLAY
+        (PlayService.getCurrentPosition()).apply {
+            lyricView.updateLyricLine(this)
+            (this / 1000).apply {
+                runOnUiThread {
+                    seekBar.progress = this
+                    textView_timePass.text = getTime(this)
                 }
-                
-                try {
-                    Thread.sleep(200)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-                System.gc()
             }
-        }.apply { start() }
+        }
+        getThreadStart()
     }
     
     override fun onPause() {

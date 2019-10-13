@@ -33,8 +33,13 @@ import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CHANGE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CHANGE_SOURCE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CHANGE_SOURCE_LOC
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CONTENT
+import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_INIT
+import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_LAST
+import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_NEXT
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PAUSE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY
+import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY_FORM
+import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY_FORM_CONTENT
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_SEEK_CHANGE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_SEEK_CHANGE_POSITION
 import app.fokkusu.music.base.Constants.Companion.USER_BROADCAST_LAST
@@ -43,6 +48,7 @@ import app.fokkusu.music.base.Constants.Companion.USER_BROADCAST_PLAY
 import app.fokkusu.music.base.Constants.Companion.USER_BROADCAST_SELECTED
 import app.fokkusu.music.base.MusicUtil
 import java.io.File
+import java.io.Serializable
 
 /**
  * @File    : PlayService
@@ -58,11 +64,14 @@ class PlayService : Service() {
             STOP, PLAY, PAUSE
         }
         
-        enum class PlayForm {
+        enum class PlayForm : Serializable {
             CYCLE, SINGLE, RANDOM
         }
         
         var playerState = PlayState.STOP
+            private set
+        
+        var playForm = PlayForm.CYCLE
             private set
         
         /* Single Instance */
@@ -85,7 +94,7 @@ class PlayService : Service() {
         
         @Synchronized
         fun assignLoc() {
-            for (i in 0 .. musicList.lastIndex) {
+            for (i in 0..musicList.lastIndex) {
                 musicList[i].loc = i
             }
         }
@@ -184,8 +193,6 @@ class PlayService : Service() {
     private val playList = mutableListOf<MusicUtil>()
     private var musicLoc = -1     // Pointer
     
-    private var playForm = PlayForm.CYCLE
-    
     /* Notification */
     private lateinit var notificationManagerCompat: NotificationManagerCompat
     private lateinit var notificationCompat: NotificationCompat.Builder
@@ -202,6 +209,7 @@ class PlayService : Service() {
                 PlayForm.RANDOM, PlayForm.CYCLE -> {
                     next()
                 }
+                
                 PlayForm.SINGLE -> {
                     if (!mediaPlayer.isLooping) {
                         mediaPlayer.isLooping = true
@@ -243,14 +251,27 @@ class PlayService : Service() {
         }
         
         when (intent.getStringExtra(SERVICE_INTENT_CONTENT)) {
+            SERVICE_INTENT_INIT -> {
+                stopForeground(true)
+                return super.onStartCommand(intent, START_REDELIVER_INTENT, startId)
+            }
+            
             SERVICE_INTENT_PLAY -> {
                 play()
             }
-    
+            
             SERVICE_INTENT_PAUSE -> {
                 pause()
             }
-    
+            
+            SERVICE_INTENT_LAST -> {
+                last()
+            }
+            
+            SERVICE_INTENT_NEXT -> {
+                next()
+            }
+            
             SERVICE_INTENT_CHANGE -> {
                 setChange(
                     intent.getIntExtra(SERVICE_INTENT_CHANGE_SOURCE, ERROR_CODE_INT),
@@ -260,6 +281,19 @@ class PlayService : Service() {
             
             SERVICE_INTENT_SEEK_CHANGE -> {
                 seek(intent.getIntExtra(SERVICE_INTENT_SEEK_CHANGE_POSITION, ERROR_CODE_INT))
+            }
+            
+            SERVICE_INTENT_PLAY_FORM -> {
+                try {
+                    playForm =
+                        (intent.getSerializableExtra(SERVICE_INTENT_PLAY_FORM_CONTENT) as PlayForm).apply {
+                            if (this == PlayForm.SINGLE) {
+                                mediaPlayer.isLooping = true
+                            }
+                        }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
             
             else -> {
@@ -393,7 +427,7 @@ class PlayService : Service() {
         try {
             /*  Remove all */
             if (playerState != PlayState.STOP) mediaPlayer.reset()
-    
+            
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 contentResolver.openAssetFileDescriptor(
                     Uri.parse(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString() + File.separator + playList[musicLoc].id()),

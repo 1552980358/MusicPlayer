@@ -2,6 +2,7 @@
 <androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -90,8 +91,7 @@
                         android:layout_width="@dimen/playerActivity_subItem_size"
                         android:layout_height="@dimen/playerActivity_subItem_size"
                         android:layout_marginStart="@dimen/playerActivity_subItem_marginLeftRightWider"
-                        android:layout_marginEnd="@dimen/playerActivity_subItem_marginLeftRightWider"
-                        android:background="@drawable/ic_player_cycle" />
+                        android:layout_marginEnd="@dimen/playerActivity_subItem_marginLeftRightWider"/>
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:layout_width="@dimen/playerActivity_last_next_size"

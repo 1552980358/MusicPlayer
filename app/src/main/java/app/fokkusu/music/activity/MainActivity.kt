@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import app.fokkusu.music.base.activity.BaseAppCompatActivity
 import app.fokkusu.music.R
+import app.fokkusu.music.dialog.BottomPlaylistDialog
 import app.fokkusu.music.fragment.main.HomeFragment
 import app.fokkusu.music.fragment.main.MusicFragment
 import app.fokkusu.music.fragment.main.SettingFragment
@@ -23,6 +24,8 @@ class MainActivity : BaseAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        
+        BottomPlaylistDialog().showNow(supportFragmentManager, "12")
         
         val fragments = arrayOf(SettingFragment(), HomeFragment(), MusicFragment())
         val titles = resources.getStringArray(R.array.array_main_tab)

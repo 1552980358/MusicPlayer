@@ -35,6 +35,7 @@ android {
         main {
             res.srcDirs =
                     [
+                            'src/main/dialog',
                             'src/main/application',
                             'src/main/activity',
                             'src/main/fragment',
