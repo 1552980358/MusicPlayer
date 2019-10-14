@@ -17,4 +17,6 @@
 
     <dimen name="view_bottom_player_imageView">40dp</dimen>
 
+    <dimen name="dp_50">50dp</dimen>
+
 </resources >

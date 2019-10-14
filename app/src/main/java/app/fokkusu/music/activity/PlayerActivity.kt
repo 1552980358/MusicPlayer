@@ -9,12 +9,14 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Matrix
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.SeekBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
@@ -123,6 +125,19 @@ class PlayerActivity : AppCompatActivity() {
         
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener { onBackPressed() }
+    
+        try {
+            (toolbar.javaClass.getDeclaredField("mTitleTextView").apply { isAccessible = true }.get(
+                toolbar
+            ) as TextView).apply {
+                setHorizontallyScrolling(true)
+                marqueeRepeatLimit = -1
+                ellipsize = TextUtils.TruncateAt.MARQUEE
+                isSelected = true
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         
         imageButton_next.setOnClickListener {
             startService(

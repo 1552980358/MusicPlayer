@@ -25,8 +25,6 @@ class MainActivity : BaseAppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         
-        BottomPlaylistDialog().showNow(supportFragmentManager, "12")
-        
         val fragments = arrayOf(SettingFragment(), HomeFragment(), MusicFragment())
         val titles = resources.getStringArray(R.array.array_main_tab)
         

@@ -13,6 +13,7 @@ import android.widget.ListView
 import android.widget.TextView
 import app.fokkusu.music.R
 import app.fokkusu.music.base.Constants.Companion.MUSIC_LIST
+import app.fokkusu.music.base.Constants.Companion.PLAY_LIST
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CHANGE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CHANGE_SOURCE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CHANGE_SOURCE_LOC
@@ -34,20 +35,34 @@ class ListMusicView : ListView {
     private lateinit var listViewAdapter: BaseAdapter
     
     init {
+        dividerHeight = 0
+    }
+    
+    fun setUpAdapterWithMusicList(musicList: MutableList<MusicUtil>?, page: Int) {
+        adapter = BaseAdapter(context, musicList ?: mutableListOf(), page).apply { listViewAdapter = this }
+        if (page == 0 || page == 1) {
+            setOnItemClickListener { _, _, position, _ ->
+                context.startService(
+                    Intent(context, PlayService::class.java).putExtra(
+                        SERVICE_INTENT_CONTENT, SERVICE_INTENT_CHANGE
+                    ).putExtra(
+                        SERVICE_INTENT_CHANGE_SOURCE, MUSIC_LIST
+                    ).putExtra(SERVICE_INTENT_CHANGE_SOURCE_LOC, position)
+                )
+            }
+            return
+        }
+        
+        smoothScrollToPosition(PlayService.getCurrentMusic())
         setOnItemClickListener { _, _, position, _ ->
             context.startService(
                 Intent(context, PlayService::class.java).putExtra(
                     SERVICE_INTENT_CONTENT, SERVICE_INTENT_CHANGE
                 ).putExtra(
-                    SERVICE_INTENT_CHANGE_SOURCE, MUSIC_LIST
+                    SERVICE_INTENT_CHANGE_SOURCE, PLAY_LIST
                 ).putExtra(SERVICE_INTENT_CHANGE_SOURCE_LOC, position)
             )
         }
-        dividerHeight = 0
-    }
-    
-    fun setUpAdapterWithMusicList(musicList: MutableList<MusicUtil>, page: Int) {
-        adapter = BaseAdapter(context, musicList, page).apply { listViewAdapter = this }
     }
     
     fun updateMusic(musicList: MutableList<MusicUtil>) {
@@ -59,25 +74,45 @@ class ListMusicView : ListView {
     }
     
     private open class BaseAdapter(
-        private val context: Context,
-        musicList: MutableList<MusicUtil>,
-        private val page: Int
+        private val context: Context, musicList: MutableList<MusicUtil>, private val page: Int
     ) : android.widget.BaseAdapter() {
+        
+        private val inflater by lazy { LayoutInflater.from(context) }
         
         @SuppressLint("InflateParams")
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-            return if (page == 0) {
-                LayoutInflater.from(context).inflate(R.layout.view_musicpage, null, false).apply {
-                    findViewById<TextView>(R.id.textView_num).text = musicList[position].loc.plus(1).toString()
-                    findViewById<TextView>(R.id.textView_title).text = musicList[position].title()
-                    findViewById<TextView>(R.id.textView_subTitle).text =
-                        musicList[position].artist().plus(" - ").plus(musicList[position].album())
+            return when (page) {
+                0 -> {
+                    inflater.inflate(R.layout.view_musicpage, null, false).apply {
+                        findViewById<TextView>(R.id.textView_num).text =
+                            musicList[position].loc.plus(1).toString()
+                        findViewById<TextView>(R.id.textView_title).text =
+                            musicList[position].title()
+                        findViewById<TextView>(R.id.textView_subTitle).text =
+                            musicList[position].artist().plus(" - ")
+                                .plus(musicList[position].album())
+                    }
                 }
-            } else {
-                LayoutInflater.from(context).inflate(R.layout.view_searchpage, null, false).apply {
-                    findViewById<TextView>(R.id.textView_title).text = musicList[position].title()
-                    findViewById<TextView>(R.id.textView_subTitle).text =
-                        musicList[position].artist().plus(" - ").plus(musicList[position].album())
+                
+                1 -> {
+                    inflater.inflate(R.layout.view_searchpage, null, false).apply {
+                        findViewById<TextView>(R.id.textView_title).text =
+                            musicList[position].title()
+                        findViewById<TextView>(R.id.textView_subTitle).text =
+                            musicList[position].artist().plus(" - ")
+                                .plus(musicList[position].album())
+                    }
+                }
+                
+                2 -> {
+                    inflater.inflate(R.layout.view_playlistpage, null, false).apply {
+                        findViewById<TextView>(R.id.textView_title).text = musicList[position].title()
+                        findViewById<TextView>(R.id.textView_subTitle).text = musicList[position].artist()
+                    }
+                }
+                
+                else -> {
+                    View(context)
                 }
             }
         }
