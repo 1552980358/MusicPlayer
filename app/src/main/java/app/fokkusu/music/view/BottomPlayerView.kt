@@ -5,12 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.Matrix
 import android.text.TextUtils.TruncateAt.MARQUEE
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_CHANGED
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PAUSE
@@ -20,11 +20,13 @@ import app.fokkusu.music.activity.PlayerActivity
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CONTENT
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PAUSE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY
+import app.fokkusu.music.dialog.BottomPlaylistDialog
 import app.fokkusu.music.service.PlayService
 import app.fokkusu.music.service.PlayService.Companion.getCurrentMusicInfo
 import app.fokkusu.music.service.PlayService.Companion.playerState
 import app.fokkusu.music.service.PlayService.Companion.PlayState.PLAY
 import kotlinx.android.synthetic.main.view_bottom_player.view.checkBox_playControl
+import kotlinx.android.synthetic.main.view_bottom_player.view.imageButton_list
 import kotlinx.android.synthetic.main.view_bottom_player.view.imageView_album
 import kotlinx.android.synthetic.main.view_bottom_player.view.relativeLayout_container
 import kotlinx.android.synthetic.main.view_bottom_player.view.textView_info
@@ -39,6 +41,8 @@ import kotlinx.android.synthetic.main.view_bottom_player.view.textView_title
 
 class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
     LinearLayout(context, attributeSet) {
+    
+    private lateinit var parentActivity: AppCompatActivity
     
     private val albumSize by lazy { resources.getDimensionPixelSize(R.dimen.view_bottom_player_imageView) }
     
@@ -88,7 +92,15 @@ class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
             )
         }
         
+        imageButton_list.setOnClickListener {
+            BottomPlaylistDialog.bottomPlaylistDialog.showNow(parentActivity.supportFragmentManager)
+        }
+        
         relativeLayout_container.setOnClickListener { context.startActivity(Intent(context, PlayerActivity::class.java)) }
+    }
+    
+    fun setParentActivity(appCompatActivity: AppCompatActivity) {
+        parentActivity = appCompatActivity
     }
     
     @Suppress("SetTextI18n", "DuplicatedCode")

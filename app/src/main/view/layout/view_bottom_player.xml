@@ -8,7 +8,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#08000000"/>
+        android:background="#08000000" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
         android:clickable="true"
         android:focusable="true"
         android:background="?attr/selectableItemBackground"
-        android:id="@+id/relativeLayout_container">
+        android:id="@+id/relativeLayout_container" >
 
         <ImageView
             android:layout_width="40dp"
@@ -31,37 +31,39 @@
             android:orientation="vertical"
             android:layout_toEndOf="@id/imageView_album"
             android:layout_toStartOf="@id/checkBox_playControl"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical" >
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView_title"
                 android:textSize="17sp"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView_info"/>
+                android:id="@+id/textView_info" />
 
         </LinearLayout >
 
         <androidx.appcompat.widget.AppCompatCheckBox
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginEnd="5dp"
             android:button="@null"
+            android:layout_centerVertical="true"
             android:id="@+id/checkBox_playControl"
             android:layout_toStartOf="@id/imageButton_list"
-            android:background="@drawable/ic_bottom_player_control"/>
+            android:background="@drawable/ic_bottom_player_control" />
 
         <ImageButton
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_bottom_player_playlist"
             android:id="@+id/imageButton_list"
             android:background="@null" />
 

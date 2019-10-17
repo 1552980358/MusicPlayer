@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.provider.MediaStore
 import app.fokkusu.music.Application
 import app.fokkusu.music.base.Constants.Companion.Album
@@ -13,6 +14,7 @@ import app.fokkusu.music.base.Constants.Companion.AlbumPY
 import app.fokkusu.music.base.Constants.Companion.Artist
 import app.fokkusu.music.base.Constants.Companion.ArtistPY
 import app.fokkusu.music.base.Constants.Companion.BitRate
+import app.fokkusu.music.base.Constants.Companion.Dir_Cover
 import app.fokkusu.music.base.Constants.Companion.Duration
 import app.fokkusu.music.base.Constants.Companion.Id
 import app.fokkusu.music.base.Constants.Companion.Path
@@ -20,7 +22,6 @@ import app.fokkusu.music.base.Constants.Companion.Title
 import app.fokkusu.music.base.Constants.Companion.TitlePY
 import com.github.promeg.pinyinhelper.Pinyin
 import java.io.File
-import java.lang.Exception
 
 /**
  * @File    : MusicUtil
@@ -74,45 +75,64 @@ class MusicUtil(
     }
     
     fun albumCover(): Bitmap? {
-        return try {
-            if (data[AlbumCover] == null && data[BitRate] == null) {
-                MediaMetadataRetriever().apply {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        Application.getContext().contentResolver.openAssetFileDescriptor(
-                            Uri.parse(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString() + File.separator + id()),
-                            "r"
-                        )?.apply {
-                            setDataSource(fileDescriptor)
-                            close()
+        /* Check from map */
+        if (data[AlbumCover] != null) {
+            if (data[AlbumCover]!! is Boolean) {
+                return null
+            }
+            return data[AlbumCover] as Bitmap
+        }
+        
+        val file = File(
+            Application.getContext().externalCacheDir!!.absolutePath + File.separator + Dir_Cover,
+            (data[Id] as String).plus(".jpg")
+        )
+        
+        /* Take file from storage */
+        if (Environment.isExternalStorageEmulated()) {
+            try {
+                file.apply{
+                    if (exists()) {
+                        BitmapFactory.decodeFile(path).apply {
+                            data[AlbumCover] = this
+                            return this
                         }
-                    } else {
-                        setDataSource(path())
                     }
-                    
-                    if (data[BitRate] == null) {
-                        data[BitRate] =
-                            extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE).toInt()
-                    }
-                }.run {
-                    val pic = embeddedPicture
-                    if (embeddedPicture == null) {
-                        return@run null
-                    }
-                    BitmapFactory.decodeByteArray(embeddedPicture, 0, embeddedPicture.size).apply {
-                        data[AlbumCover] = this
-                        release()
-                    }
-                    
                 }
-            } else {
-                data[AlbumCover] as Bitmap?
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    
+        /* Take file from music file */
+        try {
+            MediaMetadataRetriever().apply {
+                Application.getContext().contentResolver.openAssetFileDescriptor(
+                    Uri.parse(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString() + File.separator + id()),
+                    "r"
+                )?.apply {
+                    setDataSource(fileDescriptor)
+                    close()
+                }
+        
+                data[AlbumCover] = embeddedPicture.apply {
+                    if (this == null || isEmpty()) {
+                        data[AlbumCover] = false
+                    }
+            
+                    data[AlbumCover] = BitmapFactory.decodeByteArray(this, 0, size)
+                    file.writeBytes(this)
+                }
+                release()
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            null
         }
+        
+        return data[AlbumCover] as Bitmap
     }
     
+    @Deprecated("Seems Useless")
     fun bitRate(): Int? {
         return try {
             if (data[AlbumCover] == null && data[BitRate] == null) {

@@ -18,9 +18,10 @@ class Application : Application() {
     companion object {
         var getApplication: app.fokkusu.music.Application? = null
             private set
-            get() = field as app.fokkusu.music.Application
+            get() = field!!
         
         fun getContext() = getApplication!!
+        
     }
     
     init {

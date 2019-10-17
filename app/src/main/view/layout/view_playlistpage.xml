@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="25dp"
-    android:minHeight="25dp"
-    android:maxHeight="25dp"
+    android:layout_height="40dp"
+    android:minHeight="40dp"
+    android:maxHeight="40dp"
     android:gravity="center_vertical"
     android:background="?attr/selectableItemBackground"
     android:paddingStart="5dp"
@@ -17,12 +17,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/textView_title"
         android:textColor="@color/black"
-        android:textSize="15sp" />
+        android:textSize="17sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="-"
+        android:text=" - "
         tools:ignore="HardcodedText" />
 
     <TextView

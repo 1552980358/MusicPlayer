@@ -7,6 +7,8 @@ import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.os.Bundle
 import android.text.TextUtils
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import app.fokkusu.music.R
 import app.fokkusu.music.service.PlayService
@@ -23,7 +25,15 @@ import kotlinx.android.synthetic.main.dialog_bottom_playlist.textView_title
  * @TIME    : 7:12 PM
  **/
 
-class BottomPlaylistDialog : BottomSheetDialogFragment() {
+class BottomPlaylistDialog @SuppressLint("ValidFragment") private constructor(): BottomSheetDialogFragment() {
+    
+    companion object {
+        val bottomPlaylistDialog by lazy { BottomPlaylistDialog() }
+        
+        private const val TAG = "BottomPlaylistDialog"
+    }
+    
+    private var activityFragmentManager: FragmentManager? = null
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +43,7 @@ class BottomPlaylistDialog : BottomSheetDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
             setContentView(R.layout.dialog_bottom_playlist)
+            
             linearLayout_root.layoutParams.height = resources.displayMetrics.heightPixels / 2
             
             textView_title.apply {
@@ -41,6 +52,8 @@ class BottomPlaylistDialog : BottomSheetDialogFragment() {
                 ellipsize = TextUtils.TruncateAt.MARQUEE
                 isSelected = true
             }
+    
+            listMusicView.setUpAdapterWithMusicList(PlayService.getPlayList(), 2)
             
             val info = PlayService.getCurrentMusicInfo() ?: return this
             textView_title.text = info.title()
@@ -99,7 +112,36 @@ class BottomPlaylistDialog : BottomSheetDialogFragment() {
                 )
             )
             
-            listMusicView.setUpAdapterWithMusicList(PlayService.getPlayList(), 2)
         }
+    }
+    
+    override fun show(transaction: FragmentTransaction, tag: String?): Int {
+        throw IllegalAccessException()
+    }
+    
+    fun show(manager: FragmentManager) {
+        showNow(manager, null)
+    }
+    
+    override fun show(manager: FragmentManager, tag: String?) {
+        showNow(manager, null)
+    }
+    
+    fun showNow(manager: FragmentManager) {
+        showNow(manager, null)
+    }
+    
+    override fun showNow(manager: FragmentManager, tag: String?) {
+        activityFragmentManager = manager
+        super.showNow(manager, TAG)
+    }
+    
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        
+        activityFragmentManager?.beginTransaction()?.remove(this)?.commit() ?: return
+        
+        // Remove FragmentManager
+        activityFragmentManager = null
     }
 }

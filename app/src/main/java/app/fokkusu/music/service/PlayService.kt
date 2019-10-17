@@ -128,10 +128,8 @@ class PlayService : Service() {
         }
         
         fun getCurrentMusicInfo(): MusicUtil? {
-            if (!init || playService!!.musicLoc == -1) {
-                if (musicList.isEmpty()) return null
-                return musicList.first()
-            }
+            if (!init || playService!!.musicLoc == -1) return null
+            
             return playService!!.playList[playService!!.musicLoc]
         }
         
@@ -240,6 +238,7 @@ class PlayService : Service() {
         })
     }
     
+    /* onStartCommand */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         
         startForeground(PlayServiceId, getNotification())

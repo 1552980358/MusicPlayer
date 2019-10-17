@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import app.fokkusu.music.base.activity.BaseAppCompatActivity
 import app.fokkusu.music.R
-import app.fokkusu.music.dialog.BottomPlaylistDialog
 import app.fokkusu.music.fragment.main.HomeFragment
 import app.fokkusu.music.fragment.main.MusicFragment
 import app.fokkusu.music.fragment.main.SettingFragment
@@ -41,6 +40,7 @@ class MainActivity : BaseAppCompatActivity() {
                 return fragments.size
             }
         }
+        
         tabLayout.apply {
             setupWithViewPager(viewPager)
             getTabAt(0)!!.setIcon(R.drawable.ic_tab_setting)
@@ -91,6 +91,8 @@ class MainActivity : BaseAppCompatActivity() {
                 }
             })
         }
+        
+        bottomPlayerView.setParentActivity(this)
     }
     
     override fun onBackPressed() {

@@ -53,7 +53,6 @@ class ListMusicView : ListView {
             return
         }
         
-        smoothScrollToPosition(PlayService.getCurrentMusic())
         setOnItemClickListener { _, _, position, _ ->
             context.startService(
                 Intent(context, PlayService::class.java).putExtra(

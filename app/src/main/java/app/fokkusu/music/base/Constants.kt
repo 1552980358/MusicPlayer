@@ -61,6 +61,10 @@ class Constants private constructor() {
         const val ArtistPY = "ArtistPY"
         const val AlbumPY = "AlbumPY"
         const val AlbumCover = "AlbumCover"
+        
+        /* Dirs */
+        const val Dir_Lyric = "Lyric"
+        const val Dir_Cover = "Cover"
     }
     
     init {
