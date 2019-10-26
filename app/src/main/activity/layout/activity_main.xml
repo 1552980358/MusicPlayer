@@ -7,16 +7,16 @@
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity"
     android:fitsSystemWindows="true" >
-
+    
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
-
+        
         <com.google.android.material.appbar.AppBarLayout
             android:layout_height="?attr/actionBarSize"
             android:layout_width="match_parent"
             android:theme="@style/AppTheme.AppBarOverlay" >
-
+            
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
@@ -24,7 +24,7 @@
                 android:background="?attr/colorPrimary"
                 app:titleTextColor="@color/black"
                 app:popupTheme="@style/AppTheme.PopupOverlay" >
-
+                
                 <com.google.android.material.tabs.TabLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -32,31 +32,31 @@
                     app:tabTextColor="@color/black"
                     app:tabIndicatorColor="@color/black"
                     android:layout_gravity="end" />
-
+            
             </androidx.appcompat.widget.Toolbar >
-
+        
         </com.google.android.material.appbar.AppBarLayout >
-
+        
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" >
-
+            
             <androidx.viewpager.widget.ViewPager
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/viewPager"
                 android:layout_above="@id/bottomPlayerView"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
+            
             <app.fokkusu.music.view.BottomPlayerView
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:id="@+id/bottomPlayerView"
                 android:layout_alignParentBottom="true" />
-
+        
         </RelativeLayout >
-
+        
         <ImageButton
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -68,8 +68,9 @@
             android:id="@+id/fab"
             android:clickable="true"
             android:focusable="true"
-            android:alpha="0"/>
-
+            android:alpha="0"
+            tools:ignore="ContentDescription" />
+    
     </androidx.coordinatorlayout.widget.CoordinatorLayout >
 
 </androidx.drawerlayout.widget.DrawerLayout >

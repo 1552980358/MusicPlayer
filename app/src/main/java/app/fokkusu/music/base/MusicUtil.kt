@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import android.provider.MediaStore
 import app.fokkusu.music.Application
 import app.fokkusu.music.base.Constants.Companion.Album
@@ -14,14 +13,17 @@ import app.fokkusu.music.base.Constants.Companion.AlbumPY
 import app.fokkusu.music.base.Constants.Companion.Artist
 import app.fokkusu.music.base.Constants.Companion.ArtistPY
 import app.fokkusu.music.base.Constants.Companion.BitRate
-import app.fokkusu.music.base.Constants.Companion.Dir_Cover
 import app.fokkusu.music.base.Constants.Companion.Duration
 import app.fokkusu.music.base.Constants.Companion.Id
 import app.fokkusu.music.base.Constants.Companion.Path
 import app.fokkusu.music.base.Constants.Companion.Title
 import app.fokkusu.music.base.Constants.Companion.TitlePY
 import com.github.promeg.pinyinhelper.Pinyin
+import com.google.gson.JsonParser
+import okhttp3.*
 import java.io.File
+import java.net.URL
+import java.util.concurrent.TimeUnit
 
 /**
  * @File    : MusicUtil
@@ -83,27 +85,28 @@ class MusicUtil(
             return data[AlbumCover] as Bitmap
         }
         
-        val file = File(
-            Application.getContext().externalCacheDir!!.absolutePath + File.separator + Dir_Cover,
-            (data[Id] as String).plus(".jpg")
-        )
+        val fileCover = File(Application.extDataDir_cover, (data[Id] as String).plus(".png"))
+        val fileLyric = File(Application.extDataDir_lyric, (data[Id] as String).plus(".lrc"))
         
         /* Take file from storage */
-        if (Environment.isExternalStorageEmulated()) {
-            try {
-                file.apply{
-                    if (exists()) {
-                        BitmapFactory.decodeFile(path).apply {
-                            data[AlbumCover] = this
-                            return this
-                        }
+        try {
+            fileCover.apply {
+                if (exists()) {
+                    // Empty file
+                    if (this.length() == 0L) {
+                        data[AlbumCover] = false
+                        return null
+                    }
+                    BitmapFactory.decodeFile(path).apply {
+                        data[AlbumCover] = this
+                        return this
                     }
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-    
+        
         /* Take file from music file */
         try {
             MediaMetadataRetriever().apply {
@@ -114,20 +117,116 @@ class MusicUtil(
                     setDataSource(fileDescriptor)
                     close()
                 }
-        
+                
                 data[AlbumCover] = embeddedPicture.apply {
-                    if (this == null || isEmpty()) {
-                        data[AlbumCover] = false
+                    if (this != null && isNotEmpty()) {
+                        data[AlbumCover] = BitmapFactory.decodeByteArray(this, 0, size)
+                        fileCover.writeBytes(this)
                     }
-            
-                    data[AlbumCover] = BitmapFactory.decodeByteArray(this, 0, size)
-                    file.writeBytes(this)
                 }
                 release()
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
+        
+        if (data[AlbumCover] != null) {
+            return data[AlbumCover] as Bitmap
+        }
+        
+        try {
+            /* Get From 163 server */
+            JsonParser().parse(Request.Builder().header(
+                "User-Agent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36"
+            ).url("http://music.163.com/api/search/pc").post(FormBody.Builder().apply {
+                add("s", title())
+                add("offset", "0")
+                add("limit", "1")
+                add("type", "1")
+            }.build()).build().run {
+                OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS)
+                    .writeTimeout(5, TimeUnit.SECONDS).build().newCall(this)
+                    .execute().body!!.string()
+            }).asJsonObject.get("result").asJsonObject.get("songs").asJsonArray.apply {
+                if (this.size() == 0) {
+                    data[AlbumCover] = false
+                    return null
+                }
+                
+                first().asJsonObject.apply {
+                    /* Fetch and save album cover */
+                    BitmapFactory.decodeStream(URL(get("album").asJsonObject.get("picUrl").asString).openStream())
+                        .apply {
+                            // Empty content
+                            if (this == null || byteCount == 0)
+                                data[AlbumCover] = false
+                            
+                            // Save
+                            data[AlbumCover] = this
+                            fileCover.outputStream().apply {
+                                compress(Bitmap.CompressFormat.PNG, 100, this)
+                                flush()
+                                close()
+                            }
+                        }
+                    
+                    if (!fileLyric.exists() || fileLyric.length() == 0L) {
+                        fileLyric.createNewFile()
+                        
+                        val text: String
+                        /* Decode JSON code */
+                        URL(
+                            "http://music.163.com/api/song/media?id=${first().asJsonObject.get(
+                                "id"
+                            ).asString}"
+                        ).openStream().apply {
+                            bufferedReader().apply {
+                                text = JsonParser().parse(readText())
+                                    .asJsonObject.get("lyric").asString
+                                close()
+                            }
+                            close()
+                        }
+                        
+                        fileLyric.createNewFile()
+                        
+                        // Do nothing when empty
+                        if (text.isNotEmpty()) {
+                            fileLyric.writeText(StringBuilder().apply {
+                                // Output into lrc file
+                                text.reader().buffered().apply {
+                                    readLines().forEach {
+                                        if (it.isEmpty() || !it.startsWith('[') ||
+                                            it[1] in 'a'..'z' || it[1] in 'A'..'Z' ||
+                                            !it.contains(']') ||
+                                            it.substring(it.lastIndexOf(']') + 1).isEmpty()
+                                        ) {
+                                            append(it.plus("\n"))
+                                        }
+                                    }
+                                    close()
+                                }
+                            }.toString())
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.getStack()
+        }
+        
+        if (data[AlbumCover] == null) {
+            data[AlbumCover] = false
+            fileCover.createNewFile()
+        }
+        
+        if (!fileLyric.exists()) {
+            fileLyric.createNewFile()
+        }
+        
+        if (data[AlbumCover] is Boolean)
+            return null
         
         return data[AlbumCover] as Bitmap
     }

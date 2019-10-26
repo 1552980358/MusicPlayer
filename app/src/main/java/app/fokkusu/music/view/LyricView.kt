@@ -28,6 +28,7 @@ class LyricView(context: Context, attributeSet: AttributeSet?) : View(context, a
     private var drawHeight = 0F
     
     private val empty = "···"
+    private var emptyList = false
     
     /* Paints */
     private val paintCurrent by lazy {
@@ -50,21 +51,52 @@ class LyricView(context: Context, attributeSet: AttributeSet?) : View(context, a
         paintOther
     }
     
+    fun updateMusicLyricAndReturn(rawLyric: ArrayList<String>): ArrayList<String> {
+        return arrayListOf<String>().apply {
+            lyricList.clear()
+            lyricTime.clear()
+    
+            for (j in rawLyric) {
+                /* Prevent empty content */
+                if (j.isEmpty() || !j.startsWith('[') || j[1] in 'a'..'z' || j[1] in 'A'..'Z' || !j.contains(
+                        ']'
+                    ) || j.substring(j.lastIndexOf(']') + 1).isEmpty()
+                ) {
+                    continue
+                }
+        
+                /* Time */
+                // 0123456789
+                // [HH:mm:ss]
+                lyricTime.add(
+                    j.substring(1, 3).toInt() * 60000 +         // Hr
+                        j.substring(4, 6).toInt() * 1000 +  // Min
+                        j.substring(7, 9).toInt() * 10      // Sec
+                )
+        
+                /* Lyric */
+                lyricList.add(j.substring(j.lastIndexOf(']') + 1))
+                
+                add(j)
+            }
+            
+            postInvalidate()
+        }
+    }
+    
     @Synchronized
     fun updateMusicLyric(rawLyric: ArrayList<String>) {
         /* Remove all content */
         lyricList.clear()
         lyricTime.clear()
         
+        if (rawLyric.isEmpty()) {
+            emptyList = true
+            postInvalidate()
+        }
+        
+        emptyList = false
         for (j in rawLyric) {
-            /* Prevent empty content */
-            if (j.isEmpty() || !j.startsWith('[') || j[1] in 'a'..'z' || j[1] in 'A'..'Z' || !j.contains(
-                    ']'
-                ) || j.substring(j.lastIndexOf(']') + 1).isEmpty()
-            ) {
-                continue
-            }
-            
             /* Time */
             // 0123456789
             // [HH:mm:ss]
@@ -108,6 +140,17 @@ class LyricView(context: Context, attributeSet: AttributeSet?) : View(context, a
         canvas.drawColor(Color.TRANSPARENT)
         
         drawHeight = 0F
+        
+        if (emptyList) {
+            paintOther.getTextBounds(empty, 0, empty.length, rect)
+            canvas.drawText(
+                empty,
+                (constWidth - rect.width()) / 2,
+                rect.height().toFloat(),
+                paintCurrent
+            )
+            return
+        }
         
         /* Pointer indicates empty list */
         if (current == -1) {

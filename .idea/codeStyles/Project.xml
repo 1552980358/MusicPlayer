@@ -1,118 +1,21 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
-    <option name="OTHER_INDENT_OPTIONS">
-      <value>
-        <option name="SMART_TABS" value="true" />
-      </value>
-    </option>
-    <option name="LINE_SEPARATOR" value="&#10;" />
-    <option name="RIGHT_MARGIN" value="100" />
     <AndroidXmlCodeStyleSettings>
       <option name="USE_CUSTOM_SETTINGS" value="true" />
-      <option name="LAYOUT_SETTINGS">
-        <value>
-          <option name="INSERT_BLANK_LINE_BEFORE_TAG" value="false" />
-          <option name="INSERT_LINE_BREAK_BEFORE_NAMESPACE_DECLARATION" value="true" />
-        </value>
-      </option>
-      <option name="MANIFEST_SETTINGS">
-        <value>
-          <option name="GROUP_TAGS_WITH_SAME_NAME" value="false" />
-          <option name="INSERT_LINE_BREAK_BEFORE_NAMESPACE_DECLARATION" value="true" />
-        </value>
-      </option>
-      <option name="VALUE_RESOURCE_FILE_SETTINGS">
-        <value>
-          <option name="INSERT_LINE_BREAKS_AROUND_STYLE" value="false" />
-        </value>
-      </option>
-      <option name="OTHER_SETTINGS">
-        <value>
-          <option name="INSERT_LINE_BREAK_BEFORE_NAMESPACE_DECLARATION" value="true" />
-        </value>
-      </option>
     </AndroidXmlCodeStyleSettings>
-    <JavaCodeStyleSettings>
-      <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="99" />
-      <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="99" />
-      <option name="PACKAGES_TO_USE_IMPORT_ON_DEMAND">
-        <value />
-      </option>
-      <option name="IMPORT_LAYOUT_TABLE">
-        <value>
-          <package name="android" withSubpackages="true" static="false" />
-          <emptyLine />
-          <package name="com" withSubpackages="true" static="false" />
-          <emptyLine />
-          <package name="junit" withSubpackages="true" static="false" />
-          <emptyLine />
-          <package name="net" withSubpackages="true" static="false" />
-          <emptyLine />
-          <package name="org" withSubpackages="true" static="false" />
-          <emptyLine />
-          <package name="java" withSubpackages="true" static="false" />
-          <emptyLine />
-          <package name="javax" withSubpackages="true" static="false" />
-          <emptyLine />
-          <package name="" withSubpackages="true" static="false" />
-          <emptyLine />
-          <package name="" withSubpackages="true" static="true" />
-          <emptyLine />
-        </value>
-      </option>
-    </JavaCodeStyleSettings>
     <JetCodeStyleSettings>
-      <option name="PACKAGES_TO_USE_STAR_IMPORTS">
-        <value>
-          <package name="java.util" withSubpackages="false" static="false" />
-          <package name="kotlinx.android.synthetic" withSubpackages="false" static="false" />
-        </value>
-      </option>
-      <option name="NAME_COUNT_TO_USE_STAR_IMPORT" value="2147483647" />
-      <option name="NAME_COUNT_TO_USE_STAR_IMPORT_FOR_MEMBERS" value="2147483647" />
-      <option name="BLANK_LINES_AROUND_BLOCK_WHEN_BRANCHES" value="1" />
       <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
     </JetCodeStyleSettings>
     <XML>
-      <option name="XML_ATTRIBUTE_WRAP" value="4" />
-      <option name="XML_TEXT_WRAP" value="0" />
-      <option name="XML_KEEP_LINE_BREAKS" value="false" />
+      <option name="XML_KEEP_LINE_BREAKS_IN_TEXT" value="false" />
       <option name="XML_KEEP_BLANK_LINES" value="1" />
       <option name="XML_SPACE_AFTER_TAG_NAME" value="true" />
     </XML>
-    <codeStyleSettings language="CMake">
-      <indentOptions>
-        <option name="SMART_TABS" value="true" />
-      </indentOptions>
-    </codeStyleSettings>
-    <codeStyleSettings language="Groovy">
-      <indentOptions>
-        <option name="SMART_TABS" value="true" />
-      </indentOptions>
-    </codeStyleSettings>
-    <codeStyleSettings language="HTML">
-      <indentOptions>
-        <option name="SMART_TABS" value="true" />
-      </indentOptions>
-    </codeStyleSettings>
-    <codeStyleSettings language="JAVA">
-      <indentOptions>
-        <option name="CONTINUATION_INDENT_SIZE" value="4" />
-        <option name="SMART_TABS" value="true" />
-        <option name="USE_RELATIVE_INDENTS" value="true" />
-      </indentOptions>
-    </codeStyleSettings>
-    <codeStyleSettings language="ObjectiveC">
-      <indentOptions>
-        <option name="SMART_TABS" value="true" />
-      </indentOptions>
-    </codeStyleSettings>
     <codeStyleSettings language="XML">
-      <option name="RIGHT_MARGIN" value="10" />
-      <option name="FORCE_REARRANGE_MODE" value="1" />
+      <option name="WRAP_ON_TYPING" value="0" />
       <indentOptions>
         <option name="CONTINUATION_INDENT_SIZE" value="4" />
-        <option name="SMART_TABS" value="true" />
+        <option name="KEEP_INDENTS_ON_EMPTY_LINES" value="true" />
       </indentOptions>
       <arrangement>
         <rules>
@@ -121,6 +24,7 @@
               <match>
                 <AND>
                   <NAME>xmlns:android</NAME>
+                  <XML_ATTRIBUTE />
                   <XML_NAMESPACE>^$</XML_NAMESPACE>
                 </AND>
               </match>
@@ -131,6 +35,7 @@
               <match>
                 <AND>
                   <NAME>xmlns:.*</NAME>
+                  <XML_ATTRIBUTE />
                   <XML_NAMESPACE>^$</XML_NAMESPACE>
                 </AND>
               </match>
@@ -142,6 +47,7 @@
               <match>
                 <AND>
                   <NAME>.*:id</NAME>
+                  <XML_ATTRIBUTE />
                   <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
                 </AND>
               </match>
@@ -152,6 +58,7 @@
               <match>
                 <AND>
                   <NAME>.*:name</NAME>
+                  <XML_ATTRIBUTE />
                   <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
                 </AND>
               </match>
@@ -162,6 +69,7 @@
               <match>
                 <AND>
                   <NAME>name</NAME>
+                  <XML_ATTRIBUTE />
                   <XML_NAMESPACE>^$</XML_NAMESPACE>
                 </AND>
               </match>
@@ -172,6 +80,7 @@
               <match>
                 <AND>
                   <NAME>style</NAME>
+                  <XML_ATTRIBUTE />
                   <XML_NAMESPACE>^$</XML_NAMESPACE>
                 </AND>
               </match>
@@ -182,6 +91,7 @@
               <match>
                 <AND>
                   <NAME>.*</NAME>
+                  <XML_ATTRIBUTE />
                   <XML_NAMESPACE>^$</XML_NAMESPACE>
                 </AND>
               </match>
@@ -193,6 +103,7 @@
               <match>
                 <AND>
                   <NAME>.*</NAME>
+                  <XML_ATTRIBUTE />
                   <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
                 </AND>
               </match>
@@ -204,6 +115,7 @@
               <match>
                 <AND>
                   <NAME>.*</NAME>
+                  <XML_ATTRIBUTE />
                   <XML_NAMESPACE>.*</XML_NAMESPACE>
                 </AND>
               </match>
@@ -215,10 +127,8 @@
     </codeStyleSettings>
     <codeStyleSettings language="kotlin">
       <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
-      <option name="KEEP_LINE_BREAKS" value="false" />
-      <option name="KEEP_FIRST_COLUMN_COMMENT" value="false" />
       <indentOptions>
-        <option name="SMART_TABS" value="true" />
+        <option name="CONTINUATION_INDENT_SIZE" value="4" />
         <option name="KEEP_INDENTS_ON_EMPTY_LINES" value="true" />
       </indentOptions>
     </codeStyleSettings>

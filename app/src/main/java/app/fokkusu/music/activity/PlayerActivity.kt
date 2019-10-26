@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.graphics.drawable.toDrawable
+import app.fokkusu.music.Application
 import app.fokkusu.music.R
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_CHANGED
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PAUSE
@@ -34,9 +35,9 @@ import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY_FORM
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY_FORM_CONTENT
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_SEEK_CHANGE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_SEEK_CHANGE_POSITION
+import app.fokkusu.music.base.getStack
 import app.fokkusu.music.base.getTime
 import app.fokkusu.music.service.PlayService
-import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_player.checkBox_playControl
 import kotlinx.android.synthetic.main.activity_player.drawerLayout_container
 import kotlinx.android.synthetic.main.activity_player.imageButton_last
@@ -48,15 +49,7 @@ import kotlinx.android.synthetic.main.activity_player.seekBar
 import kotlinx.android.synthetic.main.activity_player.textView_timePass
 import kotlinx.android.synthetic.main.activity_player.textView_timeTotal
 import kotlinx.android.synthetic.main.activity_player.toolbar
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.FormBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import java.io.IOException
-import java.net.URL
-import java.util.concurrent.TimeUnit
+import java.io.File
 
 /**
  * @File    : PlayerActivity
@@ -77,7 +70,6 @@ class PlayerActivity : AppCompatActivity() {
     private var timeCount: Thread? = null
     private var threadStop = false
     
-    private var lyricFetch = false
     
     /* Pre-Set Size */
     private val albumSize by lazy { resources.displayMetrics.widthPixels * 2 / 3 }
@@ -125,7 +117,7 @@ class PlayerActivity : AppCompatActivity() {
         
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener { onBackPressed() }
-    
+        
         try {
             (toolbar.javaClass.getDeclaredField("mTitleTextView").apply { isAccessible = true }.get(
                 toolbar
@@ -156,7 +148,7 @@ class PlayerActivity : AppCompatActivity() {
                 )
             )
         }
-    
+        
         val cycle = ContextCompat.getDrawable(this, R.drawable.ic_player_cycle)
         val single = ContextCompat.getDrawable(this, R.drawable.ic_player_single)
         val random = ContextCompat.getDrawable(this, R.drawable.ic_player_random)
@@ -261,23 +253,16 @@ class PlayerActivity : AppCompatActivity() {
     @Synchronized
     private fun changeMusic() {
         try {
-            PlayService.getCurrentMusicInfo().apply {
-                this ?: return
+            PlayService.getCurrentMusicInfo()?.apply {
+                
                 (duration() / 1000).apply {
                     textView_timeTotal.text = getTime(this)
                     seekBar.max = this
                 }
                 toolbar.title = title()
                 toolbar.subtitle = "${artist()} - ${album()}"
-            }
-            getLyric()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        
-        try {
-            PlayService.getCurrentMusicInfo()?.let {
-                it.albumCover().apply {
+    
+                albumCover().apply {
                     this ?: return
                     if (width == height) {
                         imageView_album.setImageDrawable(RoundedBitmapDrawableFactory.create(
@@ -288,7 +273,9 @@ class PlayerActivity : AppCompatActivity() {
                                 }
                             }, true)
                         ).apply { isCircular = true })
-                        
+            
+                        // Cut width
+                        @Suppress("DuplicatedCode")
                         drawerLayout_container.background =
                             Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
                                 (screenHei / height).toFloat().apply {
@@ -299,12 +286,12 @@ class PlayerActivity : AppCompatActivity() {
                                     this, (width - screenWid) / 2, 0, screenWid, height
                                 )
                             }.toDrawable(resources)
-                        
+            
                         return
                     }
-                    
+    
+                    // Cut width
                     if (width > height) {
-                        
                         imageView_album.setImageDrawable(RoundedBitmapDrawableFactory.create(
                             resources,
                             Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
@@ -317,20 +304,23 @@ class PlayerActivity : AppCompatActivity() {
                                 )
                             })
                         )
-                        
-                        Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
-                            (screenHei / height).toFloat().apply {
-                                setScale(this, this)
-                            }
-                        }, true).run {
-                            Bitmap.createBitmap(
-                                this, (width - screenWid) / 2, 0, screenWid, screenHei
-                            )
-                        }.toDrawable(resources)
-                        
+    
+                        @Suppress("DuplicatedCode")
+                        drawerLayout_container.background =
+                            Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
+                                (screenHei / height).toFloat().apply {
+                                    setScale(this, this)
+                                }
+                            }, true).run {
+                                Bitmap.createBitmap(
+                                    this, (width - screenWid) / 2, 0, screenWid, screenHei
+                                )
+                            }.toDrawable(resources)
+    
                         return
                     }
-                    
+        
+                    // Cut height
                     imageView_album.setImageDrawable(RoundedBitmapDrawableFactory.create(resources,
                         Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
                             (albumSize / width).toFloat().apply {
@@ -338,22 +328,24 @@ class PlayerActivity : AppCompatActivity() {
                             }
                         }, true).run {
                             Bitmap.createBitmap(
-                                this, 0, (width - albumSize) / 2, albumSize, albumSize
+                                this, 0, (height - albumSize) / 2, albumSize, albumSize
                             )
                         })
                     )
-                    
-                    Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
-                        (screenWid / width).toFloat().apply {
-                            setScale(this, this)
-                        }
-                    }, true).run {
-                        Bitmap.createBitmap(
-                            this, 0, (width - screenHei) / 2, screenWid, screenHei
-                        )
-                    }.toDrawable(resources)
+        
+                    drawerLayout_container.background =
+                        Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
+                            (screenWid / width).toFloat().apply {
+                                setScale(this, this)
+                            }
+                        }, true).run {
+                            Bitmap.createBitmap(
+                                this, 0, (height - screenHei) / 2, screenWid, screenHei
+                            )
+                        }.toDrawable(resources)
                 }
             }
+            getLyric()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -361,7 +353,7 @@ class PlayerActivity : AppCompatActivity() {
     
     private fun getThreadStart() {
         timeCount = Thread {
-        
+            
             threadStop = false
             while (PlayService.playerState == PlayService.Companion.PlayState.PLAY && !threadStop) {
                 if (seekBarFree) {
@@ -375,7 +367,7 @@ class PlayerActivity : AppCompatActivity() {
                         }
                     }
                 }
-            
+                
                 try {
                     Thread.sleep(200)
                 } catch (e: Exception) {
@@ -388,78 +380,19 @@ class PlayerActivity : AppCompatActivity() {
     
     @Synchronized
     private fun getLyric() {
-        if (lyricFetch) return
-        
         Thread {
-            lyricFetch = true
             val info = PlayService.getCurrentMusicInfo()
             
             info ?: return@Thread
             
-            try {
-                Request.Builder().header(
-                    "User-Agent",
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36"
-                ).url("http://music.163.com/api/search/pc").post(FormBody.Builder().apply {
-                    add("s", info.title())
-                    add("offset", "0")
-                    add("limit", "1")
-                    add("type", "1")
-                }.build()).build().apply {
-                    OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS)
-                        .writeTimeout(5, TimeUnit.SECONDS).build().newCall(this)
-                        .enqueue(object : Callback {
-                            override fun onFailure(call: Call, e: IOException) {
-                                /* Error */
-                                e.printStackTrace()
-                            }
-                            
-                            override fun onResponse(call: Call, response: Response) {
-                                response.body ?: return
-                                
-                                /* Decode JSON code */
-                                JsonParser().parse(response.body!!.string())
-                                    .asJsonObject.get("result").asJsonObject.get("songs")
-                                    .asJsonArray.apply {
-                                    if (this.size() == 0) {
-                                        return
-                                    }
-                                    
-                                    var text: String
-                                    
-                                    /* Decode JSON code */
-                                    URL(
-                                        "http://music.163.com/api/song/media?id=${first().asJsonObject.get(
-                                            "id"
-                                        ).asString}"
-                                    ).openStream().apply {
-                                        bufferedReader().apply {
-                                            text = JsonParser().parse(readText())
-                                                .asJsonObject.get("lyric").asString
-                                            close()
-                                        }
-                                        close()
-                                    }
-                                    
-                                    if (text.isEmpty()) return
-                                    
-                                    /* Remove empty lines */
-                                    lyricView.updateMusicLyric(
-                                        ArrayList(
-                                            listOf(
-                                                *text.split(("\n").toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                                            )
-                                        )
-                                    )
-                                    
-                                }
-                            }
-                        })
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
+            val file = File(Application.extDataDir_lyric, info.id().plus(".lrc"))
+            
+            // Local empty file
+            if (file.exists() && file.length() == 0L) {
+                lyricView.updateMusicLyric(arrayListOf())
             }
-            lyricFetch = false
+            
+            lyricView.updateMusicLyric(ArrayList(file.readLines()))
         }.start()
     }
     
@@ -504,7 +437,7 @@ class PlayerActivity : AppCompatActivity() {
         try {
             unregisterReceiver(broadcastReceiver)
         } catch (e: Exception) {
-            e.printStackTrace()
+            e.getStack()
         }
         
         System.gc()

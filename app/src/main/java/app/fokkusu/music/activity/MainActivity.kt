@@ -77,6 +77,8 @@ class MainActivity : BaseAppCompatActivity() {
                 
                 @SuppressLint("RestrictedApi")
                 override fun onPageSelected(position: Int) {
+                    title = titles[position]
+                    
                     if (position == 2) {
                         fab.setImageResource(R.drawable.ic_fab_search)
                         fab.setOnClickListener(onClickListener0)
@@ -87,6 +89,7 @@ class MainActivity : BaseAppCompatActivity() {
                         fab.setOnClickListener(onClickListener1)
                         return
                     }
+                    
                     fab.setImageDrawable(null)
                 }
             })
