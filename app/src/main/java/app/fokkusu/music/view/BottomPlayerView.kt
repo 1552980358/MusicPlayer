@@ -5,12 +5,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.Matrix
+import android.graphics.drawable.Drawable
 import android.text.TextUtils.TruncateAt.MARQUEE
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_CHANGED
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PAUSE
@@ -20,6 +22,8 @@ import app.fokkusu.music.activity.PlayerActivity
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CONTENT
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PAUSE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY
+import app.fokkusu.music.base.activity.BaseAppCompatActivity
+import app.fokkusu.music.base.log
 import app.fokkusu.music.dialog.BottomPlaylistDialog
 import app.fokkusu.music.service.PlayService
 import app.fokkusu.music.service.PlayService.Companion.getCurrentMusicInfo
@@ -42,9 +46,9 @@ import kotlinx.android.synthetic.main.view_bottom_player.view.textView_title
 class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
     LinearLayout(context, attributeSet) {
     
-    private lateinit var parentActivity: AppCompatActivity
+    private lateinit var parentActivity: BaseAppCompatActivity
     
-    private val albumSize by lazy { resources.getDimensionPixelSize(R.dimen.view_bottom_player_imageView) }
+    private val albumSize by lazy { resources.getDimensionPixelSize(R.dimen.view_bottom_player_imageView).toFloat() }
     
     private var broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -60,7 +64,28 @@ class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
                 }
                 
                 SERVICE_BROADCAST_CHANGED -> {
-                    updateInfo()
+                    if (visibility == View.GONE) {
+                        resources.getDimensionPixelSize(R.dimen.bottomPlayerView_height).apply {
+                            visibility = View.VISIBLE
+                            
+                            log("scrollY", scrollY.toString())
+                            scrollY = -this
+                            
+                            Thread {
+                                for (i in 40 downTo -10 ) {
+                                    post { scrollY = -(i * this / 40) }
+                                    Thread.sleep(10)
+                                }
+                                for (i in -10 .. 0) {
+                                    post { scrollY = -(i * this / 40) }
+                                    Thread.sleep(10)
+                                }
+                            }.start()
+                        }
+                    }
+                    Thread {
+                        updateInfo()
+                    }.start()
                 }
             }
         }
@@ -74,6 +99,10 @@ class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
     
     init {
         LayoutInflater.from(context).inflate(R.layout.view_bottom_player, this)
+        
+        setBackgroundColor(Color.TRANSPARENT)
+        
+        visibility = View.GONE
         
         textView_title.apply {
             setSingleLine()
@@ -96,42 +125,53 @@ class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
             BottomPlaylistDialog.bottomPlaylistDialog.showNow(parentActivity.supportFragmentManager)
         }
         
-        relativeLayout_container.setOnClickListener { context.startActivity(Intent(context, PlayerActivity::class.java)) }
+        relativeLayout_container.setOnClickListener {
+            context.startActivity(
+                Intent(
+                    context,
+                    PlayerActivity::class.java
+                )
+            )
+        }
     }
     
-    fun setParentActivity(appCompatActivity: AppCompatActivity) {
-        parentActivity = appCompatActivity
+    fun setParentActivity(baseAppCompatActivity: BaseAppCompatActivity) {
+        parentActivity = baseAppCompatActivity
     }
     
     @Suppress("SetTextI18n", "DuplicatedCode")
     @Synchronized
     fun updateInfo() {
         getCurrentMusicInfo().apply {
-            this?:return
+            this ?: return
             
-            textView_title.text = title()
-            textView_info.text = "${artist()} - ${album()}"
-            checkBox_playControl.isChecked = playerState == PLAY
+            parentActivity.runOnUiThread {
+                textView_title.text = title()
+                textView_info.text = "${artist()} - ${album()}"
+                checkBox_playControl.isChecked = playerState == PLAY
+            }
             
             val cover = albumCover()
+            val tmp: Drawable
             if (cover != null) {
                 /* Rescale Bitmap and cut into circle */
                 if (cover.width == cover.height) {
-                    imageView_album.setImageDrawable(RoundedBitmapDrawableFactory.create(
+                    tmp = RoundedBitmapDrawableFactory.create(
                         resources, Bitmap.createBitmap(
                             cover, 0, 0, cover.width, cover.height, Matrix().apply {
-                                (albumSize / cover.width).toFloat().apply {
-                                    setScale(this, this)
+                                (albumSize / cover.width).apply {
+                                    postScale(this, this)
                                 }
                             }, true
                         )
-                    ).apply { isCircular = true })
+                    ).apply { isCircular = true }
+                    parentActivity.runOnUiThread { imageView_album.setImageDrawable(tmp) }
                     return
                 }
                 
                 /* Cut Height pixels */
                 if (cover.width < cover.height) {
-                    imageView_album.setImageDrawable(RoundedBitmapDrawableFactory.create(
+                    tmp = RoundedBitmapDrawableFactory.create(
                         resources, Bitmap.createBitmap(
                             cover,
                             0,
@@ -139,18 +179,20 @@ class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
                             cover.width,
                             cover.width,
                             Matrix().apply {
-                                (albumSize / cover.width).toFloat().apply {
-                                    setScale(this, this)
+                                (albumSize / cover.width).apply {
+                                    postScale(this, this)
                                 }
                             },
                             true
                         )
-                    ).apply { isCircular = true })
+                    ).apply { isCircular = true }
+                    
+                    parentActivity.runOnUiThread { imageView_album.setImageDrawable(tmp) }
                     return
                 }
                 
                 /* Cut Width pixels */
-                imageView_album.setImageDrawable(RoundedBitmapDrawableFactory.create(
+                tmp = RoundedBitmapDrawableFactory.create(
                     resources, Bitmap.createBitmap(
                         cover,
                         0,
@@ -158,15 +200,15 @@ class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
                         cover.width,
                         cover.width,
                         Matrix().apply {
-                            (albumSize / cover.width).toFloat().apply {
-                                setScale(this, this)
+                            (albumSize / cover.width).apply {
+                                postScale(this, this)
                             }
                         },
                         true
                     )
-                ).apply { isCircular = true })
+                ).apply { isCircular = true }
                 
-                checkBox_playControl.isChecked = false
+                parentActivity.runOnUiThread { imageView_album.setImageDrawable(tmp) }
             }
         }
     }

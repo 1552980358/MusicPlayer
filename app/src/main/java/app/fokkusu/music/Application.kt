@@ -2,6 +2,7 @@ package app.fokkusu.music
 
 import android.app.Application
 import android.content.Intent
+import android.os.Handler
 import app.fokkusu.music.base.Constants.Companion.Dir_Cover
 import app.fokkusu.music.base.Constants.Companion.Dir_Lyric
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CONTENT
@@ -18,6 +19,8 @@ import java.io.File
 
 class Application : Application() {
     companion object {
+        val handler by lazy { Handler() }
+        
         var getApplication: app.fokkusu.music.Application? = null
             private set
             get() = field!!
@@ -43,5 +46,7 @@ class Application : Application() {
             extDataDir_cover.mkdirs()
         if (!extDataDir_lyric.exists())
             extDataDir_lyric.mkdirs()
+        
+        handler
     }
 }

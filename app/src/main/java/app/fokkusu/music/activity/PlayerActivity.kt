@@ -428,7 +428,6 @@ class PlayerActivity : AppCompatActivity() {
     }
     
     override fun onDestroy() {
-        
         // Stop Thread
         threadStop = false
         timeCount = null

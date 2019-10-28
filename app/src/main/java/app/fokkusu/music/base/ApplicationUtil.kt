@@ -22,7 +22,7 @@ fun log(tag: Int, msg: String) = Log.e(Application.getContext().getString(tag), 
 fun Exception.getStack() {
     if (BuildConfig.DEBUG) { printStackTrace() }
     
-    printStackTrace(PrintWriter(StringWriter().apply { makeToast(toString()); close() }).apply { close() })
+    printStackTrace(PrintWriter(StringWriter().apply { Application.handler.post { makeToast(toString()) }; close() }).apply { close() })
 }
 
 fun makeToast(msg: String, length: Int = Toast.LENGTH_SHORT) = Toast.makeText(Application.getContext(), msg, length).show()

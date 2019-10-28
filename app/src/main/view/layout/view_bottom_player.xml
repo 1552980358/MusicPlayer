@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    android:layout_height="51dp" >
+    android:layout_height="@dimen/bottomPlayerView_height"
+    android:background="@color/transparent">
 
     <View
         android:layout_width="match_parent"

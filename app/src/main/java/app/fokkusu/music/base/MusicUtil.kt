@@ -76,6 +76,7 @@ class MusicUtil(
         data[AlbumCover] = bitmap
     }
     
+    @Synchronized
     fun albumCover(): Bitmap? {
         /* Check from map */
         if (data[AlbumCover] != null) {

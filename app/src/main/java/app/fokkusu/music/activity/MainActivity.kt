@@ -77,7 +77,7 @@ class MainActivity : BaseAppCompatActivity() {
                 
                 @SuppressLint("RestrictedApi")
                 override fun onPageSelected(position: Int) {
-                    title = titles[position]
+                    toolbar.title = titles[position]
                     
                     if (position == 2) {
                         fab.setImageResource(R.drawable.ic_fab_search)
