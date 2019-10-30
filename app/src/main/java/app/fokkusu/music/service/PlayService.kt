@@ -195,6 +195,48 @@ class PlayService : Service() {
     private lateinit var notificationManagerCompat: NotificationManagerCompat
     private lateinit var notificationCompat: NotificationCompat.Builder
     
+    private val notificationStyle by lazy {
+        androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(
+            0, 1, 2
+        ).setShowCancelButton(true).setMediaSession(
+            MediaSessionCompat(
+                this@PlayService, PlayService
+            ).sessionToken
+        )
+    }
+    
+    private val notificationAction_last by lazy {
+        NotificationCompat.Action(
+            R.drawable.ic_noti_last, USER_BROADCAST_LAST, PendingIntent.getBroadcast(
+                this@PlayService, 0, Intent(USER_BROADCAST_LAST), 0
+            )
+        )
+    }
+    
+    private val notificationAction_next by lazy {
+        NotificationCompat.Action(
+            R.drawable.ic_noti_next, USER_BROADCAST_NEXT, PendingIntent.getBroadcast(
+                this@PlayService, 0, Intent(USER_BROADCAST_NEXT), 0
+            )
+        )
+    }
+    
+    private val notificationAction_pause by lazy {
+        NotificationCompat.Action(
+            R.drawable.ic_noti_pause, USER_BROADCAST_PAUSE, PendingIntent.getBroadcast(
+                this@PlayService, 0, Intent(USER_BROADCAST_PAUSE), 0
+            )
+        )
+    }
+    
+    private val notificationAction_play by lazy {
+        NotificationCompat.Action(
+            R.drawable.ic_noti_play, USER_BROADCAST_PLAY, PendingIntent.getBroadcast(
+                this@PlayService, 0, Intent(USER_BROADCAST_PLAY), 0
+            )
+        )
+    }
+    
     /* onCreate */
     override fun onCreate() {
         super.onCreate()
@@ -227,6 +269,8 @@ class PlayService : Service() {
             }
         }
         
+        notificationStyle
+        
         notificationManagerCompat = NotificationManagerCompat.from(this)
         
         registerReceiver(broadCastReceiver, IntentFilter().apply {
@@ -241,7 +285,9 @@ class PlayService : Service() {
     /* onStartCommand */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         
-        startForeground(PlayServiceId, getNotification())
+        Thread {
+            startForeground(PlayServiceId, getNotification())
+        }.start()
         
         if (intent == null) {
             stopForeground(false)
@@ -492,52 +538,28 @@ class PlayService : Service() {
             
             setSmallIcon(R.mipmap.ic_launcher_round)
             
-            setStyle(
-                androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(
-                    0, 1, 2
-                ).setShowCancelButton(true).setMediaSession(
-                    MediaSessionCompat(
-                        this@PlayService, PlayService
-                    ).sessionToken
-                )
-            )
+            setStyle(notificationStyle)
             
             priority = NotificationCompat.PRIORITY_MAX
             
-            addAction(
-                R.drawable.ic_noti_last, USER_BROADCAST_LAST, PendingIntent.getBroadcast(
-                    this@PlayService, 0, Intent(USER_BROADCAST_LAST), 0
-                )
-            )
+            addAction(notificationAction_last)
             
             /* Add control Button */
             when (playerState) {
                 PlayState.STOP, PlayState.PAUSE -> {
                     setOngoing(false)
                     setAutoCancel(true)
-                    addAction(
-                        R.drawable.ic_noti_play, USER_BROADCAST_PLAY, PendingIntent.getBroadcast(
-                            this@PlayService, 0, Intent(USER_BROADCAST_PLAY), 0
-                        )
-                    )
+                    addAction(notificationAction_play)
                 }
                 
                 PlayState.PLAY -> {
                     setOngoing(true)
                     setAutoCancel(false)
-                    addAction(
-                        R.drawable.ic_noti_pause, USER_BROADCAST_PAUSE, PendingIntent.getBroadcast(
-                            this@PlayService, 0, Intent(USER_BROADCAST_PAUSE), 0
-                        )
-                    )
+                    addAction(notificationAction_pause)
                 }
             }
             
-            addAction(
-                R.drawable.ic_noti_next, USER_BROADCAST_NEXT, PendingIntent.getBroadcast(
-                    this@PlayService, 0, Intent(USER_BROADCAST_NEXT), 0
-                )
-            )
+            addAction(notificationAction_next)
             
         }.build().apply {
             /* Garbage clean */

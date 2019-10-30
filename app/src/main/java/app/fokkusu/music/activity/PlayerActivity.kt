@@ -1,15 +1,17 @@
 package app.fokkusu.music.activity
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.content.Intent
 import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Matrix
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -207,8 +209,49 @@ class PlayerActivity : AppCompatActivity() {
         
         relativeLayout_container.addView(
             ImageView(this).apply { imageView_album = this },
-            RelativeLayout.LayoutParams(albumSize, albumSize)
+            RelativeLayout.LayoutParams(albumSize, albumSize).apply {
+                // Set to center of the RelativeLayout
+                addRule(RelativeLayout.CENTER_IN_PARENT)
+            }
         )
+        
+        val gesture = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onDoubleTap(e: MotionEvent?): Boolean {
+                e ?: return false
+                
+                (screenWid.toFloat() / 3).apply {
+                    if (e.y <= this) {
+                        startService(
+                            Intent(this@PlayerActivity, PlayService::class.java)
+                                .putExtra(SERVICE_INTENT_CONTENT, SERVICE_INTENT_SEEK_CHANGE)
+                                .putExtra(SERVICE_INTENT_SEEK_CHANGE_POSITION, seekBar.progress - 5)
+                        )
+                        return true
+                    }
+                    
+                    if (e.y >= (this * 2)) {
+                        startService(
+                            Intent(this@PlayerActivity, PlayService::class.java)
+                                .putExtra(SERVICE_INTENT_CONTENT, SERVICE_INTENT_SEEK_CHANGE)
+                                .putExtra(SERVICE_INTENT_SEEK_CHANGE_POSITION, seekBar.progress + 5)
+                        )
+                        return true
+                    }
+                    
+                    startService(
+                        Intent(this@PlayerActivity, PlayService::class.java).putExtra(
+                            SERVICE_INTENT_CONTENT,
+                            if (checkBox_playControl.isChecked) SERVICE_INTENT_PAUSE else SERVICE_INTENT_PLAY
+                        )
+                    )
+                    return true
+                }
+            }
+        })
+        
+        relativeLayout_container.setOnTouchListener { _, event ->
+            return@setOnTouchListener gesture.onTouchEvent(event)
+        }
         
         checkBox_playControl.apply {
             setOnClickListener {
@@ -261,24 +304,24 @@ class PlayerActivity : AppCompatActivity() {
                 }
                 toolbar.title = title()
                 toolbar.subtitle = "${artist()} - ${album()}"
-    
+                
+                @Suppress("DuplicatedCode")
                 albumCover().apply {
                     this ?: return
                     if (width == height) {
                         imageView_album.setImageDrawable(RoundedBitmapDrawableFactory.create(
                             resources,
                             Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
-                                (albumSize / width).toFloat().apply {
+                                (albumSize.toFloat() / width).apply {
                                     setScale(this, this)
                                 }
                             }, true)
                         ).apply { isCircular = true })
-            
+                        
                         // Cut width
-                        @Suppress("DuplicatedCode")
                         drawerLayout_container.background =
                             Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
-                                (screenHei / height).toFloat().apply {
+                                (screenHei.toFloat() / height).apply {
                                     setScale(this, this)
                                 }
                             }, true).run {
@@ -286,16 +329,16 @@ class PlayerActivity : AppCompatActivity() {
                                     this, (width - screenWid) / 2, 0, screenWid, height
                                 )
                             }.toDrawable(resources)
-            
+                        
                         return
                     }
-    
+                    
                     // Cut width
                     if (width > height) {
                         imageView_album.setImageDrawable(RoundedBitmapDrawableFactory.create(
                             resources,
                             Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
-                                (albumSize / height).toFloat().apply {
+                                (albumSize.toFloat() / height).apply {
                                     setScale(this, this)
                                 }
                             }, true).run {
@@ -304,11 +347,10 @@ class PlayerActivity : AppCompatActivity() {
                                 )
                             })
                         )
-    
-                        @Suppress("DuplicatedCode")
+                        
                         drawerLayout_container.background =
                             Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
-                                (screenHei / height).toFloat().apply {
+                                (screenHei.toFloat() / height).apply {
                                     setScale(this, this)
                                 }
                             }, true).run {
@@ -316,14 +358,14 @@ class PlayerActivity : AppCompatActivity() {
                                     this, (width - screenWid) / 2, 0, screenWid, screenHei
                                 )
                             }.toDrawable(resources)
-    
+                        
                         return
                     }
-        
+                    
                     // Cut height
                     imageView_album.setImageDrawable(RoundedBitmapDrawableFactory.create(resources,
                         Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
-                            (albumSize / width).toFloat().apply {
+                            (albumSize.toFloat() / width).apply {
                                 setScale(this, this)
                             }
                         }, true).run {
@@ -332,10 +374,10 @@ class PlayerActivity : AppCompatActivity() {
                             )
                         })
                     )
-        
+                    
                     drawerLayout_container.background =
                         Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
-                            (screenWid / width).toFloat().apply {
+                            (screenWid.toFloat() / width).apply {
                                 setScale(this, this)
                             }
                         }, true).run {
@@ -375,6 +417,8 @@ class PlayerActivity : AppCompatActivity() {
                 }
                 System.gc()
             }
+            
+            System.gc()
         }.apply { start() }
     }
     
@@ -385,14 +429,17 @@ class PlayerActivity : AppCompatActivity() {
             
             info ?: return@Thread
             
-            val file = File(Application.extDataDir_lyric, info.id().plus(".lrc"))
-            
-            // Local empty file
-            if (file.exists() && file.length() == 0L) {
-                lyricView.updateMusicLyric(arrayListOf())
+            // Read lrc file
+            File(Application.extDataDir_lyric, info.id().plus(".lrc")).apply {
+                lyricView.updateMusicLyric(
+                    // Local file does not exist or empty file
+                    if (!exists() && length() == 0L) {
+                        arrayListOf()
+                    } else {
+                        ArrayList(readLines())
+                    }
+                )
             }
-            
-            lyricView.updateMusicLyric(ArrayList(file.readLines()))
         }.start()
     }
     
@@ -444,7 +491,11 @@ class PlayerActivity : AppCompatActivity() {
     }
     
     override fun onBackPressed() {
-        super.onBackPressed()
+        finish()
+    }
+    
+    override fun finish() {
+        super.finish()
         overridePendingTransition(R.anim.anim_stay, R.anim.anim_top2bottom)
     }
     

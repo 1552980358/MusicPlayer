@@ -29,4 +29,4 @@ fun makeToast(msg: String, length: Int = Toast.LENGTH_SHORT) = Toast.makeText(Ap
 
 @Suppress("IMPLICIT_CAST_TO_ANY")
 fun getTime(time: Int) =
-    "${(time / 60).run { if (this > 10) this else "0$this" }}:${(time % 60).run { if (this > 10) this else "0$this" }}"
+    "${(time / 60).run { if (this > 9) this else "0$this" }}:${(time % 60).run { if (this > 9) this else "0$this" }}"

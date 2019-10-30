@@ -76,7 +76,9 @@
                         android:id="@+id/textView_timeTotal"
                         android:textColor="@color/white"
                         android:layout_weight="1"
-                        android:gravity="start" />
+                        android:gravity="start"
+                        android:text="00:00"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout >
 
