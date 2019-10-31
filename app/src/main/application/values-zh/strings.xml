@@ -6,6 +6,8 @@
     <string name="abc_splash_loadingMusic">加载本地音乐…</string>
 
     <string name="abc_search_menu_title">搜索音乐</string>
+    
+    <string name="abc_playService_cover_null">无封面图片!</string>
 
     <string-array name="array_main_tab">
         <item>设置</item>

@@ -1,5 +1,6 @@
 package app.fokkusu.music.service
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,6 +10,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Bitmap
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
@@ -17,6 +19,8 @@ import android.provider.MediaStore
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import app.fokkusu.music.R
 import app.fokkusu.music.base.Constants.Companion.PlayServiceChannelId
 import app.fokkusu.music.base.Constants.Companion.PlayServiceId
@@ -47,6 +51,9 @@ import app.fokkusu.music.base.Constants.Companion.USER_BROADCAST_NEXT
 import app.fokkusu.music.base.Constants.Companion.USER_BROADCAST_PLAY
 import app.fokkusu.music.base.Constants.Companion.USER_BROADCAST_SELECTED
 import app.fokkusu.music.base.MusicUtil
+import app.fokkusu.music.base.getStack
+import app.fokkusu.music.base.interfaces.OnRequestAlbumCoverListener
+import app.fokkusu.music.base.makeToast
 import java.io.File
 import java.io.Serializable
 
@@ -57,50 +64,55 @@ import java.io.Serializable
  * @TIME    : 6:23 PM
  **/
 
-class PlayService : Service() {
+@SuppressLint("PrivatePropertyName")
+class PlayService : Service(), OnRequestAlbumCoverListener {
     
     companion object {
+        /* Play state */
         enum class PlayState {
             STOP, PLAY, PAUSE
         }
-        
-        enum class PlayForm : Serializable {
-            CYCLE, SINGLE, RANDOM
-        }
-        
         var playerState = PlayState.STOP
             private set
         
+        /* Play form */
+        enum class PlayForm : Serializable {
+            CYCLE, SINGLE, RANDOM
+        }
         var playForm = PlayForm.CYCLE
             private set
         
         /* Single Instance */
         private var playService = null as PlayService?
-            get() = field as PlayService
+            get() = field!!
         private var init = false
         
+        /* Add music to music list */
         @Synchronized
         fun addMusic(music: MusicUtil) = musicList.add(music)
-        
         @Synchronized
         fun addMusic(
             path: String, id: String, title: String, artist: String?, album: String?, duration: Int
         ) = addMusic(MusicUtil(path, id, title, artist, album, duration))
+    
+        /* Music list */
+        val musicList = mutableListOf<MusicUtil>()
         
+        /* Sorting music arrangement */
         @Synchronized
         fun sortMusic() {
             musicList.sortBy { it.titlePY() }
         }
         
+        /* Assign location of music in music list */
         @Synchronized
         fun assignLoc() {
             for (i in 0..musicList.lastIndex) {
                 musicList[i].loc = i
             }
         }
-        
-        val musicList = mutableListOf<MusicUtil>()
-        
+    
+        /* Get current music playing position */
         fun getCurrentPosition(): Int {
             /* Playing State */
             if (playerState == PlayState.PLAY) {
@@ -118,7 +130,8 @@ class PlayService : Service() {
                 return 0
             }
         }
-        
+    
+        /* Get current music duration */
         fun getMusicDuration(): Int {
             return if (!init || playService!!.musicLoc == -1) {
                 0
@@ -126,13 +139,15 @@ class PlayService : Service() {
                 playService!!.mediaPlayer.duration
             }
         }
-        
+    
+        /* Get current music information */
         fun getCurrentMusicInfo(): MusicUtil? {
             if (!init || playService!!.musicLoc == -1) return null
             
             return playService!!.playList[playService!!.musicLoc]
         }
         
+        /* Get current music index */
         fun getCurrentMusic(): Int {
             if (!init) {
                 return 0
@@ -140,6 +155,7 @@ class PlayService : Service() {
             return playService!!.musicLoc
         }
         
+        /* Get play list */
         fun getPlayList(): MutableList<MusicUtil>? {
             if (!init) return null
             
@@ -147,6 +163,7 @@ class PlayService : Service() {
         }
     }
     
+    /* Broadcast receiver */
     private val broadCastReceiver by lazy {
         object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -195,6 +212,7 @@ class PlayService : Service() {
     private lateinit var notificationManagerCompat: NotificationManagerCompat
     private lateinit var notificationCompat: NotificationCompat.Builder
     
+    /* Notification style */
     private val notificationStyle by lazy {
         androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(
             0, 1, 2
@@ -205,6 +223,7 @@ class PlayService : Service() {
         )
     }
     
+    /* Notification actions */
     private val notificationAction_last by lazy {
         NotificationCompat.Action(
             R.drawable.ic_noti_last, USER_BROADCAST_LAST, PendingIntent.getBroadcast(
@@ -212,7 +231,6 @@ class PlayService : Service() {
             )
         )
     }
-    
     private val notificationAction_next by lazy {
         NotificationCompat.Action(
             R.drawable.ic_noti_next, USER_BROADCAST_NEXT, PendingIntent.getBroadcast(
@@ -220,7 +238,6 @@ class PlayService : Service() {
             )
         )
     }
-    
     private val notificationAction_pause by lazy {
         NotificationCompat.Action(
             R.drawable.ic_noti_pause, USER_BROADCAST_PAUSE, PendingIntent.getBroadcast(
@@ -228,7 +245,6 @@ class PlayService : Service() {
             )
         )
     }
-    
     private val notificationAction_play by lazy {
         NotificationCompat.Action(
             R.drawable.ic_noti_play, USER_BROADCAST_PLAY, PendingIntent.getBroadcast(
@@ -352,6 +368,7 @@ class PlayService : Service() {
         return super.onStartCommand(intent, START_REDELIVER_INTENT, startId)
     }
     
+    /* Start music playing */
     @Synchronized
     private fun play() {
         try {
@@ -374,10 +391,11 @@ class PlayService : Service() {
             }
             sendBroadcast(Intent(SERVICE_BROADCAST_PLAY))
         } catch (e: Exception) {
-            e.printStackTrace()
+            e.getStack()
         }
     }
     
+    /* Pause music playing */
     @Synchronized
     private fun pause() {
         if (playerState == PlayState.PAUSE) return
@@ -391,6 +409,7 @@ class PlayService : Service() {
         sendBroadcast(Intent(SERVICE_BROADCAST_PAUSE))
     }
     
+    /* Seek playing position or music position */
     @Synchronized
     private fun seek(loc: Int) {
         if (loc == ERROR_CODE_INT) {
@@ -404,6 +423,7 @@ class PlayService : Service() {
         pauseSeek = loc
     }
     
+    /* Call for playing next music */
     @Synchronized
     private fun next() {
         if (playList.lastIndex == musicLoc) {
@@ -439,6 +459,7 @@ class PlayService : Service() {
         updateMusic()
     }
     
+    /* Call for playing last music */
     @Synchronized
     private fun last() {
         /* Prevent overflow */
@@ -452,6 +473,7 @@ class PlayService : Service() {
         updateMusic()
     }
     
+    /* Set switching music value */
     @Synchronized
     private fun setChange(source: Int, loc: Int) {
         if (source == ERROR_CODE_INT || loc == ERROR_CODE_INT) return
@@ -467,6 +489,7 @@ class PlayService : Service() {
         updateMusic()
     }
     
+    /* Switch to other music according to global value */
     @Synchronized
     private fun updateMusic() {
         try {
@@ -498,30 +521,13 @@ class PlayService : Service() {
         }
     }
     
-    private fun updateNotify() {
-        notificationManagerCompat.notify(PlayServiceId, getNotification())
+    /* Notify updated notification */
+    private fun updateNotify(bitmap: Bitmap? = null) {
+        notificationManagerCompat.notify(PlayServiceId, getNotification(bitmap))
     }
     
-    override fun onDestroy() {
-        try {
-            unregisterReceiver(broadCastReceiver)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        try {
-            notificationManagerCompat.cancelAll()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        super.onDestroy()
-    }
-    
-    /* onBind */
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
-    
-    private fun getNotification(): Notification {
+    /* Creating a notification */
+    private fun getNotification(bitmap: Bitmap? = null): Notification {
         return NotificationCompat.Builder(this, PlayServiceChannelId).apply {
             notificationCompat = this
             
@@ -529,10 +535,17 @@ class PlayService : Service() {
                 playList[musicLoc].apply {
                     setContentTitle(title())                                    // Title
                     setContentText(artist().plus(" - ").plus(album()))    // Artist + Album
-                    albumCover().apply {
-                        // Album Cover
-                        if (this != null) setLargeIcon(this)
-                    }
+                    
+                    setLargeIcon(if (bitmap == null) {
+                        // Call for a album cover
+                        Thread {
+                            albumCover(this@PlayService)
+                        }.start()
+                        
+                        ContextCompat.getDrawable(this@PlayService, R.mipmap.ic_launcher)!!.toBitmap()
+                    } else {
+                        bitmap
+                    })
                 }
             }
             
@@ -565,6 +578,36 @@ class PlayService : Service() {
             /* Garbage clean */
             System.gc()
         }
+    }
+    
+    /* onDestroy */
+    override fun onDestroy() {
+        try {
+            unregisterReceiver(broadCastReceiver)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        try {
+            notificationManagerCompat.cancelAll()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        super.onDestroy()
+    }
+    
+    /* Request for album cover image returning bitmap */
+    override fun onResult(bitmap: Bitmap) {
+        updateNotify(bitmap)
+    }
+    
+    /* Request for album cover image returning null result */
+    override fun onNullResult() {
+        makeToast(R.string.abc_playService_cover_null)
+    }
+    
+    /* onBind */
+    override fun onBind(intent: Intent?): IBinder? {
+        return null
     }
     
 }

@@ -18,6 +18,7 @@ import app.fokkusu.music.base.Constants.Companion.Id
 import app.fokkusu.music.base.Constants.Companion.Path
 import app.fokkusu.music.base.Constants.Companion.Title
 import app.fokkusu.music.base.Constants.Companion.TitlePY
+import app.fokkusu.music.base.interfaces.OnRequestAlbumCoverListener
 import com.github.promeg.pinyinhelper.Pinyin
 import com.google.gson.JsonParser
 import okhttp3.*
@@ -74,6 +75,17 @@ class MusicUtil(
     
     fun addAlbumCover(bitmap: Bitmap) {
         data[AlbumCover] = bitmap
+    }
+    
+    fun albumCover(listener: OnRequestAlbumCoverListener) {
+        albumCover().apply {
+            if (this == null) {
+                listener.onNullResult()
+                return
+            }
+            
+            listener.onResult(this)
+        }
     }
     
     @Synchronized

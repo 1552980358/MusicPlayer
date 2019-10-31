@@ -19,13 +19,27 @@ fun log(tag: String, msg: String) = Log.e(tag, msg)
 fun log(tag: Int, msg: String) = Log.e(Application.getContext().getString(tag), msg)
 
 @Synchronized
-fun Exception.getStack() {
-    if (BuildConfig.DEBUG) { printStackTrace() }
+fun Exception.getStack(showToast: Boolean = true) {
+    printStackTrace(PrintWriter(StringWriter().apply {
+        if (BuildConfig.DEBUG) {
+            log("FokkusuException", toString())
+        }
+        
+        if (showToast) {
+            Application.handler.post {
+                makeToast(toString())
+            }
+        }
+        
+        close()
+    }).apply { close() })
     
-    printStackTrace(PrintWriter(StringWriter().apply { Application.handler.post { makeToast(toString()) }; close() }).apply { close() })
 }
 
-fun makeToast(msg: String, length: Int = Toast.LENGTH_SHORT) = Toast.makeText(Application.getContext(), msg, length).show()
+fun makeToast(msg: String, length: Int = Toast.LENGTH_SHORT) =
+    Application.handler.post { Toast.makeText(Application.getContext(), msg, length).show() }
+
+fun makeToast(msg: Int, length: Int = Toast.LENGTH_SHORT) = makeToast(Application.getContext().getString(msg))
 
 @Suppress("IMPLICIT_CAST_TO_ANY")
 fun getTime(time: Int) =

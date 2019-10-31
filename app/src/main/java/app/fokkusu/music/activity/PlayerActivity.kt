@@ -483,7 +483,7 @@ class PlayerActivity : AppCompatActivity() {
         try {
             unregisterReceiver(broadcastReceiver)
         } catch (e: Exception) {
-            e.getStack()
+            e.getStack(false)
         }
         
         System.gc()
