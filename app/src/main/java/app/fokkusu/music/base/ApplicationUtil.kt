@@ -4,6 +4,7 @@ import android.util.Log
 import android.widget.Toast
 import app.fokkusu.music.Application
 import app.fokkusu.music.BuildConfig
+import java.io.PrintStream
 import java.io.PrintWriter
 import java.io.StringWriter
 
@@ -18,28 +19,39 @@ fun log(tag: String, msg: String) = Log.e(tag, msg)
 
 fun log(tag: Int, msg: String) = Log.e(Application.getContext().getString(tag), msg)
 
+@Suppress("SpellCheckingInspection")
 @Synchronized
 fun Exception.getStack(showToast: Boolean = true) {
-    printStackTrace(PrintWriter(StringWriter().apply {
-        if (BuildConfig.DEBUG) {
-            log("FokkusuException", toString())
-        }
-        
-        if (showToast) {
-            Application.handler.post {
-                makeToast(toString())
+    try {
+        also { exception ->
+            StringWriter().also { stringWriter ->
+                PrintWriter(stringWriter).apply {
+                    exception.printStackTrace(this)
+            
+                    stringWriter.toString().apply {
+                        if (BuildConfig.DEBUG) {
+                            log("FokkusuException", this)
+                        }
+                
+                        if (showToast) {
+                            makeToast(this)
+                        }
+                    }
+                    close()
+                }
+                stringWriter.close()
             }
         }
-        
-        close()
-    }).apply { close() })
-    
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    System.gc()
 }
 
 fun makeToast(msg: String, length: Int = Toast.LENGTH_SHORT) =
     Application.handler.post { Toast.makeText(Application.getContext(), msg, length).show() }
 
-fun makeToast(msg: Int, length: Int = Toast.LENGTH_SHORT) = makeToast(Application.getContext().getString(msg))
+fun makeToast(msg: Int, length: Int = Toast.LENGTH_SHORT) = makeToast(Application.getContext().getString(msg), length)
 
 @Suppress("IMPLICIT_CAST_TO_ANY")
 fun getTime(time: Int) =

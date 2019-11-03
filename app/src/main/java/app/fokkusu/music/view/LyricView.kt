@@ -8,6 +8,7 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import app.fokkusu.music.R
+import app.fokkusu.music.base.log
 
 /**
  * @File    : LyricView
@@ -51,37 +52,13 @@ class LyricView(context: Context, attributeSet: AttributeSet?) : View(context, a
         paintOther
     }
     
-    fun updateMusicLyricAndReturn(rawLyric: ArrayList<String>): ArrayList<String> {
-        return arrayListOf<String>().apply {
-            lyricList.clear()
-            lyricTime.clear()
-    
-            for (j in rawLyric) {
-                /* Prevent empty content */
-                if (j.isEmpty() || !j.startsWith('[') || j[1] in 'a'..'z' || j[1] in 'A'..'Z' || !j.contains(
-                        ']'
-                    ) || j.substring(j.lastIndexOf(']') + 1).isEmpty()
-                ) {
-                    continue
-                }
+    // Should calculate height of the view
+    fun calculateHeight() {
+        // Calculate height and width of a line
+        paintCurrent.getTextBounds("中国语文", 0, 4, rect)
         
-                /* Time */
-                // 0123456789
-                // [HH:mm:ss]
-                lyricTime.add(
-                    j.substring(1, 3).toInt() * 60000 +         // Hr
-                        j.substring(4, 6).toInt() * 1000 +  // Min
-                        j.substring(7, 9).toInt() * 10      // Sec
-                )
-        
-                /* Lyric */
-                lyricList.add(j.substring(j.lastIndexOf(']') + 1))
-                
-                add(j)
-            }
-            
-            postInvalidate()
-        }
+        // Update
+        layoutParams.height = rect.height() * 3 + textMargin * 3
     }
     
     @Synchronized
@@ -93,22 +70,23 @@ class LyricView(context: Context, attributeSet: AttributeSet?) : View(context, a
         if (rawLyric.isEmpty()) {
             emptyList = true
             postInvalidate()
+            return
         }
         
         emptyList = false
         for (j in rawLyric) {
             /* Time */
-            // 0123456789
-            // [HH:mm:ss]
+            // 0123456789 or 01234567890
+            // [mm:ss.SS] or [mm:ss.SSS]
             lyricTime.add(
-                j.substring(1, 3).toInt() * 60000 +         // Hr
-                        j.substring(4, 6).toInt() * 1000 +  // Min
-                        j.substring(7, 9).toInt() * 10      // Sec
+                j.substring(1, 3).toInt() * 60 +         // Min
+                        j.substring(4, 6).toInt()        // Sec
             )
             
             /* Lyric */
             lyricList.add(j.substring(j.lastIndexOf(']') + 1))
         }
+        
         postInvalidate()
     }
     
@@ -122,11 +100,19 @@ class LyricView(context: Context, attributeSet: AttributeSet?) : View(context, a
         }
         
         for ((i, j) in lyricTime.withIndex()) {
-            if (j > time) {
-                current = (i - 1)
-                break
+            if (time < j) {
+    
+                current = if (i != 0) {
+                     i - 1
+                } else {
+                    i
+                }
+                postInvalidate()
+                return
             }
         }
+        
+        current = lyricTime.lastIndex
         postInvalidate()
     }
     

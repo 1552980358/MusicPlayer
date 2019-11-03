@@ -39,6 +39,7 @@ import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_SEEK_CHANGE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_SEEK_CHANGE_POSITION
 import app.fokkusu.music.base.getStack
 import app.fokkusu.music.base.getTime
+import app.fokkusu.music.base.interfaces.OnRequestAlbumCoverListener
 import app.fokkusu.music.service.PlayService
 import kotlinx.android.synthetic.main.activity_player.checkBox_playControl
 import kotlinx.android.synthetic.main.activity_player.drawerLayout_container
@@ -60,7 +61,7 @@ import java.io.File
  * @TIME    : 6:01 PM
  **/
 
-class PlayerActivity : AppCompatActivity() {
+class PlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
     
     @Suppress("PrivatePropertyName")
     private lateinit var imageView_album: ImageView
@@ -72,12 +73,12 @@ class PlayerActivity : AppCompatActivity() {
     private var timeCount: Thread? = null
     private var threadStop = false
     
-    
     /* Pre-Set Size */
     private val albumSize by lazy { resources.displayMetrics.widthPixels * 2 / 3 }
     private val screenHei by lazy { resources.displayMetrics.heightPixels }
     private val screenWid by lazy { resources.displayMetrics.widthPixels }
     
+    /* BroadcastReceiver */
     private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent ?: return
@@ -93,18 +94,20 @@ class PlayerActivity : AppCompatActivity() {
                 
                 SERVICE_BROADCAST_CHANGED -> {
                     changeMusic()
-                    getThreadStart()
                 }
             }
+            getThreadStart()
         }
     }
     
+    /* IntentFilter for BroadcastReceiver */
     private val intentFilter = IntentFilter().apply {
         addAction(SERVICE_BROADCAST_PAUSE)
         addAction(SERVICE_BROADCAST_PLAY)
         addAction(SERVICE_BROADCAST_CHANGED)
     }
     
+    /* onCreate */
     override fun onCreate(savedInstanceState: Bundle?) {
         window.decorView.systemUiVisibility =
             (SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or SYSTEM_UI_FLAG_LAYOUT_STABLE)
@@ -224,7 +227,9 @@ class PlayerActivity : AppCompatActivity() {
                         startService(
                             Intent(this@PlayerActivity, PlayService::class.java)
                                 .putExtra(SERVICE_INTENT_CONTENT, SERVICE_INTENT_SEEK_CHANGE)
-                                .putExtra(SERVICE_INTENT_SEEK_CHANGE_POSITION, seekBar.progress - 5)
+                                .putExtra(
+                                    SERVICE_INTENT_SEEK_CHANGE_POSITION,
+                                    (seekBar.progress * 1000 - 5000).run { if (this > 0) this else 0 })
                         )
                         return true
                     }
@@ -233,7 +238,9 @@ class PlayerActivity : AppCompatActivity() {
                         startService(
                             Intent(this@PlayerActivity, PlayService::class.java)
                                 .putExtra(SERVICE_INTENT_CONTENT, SERVICE_INTENT_SEEK_CHANGE)
-                                .putExtra(SERVICE_INTENT_SEEK_CHANGE_POSITION, seekBar.progress + 5)
+                                .putExtra(
+                                    SERVICE_INTENT_SEEK_CHANGE_POSITION,
+                                    (seekBar.progress * 1000 + 5000).run { if (this <= PlayService.getMusicDuration()) this else 0 })
                         )
                         return true
                     }
@@ -290,8 +297,11 @@ class PlayerActivity : AppCompatActivity() {
                 seekBarFree = true
             }
         })
+        
+        lyricView.calculateHeight()
     }
     
+    /* Set music into to the layout */
     @SuppressLint("SetTextI18n")
     @Synchronized
     private fun changeMusic() {
@@ -305,108 +315,29 @@ class PlayerActivity : AppCompatActivity() {
                 toolbar.title = title()
                 toolbar.subtitle = "${artist()} - ${album()}"
                 
-                @Suppress("DuplicatedCode")
-                albumCover().apply {
-                    this ?: return
-                    if (width == height) {
-                        imageView_album.setImageDrawable(RoundedBitmapDrawableFactory.create(
-                            resources,
-                            Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
-                                (albumSize.toFloat() / width).apply {
-                                    setScale(this, this)
-                                }
-                            }, true)
-                        ).apply { isCircular = true })
-                        
-                        // Cut width
-                        drawerLayout_container.background =
-                            Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
-                                (screenHei.toFloat() / height).apply {
-                                    setScale(this, this)
-                                }
-                            }, true).run {
-                                Bitmap.createBitmap(
-                                    this, (width - screenWid) / 2, 0, screenWid, height
-                                )
-                            }.toDrawable(resources)
-                        
-                        return
-                    }
-                    
-                    // Cut width
-                    if (width > height) {
-                        imageView_album.setImageDrawable(RoundedBitmapDrawableFactory.create(
-                            resources,
-                            Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
-                                (albumSize.toFloat() / height).apply {
-                                    setScale(this, this)
-                                }
-                            }, true).run {
-                                Bitmap.createBitmap(
-                                    this, (width - albumSize) / 2, 0, albumSize, albumSize
-                                )
-                            })
-                        )
-                        
-                        drawerLayout_container.background =
-                            Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
-                                (screenHei.toFloat() / height).apply {
-                                    setScale(this, this)
-                                }
-                            }, true).run {
-                                Bitmap.createBitmap(
-                                    this, (width - screenWid) / 2, 0, screenWid, screenHei
-                                )
-                            }.toDrawable(resources)
-                        
-                        return
-                    }
-                    
-                    // Cut height
-                    imageView_album.setImageDrawable(RoundedBitmapDrawableFactory.create(resources,
-                        Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
-                            (albumSize.toFloat() / width).apply {
-                                setScale(this, this)
-                            }
-                        }, true).run {
-                            Bitmap.createBitmap(
-                                this, 0, (height - albumSize) / 2, albumSize, albumSize
-                            )
-                        })
-                    )
-                    
-                    drawerLayout_container.background =
-                        Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
-                            (screenWid.toFloat() / width).apply {
-                                setScale(this, this)
-                            }
-                        }, true).run {
-                            Bitmap.createBitmap(
-                                this, 0, (height - screenHei) / 2, screenWid, screenHei
-                            )
-                        }.toDrawable(resources)
-                }
+                Thread {
+                    albumCover(this@PlayerActivity)
+                }.start()
             }
-            getLyric()
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
     
+    /* Start a thread updating position, lyric */
     private fun getThreadStart() {
         timeCount = Thread {
-            
             threadStop = false
+            
             while (PlayService.playerState == PlayService.Companion.PlayState.PLAY && !threadStop) {
                 if (seekBarFree) {
                     (PlayService.getCurrentPosition()).apply {
                         lyricView.updateLyricLine(this)
-                        (this / 1000).apply {
-                            runOnUiThread {
-                                seekBar.progress = this
-                                textView_timePass.text = getTime(this)
-                            }
+                        runOnUiThread {
+                            seekBar.progress = this
+                            textView_timePass.text = getTime(this)
                         }
+                        
                     }
                 }
                 
@@ -422,27 +353,128 @@ class PlayerActivity : AppCompatActivity() {
         }.apply { start() }
     }
     
+    /* Update lyric */
     @Synchronized
     private fun getLyric() {
-        Thread {
-            val info = PlayService.getCurrentMusicInfo()
-            
-            info ?: return@Thread
+        PlayService.getCurrentMusicInfo().apply {
+            this ?: return
             
             // Read lrc file
-            File(Application.extDataDir_lyric, info.id().plus(".lrc")).apply {
+            File(Application.extDataDir_lyric, id().plus(".lrc")).apply {
                 lyricView.updateMusicLyric(
                     // Local file does not exist or empty file
                     if (!exists() && length() == 0L) {
                         arrayListOf()
                     } else {
-                        ArrayList(readLines())
+                        readLines() as ArrayList<String>
                     }
                 )
             }
-        }.start()
+        }
     }
     
+    /* onResult */
+    @Suppress("DuplicatedCode")
+    override fun onResult(bitmap: Bitmap) {
+        bitmap.apply {
+            if (width == height) {
+                RoundedBitmapDrawableFactory.create(
+                    resources,
+                    Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
+                        (albumSize.toFloat() / width).apply {
+                            setScale(this, this)
+                        }
+                    }, true)
+                ).apply {
+                    isCircular = true
+                    
+                    runOnUiThread { imageView_album.setImageDrawable(this) }
+                }
+                
+                // Cut width
+                Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
+                    (screenHei.toFloat() / height).apply {
+                        setScale(this, this)
+                    }
+                }, true).run {
+                    Bitmap.createBitmap(
+                        this, (width - screenWid) / 2, 0, screenWid, height
+                    )
+                }.toDrawable(resources).apply { runOnUiThread { drawerLayout_container.background = this } }
+                
+                getLyric()
+                return
+            }
+            
+            // Cut width
+            if (width > height) {
+                RoundedBitmapDrawableFactory.create(
+                    resources,
+                    Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
+                        (albumSize.toFloat() / height).apply {
+                            setScale(this, this)
+                        }
+                    }, true).run {
+                        Bitmap.createBitmap(
+                            this, (width - albumSize) / 2, 0, albumSize, albumSize
+                        )
+                    }
+                ).apply {
+                    isCircular = true
+                    
+                    runOnUiThread { imageView_album.setImageDrawable(this) }
+                }
+                
+                Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
+                    (screenHei.toFloat() / height).apply {
+                        setScale(this, this)
+                    }
+                }, true).run {
+                    Bitmap.createBitmap(
+                        this, (width - screenWid) / 2, 0, screenWid, screenHei
+                    )
+                }.toDrawable(resources).apply { runOnUiThread { drawerLayout_container.background = this } }
+                
+                getLyric()
+                return
+            }
+            
+            // Cut height
+            RoundedBitmapDrawableFactory.create(resources,
+                Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
+                    (albumSize.toFloat() / width).apply {
+                        setScale(this, this)
+                    }
+                }, true).run {
+                    Bitmap.createBitmap(
+                        this, 0, (height - albumSize) / 2, albumSize, albumSize
+                    )
+                }
+            ).apply {
+                isCircular = true
+                
+                runOnUiThread { imageView_album.setImageDrawable(this) }
+            }
+            
+            Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
+                (screenWid.toFloat() / width).apply {
+                    setScale(this, this)
+                }
+            }, true).run {
+                Bitmap.createBitmap(
+                    this, 0, (height - screenHei) / 2, screenWid, screenHei
+                )
+            }.toDrawable(resources).apply { runOnUiThread { drawerLayout_container.background = this } }
+            getLyric()
+        }
+    }
+    
+    /* onNullResult */
+    override fun onNullResult() {
+        getLyric()
+    }
+    
+    /* onResume */
     override fun onResume() {
         super.onResume()
         registerReceiver(broadcastReceiver, intentFilter)
@@ -461,6 +493,7 @@ class PlayerActivity : AppCompatActivity() {
         getThreadStart()
     }
     
+    /* onPause */
     override fun onPause() {
         super.onPause()
         
@@ -474,6 +507,7 @@ class PlayerActivity : AppCompatActivity() {
         unregisterReceiver(broadcastReceiver)
     }
     
+    /* onDestroy */
     override fun onDestroy() {
         // Stop Thread
         threadStop = false
@@ -490,10 +524,12 @@ class PlayerActivity : AppCompatActivity() {
         super.onDestroy()
     }
     
+    /* onBackPressed */
     override fun onBackPressed() {
         finish()
     }
     
+    /* finish */
     override fun finish() {
         super.finish()
         overridePendingTransition(R.anim.anim_stay, R.anim.anim_top2bottom)

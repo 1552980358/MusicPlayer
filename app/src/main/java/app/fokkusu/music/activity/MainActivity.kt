@@ -95,6 +95,7 @@ class MainActivity : BaseAppCompatActivity() {
             })
         }
         
+        // Give object to BottomPlayerView for showing BottomDialog
         bottomPlayerView.setParentActivity(this)
     }
     

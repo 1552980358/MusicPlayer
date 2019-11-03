@@ -48,14 +48,19 @@ class MusicUtil(
         data[Album] = album
         data[Duration] = duration
         data[TitlePY] = Pinyin.toPinyin(title, "").toUpperCase()
-        data[ArtistPY] = Pinyin.toPinyin(artist, "").toUpperCase()
-        data[AlbumPY] = Pinyin.toPinyin(album, "").toUpperCase()
+        
+        // Future sorting will apply these two pinyin
+        // but now, for increasing efficiency as well as reducing RAM consumption
+        // they are simply removed temporarily
+        //data[ArtistPY] = Pinyin.toPinyin(artist, "").toUpperCase()
+        //data[AlbumPY] = Pinyin.toPinyin(album, "").toUpperCase()
     }
     
     fun getDataMap() = data
     
     fun <T> getData(topic: String): T {
-        @Suppress("UNCHECKED_CAST") return (data[topic] as T)
+        @Suppress("UNCHECKED_CAST")
+        return (data[topic] as T)
     }
     
     fun path() = data[Path] as String
@@ -66,10 +71,10 @@ class MusicUtil(
     fun titlePY() = data[TitlePY] as String
     
     fun artist() = data[Artist] as String? ?: ""
-    fun artistPY() = data[ArtistPY] as String
+    //fun artistPY() = data[ArtistPY] as String
     
     fun album() = data[Album] ?: ""
-    fun albumPY() = data[AlbumPY] ?: ""
+    //fun albumPY() = data[AlbumPY] ?: ""
     
     fun duration() = data[Duration] as Int
     
@@ -131,7 +136,7 @@ class MusicUtil(
                     close()
                 }
                 
-                data[AlbumCover] = embeddedPicture.apply {
+                embeddedPicture.apply {
                     if (this != null && isNotEmpty()) {
                         data[AlbumCover] = BitmapFactory.decodeByteArray(this, 0, size)
                         fileCover.writeBytes(this)
@@ -209,14 +214,16 @@ class MusicUtil(
                             fileLyric.writeText(StringBuilder().apply {
                                 // Output into lrc file
                                 text.reader().buffered().apply {
-                                    readLines().forEach {
-                                        if (it.isEmpty() || !it.startsWith('[') ||
-                                            it[1] in 'a'..'z' || it[1] in 'A'..'Z' ||
-                                            !it.contains(']') ||
-                                            it.substring(it.lastIndexOf(']') + 1).isEmpty()
+                                    for (i in readLines()) {
+                                        if (i.isEmpty() || !i.startsWith('[') ||
+                                            i[1] in 'a'..'z' || i[1] in 'A'..'Z' ||
+                                            !i.contains(']') ||
+                                            i.substring(i.lastIndexOf(']') + 1).isEmpty()
                                         ) {
-                                            append(it.plus("\n"))
+                                            continue
                                         }
+    
+                                        append(i.plus("\n"))
                                     }
                                     close()
                                 }
@@ -226,7 +233,7 @@ class MusicUtil(
                 }
             }
         } catch (e: Exception) {
-            e.getStack()
+            e.getStack(false)
         }
         
         if (data[AlbumCover] == null) {

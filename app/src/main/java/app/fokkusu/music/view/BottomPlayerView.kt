@@ -7,13 +7,15 @@ import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Matrix
-import android.graphics.drawable.Drawable
 import android.text.TextUtils.TruncateAt.MARQUEE
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.core.graphics.drawable.toBitmap
+import app.fokkusu.music.Application
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_CHANGED
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PAUSE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PLAY
@@ -23,7 +25,8 @@ import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CONTENT
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PAUSE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY
 import app.fokkusu.music.base.activity.BaseAppCompatActivity
-import app.fokkusu.music.base.log
+import app.fokkusu.music.base.getStack
+import app.fokkusu.music.base.interfaces.OnRequestAlbumCoverListener
 import app.fokkusu.music.dialog.BottomPlaylistDialog
 import app.fokkusu.music.service.PlayService
 import app.fokkusu.music.service.PlayService.Companion.getCurrentMusicInfo
@@ -44,7 +47,32 @@ import kotlinx.android.synthetic.main.view_bottom_player.view.textView_title
  **/
 
 class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
-    LinearLayout(context, attributeSet) {
+    LinearLayout(context, attributeSet), OnRequestAlbumCoverListener {
+    
+    companion object {
+        private val defaultIMG by lazy {
+            ContextCompat.getDrawable(Application.getContext(), R.mipmap.ic_launcher)!!.toBitmap().run {
+                RoundedBitmapDrawableFactory.create(
+                    Application.getContext().resources, Bitmap.createBitmap(
+                        this,
+                        0,
+                        0,
+                        width,
+                        width,
+                        Matrix().apply {
+                            (albumSize / width).apply {
+                                postScale(this, this)
+                            }
+                        },
+                        true
+                    )
+                )
+            }
+        }
+        
+        private val albumSize =
+            Application.getContext().resources.getDimensionPixelSize(R.dimen.view_bottom_player_imageView).toFloat()
+    }
     
     private lateinit var parentActivity: BaseAppCompatActivity
     
@@ -68,15 +96,14 @@ class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
                         resources.getDimensionPixelSize(R.dimen.bottomPlayerView_height).apply {
                             visibility = View.VISIBLE
                             
-                            log("scrollY", scrollY.toString())
                             scrollY = -this
                             
                             Thread {
-                                for (i in 40 downTo -10 ) {
+                                for (i in 40 downTo -10) {
                                     post { scrollY = -(i * this / 40) }
                                     Thread.sleep(10)
                                 }
-                                for (i in -10 .. 0) {
+                                for (i in -10..0) {
                                     post { scrollY = -(i * this / 40) }
                                     Thread.sleep(10)
                                 }
@@ -139,7 +166,7 @@ class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
         parentActivity = baseAppCompatActivity
     }
     
-    @Suppress("SetTextI18n", "DuplicatedCode")
+    @Suppress("SetTextI18n")
     @Synchronized
     fun updateInfo() {
         getCurrentMusicInfo().apply {
@@ -150,66 +177,9 @@ class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
                 textView_info.text = "${artist()} - ${album()}"
                 checkBox_playControl.isChecked = playerState == PLAY
             }
-            
-            val cover = albumCover()
-            val tmp: Drawable
-            if (cover != null) {
-                /* Rescale Bitmap and cut into circle */
-                if (cover.width == cover.height) {
-                    tmp = RoundedBitmapDrawableFactory.create(
-                        resources, Bitmap.createBitmap(
-                            cover, 0, 0, cover.width, cover.height, Matrix().apply {
-                                (albumSize / cover.width).apply {
-                                    postScale(this, this)
-                                }
-                            }, true
-                        )
-                    ).apply { isCircular = true }
-                    parentActivity.runOnUiThread { imageView_album.setImageDrawable(tmp) }
-                    return
-                }
-                
-                /* Cut Height pixels */
-                if (cover.width < cover.height) {
-                    tmp = RoundedBitmapDrawableFactory.create(
-                        resources, Bitmap.createBitmap(
-                            cover,
-                            0,
-                            (cover.height - cover.width) / 2,
-                            cover.width,
-                            cover.width,
-                            Matrix().apply {
-                                (albumSize / cover.width).apply {
-                                    postScale(this, this)
-                                }
-                            },
-                            true
-                        )
-                    ).apply { isCircular = true }
-                    
-                    parentActivity.runOnUiThread { imageView_album.setImageDrawable(tmp) }
-                    return
-                }
-                
-                /* Cut Width pixels */
-                tmp = RoundedBitmapDrawableFactory.create(
-                    resources, Bitmap.createBitmap(
-                        cover,
-                        0,
-                        (cover.width - cover.height) / 2,
-                        cover.width,
-                        cover.width,
-                        Matrix().apply {
-                            (albumSize / cover.width).apply {
-                                postScale(this, this)
-                            }
-                        },
-                        true
-                    )
-                ).apply { isCircular = true }
-                
-                parentActivity.runOnUiThread { imageView_album.setImageDrawable(tmp) }
-            }
+            Thread {
+                albumCover(this@BottomPlayerView)
+            }.start()
         }
     }
     
@@ -241,5 +211,78 @@ class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
             e.printStackTrace()
         }
         updateInfo()
+    }
+    
+    @Suppress("DuplicatedCode")
+    override fun onResult(bitmap: Bitmap) {
+        /* Rescale Bitmap and cut into circle */
+        try {
+            if (bitmap.width == bitmap.height) {
+                RoundedBitmapDrawableFactory.create(
+                    resources, Bitmap.createBitmap(
+                        bitmap, 0, 0, bitmap.width, bitmap.height, Matrix().apply {
+                            (albumSize / bitmap.width).apply {
+                                postScale(this, this)
+                            }
+                        }, true
+                    )
+                ).apply {
+                    isCircular = true
+                    parentActivity.runOnUiThread { imageView_album.setImageDrawable(this) }
+                }
+                
+                return
+            }
+            
+            /* Cut Height pixels */
+            if (bitmap.width < bitmap.height) {
+                RoundedBitmapDrawableFactory.create(
+                    resources, Bitmap.createBitmap(
+                        bitmap,
+                        0,
+                        (bitmap.height - bitmap.width) / 2,
+                        bitmap.width,
+                        bitmap.width,
+                        Matrix().apply {
+                            (albumSize / bitmap.width).apply {
+                                postScale(this, this)
+                            }
+                        },
+                        true
+                    )
+                ).apply {
+                    isCircular = true
+                    parentActivity.runOnUiThread { imageView_album.setImageDrawable(this) }
+                }
+                
+                return
+            }
+            
+            /* Cut Width pixels */
+            RoundedBitmapDrawableFactory.create(
+                resources, Bitmap.createBitmap(
+                    bitmap,
+                    0,
+                    (bitmap.width - bitmap.height) / 2,
+                    bitmap.width,
+                    bitmap.width,
+                    Matrix().apply {
+                        (albumSize / bitmap.width).apply {
+                            postScale(this, this)
+                        }
+                    },
+                    true
+                )
+            ).apply {
+                isCircular = true
+                parentActivity.runOnUiThread { imageView_album.setImageDrawable(this) }
+            }
+        } catch (e: Exception) {
+            e.getStack()
+        }
+    }
+    
+    override fun onNullResult() {
+        parentActivity.runOnUiThread { imageView_album.setImageDrawable(defaultIMG) }
     }
 }

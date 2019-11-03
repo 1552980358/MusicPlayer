@@ -39,8 +39,9 @@
 
                 <app.fokkusu.music.view.LyricView
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:id="@+id/lyricView" />
+                    android:layout_height="wrap_content"
+                    android:id="@+id/lyricView"
+                    android:layout_alignParentBottom="true"/>
             </RelativeLayout >
 
             <LinearLayout
