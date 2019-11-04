@@ -10,9 +10,9 @@ import app.fokkusu.music.R
  * @Date    : 6 Oct 2019
  * @TIME    : 8:47 AM
  **/
+
 class SettingFragment: PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.fragment_setting)
     }
-    
 }

@@ -240,7 +240,7 @@ class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
                     resources, Bitmap.createBitmap(
                         bitmap,
                         0,
-                        (bitmap.height - bitmap.width) / 2,
+                        (height - width) / 2,
                         bitmap.width,
                         bitmap.width,
                         Matrix().apply {
@@ -262,12 +262,12 @@ class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
             RoundedBitmapDrawableFactory.create(
                 resources, Bitmap.createBitmap(
                     bitmap,
-                    0,
                     (bitmap.width - bitmap.height) / 2,
-                    bitmap.width,
-                    bitmap.width,
+                    0,
+                    bitmap.height,
+                    bitmap.height,
                     Matrix().apply {
-                        (albumSize / bitmap.width).apply {
+                        (albumSize / bitmap.height).apply {
                             postScale(this, this)
                         }
                     },

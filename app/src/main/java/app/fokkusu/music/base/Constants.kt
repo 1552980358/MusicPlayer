@@ -50,6 +50,9 @@ class Constants private constructor() {
         const val SERVICE_INTENT_SEEK_CHANGE = "SERVICE_INTENT_SEEK_CHANGE"
         const val SERVICE_INTENT_SEEK_CHANGE_POSITION = "SERVICE_INTENT_SEEK_CHANGE_POSITION"
         
+        /* Application */
+        const val APPLICATION_MEDIA_SCAN_COMPLETE = "APPLICATION_MEDIA_SCAN_COMPLETE"
+        
         const val Path = "Path"
         const val Id = "Id"
         const val Title = "Title"

@@ -410,15 +410,15 @@ class PlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
             if (width > height) {
                 RoundedBitmapDrawableFactory.create(
                     resources,
-                    Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
+                    Bitmap.createBitmap(this, (width - height) / 2, 0, height, height, Matrix().apply {
                         (albumSize.toFloat() / height).apply {
                             setScale(this, this)
                         }
-                    }, true).run {
+                    }, true)/*.run {
                         Bitmap.createBitmap(
                             this, (width - albumSize) / 2, 0, albumSize, albumSize
                         )
-                    }
+                    }*/
                 ).apply {
                     isCircular = true
                     
@@ -441,15 +441,15 @@ class PlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
             
             // Cut height
             RoundedBitmapDrawableFactory.create(resources,
-                Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply {
+                Bitmap.createBitmap(this, 0, (height - height) / 2, width, width, Matrix().apply {
                     (albumSize.toFloat() / width).apply {
                         setScale(this, this)
                     }
-                }, true).run {
+                }, true)/*.run {
                     Bitmap.createBitmap(
                         this, 0, (height - albumSize) / 2, albumSize, albumSize
                     )
-                }
+                }*/
             ).apply {
                 isCircular = true
                 
