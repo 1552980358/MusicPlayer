@@ -171,6 +171,7 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
             
             return playService!!.playList
         }
+        
     }
     
     /* Broadcast receiver */

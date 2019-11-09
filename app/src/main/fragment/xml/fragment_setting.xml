@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- add app:iconSpaceReserved="false" to remove left empty margin -->
+<!--suppress DeprecatedClassUsageInspection -->
 <PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:iconSpaceReserved="false" >
+    
+    <PreferenceCategory
+        android:title="@string/abc_setting_pulse_title"
+        app:iconSpaceReserved="false" >
+    
+        <SwitchPreference
+            android:defaultValue="true"
+            android:title="@string/abc_setting_pulse_switch"
+            android:key="sp_pulse_switch"
+            app:iconSpaceReserved="false" />
+    
+        <ListPreference
+            android:defaultValue="0"
+            android:title="@string/abc_setting_pulse_list_title"
+            android:summary="%s"
+            android:dialogTitle="@string/abc_setting_pulse_list_title"
+            android:entryValues="@array/entry_pulse_values"
+            android:entries="@array/entry_pulse"
+            android:key="sp_pulse_type"
+            app:iconSpaceReserved="false" />
+    
+    </PreferenceCategory >
 
 </PreferenceScreen >

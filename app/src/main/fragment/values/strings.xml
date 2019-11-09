@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources >
+    <string name="abc_setting_pulse_title">Visible Pulse</string>
+    <string name="abc_setting_pulse_switch">Switch</string>
+    <string name="abc_setting_pulse_list_title">Style</string>
+</resources >

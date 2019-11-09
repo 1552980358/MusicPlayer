@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.Matrix
+import android.media.audiofx.Visualizer
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.GestureDetector
@@ -15,6 +16,7 @@ import android.view.MotionEvent
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.SeekBar
@@ -25,6 +27,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.graphics.drawable.toDrawable
 import app.fokkusu.music.Application
 import app.fokkusu.music.R
+import app.fokkusu.music.base.Constants
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_CHANGED
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PAUSE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PLAY
@@ -37,13 +40,20 @@ import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY_FORM
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY_FORM_CONTENT
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_SEEK_CHANGE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_SEEK_CHANGE_POSITION
+import app.fokkusu.music.base.Constants.Companion.Save_Pulse_Style_Cylinder
 import app.fokkusu.music.base.getStack
 import app.fokkusu.music.base.getTime
 import app.fokkusu.music.base.interfaces.OnRequestAlbumCoverListener
+import app.fokkusu.music.dialog.BottomPlaylistDialog
+import app.fokkusu.music.fragment.main.SettingFragment
 import app.fokkusu.music.service.PlayService
+import app.fokkusu.music.view.pulse.BasePulseView
+import app.fokkusu.music.view.pulse.CylinderPulseView
+import app.fokkusu.music.view.pulse.WavePulseView
 import kotlinx.android.synthetic.main.activity_player.checkBox_playControl
 import kotlinx.android.synthetic.main.activity_player.drawerLayout_container
 import kotlinx.android.synthetic.main.activity_player.imageButton_last
+import kotlinx.android.synthetic.main.activity_player.imageButton_list
 import kotlinx.android.synthetic.main.activity_player.imageButton_next
 import kotlinx.android.synthetic.main.activity_player.imageButton_playForm
 import kotlinx.android.synthetic.main.activity_player.lyricView
@@ -107,6 +117,9 @@ class PlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
         addAction(SERVICE_BROADCAST_CHANGED)
     }
     
+    private lateinit var visualizer: Visualizer
+    private lateinit var pulseView: BasePulseView
+    
     /* onCreate */
     override fun onCreate(savedInstanceState: Bundle?) {
         window.decorView.systemUiVisibility =
@@ -133,7 +146,7 @@ class PlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
                 isSelected = true
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            e.getStack()
         }
         
         imageButton_next.setOnClickListener {
@@ -260,6 +273,66 @@ class PlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
             return@setOnTouchListener gesture.onTouchEvent(event)
         }
         
+        if (SettingFragment.switchSave[Constants.Save_Pulse_Switch]!!) {
+            visualizer = Visualizer(0).apply {
+                captureSize = Visualizer.getCaptureSizeRange()[0] * 2
+            }
+            if (SettingFragment.settingSave[Constants.Save_Pulse_Style]!! == Save_Pulse_Style_Cylinder) {
+                pulseView = CylinderPulseView(this)
+                visualizer.setDataCaptureListener(object : Visualizer.OnDataCaptureListener {
+                    override fun onFftDataCapture(visualizer: Visualizer?, fft: ByteArray?, samplingRate: Int) {
+                        visualizer ?: return
+                        fft ?: return
+                        pulseView.updateFFTArray(fft)
+                    }
+                    
+                    override fun onWaveFormDataCapture(
+                        visualizer: Visualizer?,
+                        waveform: ByteArray?,
+                        samplingRate: Int
+                    ) {
+                    }
+                    
+                }, Visualizer.getMaxCaptureRate() / 2, false, true)
+            } else {
+                pulseView = WavePulseView(this)
+                visualizer.setDataCaptureListener(object : Visualizer.OnDataCaptureListener {
+                    override fun onFftDataCapture(visualizer: Visualizer?, fft: ByteArray?, samplingRate: Int) {}
+                    override fun onWaveFormDataCapture(
+                        visualizer: Visualizer?,
+                        waveform: ByteArray?,
+                        samplingRate: Int
+                    ) {
+                        waveform ?: return
+                        pulseView.updateWaveArray(waveform)
+                    }
+                    
+                }, Visualizer.getMaxCaptureRate() / 2, true, false)
+            }
+            relativeLayout_container.addView(
+                pulseView,
+                RelativeLayout.LayoutParams(MATCH_PARENT, resources.getDimensionPixelOffset(R.dimen.pulse_height))
+            )
+        }
+        /*
+        visualizer.apply {
+            captureSize = Visualizer.getCaptureSizeRange()[0] * 2
+            setDataCaptureListener(object : Visualizer.OnDataCaptureListener {
+                override fun onFftDataCapture(visualizer: Visualizer?, fft: ByteArray?, samplingRate: Int) {
+                    visualizer?:return
+                    fft?:return
+                    pulseView.updateFFTArray(fft)
+                }
+    
+                override fun onWaveFormDataCapture(visualizer: Visualizer?, waveform: ByteArray?, samplingRate: Int) {
+                    waveform ?: return
+                    pulseView.updateWaveArray(waveform)
+                }
+    
+            }, Visualizer.getMaxCaptureRate() / 2, false, true)
+        }
+         */
+        
         checkBox_playControl.apply {
             setOnClickListener {
                 startService(
@@ -298,6 +371,10 @@ class PlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
             }
         })
         
+        imageButton_list.setOnClickListener {
+            BottomPlaylistDialog.bottomPlaylistDialog.showNow(supportFragmentManager)
+        }
+        
         lyricView.calculateHeight()
     }
     
@@ -329,6 +406,12 @@ class PlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
         timeCount = Thread {
             threadStop = false
             
+            try {
+                visualizer.enabled = true
+            } catch (e: Exception) {
+                e.getStack(false)
+            }
+            
             while (PlayService.playerState == PlayService.Companion.PlayState.PLAY && !threadStop) {
                 if (seekBarFree) {
                     (PlayService.getCurrentPosition()).apply {
@@ -349,6 +432,11 @@ class PlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
                 System.gc()
             }
             
+            try {
+                visualizer.enabled = false
+            } catch (e: Exception) {
+                e.getStack(false)
+            }
             System.gc()
         }.apply { start() }
     }
@@ -440,7 +528,8 @@ class PlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
             }
             
             // Cut height
-            RoundedBitmapDrawableFactory.create(resources,
+            RoundedBitmapDrawableFactory.create(
+                resources,
                 Bitmap.createBitmap(this, 0, (height - height) / 2, width, width, Matrix().apply {
                     (albumSize.toFloat() / width).apply {
                         setScale(this, this)
@@ -509,11 +598,7 @@ class PlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
     
     /* onDestroy */
     override fun onDestroy() {
-        // Stop Thread
-        threadStop = false
-        timeCount = null
-        
-        // Remove receiver
+        // Confirm that receiver is removed
         try {
             unregisterReceiver(broadcastReceiver)
         } catch (e: Exception) {
@@ -531,6 +616,10 @@ class PlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
     
     /* finish */
     override fun finish() {
+        // Stop Thread
+        threadStop = false
+        timeCount = null
+    
         super.finish()
         overridePendingTransition(R.anim.anim_stay, R.anim.anim_top2bottom)
     }

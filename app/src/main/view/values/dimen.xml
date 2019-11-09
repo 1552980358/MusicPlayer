@@ -4,4 +4,8 @@
     <dimen name="lyricView_textMargin">5dp</dimen>
     
     <dimen name="bottomPlayerView_height">51dp</dimen>
+    
+    <dimen name="pulse_height">50dp</dimen>
+    <dimen name="pulse_thick">1dp</dimen>
+    <dimen name="pulse_diff">1dp</dimen>
 </resources >

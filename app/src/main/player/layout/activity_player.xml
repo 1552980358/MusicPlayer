@@ -41,7 +41,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/lyricView"
-                    android:layout_alignParentBottom="true"/>
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="50dp"/>
+                
             </RelativeLayout >
 
             <LinearLayout
@@ -125,7 +127,7 @@
                         android:layout_width="@dimen/playerActivity_subItem_size"
                         android:layout_height="@dimen/playerActivity_subItem_size"
                         android:id="@+id/imageButton_list"
-                        android:background="@drawable/ic_list_info"
+                        android:background="@drawable/ic_player_list"
                         android:layout_marginStart="@dimen/playerActivity_subItem_marginLeftRightWider"
                         android:layout_marginEnd="@dimen/playerActivity_subItem_marginLeftRightWider" />
 

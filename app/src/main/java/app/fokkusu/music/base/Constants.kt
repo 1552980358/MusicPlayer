@@ -68,6 +68,11 @@ class Constants private constructor() {
         /* Dirs */
         const val Dir_Lyric = "Lyric"
         const val Dir_Cover = "Cover"
+        
+        const val Save_Pulse_Switch = "Save_Pulse_Switch"
+        const val Save_Pulse_Style = "Save_Pulse_Style"
+        const val Save_Pulse_Style_Cylinder = '0'
+        const val Save_Pulse_Style_Wave = '1'
     }
     
     init {

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources >
+    <string name="abc_setting_pulse_title">可视化脉冲</string>
+    <string name="abc_setting_pulse_switch">开关</string>
+    <string name="abc_setting_pulse_list_title">样式</string>
+</resources >

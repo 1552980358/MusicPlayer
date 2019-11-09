@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources >
+    
+    <string-array name="entry_pulse">
+        <item>Vertical Cylinder</item>
+        <item>Wave</item>
+    </string-array>
+    
+    <string-array name="entry_pulse_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    
+</resources >

@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import app.fokkusu.music.Application
 import app.fokkusu.music.R
 import app.fokkusu.music.base.Constants.Companion.APPLICATION_MEDIA_SCAN_COMPLETE
-import app.fokkusu.music.base.log
 import app.fokkusu.music.service.PlayService
 import kotlinx.android.synthetic.main.fragment_music.*
 
