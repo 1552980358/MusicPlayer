@@ -4,11 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="app.fokkusu.music" >
     
+    <!-- Permissions -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
     
     <application
         android:name=".Application"
@@ -40,7 +42,12 @@
             android:theme="@style/AppTheme.NoActionBar" />
         
         <activity
-            android:name=".activity.PlayerActivity"
+            android:name=".activity.player.DefPlayerActivity"
+            android:theme="@style/AppTheme.Player"
+            android:launchMode="singleTask" />
+    
+        <activity
+            android:name=".activity.player.DynPlayerActivity"
             android:theme="@style/AppTheme.Player"
             android:launchMode="singleTask" />
         

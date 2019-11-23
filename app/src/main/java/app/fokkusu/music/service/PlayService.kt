@@ -8,6 +8,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.app.usage.UsageStatsManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -27,12 +28,14 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import app.fokkusu.music.R
+import app.fokkusu.music.base.Constants
 import app.fokkusu.music.base.Constants.Companion.PlayServiceChannelId
 import app.fokkusu.music.base.Constants.Companion.PlayServiceId
 import app.fokkusu.music.base.Constants.Companion.USER_BROADCAST_PAUSE
 import app.fokkusu.music.base.Constants.Companion.BROADCAST_EXTRA_MUSIC_INDEX
 import app.fokkusu.music.base.Constants.Companion.BROADCAST_EXTRA_MUSIC_SOURCE
 import app.fokkusu.music.base.Constants.Companion.ERROR_CODE_INT
+import app.fokkusu.music.base.Constants.Companion.GamePackageName
 import app.fokkusu.music.base.Constants.Companion.MUSIC_LIST
 import app.fokkusu.music.base.Constants.Companion.PlayService
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_CHANGED
@@ -58,8 +61,8 @@ import app.fokkusu.music.base.Constants.Companion.USER_BROADCAST_SELECTED
 import app.fokkusu.music.base.MusicUtil
 import app.fokkusu.music.base.getStack
 import app.fokkusu.music.base.interfaces.OnRequestAlbumCoverListener
-import app.fokkusu.music.base.log
 import app.fokkusu.music.base.makeToast
+import app.fokkusu.music.fragment.main.SettingFragment
 import java.io.File
 import java.io.Serializable
 
@@ -69,7 +72,6 @@ import java.io.Serializable
  * @Date    : 4 Oct 2019
  * @TIME    : 6:23 PM
  **/
-
 
 @SuppressLint("PrivatePropertyName", "NewApi")
 class PlayService : Service(), OnRequestAlbumCoverListener {
@@ -132,10 +134,10 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
             /* Pause or Stop */
             playService!!.apply {
                 pauseSeek.apply {
-                    if (this != -1) return this
+                    if (this != -1) return this / 1000
                 }
                 pauseLoc.apply {
-                    if (this != -1) return this
+                    if (this != -1) return this / 1000
                 }
                 return 0
             }
@@ -157,13 +159,14 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
             return playService!!.playList[playService!!.musicLoc]
         }
         
-        /* Get current music index */
+        /* Get current music index
         fun getCurrentMusic(): Int {
             if (!init) {
                 return -1
             }
             return playService!!.musicLoc
         }
+        */
         
         /* Get play list */
         fun getPlayList(): MutableList<MusicUtil>? {
@@ -186,7 +189,7 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
                     }
                     
                     USER_BROADCAST_PAUSE -> {
-                        pause()
+                        gradualPause()
                     }
                     
                     USER_BROADCAST_LAST -> {
@@ -269,16 +272,19 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
     /* For API 26+ */
     private val audioFocusRequest by lazy {
         AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-            .setAudioAttributes(AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_MEDIA)                  // Gain Usage
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)     // Content type
-                .build())
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)                  // Gain Usage
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)     // Content type
+                    .build()
+            )
             .setWillPauseWhenDucked(true)
             //.setAcceptsDelayedFocusGain(true)                           // Two sounds playing at the same time
             .setOnAudioFocusChangeListener(onAudioFocusChangeListener)  // onAudioFocusChangeListener
             .build()
     }
     
+    /* onAudioFocusChangeListener */
     private val onAudioFocusChangeListener by lazy {
         AudioManager.OnAudioFocusChangeListener { status ->
             when (status) {
@@ -290,8 +296,30 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
                 }
                 /* Used to stop playing */
                 AudioManager.AUDIOFOCUS_LOSS -> {
+                    // Check if action required
+                    if (SettingFragment.switchSave[Constants.SP_Play_Disrupt] != null
+                        && SettingFragment.switchSave[Constants.SP_Play_Disrupt] as Boolean
+                    ) {
+                        (getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager)
+                            .queryUsageStats(
+                                UsageStatsManager.INTERVAL_BEST,
+                                System.currentTimeMillis() - 2000,
+                                System.currentTimeMillis()
+                            ).apply {
+                                if (isNullOrEmpty()) {
+                                    // No Permission
+                                    return@apply
+                                }
+                                for (i in this) {
+                                    if (GamePackageName.contains(i.packageName)) {
+                                        gainAudioFocusRequest()
+                                        return@OnAudioFocusChangeListener
+                                    }
+                                }
+                            }
+                    }
                     // Remove focus
-                    pause()
+                    pause()     // Hard pause
                     updateNotify()
                 }
                 /* Gain back focus */
@@ -305,12 +333,27 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
         }
     }
     
+    /* abundantAudioFocusRequest */
     private fun abundantAudioFocusRequest() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             audioManager.abandonAudioFocusRequest(audioFocusRequest)
         } else {
             @Suppress("DEPRECATION")
             audioManager.abandonAudioFocus(onAudioFocusChangeListener)
+        }
+    }
+    
+    /* gainAudioFocusRequest */
+    private fun gainAudioFocusRequest() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            audioManager.requestAudioFocus(audioFocusRequest)
+        } else {
+            @Suppress("DEPRECATION")
+            audioManager.requestAudioFocus(
+                onAudioFocusChangeListener,
+                AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN
+            )
         }
     }
     
@@ -382,7 +425,7 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
             }
             
             SERVICE_INTENT_PAUSE -> {
-                pause()
+                gradualPause()
             }
             
             SERVICE_INTENT_LAST -> {
@@ -433,14 +476,7 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
     private fun play(getFocus: Boolean = true) {
         // Gain focus
         if (getFocus) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                audioManager.requestAudioFocus(audioFocusRequest)
-            } else {
-                @Suppress("DEPRECATION")
-                audioManager.requestAudioFocus(onAudioFocusChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
-            }.apply {
-                log("audiofocus", this.toString())
-            }
+            gainAudioFocusRequest()
         }
         
         try {
@@ -465,6 +501,19 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
         } catch (e: Exception) {
             e.getStack()
         }
+    }
+    
+    @Synchronized
+    private fun gradualPause(abundantFocus: Boolean = true) {
+        for (i in 10 downTo 0) {
+            (i / 10F).apply {
+                mediaPlayer.setVolume(this, this)
+            }
+            
+            Thread.sleep(100)
+        }
+        pause(abundantFocus)
+        mediaPlayer.setVolume(1F, 1F)
     }
     
     /* Pause music playing */
@@ -571,7 +620,20 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
     private fun updateMusic() {
         try {
             /*  Remove all */
-            if (playerState != PlayState.STOP) mediaPlayer.reset()
+            if (playerState == PlayState.STOP) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    audioManager.requestAudioFocus(audioFocusRequest)
+                } else {
+                    @Suppress("DEPRECATION")
+                    audioManager.requestAudioFocus(
+                        onAudioFocusChangeListener,
+                        AudioManager.STREAM_MUSIC,
+                        AudioManager.AUDIOFOCUS_GAIN
+                    )
+                }
+            } else {
+                mediaPlayer.reset()
+            }
             
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 contentResolver.openAssetFileDescriptor(

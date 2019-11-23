@@ -4,4 +4,10 @@
         <item>直立柱</item>
         <item>波</item>
     </string-array>
+    
+    <string-array name="player_ui">
+        <item>默认UI</item>
+        <item>动态颜色</item>
+    </string-array>
+    
 </resources >

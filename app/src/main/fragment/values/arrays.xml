@@ -6,7 +6,17 @@
         <item>Wave</item>
     </string-array>
     
+    <string-array name="player_ui">
+        <item>Default UI</item>
+        <item>Dynamic Coloring</item>
+    </string-array>
+    
     <string-array name="entry_pulse_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    
+    <string-array name="player_ui_values">
         <item>0</item>
         <item>1</item>
     </string-array>

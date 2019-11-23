@@ -7,23 +7,59 @@
     app:iconSpaceReserved="false" >
     
     <PreferenceCategory
+        android:title="@string/abc_setting_player_ui_title"
+        app:iconSpaceReserved="false" >
+        
+        <ListPreference
+            app:iconSpaceReserved="false"
+            android:key="sp_player_ui"
+            android:entryValues="@array/player_ui_values"
+            android:entries="@array/player_ui"
+            android:defaultValue="0"
+            android:summary="%s"
+            android:title="@string/abc_setting_player_ui_list_title"
+            android:dialogTitle="@string/abc_setting_player_ui_dialog_title"/>
+            
+        
+    </PreferenceCategory>
+    
+    <PreferenceCategory
         android:title="@string/abc_setting_pulse_title"
         app:iconSpaceReserved="false" >
-    
+        
         <SwitchPreference
             android:defaultValue="true"
             android:title="@string/abc_setting_pulse_switch"
             android:key="sp_pulse_switch"
             app:iconSpaceReserved="false" />
-    
+        
         <ListPreference
             android:defaultValue="0"
             android:title="@string/abc_setting_pulse_list_title"
             android:summary="%s"
-            android:dialogTitle="@string/abc_setting_pulse_list_title"
+            android:dialogTitle="@string/abc_setting_pulse_list_dialog_title"
             android:entryValues="@array/entry_pulse_values"
             android:entries="@array/entry_pulse"
-            android:key="sp_pulse_type"
+            android:key="sp_pulse_style"
+            app:iconSpaceReserved="false" />
+    
+    </PreferenceCategory >
+    
+    <PreferenceCategory
+        android:title="@string/abc_setting_play_disrupt_title"
+        android:summary="@string/abc_setting_play_disrupt_summary"
+        app:iconSpaceReserved="false" >
+        
+        <SwitchPreference
+            android:title="@string/abc_setting_play_disrupt_switch"
+            android:key="sp_play_disrupt_switch"
+            android:defaultValue="false"
+            app:iconSpaceReserved="false" />
+        
+        <Preference
+            android:key="sp_play_disrupt_check"
+            android:title="@string/abc_setting_play_disrupt_check_title"
+            android:summary="@string/abc_setting_play_disrupt_check_summary"
             app:iconSpaceReserved="false" />
     
     </PreferenceCategory >

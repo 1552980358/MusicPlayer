@@ -20,14 +20,18 @@ import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_CHANGED
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PAUSE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PLAY
 import app.fokkusu.music.R
-import app.fokkusu.music.activity.PlayerActivity
+import app.fokkusu.music.activity.player.DefPlayerActivity
+import app.fokkusu.music.activity.player.DynPlayerActivity
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CONTENT
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PAUSE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY
+import app.fokkusu.music.base.Constants.Companion.Save_Player_UI
+import app.fokkusu.music.base.Constants.Companion.Save_Player_UI_Dyn
 import app.fokkusu.music.base.activity.BaseAppCompatActivity
 import app.fokkusu.music.base.getStack
 import app.fokkusu.music.base.interfaces.OnRequestAlbumCoverListener
 import app.fokkusu.music.dialog.BottomPlaylistDialog
+import app.fokkusu.music.fragment.main.SettingFragment
 import app.fokkusu.music.service.PlayService
 import app.fokkusu.music.service.PlayService.Companion.getCurrentMusicInfo
 import app.fokkusu.music.service.PlayService.Companion.playerState
@@ -156,7 +160,14 @@ class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
             context.startActivity(
                 Intent(
                     context,
-                    PlayerActivity::class.java
+                    when (SettingFragment.settingSave[Save_Player_UI]) {
+                        Save_Player_UI_Dyn -> {
+                            DynPlayerActivity::class.java
+                        }
+                        else -> {
+                            DefPlayerActivity::class.java
+                        }
+                    }
                 )
             )
         }

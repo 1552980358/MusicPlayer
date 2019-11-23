@@ -17,10 +17,11 @@
     <XML>
       <option name="XML_KEEP_LINE_BREAKS_IN_TEXT" value="false" />
       <option name="XML_KEEP_BLANK_LINES" value="1" />
-      <option name="XML_SPACE_AFTER_TAG_NAME" value="true" />
+      <option name="XML_SPACE_INSIDE_EMPTY_TAG" value="true" />
     </XML>
     <codeStyleSettings language="XML">
-      <option name="WRAP_ON_TYPING" value="0" />
+      <option name="FORCE_REARRANGE_MODE" value="1" />
+      <option name="WRAP_ON_TYPING" value="1" />
       <indentOptions>
         <option name="CONTINUATION_INDENT_SIZE" value="4" />
         <option name="KEEP_INDENTS_ON_EMPTY_LINES" value="true" />

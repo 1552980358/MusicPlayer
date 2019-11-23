@@ -21,7 +21,7 @@ fun log(tag: Int, msg: String) = Log.e(Application.getContext().getString(tag), 
 
 @Suppress("SpellCheckingInspection")
 @Synchronized
-fun Exception.getStack(showToast: Boolean = true) {
+fun Exception.getStack(showLog: Boolean = true, showToast: Boolean = true) {
     try {
         also { exception ->
             StringWriter().also { stringWriter ->
@@ -29,7 +29,7 @@ fun Exception.getStack(showToast: Boolean = true) {
                     exception.printStackTrace(this)
             
                     stringWriter.toString().apply {
-                        if (BuildConfig.DEBUG) {
+                        if (showLog && BuildConfig.DEBUG) {
                             log("FokkusuException", this)
                         }
                 

@@ -15,8 +15,11 @@
     <color name="green" >#00FF00</color >
 
     <color name="ripple_color" >#FF606060</color >
-    <color name="colorPress" >@color/white</color >
-    <color name="colorNor" >#B3FFFFFF</color >
+    <color name="colorDefPress" >@color/white</color >
+    <color name="colorDefNor" >#B3FFFFFF</color >
+    
+    <color name="colorDynPress">@color/black</color>
+    <color name="colorDynNor">#B3000000</color>
 
     <color name="player_title" >@color/white</color >
     <color name="player_subtitle" >#F0FFFFFF</color >

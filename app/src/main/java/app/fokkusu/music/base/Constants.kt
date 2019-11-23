@@ -69,10 +69,26 @@ class Constants private constructor() {
         const val Dir_Lyric = "Lyric"
         const val Dir_Cover = "Cover"
         
+        const val SP_Player_UI = "sp_player_ui"
+        const val SP_Pulse_Switch = "sp_pulse_switch"
+        const val SP_Pulse_Style = "sp_pulse_style"
+        const val SP_Play_Disrupt = "sp_play_disrupt"
+        const val SP_Play_Disrupt_Check = "sp_play_disrupt_check"
+        
+        const val Save_Player_UI = "Save_Player_UI"
+        const val Save_Player_UI_Def = '0'
+        const val Save_Player_UI_Dyn = '1'
         const val Save_Pulse_Switch = "Save_Pulse_Switch"
         const val Save_Pulse_Style = "Save_Pulse_Style"
         const val Save_Pulse_Style_Cylinder = '0'
         const val Save_Pulse_Style_Wave = '1'
+        const val Save_Play_Disrupt = "Save_Play_Disrupt"
+        
+        /* Known that will gain focus when start */
+        val GamePackageName = arrayListOf(
+            "com.miHoYo.enterprise.NGHSoD",     // 三蹦子 官服
+            "com.tencent.tmgp.sgame"            // 亡者农药
+        )
     }
     
     init {
