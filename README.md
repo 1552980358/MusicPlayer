@@ -45,7 +45,7 @@ Following sub-projects are included:
     - constraintlayout v1.1.3
     - preference v1.1.0
     
-LicenseL Apache-2.0
+License: Apache-2.0
 ```
 
 ### Open-Sourced License - [GNU General Public License v3.0](LICENSE)
