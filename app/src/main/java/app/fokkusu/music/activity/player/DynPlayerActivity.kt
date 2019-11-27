@@ -94,7 +94,7 @@ class DynPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
         window.decorView.systemUiVisibility =
             (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
         
-        window.statusBarColor = Color.parseColor("#80000000")
+        window.statusBarColor = Color.parseColor("#0f000000")
         
         overridePendingTransition(R.anim.anim_bottom2top, R.anim.anim_stay)
         super.onCreate(savedInstanceState)
@@ -248,11 +248,14 @@ class DynPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
         try {
             PlayService.getCurrentMusicInfo()?.apply {
                 (duration() / 1000).apply {
-                    textView_timeTotal.text = getTime(this)
-                    seekBar.max = this
+                    runOnUiThread {
+                        textView_timeTotal.text = getTime(this)
+                        seekBar.max = this
+                        textView_title.text = title()
+                        textView_subTitle.text = artist()
+                    }
                 }
-                textView_title.text = title()
-                textView_subTitle.text = artist()
+                
                 albumCover(this@DynPlayerActivity)
             }
         } catch (e: Exception) {
@@ -269,7 +272,7 @@ class DynPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
                 if (seekBarFree) {
                     (PlayService.getCurrentPosition()).apply {
                         runOnUiThread {
-                            seekBar.progress = this
+                            seekBar.progress = this / 1000
                             //textView_timePass.text = getTime(this)
                         }
                     }
@@ -331,18 +334,8 @@ class DynPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
                 textView_timePass.setTextColor(primaryTextColor)
                 textView_timeTotal.setTextColor(primaryTextColor)
                 textView_timeDiv.setTextColor(secondaryTextColor)
-            }
-        
-            if (isLight) {
-                runOnUiThread {
-                    textView_title.setTextColor(Color.BLACK)
-                    textView_subTitle.setTextColor(Color.BLACK)
-                }
-            } else {
-                runOnUiThread {
-                    textView_title.setTextColor(Color.WHITE)
-                    textView_subTitle.setTextColor(Color.WHITE)
-                }
+                textView_title.setTextColor(primaryTextColor)
+                textView_subTitle.setTextColor(secondaryTextColor)
             }
         }
     }
@@ -372,7 +365,9 @@ class DynPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
     override fun onResume() {
         super.onResume()
         registerReceiver(broadcastReceiver, intentFilter)
-        changeMusic()
+        Thread {
+            changeMusic()
+        }.start()
         checkBox_playControl.isChecked = PlayService.playerState == PlayService.Companion.PlayState.PLAY
         getThreadStart()
     }

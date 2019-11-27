@@ -11,7 +11,7 @@ class Constants private constructor() {
     companion object {
         const val PlayServiceId = 0
         const val PlayServiceChannelId = "FokkusuMusic"
-        const val PlayService = "PlayService"
+        const val PlayService = "FokkisuPlayService"
         
         /* General Constants */
         const val ERROR_CODE_STR = "ERROR_CODE_STR"

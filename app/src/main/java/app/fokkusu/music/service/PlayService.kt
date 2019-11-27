@@ -22,7 +22,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.provider.MediaStore
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -128,16 +130,16 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
         fun getCurrentPosition(): Int {
             /* Playing State */
             if (playerState == PlayState.PLAY) {
-                return playService!!.mediaPlayer.currentPosition / 1000
+                return playService!!.mediaPlayer.currentPosition
             }
             
             /* Pause or Stop */
             playService!!.apply {
                 pauseSeek.apply {
-                    if (this != -1) return this / 1000
+                    if (this != -1) return this
                 }
                 pauseLoc.apply {
-                    if (this != -1) return this / 1000
+                    if (this != -1) return this
                 }
                 return 0
             }
@@ -176,6 +178,8 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
         }
         
     }
+    
+    private var currentBitmap: Bitmap? = null
     
     /* Broadcast receiver */
     private val broadCastReceiver by lazy {
@@ -226,15 +230,63 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
     private lateinit var notificationManagerCompat: NotificationManagerCompat
     private lateinit var notificationCompat: NotificationCompat.Builder
     
+    /* playbackStateCompat */
+    private val playbackStateCompat by lazy {
+        PlaybackStateCompat.Builder()
+            //.setBufferedPosition(0)
+            .setState(PlaybackStateCompat.STATE_PAUSED, 0, 1F)
+            .setActions(PlaybackStateCompat.ACTION_PLAY
+                    or PlaybackStateCompat.ACTION_PAUSE
+                    or PlaybackStateCompat.ACTION_PLAY_PAUSE
+                    or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+                    or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+                    or PlaybackStateCompat.ACTION_STOP
+                    or PlaybackStateCompat.ACTION_SEEK_TO)
+    }
+    
+    /* mediaMetadataCompat */
+    private val mediaMetadataCompat by lazy {
+        MediaMetadataCompat.Builder().putLong(MediaMetadataCompat.METADATA_KEY_DURATION, 0)
+    }
+    
+    /* mediaSessionCompat */
+    private val mediaSessionCompat by lazy {
+        MediaSessionCompat(this, PlayService).apply {
+            setCallback(object : MediaSessionCompat.Callback() {
+                override fun onPlay() {
+                    play()
+                }
+                
+                override fun onPause() {
+                    pause()
+                }
+                
+                override fun onSeekTo(pos: Long) {
+                    seek(pos.toInt())
+                    updateNotify(currentBitmap, true)
+                }
+                
+                override fun onSkipToNext() {
+                    next()
+                }
+                
+                override fun onSkipToPrevious() {
+                    last()
+                }
+            })
+            setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
+            isActive = true
+            setPlaybackState(playbackStateCompat.build())
+            setMetadata(mediaMetadataCompat.build())
+        }
+    }
+
     /* Notification style */
     private val notificationStyle by lazy {
-        androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(
-            0, 1, 2
-        ).setShowCancelButton(true).setMediaSession(
-            MediaSessionCompat(
-                this@PlayService, PlayService
-            ).sessionToken
-        )
+        androidx.media.app.NotificationCompat.MediaStyle()
+            .setShowActionsInCompactView(0, 1, 2)
+            .setShowCancelButton(true)
+            .setMediaSession(mediaSessionCompat/*MediaSessionCompat(this@PlayService, PlayService)*/.sessionToken)
     }
     
     /* Notification actions */
@@ -368,6 +420,7 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
             when (playForm) {
                 PlayForm.RANDOM, PlayForm.CYCLE -> {
                     next()
+                    updateNotify()
                 }
                 
                 PlayForm.SINGLE -> {
@@ -390,8 +443,6 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
             }
         }
         
-        notificationStyle
-        
         notificationManagerCompat = NotificationManagerCompat.from(this)
         
         registerReceiver(broadCastReceiver, IntentFilter().apply {
@@ -405,7 +456,7 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
     
     /* onStartCommand */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        
+    
         startForeground(PlayServiceId, getNotification())
         
         if (intent == null) {
@@ -422,18 +473,22 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
             
             SERVICE_INTENT_PLAY -> {
                 play()
+                updateNotify(currentBitmap, true)
             }
             
             SERVICE_INTENT_PAUSE -> {
                 gradualPause()
+                updateNotify(currentBitmap, true)
             }
             
             SERVICE_INTENT_LAST -> {
                 last()
+                updateNotify(null, false)
             }
             
             SERVICE_INTENT_NEXT -> {
                 next()
+                updateNotify(null, false)
             }
             
             SERVICE_INTENT_CHANGE -> {
@@ -441,10 +496,12 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
                     intent.getIntExtra(SERVICE_INTENT_CHANGE_SOURCE, ERROR_CODE_INT),
                     intent.getIntExtra(SERVICE_INTENT_CHANGE_SOURCE_LOC, ERROR_CODE_INT)
                 )
+                updateNotify(null, false)
             }
             
             SERVICE_INTENT_SEEK_CHANGE -> {
                 seek(intent.getIntExtra(SERVICE_INTENT_SEEK_CHANGE_POSITION, ERROR_CODE_INT))
+                updateNotify(currentBitmap, true)
             }
             
             SERVICE_INTENT_PLAY_FORM -> {
@@ -462,12 +519,10 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
             
             else -> {
                 stopForeground(false)
-                updateNotify()
+                updateNotify(null, true)
                 return super.onStartCommand(intent, flags, startId)
             }
         }
-        
-        updateNotify()
         return super.onStartCommand(intent, START_REDELIVER_INTENT, startId)
     }
     
@@ -488,7 +543,7 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
                 updateMusic()
                 return
             }
-            
+    
             mediaPlayer.start()
             playerState = PlayState.PLAY
             
@@ -505,8 +560,8 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
     
     @Synchronized
     private fun gradualPause(abundantFocus: Boolean = true) {
-        for (i in 10 downTo 0) {
-            (i / 10F).apply {
+        for (i in 5 downTo 0) {
+            (i / 5F).apply {
                 mediaPlayer.setVolume(this, this)
             }
             
@@ -519,7 +574,9 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
     /* Pause music playing */
     @Synchronized
     private fun pause(abundantFocus: Boolean = true) {
-        if (playerState == PlayState.PAUSE) return
+        if (playerState == PlayState.PAUSE) {
+            return
+        }
         
         if (playerState == PlayState.PLAY) {
             pauseLoc = mediaPlayer.currentPosition
@@ -546,6 +603,7 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
             mediaPlayer.seekTo(loc)
             return
         }
+    
         pauseSeek = loc
     }
     
@@ -563,7 +621,7 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
                         updateMusic()
                         return
                     }
-                    
+    
                     playList.add(musicList[playList.last().loc + 1])
                     musicLoc++
                     updateMusic()
@@ -580,7 +638,7 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
                 }
             }
         }
-        
+    
         musicLoc++
         updateMusic()
     }
@@ -635,19 +693,22 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
                 mediaPlayer.reset()
             }
             
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                contentResolver.openAssetFileDescriptor(
-                    Uri.parse(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString() + File.separator + playList[musicLoc].id()),
-                    "r"
-                )?.apply {
-                    mediaPlayer.setDataSource(fileDescriptor)
-                    mediaPlayer.prepare()
-                    close()
-                }
-            } else {
-                mediaPlayer.setDataSource(playList[musicLoc].path())
+            mediaPlayer.stop()
+            mediaPlayer.reset()
+            
+            //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            contentResolver.openAssetFileDescriptor(
+                Uri.parse(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString() + File.separator + playList[musicLoc].id()),
+                "r"
+            )?.apply {
+                mediaPlayer.setDataSource(fileDescriptor)
                 mediaPlayer.prepare()
+                close()
             }
+            //} else {
+            //    mediaPlayer.setDataSource(playList[musicLoc].path())
+            //   mediaPlayer.prepare()
+            //}
             
             mediaPlayer.start()
             playerState = PlayState.PLAY
@@ -662,12 +723,13 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
     
     /* Notify updated notification */
     @Synchronized
-    private fun updateNotify(bitmap: Bitmap? = null) {
-        notificationManagerCompat.notify(PlayServiceId, getNotification(bitmap))
+    private fun updateNotify(bitmap: Bitmap? = null, requested: Boolean = false) {
+        currentBitmap = bitmap
+        notificationManagerCompat.notify(PlayServiceId, getNotification(bitmap, requested))
     }
     
     /* Creating a notification */
-    private fun getNotification(bitmap: Bitmap? = null): Notification {
+    private fun getNotification(bitmap: Bitmap? = null, requested: Boolean = false): Notification {
         return NotificationCompat.Builder(this, PlayServiceChannelId).apply {
             notificationCompat = this
             
@@ -679,21 +741,23 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
                     setLargeIcon(
                         if (bitmap == null) {
                             // Call for a album cover
-                            Thread {
-                                albumCover(this@PlayService)
-                            }.start()
+                            if (!requested) {
+                                Thread {
+                                    albumCover(this@PlayService)
+                                }.start()
+                            }
                             
                             ContextCompat.getDrawable(this@PlayService, R.mipmap.ic_launcher)!!.toBitmap()
                         } else {
                             bitmap
                         }
                     )
+                    // update duration
+                    mediaMetadataCompat.putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration().toLong())
                 }
             }
             
             setSmallIcon(R.mipmap.ic_launcher_round)
-            
-            setStyle(notificationStyle)
             
             priority = NotificationCompat.PRIORITY_MAX
             
@@ -705,9 +769,11 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
                     setOngoing(false)
                     setAutoCancel(true)
                     addAction(notificationAction_play)
+                    playbackStateCompat.setState(PlaybackStateCompat.STATE_PAUSED, getCurrentPosition().toLong(), 1F)
                 }
                 
                 PlayState.PLAY -> {
+                    playbackStateCompat.setState(PlaybackStateCompat.STATE_PLAYING, getCurrentPosition().toLong(), 1F)
                     setOngoing(true)
                     setAutoCancel(false)
                     addAction(notificationAction_pause)
@@ -715,6 +781,13 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
             }
             
             addAction(notificationAction_next)
+    
+            mediaSessionCompat.apply {
+                setPlaybackState(playbackStateCompat.build())
+                setMetadata(mediaMetadataCompat.build())
+            }
+    
+            setStyle(notificationStyle)
             
         }.build().apply {
             /* Garbage clean */
@@ -739,7 +812,7 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
     
     /* Request for album cover image returning bitmap */
     override fun onResult(bitmap: Bitmap) {
-        updateNotify(bitmap)
+        updateNotify(bitmap, true)
     }
     
     /* Request for album cover image returning null result */

@@ -390,15 +390,15 @@ class DefPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
         try {
             PlayService.getCurrentMusicInfo()?.apply {
                 (duration() / 1000).apply {
-                    textView_timeTotal.text = getTime(this)
-                    seekBar.max = this
+                    runOnUiThread {
+                        textView_timeTotal.text = getTime(this)
+                        seekBar.max = this
+                        toolbar.title = title()
+                        toolbar.subtitle = "${artist()} - ${album()}"
+                    }
                 }
-                toolbar.title = title()
-                toolbar.subtitle = "${artist()} - ${album()}"
                 
-                Thread {
-                    albumCover(this@DefPlayerActivity)
-                }.start()
+                albumCover(this@DefPlayerActivity)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -422,7 +422,7 @@ class DefPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
                     (PlayService.getCurrentPosition()).apply {
                         lyricView.updateLyricLine(this)
                         runOnUiThread {
-                            seekBar.progress = this
+                            seekBar.progress = this / 1000
                             //textView_timePass.text = getTime(this)
                         }
                     }
@@ -576,7 +576,9 @@ class DefPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
     override fun onResume() {
         super.onResume()
         registerReceiver(broadcastReceiver, intentFilter)
-        changeMusic()
+        Thread {
+            changeMusic()
+        }.start()
         checkBox_playControl.isChecked =
             PlayService.playerState == PlayService.Companion.PlayState.PLAY
         //(PlayService.getCurrentPosition()).apply {
