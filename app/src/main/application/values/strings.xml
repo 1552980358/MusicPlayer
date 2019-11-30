@@ -10,10 +10,15 @@
     
     <string name="abc_playService_cover_null">Album Cover Image not found!</string>
     
-    <string-array name="array_main_tab">
+    <!--string-array name="array_main_tab">
         <item>Setting</item>
         <item>Home</item>
         <item>Music</item>
+    </string-array-->
+    
+    <string-array name="array_main_tab">
+        <item>Music</item>
+        <item>Setting</item>
     </string-array>
 
 </resources>

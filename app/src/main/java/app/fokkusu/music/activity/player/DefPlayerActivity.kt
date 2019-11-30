@@ -119,7 +119,9 @@ class DefPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
                 }
                 
                 SERVICE_BROADCAST_CHANGED -> {
-                    changeMusic()
+                    Thread {
+                        changeMusic()
+                    }.start()
                 }
             }
         }

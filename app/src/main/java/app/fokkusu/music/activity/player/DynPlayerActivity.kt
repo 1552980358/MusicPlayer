@@ -13,13 +13,12 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.SeekBar
 import androidx.annotation.NonNull
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import app.fokkusu.music.R
 import app.fokkusu.music.base.Constants
+import app.fokkusu.music.base.activity.BasePlayerActivity
 import app.fokkusu.music.base.getStack
 import app.fokkusu.music.base.getTime
-import app.fokkusu.music.base.interfaces.OnRequestAlbumCoverListener
 import app.fokkusu.music.dialog.BottomPlaylistDialog
 import app.fokkusu.music.service.PlayService
 import kotlinx.android.synthetic.main.activity_player_dyn.checkBox_playControl
@@ -44,7 +43,7 @@ import mkaflowski.mediastylepalette.MediaNotificationProcessor
  * @TIME    : 17:28
  **/
 
-class DynPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
+class DynPlayerActivity : BasePlayerActivity()/*, OnRequestAlbumCoverListener*/ {
     
     private val albumSize by lazy {
         resources.displayMetrics.widthPixels.toFloat()
@@ -76,7 +75,9 @@ class DynPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
                 }
                 
                 Constants.SERVICE_BROADCAST_CHANGED -> {
-                    changeMusic()
+                    Thread {
+                        changeMusic()
+                    }.start()
                 }
             }
         }
@@ -92,9 +93,11 @@ class DynPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
     @Suppress("DuplicatedCode")
     override fun onCreate(savedInstanceState: Bundle?) {
         window.decorView.systemUiVisibility =
-            (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+            (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
         
-        window.statusBarColor = Color.parseColor("#0f000000")
+        window.statusBarColor = Color.TRANSPARENT
         
         overridePendingTransition(R.anim.anim_bottom2top, R.anim.anim_stay)
         super.onCreate(savedInstanceState)
@@ -190,7 +193,7 @@ class DynPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
                     startService(
                         Intent(this@DynPlayerActivity, PlayService::class.java)
                             .putExtra(Constants.SERVICE_INTENT_CONTENT, Constants.SERVICE_INTENT_SEEK_CHANGE)
-                            .putExtra(Constants.SERVICE_INTENT_SEEK_CHANGE_POSITION, seekBar.progress)
+                            .putExtra(Constants.SERVICE_INTENT_SEEK_CHANGE_POSITION, seekBar.progress * 1000)
                     )
                     seekBarFree = true
                 }
@@ -336,6 +339,19 @@ class DynPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
                 textView_timeDiv.setTextColor(secondaryTextColor)
                 textView_title.setTextColor(primaryTextColor)
                 textView_subTitle.setTextColor(secondaryTextColor)
+                if (isLight) {
+                    window.decorView.systemUiVisibility =
+                        (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+                                or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+                } else {
+                    window.decorView.systemUiVisibility =
+                        (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+                }
             }
         }
     }

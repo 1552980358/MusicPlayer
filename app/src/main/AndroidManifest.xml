@@ -2,7 +2,7 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="app.fokkusu.music" >
+    package="app.fokkusu.music">
     
     <!-- Permissions -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -10,7 +10,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
     
     <application
         android:name=".Application"
@@ -23,19 +25,19 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning"
         android:usesCleartextTraffic="true"
         tools:targetApi="m"
-        android:testOnly="false" >
+        android:testOnly="false">
         
         <service android:name=".service.PlayService" />
         
         <activity
             android:name=".activity.SplashActivity"
-            android:theme="@style/AppTheme.NoActionBar" >
-            <intent-filter >
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter >
-        </activity >
+            </intent-filter>
+        </activity>
         
         <activity
             android:name=".activity.MainActivity"
@@ -45,7 +47,7 @@
             android:name=".activity.player.DefPlayerActivity"
             android:theme="@style/AppTheme.Player"
             android:launchMode="singleTask" />
-    
+        
         <activity
             android:name=".activity.player.DynPlayerActivity"
             android:theme="@style/AppTheme.Player"
@@ -55,6 +57,6 @@
             android:name=".activity.SearchMusicActivity"
             android:theme="@style/AppTheme.Player" />
     
-    </application >
+    </application>
 
-</manifest >
+</manifest>

@@ -420,14 +420,17 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
             when (playForm) {
                 PlayForm.RANDOM, PlayForm.CYCLE -> {
                     next()
-                    updateNotify()
+                    updateNotify(null, false)
                 }
                 
                 PlayForm.SINGLE -> {
-                    if (!mediaPlayer.isLooping) {
-                        mediaPlayer.isLooping = true
-                        mediaPlayer.start()
-                    }
+                    //if (!mediaPlayer.isLooping) {
+                    //    mediaPlayer.isLooping = true
+                    //    mediaPlayer.start()
+                    //}
+                    //
+                    mediaPlayer.start()
+                    updateNotify(currentBitmap, requested = true, loopingStart = true)
                 }
             }
         }
@@ -507,11 +510,13 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
             SERVICE_INTENT_PLAY_FORM -> {
                 try {
                     playForm =
-                        (intent.getSerializableExtra(SERVICE_INTENT_PLAY_FORM_CONTENT) as PlayForm).apply {
-                            if (this == PlayForm.SINGLE) {
-                                mediaPlayer.isLooping = true
-                            }
-                        }
+                        (intent.getSerializableExtra(SERVICE_INTENT_PLAY_FORM_CONTENT) as PlayForm)/*.apply {
+                            // isLooping = true will cause OnCompletionListener no calling
+                            // when playing singly
+                            //if (this == PlayForm.SINGLE) {
+                            //    mediaPlayer.isLooping = true
+                            //}
+                        }*/
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -723,13 +728,13 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
     
     /* Notify updated notification */
     @Synchronized
-    private fun updateNotify(bitmap: Bitmap? = null, requested: Boolean = false) {
+    private fun updateNotify(bitmap: Bitmap? = null, requested: Boolean = false, loopingStart: Boolean = false) {
         currentBitmap = bitmap
-        notificationManagerCompat.notify(PlayServiceId, getNotification(bitmap, requested))
+        notificationManagerCompat.notify(PlayServiceId, getNotification(bitmap, requested, loopingStart))
     }
     
     /* Creating a notification */
-    private fun getNotification(bitmap: Bitmap? = null, requested: Boolean = false): Notification {
+    private fun getNotification(bitmap: Bitmap? = null, requested: Boolean = false, loopingStart: Boolean = false): Notification {
         return NotificationCompat.Builder(this, PlayServiceChannelId).apply {
             notificationCompat = this
             
@@ -773,7 +778,7 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
                 }
                 
                 PlayState.PLAY -> {
-                    playbackStateCompat.setState(PlaybackStateCompat.STATE_PLAYING, getCurrentPosition().toLong(), 1F)
+                    playbackStateCompat.setState(PlaybackStateCompat.STATE_PLAYING, if (loopingStart) 0L else getCurrentPosition().toLong(), 1F)
                     setOngoing(true)
                     setAutoCancel(false)
                     addAction(notificationAction_pause)

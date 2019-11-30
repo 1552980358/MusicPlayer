@@ -68,8 +68,9 @@
             android:id="@+id/fab"
             android:clickable="true"
             android:focusable="true"
-            android:alpha="0"
             tools:ignore="ContentDescription" />
+            <!--android:alpha="0"-->
+            
     
     </androidx.coordinatorlayout.widget.CoordinatorLayout >
 

@@ -12,6 +12,15 @@ class Constants private constructor() {
         const val PlayServiceId = 0
         const val PlayServiceChannelId = "FokkusuMusic"
         const val PlayService = "FokkisuPlayService"
+    
+        /*
+        const val MusicServiceId = 1
+        const val MusicServiceChannelId = "FokkusuMusic_MusicService"
+        //const val MusicService = "MusicService"
+        const val MusicServiceMusicInfoExtra = "MusicServiceMusicInfoExtra"
+        const val MusicServiceInterface = "MusicServiceInterface"
+        
+         */
         
         /* General Constants */
         const val ERROR_CODE_STR = "ERROR_CODE_STR"

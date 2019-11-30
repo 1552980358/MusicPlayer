@@ -10,10 +10,15 @@
     
     <string name="abc_playService_cover_null">无封面图片!</string>
 
-    <string-array name="array_main_tab">
+    <!--string-array name="array_main_tab">
         <item>设置</item>
         <item>主页</item>
         <item>音乐</item>
+    </string-array-->
+    
+    <string-array name="array_main_tab">
+        <item>音乐</item>
+        <item>设置</item>
     </string-array>
 
 </resources>

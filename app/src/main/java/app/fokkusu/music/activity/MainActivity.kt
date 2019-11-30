@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import app.fokkusu.music.base.activity.BaseAppCompatActivity
 import app.fokkusu.music.R
-import app.fokkusu.music.fragment.main.HomeFragment
 import app.fokkusu.music.fragment.main.MusicFragment
 import app.fokkusu.music.fragment.main.SettingFragment
 import kotlinx.android.synthetic.main.activity_main.bottomPlayerView
@@ -24,7 +23,7 @@ class MainActivity : BaseAppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         
-        val fragments = arrayOf(SettingFragment(), HomeFragment(), MusicFragment())
+        val fragments = arrayOf(MusicFragment(), SettingFragment()/*SettingFragment(), HomeFragment(), MusicFragment()*/)
         val titles = resources.getStringArray(R.array.array_main_tab)
         
         toolbar.title = titles[1]
@@ -43,9 +42,11 @@ class MainActivity : BaseAppCompatActivity() {
         
         tabLayout.apply {
             setupWithViewPager(viewPager)
-            getTabAt(0)!!.setIcon(R.drawable.ic_tab_setting)
-            getTabAt(1)!!.setIcon(R.drawable.ic_tab_home)
-            getTabAt(2)!!.setIcon(R.drawable.ic_tab_music)
+            getTabAt(0)!!.setIcon(R.drawable.ic_tab_music)
+            getTabAt(1)!!.setIcon(R.drawable.ic_tab_setting)
+            //getTabAt(0)!!.setIcon(R.drawable.ic_tab_setting)
+            //getTabAt(1)!!.setIcon(R.drawable.ic_tab_home)
+            //getTabAt(2)!!.setIcon(R.drawable.ic_tab_music)
         }
         
         val onClickListener0 = View.OnClickListener {
@@ -57,14 +58,17 @@ class MainActivity : BaseAppCompatActivity() {
         }
         
         viewPager.apply {
-            currentItem = 1
+            //currentItem = 1
+            currentItem = 0
             addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                 override fun onPageScrollStateChanged(state: Int) {}
                 
                 override fun onPageScrolled(
                     position: Int, positionOffset: Float, positionOffsetPixels: Int
                 ) {
+                    /*
                     if (positionOffset == 0.0f && (position == 2 || position == 0)) {
+                    
                         fab.alpha = 1F
                         return
                     }
@@ -73,12 +77,23 @@ class MainActivity : BaseAppCompatActivity() {
                         return
                     }
                     fab.alpha = 1 - positionOffset
+                     */
                 }
                 
                 @SuppressLint("RestrictedApi")
                 override fun onPageSelected(position: Int) {
                     toolbar.title = titles[position]
-                    
+                    when (position) {
+                        0 -> {
+                            fab.setImageResource(R.drawable.ic_fab_search)
+                            fab.setOnClickListener(onClickListener0)
+                        }
+                        1 -> {
+                            fab.setImageResource(R.drawable.ic_fab_right)
+                            fab.setOnClickListener(onClickListener1)
+                        }
+                    }
+                    /*
                     if (position == 2) {
                         fab.setImageResource(R.drawable.ic_fab_search)
                         fab.setOnClickListener(onClickListener0)
@@ -91,6 +106,7 @@ class MainActivity : BaseAppCompatActivity() {
                     }
                     
                     fab.setImageDrawable(null)
+                     */
                 }
             })
         }
