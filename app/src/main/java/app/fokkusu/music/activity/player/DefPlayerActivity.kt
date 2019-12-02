@@ -3,9 +3,6 @@ package app.fokkusu.music.activity.player
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.content.Intent
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.drawable.ColorDrawable
@@ -23,16 +20,12 @@ import android.widget.RelativeLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.annotation.NonNull
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.graphics.drawable.toDrawable
 import app.fokkusu.music.Application
 import app.fokkusu.music.R
 import app.fokkusu.music.base.Constants
-import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_CHANGED
-import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PAUSE
-import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PLAY
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CONTENT
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_LAST
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_NEXT
@@ -43,9 +36,9 @@ import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY_FORM_CONTE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_SEEK_CHANGE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_SEEK_CHANGE_POSITION
 import app.fokkusu.music.base.Constants.Companion.Save_Pulse_Style_Cylinder
+import app.fokkusu.music.base.activity.BasePlayerActivity
 import app.fokkusu.music.base.getStack
 import app.fokkusu.music.base.getTime
-import app.fokkusu.music.base.interfaces.OnRequestAlbumCoverListener
 import app.fokkusu.music.dialog.BottomPlaylistDialog
 import app.fokkusu.music.fragment.main.SettingFragment
 import app.fokkusu.music.service.PlayService
@@ -73,7 +66,7 @@ import java.io.File
  * @TIME    : 6:01 PM
  **/
 
-class DefPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
+class DefPlayerActivity : BasePlayerActivity() /*AppCompatActivity(), OnRequestAlbumCoverListener*/ {
     
     @Suppress("PrivatePropertyName")
     private lateinit var imageView_album: ImageView
@@ -103,6 +96,7 @@ class DefPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
     }
     
     /* BroadcastReceiver */
+    /*
     private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent ?: return
@@ -119,20 +113,25 @@ class DefPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
                 }
                 
                 SERVICE_BROADCAST_CHANGED -> {
-                    Thread {
+                    requestThread?.interrupt()
+                    System.gc()
+                    requestThread = Thread {
                         changeMusic()
-                    }.start()
+                    }.apply { start() }
                 }
             }
         }
     }
+     */
     
     /* IntentFilter for BroadcastReceiver */
+    /*
     private val intentFilter = IntentFilter().apply {
         addAction(SERVICE_BROADCAST_PAUSE)
         addAction(SERVICE_BROADCAST_PLAY)
         addAction(SERVICE_BROADCAST_CHANGED)
     }
+     */
     
     private lateinit var visualizer: Visualizer
     private lateinit var pulseView: BasePulseView
@@ -184,12 +183,12 @@ class DefPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
                 )
             )
         }
-    
+        
         imageButton_playForm.apply {
             val cycle = ContextCompat.getDrawable(this@DefPlayerActivity, R.drawable.ic_player_def_cycle)
             val single = ContextCompat.getDrawable(this@DefPlayerActivity, R.drawable.ic_player_def_single)
             val random = ContextCompat.getDrawable(this@DefPlayerActivity, R.drawable.ic_player_def_random)
-    
+            
             background = when (PlayService.playForm) {
                 PlayService.Companion.PlayForm.CYCLE -> {
                     cycle
@@ -201,7 +200,7 @@ class DefPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
                     random
                 }
             }
-    
+            
             setOnClickListener {
                 background = when (PlayService.playForm) {
                     PlayService.Companion.PlayForm.CYCLE -> {
@@ -212,7 +211,7 @@ class DefPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
                         )
                         single
                     }
-            
+                    
                     PlayService.Companion.PlayForm.SINGLE -> {
                         startService(
                             Intent(this@DefPlayerActivity, PlayService::class.java)
@@ -221,7 +220,7 @@ class DefPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
                         )
                         random
                     }
-            
+                    
                     PlayService.Companion.PlayForm.RANDOM -> {
                         startService(
                             Intent(this@DefPlayerActivity, PlayService::class.java)
@@ -388,7 +387,7 @@ class DefPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
     /* Set music into to the layout */
     @SuppressLint("SetTextI18n")
     @Synchronized
-    private fun changeMusic() {
+    private fun changeMusic(onResume: Boolean = false) {
         try {
             PlayService.getCurrentMusicInfo()?.apply {
                 (duration() / 1000).apply {
@@ -399,8 +398,17 @@ class DefPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
                         toolbar.subtitle = "${artist()} - ${album()}"
                     }
                 }
-                
-                albumCover(this@DefPlayerActivity)
+                if (onResume) {
+                    PlayService.getCurrentBitmap().apply {
+                        if (this == null) {
+                            onNullResult()
+                            return
+                        }
+                        
+                        onResult(this)
+                    }
+                }
+                //albumCover(this@DefPlayerActivity)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -421,10 +429,10 @@ class DefPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
             
             do {
                 if (seekBarFree) {
-                    (PlayService.getCurrentPosition()).apply {
+                    (PlayService.getCurrentPosition() / 1000).apply {
                         lyricView.updateLyricLine(this)
                         runOnUiThread {
-                            seekBar.progress = this / 1000
+                            seekBar.progress = this
                             //textView_timePass.text = getTime(this)
                         }
                     }
@@ -574,13 +582,29 @@ class DefPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
         getLyric()
     }
     
+    override fun onReceivePlay() {
+        checkBox_playControl.isChecked = true
+        getThreadStart()
+    }
+    
+    override fun onReceivePause() {
+        checkBox_playControl.isChecked = false
+        threadStop = true
+    }
+    
+    override fun onReceiveChange() {
+        Thread {
+            changeMusic()
+        }.apply { start() }
+    }
+    
     /* onResume */
     override fun onResume() {
         super.onResume()
-        registerReceiver(broadcastReceiver, intentFilter)
+        //registerReceiver(broadcastReceiver, intentFilter)
         Thread {
-            changeMusic()
-        }.start()
+            changeMusic(true)
+        }.apply { start() }
         checkBox_playControl.isChecked =
             PlayService.playerState == PlayService.Companion.PlayState.PLAY
         //(PlayService.getCurrentPosition()).apply {
@@ -604,8 +628,8 @@ class DefPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
         timeCount = null
         
         // Remove receiver
-        unregisterReceiver(broadcastReceiver)
-    
+        //unregisterReceiver(broadcastReceiver)
+        
         System.gc()
     }
     
@@ -629,11 +653,11 @@ class DefPlayerActivity : AppCompatActivity(), OnRequestAlbumCoverListener {
         // make sure that sub-thread is removed
         timeCount = null
         // Confirm that receiver is removed
-        try {
-            unregisterReceiver(broadcastReceiver)
-        } catch (e: Exception) {
-            e.getStack(showLog = false, showToast = false)
-        }
+        //try {
+        //    unregisterReceiver(broadcastReceiver)
+        //} catch (e: Exception) {
+        //    e.getStack(showLog = false, showToast = false)
+        //}
         super.onDestroy()
         
         // Remove stack

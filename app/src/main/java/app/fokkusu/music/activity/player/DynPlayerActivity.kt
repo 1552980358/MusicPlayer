@@ -1,9 +1,6 @@
 package app.fokkusu.music.activity.player
 
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Matrix
@@ -43,7 +40,7 @@ import mkaflowski.mediastylepalette.MediaNotificationProcessor
  * @TIME    : 17:28
  **/
 
-class DynPlayerActivity : BasePlayerActivity()/*, OnRequestAlbumCoverListener*/ {
+class DynPlayerActivity : BasePlayerActivity()/*AppCompatActivity(), OnRequestAlbumCoverListener*/ {
     
     private val albumSize by lazy {
         resources.displayMetrics.widthPixels.toFloat()
@@ -59,6 +56,7 @@ class DynPlayerActivity : BasePlayerActivity()/*, OnRequestAlbumCoverListener*/ 
     private val albumDefault by lazy { ColorDrawable(Color.WHITE) }
     
     /* BroadcastReceiver */
+    /*
     private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent ?: return
@@ -82,13 +80,16 @@ class DynPlayerActivity : BasePlayerActivity()/*, OnRequestAlbumCoverListener*/ 
             }
         }
     }
+     */
     
     /* IntentFilter for BroadcastReceiver */
+    /*
     private val intentFilter = IntentFilter().apply {
         addAction(Constants.SERVICE_BROADCAST_PAUSE)
         addAction(Constants.SERVICE_BROADCAST_PLAY)
         addAction(Constants.SERVICE_BROADCAST_CHANGED)
     }
+     */
     
     @Suppress("DuplicatedCode")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -119,7 +120,7 @@ class DynPlayerActivity : BasePlayerActivity()/*, OnRequestAlbumCoverListener*/ 
             ellipsize = TextUtils.TruncateAt.MARQUEE
             isSelected = true
         }
-    
+        
         val cycle = ContextCompat.getDrawable(this, R.drawable.ic_player_dyn_cycle)
         val single = ContextCompat.getDrawable(this, R.drawable.ic_player_dyn_single)
         val random = ContextCompat.getDrawable(this, R.drawable.ic_player_dyn_random)
@@ -144,7 +145,10 @@ class DynPlayerActivity : BasePlayerActivity()/*, OnRequestAlbumCoverListener*/ 
                         startService(
                             Intent(this@DynPlayerActivity, PlayService::class.java)
                                 .putExtra(Constants.SERVICE_INTENT_CONTENT, Constants.SERVICE_INTENT_PLAY_FORM)
-                                .putExtra(Constants.SERVICE_INTENT_PLAY_FORM_CONTENT, PlayService.Companion.PlayForm.SINGLE)
+                                .putExtra(
+                                    Constants.SERVICE_INTENT_PLAY_FORM_CONTENT,
+                                    PlayService.Companion.PlayForm.SINGLE
+                                )
                         )
                         single
                     }
@@ -152,7 +156,10 @@ class DynPlayerActivity : BasePlayerActivity()/*, OnRequestAlbumCoverListener*/ 
                         startService(
                             Intent(this@DynPlayerActivity, PlayService::class.java)
                                 .putExtra(Constants.SERVICE_INTENT_CONTENT, Constants.SERVICE_INTENT_PLAY_FORM)
-                                .putExtra(Constants.SERVICE_INTENT_PLAY_FORM_CONTENT, PlayService.Companion.PlayForm.RANDOM)
+                                .putExtra(
+                                    Constants.SERVICE_INTENT_PLAY_FORM_CONTENT,
+                                    PlayService.Companion.PlayForm.RANDOM
+                                )
                         )
                         random
                     }
@@ -160,7 +167,10 @@ class DynPlayerActivity : BasePlayerActivity()/*, OnRequestAlbumCoverListener*/ 
                         startService(
                             Intent(this@DynPlayerActivity, PlayService::class.java)
                                 .putExtra(Constants.SERVICE_INTENT_CONTENT, Constants.SERVICE_INTENT_PLAY_FORM)
-                                .putExtra(Constants.SERVICE_INTENT_PLAY_FORM_CONTENT, PlayService.Companion.PlayForm.CYCLE)
+                                .putExtra(
+                                    Constants.SERVICE_INTENT_PLAY_FORM_CONTENT,
+                                    PlayService.Companion.PlayForm.CYCLE
+                                )
                         )
                         cycle
                     }
@@ -180,16 +190,18 @@ class DynPlayerActivity : BasePlayerActivity()/*, OnRequestAlbumCoverListener*/ 
         }
         
         seekBar.apply {
-            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                     //if (!fromUser) return
                     textView_timePass.text = getTime(progress)
                 }
+                
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {
                     seekBarFree = false
                 }
+                
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    seekBar?:return
+                    seekBar ?: return
                     startService(
                         Intent(this@DynPlayerActivity, PlayService::class.java)
                             .putExtra(Constants.SERVICE_INTENT_CONTENT, Constants.SERVICE_INTENT_SEEK_CHANGE)
@@ -199,7 +211,7 @@ class DynPlayerActivity : BasePlayerActivity()/*, OnRequestAlbumCoverListener*/ 
                 }
             })
         }
-    
+        
         checkBox_playControl.apply {
             setOnClickListener {
                 startService(
@@ -214,7 +226,7 @@ class DynPlayerActivity : BasePlayerActivity()/*, OnRequestAlbumCoverListener*/ 
         imageButton_list.setOnClickListener {
             BottomPlaylistDialog.bottomPlaylistDialog.showNow(supportFragmentManager)
         }
-    
+        
         checkBox_playControl.apply {
             setOnClickListener {
                 startService(
@@ -247,7 +259,7 @@ class DynPlayerActivity : BasePlayerActivity()/*, OnRequestAlbumCoverListener*/ 
     
     /* changeMusic */
     @Synchronized
-    private fun changeMusic() {
+    private fun changeMusic(onResume: Boolean = false) {
         try {
             PlayService.getCurrentMusicInfo()?.apply {
                 (duration() / 1000).apply {
@@ -259,7 +271,17 @@ class DynPlayerActivity : BasePlayerActivity()/*, OnRequestAlbumCoverListener*/ 
                     }
                 }
                 
-                albumCover(this@DynPlayerActivity)
+                //albumCover(this@DynPlayerActivity)
+                if (onResume) {
+                    PlayService.getCurrentBitmap().apply {
+                        if (this == null) {
+                            onNullResult()
+                            return
+                        }
+                        
+                        onResult(this)
+                    }
+                }
             }
         } catch (e: Exception) {
             e.getStack(showLog = false, showToast = false)
@@ -286,7 +308,7 @@ class DynPlayerActivity : BasePlayerActivity()/*, OnRequestAlbumCoverListener*/ 
                 } catch (e: Exception) {
                     e.getStack(showLog = false, showToast = false)
                 }
-    
+                
                 //System.gc()
             } while (PlayService.playerState == PlayService.Companion.PlayState.PLAY && !threadStop)
             
@@ -355,7 +377,23 @@ class DynPlayerActivity : BasePlayerActivity()/*, OnRequestAlbumCoverListener*/ 
             }
         }
     }
-
+    
+    override fun onReceivePlay() {
+        checkBox_playControl.isChecked = true
+        getThreadStart()
+    }
+    
+    override fun onReceivePause() {
+        checkBox_playControl.isChecked = false
+        threadStop = true
+    }
+    
+    override fun onReceiveChange() {
+        Thread {
+            changeMusic()
+        }.start()
+    }
+    
     /* onNullResult */
     override fun onNullResult() {
         runOnUiThread {
@@ -380,9 +418,9 @@ class DynPlayerActivity : BasePlayerActivity()/*, OnRequestAlbumCoverListener*/ 
     /* onResume */
     override fun onResume() {
         super.onResume()
-        registerReceiver(broadcastReceiver, intentFilter)
+        //registerReceiver(broadcastReceiver, intentFilter)
         Thread {
-            changeMusic()
+            changeMusic(true)
         }.start()
         checkBox_playControl.isChecked = PlayService.playerState == PlayService.Companion.PlayState.PLAY
         getThreadStart()
@@ -391,12 +429,12 @@ class DynPlayerActivity : BasePlayerActivity()/*, OnRequestAlbumCoverListener*/ 
     /* onPause */
     override fun onPause() {
         super.onPause()
-    
+        
         // Stop Thread
         threadStop = true
         timeCount = null
         
-        unregisterReceiver(broadcastReceiver)
+        //unregisterReceiver(broadcastReceiver)
         
         System.gc()
     }
@@ -419,13 +457,13 @@ class DynPlayerActivity : BasePlayerActivity()/*, OnRequestAlbumCoverListener*/ 
     /* onDestroy */
     override fun onDestroy() {
         // Confirm that receiver is removed
-        try {
-            unregisterReceiver(broadcastReceiver)
-        } catch (e: Exception) {
-            e.getStack(showLog = false, showToast = false)
-        }
+        //try {
+        //     unregisterReceiver(broadcastReceiver)
+        //} catch (e: Exception) {
+        //    e.getStack(showLog = false, showToast = false)
+        //}
         super.onDestroy()
-    
+        
         // Remove stack
         System.gc()
     }

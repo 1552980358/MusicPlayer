@@ -40,6 +40,8 @@ import app.fokkusu.music.base.Constants.Companion.ERROR_CODE_INT
 import app.fokkusu.music.base.Constants.Companion.GamePackageName
 import app.fokkusu.music.base.Constants.Companion.MUSIC_LIST
 import app.fokkusu.music.base.Constants.Companion.PlayService
+import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_BITMAP_CONTENT
+import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_BITMAP_RESULT
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_CHANGED
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PAUSE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PLAY
@@ -177,6 +179,9 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
             return playService!!.playList
         }
         
+        fun getCurrentBitmap(): Bitmap? {
+            return playService?.currentBitmap
+        }
     }
     
     private var currentBitmap: Bitmap? = null
@@ -319,9 +324,11 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
         )
     }
     
+    /* audioManager */
     private val audioManager by lazy { getSystemService(Context.AUDIO_SERVICE) as AudioManager }
     
     /* For API 26+ */
+    /* audioFocusRequest */
     private val audioFocusRequest by lazy {
         AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
             .setAudioAttributes(
@@ -475,7 +482,7 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
             }
             
             SERVICE_INTENT_PLAY -> {
-                play()
+                gradualPlay()
                 updateNotify(currentBitmap, true)
             }
             
@@ -531,6 +538,18 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
         return super.onStartCommand(intent, START_REDELIVER_INTENT, startId)
     }
     
+    /* gradualPlay */
+    @Synchronized
+    private fun gradualPlay(getFocus: Boolean = true) {
+        updateVolume(0F)
+        play(getFocus)
+        for (i in 1 .. 5) {
+            updateVolume(i / 5F)
+            
+            Thread.sleep(100)
+        }
+    }
+    
     /* Start music playing */
     @Synchronized
     private fun play(getFocus: Boolean = true) {
@@ -549,6 +568,9 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
                 return
             }
     
+            mediaPlayer.setVolume(0F, 0F)
+            
+            
             mediaPlayer.start()
             playerState = PlayState.PLAY
             
@@ -563,17 +585,16 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
         }
     }
     
+    /* gradualPause */
     @Synchronized
     private fun gradualPause(abundantFocus: Boolean = true) {
-        for (i in 5 downTo 0) {
-            (i / 5F).apply {
-                mediaPlayer.setVolume(this, this)
-            }
+        for (i in 4 downTo 0) {
+            updateVolume(i / 5F)
             
             Thread.sleep(100)
         }
         pause(abundantFocus)
-        mediaPlayer.setVolume(1F, 1F)
+        //mediaPlayer.setVolume(1F, 1F)
     }
     
     /* Pause music playing */
@@ -675,27 +696,26 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
         }
         
         musicLoc = loc
-        updateMusic()
+        updateMusic(playerState == PlayState.STOP)
     }
     
     /* Switch to other music according to global value */
     @Synchronized
-    private fun updateMusic() {
+    private fun updateMusic(gradual: Boolean = false) {
         try {
             /*  Remove all */
-            if (playerState == PlayState.STOP) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    audioManager.requestAudioFocus(audioFocusRequest)
-                } else {
-                    @Suppress("DEPRECATION")
-                    audioManager.requestAudioFocus(
-                        onAudioFocusChangeListener,
-                        AudioManager.STREAM_MUSIC,
-                        AudioManager.AUDIOFOCUS_GAIN
-                    )
-                }
-            } else {
+            if (playerState != PlayState.STOP)
                 mediaPlayer.reset()
+            
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                audioManager.requestAudioFocus(audioFocusRequest)
+            } else {
+                @Suppress("DEPRECATION")
+                audioManager.requestAudioFocus(
+                    onAudioFocusChangeListener,
+                    AudioManager.STREAM_MUSIC,
+                    AudioManager.AUDIOFOCUS_GAIN
+                )
             }
             
             mediaPlayer.stop()
@@ -715,12 +735,24 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
             //   mediaPlayer.prepare()
             //}
             
+            if (gradual) {
+                updateVolume(0F)
+            }
+            
             mediaPlayer.start()
             playerState = PlayState.PLAY
-            
+    
             pauseLoc = -1
             pauseSeek = -1
             sendBroadcast(Intent(SERVICE_BROADCAST_CHANGED))
+            
+            if (gradual) {
+                for (i in 1 .. 5) {
+                    updateVolume(i /5F)
+        
+                    Thread.sleep(100)
+                }
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -800,6 +832,10 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
         }
     }
     
+    private fun updateVolume(volume: Float) {
+        mediaPlayer.setVolume(volume, volume)
+    }
+    
     /* onDestroy */
     override fun onDestroy() {
         try {
@@ -818,11 +854,13 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
     /* Request for album cover image returning bitmap */
     override fun onResult(bitmap: Bitmap) {
         updateNotify(bitmap, true)
+        sendBroadcast(Intent(SERVICE_BROADCAST_BITMAP_RESULT).putExtra(SERVICE_BROADCAST_BITMAP_CONTENT, true))
     }
     
     /* Request for album cover image returning null result */
     override fun onNullResult() {
         makeToast(R.string.abc_playService_cover_null)
+        sendBroadcast(Intent(SERVICE_BROADCAST_BITMAP_RESULT).putExtra(SERVICE_BROADCAST_BITMAP_CONTENT, false))
     }
     
     /* onBind */
