@@ -15,6 +15,7 @@ import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PLAY
 import app.fokkusu.music.base.getStack
 import app.fokkusu.music.service.PlayService
 import java.lang.Exception
+import app.fokkusu.music.R
 
 /**
  * @File    : BasePlayerActivity
@@ -25,6 +26,10 @@ import java.lang.Exception
 
 @SuppressLint("Registered")
 open class BasePlayerActivity : AppCompatActivity() {
+    
+    /* Thread and flag */
+    protected var timeCount: Thread? = null
+    protected var threadStop = false
     
     private val broadcastReceiver by lazy {
         object : BroadcastReceiver() {
@@ -45,7 +50,6 @@ open class BasePlayerActivity : AppCompatActivity() {
                                 }
                                 onResult(this)
                             }
-                            
                         }
                     }
     
@@ -97,21 +101,58 @@ open class BasePlayerActivity : AppCompatActivity() {
     /* onReceiveChange */
     /* Need to be override when inheriting PlayerActivity */
     open fun onReceiveChange() {
+        changeMusic()
+    }
+    
+    @Synchronized
+    open fun changeMusic(onResume: Boolean = false) {
+    }
+    
+    @Synchronized
+    open fun getThreadStart() {
     }
     
     /* onResume */
     override fun onResume() {
         super.onResume()
         registerReceiver(broadcastReceiver, intentFilter)
+        changeMusic(true)
+        getThreadStart()
     }
     
     /* onPause */
     override fun onPause() {
         super.onPause()
+        
+        // Stop Thread
+        threadStop = true
+        timeCount = null
+        
         unregisterReceiver(broadcastReceiver)
+        
+        System.gc()
     }
     
+    /* onBackPressed */
+    override fun onBackPressed() {
+        finish()
+    }
+    
+    /* finish */
+    override fun finish() {
+        // Stop Thread
+        threadStop = true
+        timeCount = null
+    
+        super.finish()
+        overridePendingTransition(R.anim.anim_stay, R.anim.anim_top2bottom)
+    }
+    
+    /* onDestroy */
     override fun onDestroy() {
+        // make sure that sub-thread is removed
+        timeCount = null
+        
         try {
             unregisterReceiver(broadcastReceiver)
         } catch (e: Exception) {
@@ -119,4 +160,6 @@ open class BasePlayerActivity : AppCompatActivity() {
         }
         super.onDestroy()
     }
+    
+    
 }

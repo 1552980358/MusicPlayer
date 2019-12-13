@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="abc_bottomDialog_id">ID</string>
+    <string name="abc_bottomDialog_path">Media Path</string>
+    <string name="abc_bottomDialog_img">Album Cover Path</string>
+    <string name="abc_bottomDialog_lyric">Lyric Path</string>
+</resources>

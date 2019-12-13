@@ -7,6 +7,8 @@ import android.graphics.Matrix
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.SeekBar
 import androidx.annotation.NonNull
@@ -16,6 +18,7 @@ import app.fokkusu.music.base.Constants
 import app.fokkusu.music.base.activity.BasePlayerActivity
 import app.fokkusu.music.base.getStack
 import app.fokkusu.music.base.getTime
+import app.fokkusu.music.dialog.BottomPropDialog
 import app.fokkusu.music.dialog.BottomPlaylistDialog
 import app.fokkusu.music.service.PlayService
 import kotlinx.android.synthetic.main.activity_player_dyn.checkBox_playControl
@@ -47,8 +50,9 @@ class DynPlayerActivity : BasePlayerActivity()/*AppCompatActivity(), OnRequestAl
     }
     
     // Stop Thread
-    private var threadStop = false
-    private var timeCount = null as Thread?
+    //private var threadStop = false
+    //private var timeCount = null as Thread?
+    
     private var matrix = Matrix()
     private lateinit var mediaNotificationProcessor: MediaNotificationProcessor
     private var seekBarFree = true
@@ -259,7 +263,7 @@ class DynPlayerActivity : BasePlayerActivity()/*AppCompatActivity(), OnRequestAl
     
     /* changeMusic */
     @Synchronized
-    private fun changeMusic(onResume: Boolean = false) {
+    override fun changeMusic(onResume: Boolean) {
         try {
             PlayService.getCurrentMusicInfo()?.apply {
                 (duration() / 1000).apply {
@@ -289,7 +293,8 @@ class DynPlayerActivity : BasePlayerActivity()/*AppCompatActivity(), OnRequestAl
     }
     
     /* getThreadStart */
-    private fun getThreadStart() {
+    @Synchronized
+    override fun getThreadStart() {
         timeCount = Thread {
             threadStop = false
             
@@ -388,11 +393,11 @@ class DynPlayerActivity : BasePlayerActivity()/*AppCompatActivity(), OnRequestAl
         threadStop = true
     }
     
-    override fun onReceiveChange() {
-        Thread {
-            changeMusic()
-        }.start()
-    }
+    //override fun onReceiveChange() {
+        //Thread {
+        //changeMusic()
+        //}.start()
+    //}
     
     /* onNullResult */
     override fun onNullResult() {
@@ -417,55 +422,78 @@ class DynPlayerActivity : BasePlayerActivity()/*AppCompatActivity(), OnRequestAl
     
     /* onResume */
     override fun onResume() {
+        checkBox_playControl.isChecked = PlayService.playerState == PlayService.Companion.PlayState.PLAY
         super.onResume()
         //registerReceiver(broadcastReceiver, intentFilter)
-        Thread {
-            changeMusic(true)
-        }.start()
-        checkBox_playControl.isChecked = PlayService.playerState == PlayService.Companion.PlayState.PLAY
-        getThreadStart()
+        //changeMusic(true)
+        //getThreadStart()
+    }
+    
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_play_activity, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+    
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_opts -> {
+                BottomPropDialog().show(this.supportFragmentManager, "DynPlayerActivity")
+            }
+            
+            R.id.menu_cover_choose -> {
+            
+            }
+            
+            R.id.menu_lyric_choose -> {
+            
+            }
+        }
+        
+        return super.onOptionsItemSelected(item)
     }
     
     /* onPause */
-    override fun onPause() {
-        super.onPause()
-        
+    //override fun onPause() {
+    //    super.onPause()
+    //
         // Stop Thread
-        threadStop = true
-        timeCount = null
+    //    threadStop = true
+    //    timeCount = null
         
-        //unregisterReceiver(broadcastReceiver)
+    //    //unregisterReceiver(broadcastReceiver)
         
-        System.gc()
-    }
+    //    System.gc()
+    //}
     
     /* onBackPressed */
-    override fun onBackPressed() {
-        finish()
-    }
+    //override fun onBackPressed() {
+    //    finish()
+    //}
     
     /* finish */
-    override fun finish() {
-        // Stop Thread
-        threadStop = true
-        timeCount = null
-        
-        super.finish()
-        overridePendingTransition(R.anim.anim_stay, R.anim.anim_top2bottom)
-    }
+    //override fun finish() {
+    // Stop Thread
+    //    threadStop = true
+    //    timeCount = null
+    
+    //    super.finish()
+    //    overridePendingTransition(R.anim.anim_stay, R.anim.anim_top2bottom)
+    //}
     
     /* onDestroy */
-    override fun onDestroy() {
-        // Confirm that receiver is removed
-        //try {
-        //     unregisterReceiver(broadcastReceiver)
-        //} catch (e: Exception) {
-        //    e.getStack(showLog = false, showToast = false)
-        //}
-        super.onDestroy()
-        
-        // Remove stack
-        System.gc()
-    }
+    //override fun onDestroy() {
+    // make sure that sub-thread is removed
+    //    timeCount = null
+    // Confirm that receiver is removed
+    //try {
+    //    unregisterReceiver(broadcastReceiver)
+    //} catch (e: Exception) {
+    //    e.getStack(showLog = false, showToast = false)
+    //}
+    //    super.onDestroy()
+    
+    // Remove stack
+    //    System.gc()
+    //}
     
 }

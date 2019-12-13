@@ -10,6 +10,8 @@ import android.media.audiofx.Visualizer
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.GestureDetector
+import android.view.Menu
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -39,6 +41,7 @@ import app.fokkusu.music.base.Constants.Companion.Save_Pulse_Style_Cylinder
 import app.fokkusu.music.base.activity.BasePlayerActivity
 import app.fokkusu.music.base.getStack
 import app.fokkusu.music.base.getTime
+import app.fokkusu.music.dialog.BottomPropDialog
 import app.fokkusu.music.dialog.BottomPlaylistDialog
 import app.fokkusu.music.fragment.main.SettingFragment
 import app.fokkusu.music.service.PlayService
@@ -79,8 +82,8 @@ class DefPlayerActivity : BasePlayerActivity() /*AppCompatActivity(), OnRequestA
     private var seekBarFree = true
     
     /* Thread and flag */
-    private var timeCount: Thread? = null
-    private var threadStop = false
+    //private var timeCount: Thread? = null
+    //private var threadStop = false
     
     /* Pre-Set Size */
     private val albumSize by lazy {
@@ -387,7 +390,7 @@ class DefPlayerActivity : BasePlayerActivity() /*AppCompatActivity(), OnRequestA
     /* Set music into to the layout */
     @SuppressLint("SetTextI18n")
     @Synchronized
-    private fun changeMusic(onResume: Boolean = false) {
+    override fun changeMusic(onResume: Boolean) {
         try {
             PlayService.getCurrentMusicInfo()?.apply {
                 (duration() / 1000).apply {
@@ -416,7 +419,8 @@ class DefPlayerActivity : BasePlayerActivity() /*AppCompatActivity(), OnRequestA
     }
     
     /* Start a thread updating position, lyric */
-    private fun getThreadStart() {
+    @Synchronized
+    override fun getThreadStart() {
         timeCount = Thread {
             // flag for thread
             threadStop = false
@@ -474,6 +478,21 @@ class DefPlayerActivity : BasePlayerActivity() /*AppCompatActivity(), OnRequestA
                 )
             }
         }
+    }
+    
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_play_activity, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+    
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_opts -> {
+                BottomPropDialog().show(this.supportFragmentManager, "DynPlayerActivity")
+            }
+        }
+        
+        return super.onOptionsItemSelected(item)
     }
     
     /* onResult */
@@ -592,76 +611,62 @@ class DefPlayerActivity : BasePlayerActivity() /*AppCompatActivity(), OnRequestA
         threadStop = true
     }
     
-    override fun onReceiveChange() {
-        Thread {
-            changeMusic()
-        }.apply { start() }
-    }
+    //override fun onReceiveChange() {
+    //    changeMusic()
+    //}
     
     /* onResume */
     override fun onResume() {
+        checkBox_playControl.isChecked = PlayService.playerState == PlayService.Companion.PlayState.PLAY
         super.onResume()
         //registerReceiver(broadcastReceiver, intentFilter)
-        Thread {
-            changeMusic(true)
-        }.apply { start() }
-        checkBox_playControl.isChecked =
-            PlayService.playerState == PlayService.Companion.PlayState.PLAY
-        //(PlayService.getCurrentPosition()).apply {
-        //    lyricView.updateLyricLine(this)
-        //    (this / 1000).apply {
-        //         runOnUiThread {
-        //            seekBar.progress = this
-        //            textView_timePass.text = getTime(this)
-        //        }
-        //    }
-        //}
-        getThreadStart()
+        //changeMusic(true)
+        //getThreadStart()
     }
     
     /* onPause */
-    override fun onPause() {
-        super.onPause()
+    //override fun onPause() {
+    //    super.onPause()
         
         // Stop Thread
-        threadStop = true
-        timeCount = null
+    //   threadStop = true
+    //    timeCount = null
         
         // Remove receiver
         //unregisterReceiver(broadcastReceiver)
         
-        System.gc()
-    }
+    //    System.gc()
+    //}
     
     /* onBackPressed */
-    override fun onBackPressed() {
-        finish()
-    }
+    //override fun onBackPressed() {
+    //    finish()
+    //}
     
     /* finish */
-    override fun finish() {
+    //override fun finish() {
         // Stop Thread
-        threadStop = true
-        timeCount = null
+    //    threadStop = true
+    //    timeCount = null
         
-        super.finish()
-        overridePendingTransition(R.anim.anim_stay, R.anim.anim_top2bottom)
-    }
+    //    super.finish()
+    //    overridePendingTransition(R.anim.anim_stay, R.anim.anim_top2bottom)
+    //}
     
     /* onDestroy */
-    override fun onDestroy() {
+    //override fun onDestroy() {
         // make sure that sub-thread is removed
-        timeCount = null
+    //    timeCount = null
         // Confirm that receiver is removed
         //try {
         //    unregisterReceiver(broadcastReceiver)
         //} catch (e: Exception) {
         //    e.getStack(showLog = false, showToast = false)
         //}
-        super.onDestroy()
+    //    super.onDestroy()
         
         // Remove stack
-        System.gc()
-    }
+    //    System.gc()
+    //}
     
 }

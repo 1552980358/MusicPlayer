@@ -1,8 +1,5 @@
-@file:Suppress("PrivatePropertyName")
-
 package app.fokkusu.music.service
 
-import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -77,7 +74,7 @@ import java.io.Serializable
  * @TIME    : 6:23 PM
  **/
 
-@SuppressLint("PrivatePropertyName", "NewApi")
+@Suppress("PrivatePropertyName", "NewApi")
 class PlayService : Service(), OnRequestAlbumCoverListener {
     
     companion object {
@@ -194,19 +191,23 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
                 
                 when (intent.action) {
                     USER_BROADCAST_PLAY -> {
-                        play()
+                        gradualPlay()
+                        updateNotify(currentBitmap, true)
                     }
                     
                     USER_BROADCAST_PAUSE -> {
                         gradualPause()
+                        updateNotify(currentBitmap, true)
                     }
                     
                     USER_BROADCAST_LAST -> {
                         last()
+                        updateNotify()
                     }
                     
                     USER_BROADCAST_NEXT -> {
                         next()
+                        updateNotify()
                     }
                     
                     USER_BROADCAST_SELECTED -> {
@@ -217,9 +218,10 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
                                 BROADCAST_EXTRA_MUSIC_INDEX, ERROR_CODE_INT
                             )
                         )
+                        updateNotify()
                     }
                 }
-                updateNotify()
+                
             }
         }
     }
@@ -240,13 +242,15 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
         PlaybackStateCompat.Builder()
             //.setBufferedPosition(0)
             .setState(PlaybackStateCompat.STATE_PAUSED, 0, 1F)
-            .setActions(PlaybackStateCompat.ACTION_PLAY
+            .setActions(
+                PlaybackStateCompat.ACTION_PLAY
                     or PlaybackStateCompat.ACTION_PAUSE
                     or PlaybackStateCompat.ACTION_PLAY_PAUSE
                     or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
                     or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
                     or PlaybackStateCompat.ACTION_STOP
-                    or PlaybackStateCompat.ACTION_SEEK_TO)
+                    or PlaybackStateCompat.ACTION_SEEK_TO
+            )
     }
     
     /* mediaMetadataCompat */
@@ -567,9 +571,6 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
                 updateMusic()
                 return
             }
-    
-            mediaPlayer.setVolume(0F, 0F)
-            
             
             mediaPlayer.start()
             playerState = PlayState.PLAY
@@ -794,7 +795,7 @@ class PlayService : Service(), OnRequestAlbumCoverListener {
                 }
             }
             
-            setSmallIcon(R.mipmap.ic_launcher_round)
+            setSmallIcon(R.mipmap.ic_launcher_foreground)
             
             priority = NotificationCompat.PRIORITY_MAX
             

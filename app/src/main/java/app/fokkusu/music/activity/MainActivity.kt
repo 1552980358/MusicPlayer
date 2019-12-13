@@ -23,10 +23,11 @@ class MainActivity : BaseAppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         
-        val fragments = arrayOf(MusicFragment(), SettingFragment()/*SettingFragment(), HomeFragment(), MusicFragment()*/)
+        val fragments =
+            arrayOf(MusicFragment(), SettingFragment()/*SettingFragment(), HomeFragment(), MusicFragment()*/)
         val titles = resources.getStringArray(R.array.array_main_tab)
         
-        toolbar.title = titles[1]
+        toolbar.title = titles[0]
         setSupportActionBar(toolbar)
         
         viewPager.adapter = object :
@@ -54,7 +55,7 @@ class MainActivity : BaseAppCompatActivity() {
         }
         
         val onClickListener1 = View.OnClickListener {
-            viewPager.setCurrentItem(1, true)
+            viewPager.setCurrentItem(0, true)
         }
         
         viewPager.apply {
@@ -83,33 +84,36 @@ class MainActivity : BaseAppCompatActivity() {
                 @SuppressLint("RestrictedApi")
                 override fun onPageSelected(position: Int) {
                     toolbar.title = titles[position]
+                    
                     when (position) {
                         0 -> {
                             fab.setImageResource(R.drawable.ic_fab_search)
                             fab.setOnClickListener(onClickListener0)
                         }
                         1 -> {
-                            fab.setImageResource(R.drawable.ic_fab_right)
+                            fab.setImageResource(R.drawable.ic_fab_left)
                             fab.setOnClickListener(onClickListener1)
                         }
+                        /*
+                        if (position == 2) {
+                            fab.setImageResource(R.drawable.ic_fab_search)
+                            fab.setOnClickListener(onClickListener0)
+                            return
+                        }
+                        if (position == 0) {
+                            fab.setImageResource(R.drawable.ic_fab_right)
+                            fab.setOnClickListener(onClickListener1)
+                            return
+                        }
+                        
+                        fab.setImageDrawable(null)
+                         */
                     }
-                    /*
-                    if (position == 2) {
-                        fab.setImageResource(R.drawable.ic_fab_search)
-                        fab.setOnClickListener(onClickListener0)
-                        return
-                    }
-                    if (position == 0) {
-                        fab.setImageResource(R.drawable.ic_fab_right)
-                        fab.setOnClickListener(onClickListener1)
-                        return
-                    }
-                    
-                    fab.setImageDrawable(null)
-                     */
                 }
             })
         }
+        
+        fab.setOnClickListener(onClickListener0)
         
         // Give object to BottomPlayerView for showing BottomDialog
         bottomPlayerView.setParentActivity(this)

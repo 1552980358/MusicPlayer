@@ -14,6 +14,8 @@ import app.fokkusu.music.base.Constants.Companion.Artist
 import app.fokkusu.music.base.Constants.Companion.ArtistPY
 import app.fokkusu.music.base.Constants.Companion.BitRate
 import app.fokkusu.music.base.Constants.Companion.Duration
+import app.fokkusu.music.base.Constants.Companion.Ext_Cover
+import app.fokkusu.music.base.Constants.Companion.Ext_Lyric
 import app.fokkusu.music.base.Constants.Companion.Id
 import app.fokkusu.music.base.Constants.Companion.Path
 import app.fokkusu.music.base.Constants.Companion.Title
@@ -103,8 +105,8 @@ class MusicUtil(
             return data[AlbumCover] as Bitmap
         }
         
-        val fileCover = File(Application.extDataDir_cover, (data[Id] as String).plus(".png"))
-        val fileLyric = File(Application.extDataDir_lyric, (data[Id] as String).plus(".lrc"))
+        val fileCover = File(Application.extDataDir_cover, (data[Id] as String).plus(Ext_Cover))
+        val fileLyric = File(Application.extDataDir_lyric, (data[Id] as String).plus(Ext_Lyric))
         
         /* Take file from storage */
         try {

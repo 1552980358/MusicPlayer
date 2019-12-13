@@ -22,6 +22,8 @@ import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_PLAY
 import app.fokkusu.music.R
 import app.fokkusu.music.activity.player.DefPlayerActivity
 import app.fokkusu.music.activity.player.DynPlayerActivity
+import app.fokkusu.music.base.Constants
+import app.fokkusu.music.base.Constants.Companion.SERVICE_BROADCAST_BITMAP_RESULT
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_CONTENT
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PAUSE
 import app.fokkusu.music.base.Constants.Companion.SERVICE_INTENT_PLAY
@@ -29,7 +31,6 @@ import app.fokkusu.music.base.Constants.Companion.Save_Player_UI
 import app.fokkusu.music.base.Constants.Companion.Save_Player_UI_Dyn
 import app.fokkusu.music.base.activity.BaseAppCompatActivity
 import app.fokkusu.music.base.getStack
-import app.fokkusu.music.base.interfaces.OnRequestAlbumCoverListener
 import app.fokkusu.music.dialog.BottomPlaylistDialog
 import app.fokkusu.music.fragment.main.SettingFragment
 import app.fokkusu.music.service.PlayService
@@ -51,7 +52,7 @@ import kotlinx.android.synthetic.main.view_bottom_player.view.textView_title
  **/
 
 class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
-    LinearLayout(context, attributeSet), OnRequestAlbumCoverListener {
+    LinearLayout(context, attributeSet)/*, OnRequestAlbumCoverListener*/ {
     
     companion object {
         private val defaultIMG by lazy {
@@ -87,6 +88,23 @@ class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
             intent ?: return
             
             when (intent.action) {
+                SERVICE_BROADCAST_BITMAP_RESULT -> {
+                    intent.getBooleanExtra(Constants.SERVICE_BROADCAST_BITMAP_CONTENT, false).apply {
+                        if (!this) {
+                            onNullResult()
+                            return
+                        }
+                        
+                        PlayService.getCurrentBitmap().apply {
+                            if (this == null) {
+                                onNullResult()
+                                return
+                            }
+                            onResult(this)
+                        }
+                    }
+                }
+                
                 SERVICE_BROADCAST_PLAY -> {
                     checkBox_playControl.isChecked = true
                 }
@@ -114,17 +132,17 @@ class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
                             }.start()
                         }
                     }
-                    Thread {
-                        updateInfo()
-                    }.start()
+                    
+                    updateInfo()
                 }
             }
         }
     }
     
     private val intentFilter = IntentFilter().apply {
-        addAction(SERVICE_BROADCAST_PAUSE)
+        addAction(SERVICE_BROADCAST_BITMAP_RESULT)
         addAction(SERVICE_BROADCAST_PLAY)
+        addAction(SERVICE_BROADCAST_PAUSE)
         addAction(SERVICE_BROADCAST_CHANGED)
     }
     
@@ -179,18 +197,28 @@ class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
     
     @Suppress("SetTextI18n")
     @Synchronized
-    fun updateInfo() {
+    private fun updateInfo(onResume: Boolean = false) {
         getCurrentMusicInfo().apply {
             this ?: return
             
-            parentActivity.runOnUiThread {
-                textView_title.text = title()
-                textView_info.text = "${artist()} - ${album()}"
-                checkBox_playControl.isChecked = playerState == PLAY
+            //parentActivity.runOnUiThread {
+            textView_title.text = title()
+            textView_info.text = "${artist()} - ${album()}"
+            checkBox_playControl.isChecked = playerState == PLAY
+            //}
+            //Thread {
+            //    albumCover(this@BottomPlayerView)
+            //}.start()
+            if (onResume) {
+                PlayService.getCurrentBitmap().apply {
+                    if (this == null) {
+                        onNullResult()
+                        return
+                    }
+                    
+                    onResult(this)
+                }
             }
-            Thread {
-                albumCover(this@BottomPlayerView)
-            }.start()
         }
     }
     
@@ -221,11 +249,10 @@ class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        updateInfo()
     }
     
     @Suppress("DuplicatedCode")
-    override fun onResult(bitmap: Bitmap) {
+    fun onResult(bitmap: Bitmap) {
         /* Rescale Bitmap and cut into circle */
         try {
             if (bitmap.width == bitmap.height) {
@@ -293,7 +320,7 @@ class BottomPlayerView(context: Context, attributeSet: AttributeSet) :
         }
     }
     
-    override fun onNullResult() {
+    fun onNullResult() {
         parentActivity.runOnUiThread { imageView_album.setImageDrawable(defaultIMG) }
     }
 }

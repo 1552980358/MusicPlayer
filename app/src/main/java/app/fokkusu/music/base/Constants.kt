@@ -79,7 +79,12 @@ class Constants private constructor() {
         /* Dirs */
         const val Dir_Lyric = "Lyric"
         const val Dir_Cover = "Cover"
-        
+        const val Ext_Lyric = ".lrc"
+        //const val Ext_Cover_UPC = ".PNG"
+        const val Ext_Cover = ".png"
+        const val Hyphen_CHAR = '-'
+        const val Hyphen_STR = Hyphen_CHAR.toString()
+    
         const val SP_Player_UI = "sp_player_ui"
         const val SP_Pulse_Switch = "sp_pulse_switch"
         const val SP_Pulse_Style = "sp_pulse_style"

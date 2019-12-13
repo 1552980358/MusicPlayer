@@ -8,7 +8,6 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import app.fokkusu.music.R
-import app.fokkusu.music.base.log
 
 /**
  * @File    : LyricView
@@ -16,6 +15,7 @@ import app.fokkusu.music.base.log
  * @Date    : 11 Oct 2019
  * @TIME    : 7:58 PM
  **/
+
 class LyricView(context: Context, attributeSet: AttributeSet?) : View(context, attributeSet) {
     
     private val lyricTime = arrayListOf<Int>()

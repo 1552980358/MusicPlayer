@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="abc_bottomDialog_id">ID</string>
+    <string name="abc_bottomDialog_path">路径</string>
+    <string name="abc_bottomDialog_img">专辑封面</string>
+    <string name="abc_bottomDialog_lyric">歌词路径</string>
+</resources>
