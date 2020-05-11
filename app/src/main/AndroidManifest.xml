@@ -37,6 +37,10 @@
             </intent-filter-->
         </activity>
         
+        <activity
+            android:name=".activity.AudioActivity"
+            android:theme="@style/AppTheme.NoActionBar.Translucent"/>
+        
         <activity android:name=".activity.AudioImportActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         

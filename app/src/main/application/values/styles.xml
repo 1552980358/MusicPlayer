@@ -10,9 +10,19 @@
         <item name="drawerArrowStyle">@style/AppTheme.DrawerToggle</item>
     </style >
 
+    <!-- For normal Activity -->
     <style name="AppTheme.NoActionBar" parent="AppTheme" >
         <item name="windowActionBar" >false</item >
         <item name="windowNoTitle" >true</item >
+    </style >
+    
+    <!-- For AudioActivity -->
+    <!-- inorder to play animation -->
+    <style name="AppTheme.NoActionBar.Translucent" parent="AppTheme.NoActionBar" >
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style >
 
     <style name="AppTheme.Player" parent="AppTheme">

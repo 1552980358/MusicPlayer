@@ -1,5 +1,6 @@
 package app.github1552980358.android.musicplayer.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -17,6 +18,7 @@ import kotlinx.android.synthetic.main.activity_main.tabLayout
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.activity_main.viewPager
 import kotlinx.android.synthetic.main.activity_main_bottomsheet.cardView
+import kotlinx.android.synthetic.main.activity_main_bottomsheet.linearLayoutBottom
 import kotlinx.android.synthetic.main.activity_main_bottomsheet.textViewSubtitle
 import kotlinx.android.synthetic.main.activity_main_bottomsheet.textViewTitle
 
@@ -30,8 +32,19 @@ import kotlinx.android.synthetic.main.activity_main_bottomsheet.textViewTitle
 
 class MainActivity : BaseAppCompatActivity() {
     
+    /**
+     * [mainFragment] <[MainFragment]>
+     * @author 1552980358
+     * @since 0.1
+     **/
     private lateinit var mainFragment: MainFragment
     
+    /**
+     * [onCreate]
+     * @param savedInstanceState [Bundle]?
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.e("MainActivity", "onCreate")
@@ -57,12 +70,15 @@ class MainActivity : BaseAppCompatActivity() {
             getTabAt(0)!!.setIcon(R.drawable.ic_tab_music)
             getTabAt(1)!!.setIcon(R.drawable.ic_tab_setting)
         }
-        
+    
+        linearLayoutBottom.setOnClickListener { startActivity(Intent(this, AudioActivity::class.java)) }
         
     }
     
     /**
      * [onPause]
+     * @author 1552980358
+     * @since 0.1
      **/
     override fun onPause() {
         super.onPause()
@@ -71,14 +87,22 @@ class MainActivity : BaseAppCompatActivity() {
     
     /**
      * [onResume]
+     * @author 1552980358
+     * @since 0.1
      **/
     override fun onResume() {
         super.onResume()
         Log.e("MainActivity", "onResume")
     }
     
+    /**
+     * [onMetadataChanged]
+     * @param metadata [MediaMetadataCompat]?
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
-        for (i in AudioData.audioData) {
+        for (i in AudioData.audioDataList) {
             if (metadata?.description?.mediaId != i.id)
                 continue
             
@@ -88,10 +112,23 @@ class MainActivity : BaseAppCompatActivity() {
         }
     }
     
+    /**
+     * [onPlaybackStateChanged]
+     * @param state [PlaybackStateCompat]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
     
     }
     
+    /**
+     * [onChildrenLoaded]
+     * @param parentId [String]
+     * @param children [MutableList]<[MediaBrowserCompat.MediaItem]>
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
         mainFragment.updateList()
     }

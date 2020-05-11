@@ -15,7 +15,10 @@ class AudioData: Serializable {
     companion object {
         
         @JvmStatic
-        var audioData = ArrayList<AudioData>()
+        var audioDataList = ArrayList<AudioData>()
+        
+        @JvmStatic
+        var audioDataMap = HashMap<String, AudioData>()
         
         @JvmStatic
         var ignoredData = ArrayList<String>()

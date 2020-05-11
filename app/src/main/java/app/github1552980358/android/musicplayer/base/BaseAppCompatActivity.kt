@@ -19,15 +19,47 @@ import app.github1552980358.android.musicplayer.service.PlayService
  **/
 
 abstract class BaseAppCompatActivity: AppCompatActivity() {
-    
+    /**
+     * [mediaBrowserCompat] <[MediaBrowserCompat]>
+     * @author 1552980358
+     * @since 0.1
+     **/
     lateinit var mediaBrowserCompat: MediaBrowserCompat
+    
+    /**
+     * [connectionCallback] <[MediaBrowserCompat.ConnectionCallback]>
+     * @author 1552980358
+     * @since 0.1
+     **/
     lateinit var connectionCallback: MediaBrowserCompat.ConnectionCallback
+    
+    /**
+     * [subscriptionCallback] <[MediaBrowserCompat.SubscriptionCallback]>
+     * @author 1552980358
+     * @since 0.1
+     **/
     lateinit var subscriptionCallback: MediaBrowserCompat.SubscriptionCallback
+    
+    /**
+     * [callback] <[MediaControllerCompat.Callback]>
+     * @author 1552980358
+     * @since 0.1
+     **/
     lateinit var callback: MediaControllerCompat.Callback
     
-    // Controller
+    /**
+     * [mediaControllerCompat] <[MediaControllerCompat]>
+     * @author 1552980358
+     * @since 0.1
+     **/
     lateinit var mediaControllerCompat: MediaControllerCompat
     
+    /**
+     * [onCreate]
+     * @param savedInstanceState [Bundle]?
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
@@ -95,20 +127,49 @@ abstract class BaseAppCompatActivity: AppCompatActivity() {
         
     }
     
+    /**
+     * [onPause]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onPause() {
         super.onPause()
         mediaBrowserCompat.disconnect()
     }
     
+    /**
+     * [onResume]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onResume() {
         super.onResume()
         mediaBrowserCompat.connect()
     }
     
+    /**
+     * [onMetadataChanged]
+     * @param metadata [MediaMetadataCompat]?
+     * @author 1552980358
+     * @since 0.1
+     **/
     abstract fun onMetadataChanged(metadata: MediaMetadataCompat?)
     
+    /**
+     * [onPlaybackStateChanged]
+     * @param state [PlaybackStateCompat]?
+     * @author 1552980358
+     * @since 0.1
+     **/
     abstract fun onPlaybackStateChanged(state: PlaybackStateCompat?)
     
+    /**
+     * [onChildrenLoaded]
+     * @param parentId [String]
+     * @param children [MutableList]<[MediaBrowserCompat.MediaItem]>
+     * @author 1552980358
+     * @since 0.1
+     **/
     abstract fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>)
     
 }

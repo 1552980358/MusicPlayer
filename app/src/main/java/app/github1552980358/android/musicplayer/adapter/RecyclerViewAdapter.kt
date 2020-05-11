@@ -43,7 +43,7 @@ class RecyclerViewAdapter(private val bottomSheetBehavior: BottomSheetBehavior<V
      * @since 0.1
      **/
     override fun getItemCount(): Int {
-        return AudioData.audioData.size + 1
+        return AudioData.audioDataList.size + 1
     }
     
     /**
@@ -56,11 +56,11 @@ class RecyclerViewAdapter(private val bottomSheetBehavior: BottomSheetBehavior<V
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         
         // 不显示
-        if (AudioData.audioData.isEmpty()){
+        if (AudioData.audioDataList.isEmpty()){
             holder.relativeLayoutRoot.visibility = View.GONE
             return
         }
-        if (position == AudioData.audioData.size) {
+        if (position == AudioData.audioDataList.size) {
             holder.relativeLayoutRoot.isClickable = false
             holder.imageButtonOpts.visibility = View.GONE
             return
@@ -74,12 +74,12 @@ class RecyclerViewAdapter(private val bottomSheetBehavior: BottomSheetBehavior<V
         
         holder.textViewNo.text = position.plus(1).toString()
         holder.textViewTitle.apply {
-            text = AudioData.audioData[position].title
+            text = AudioData.audioDataList[position].title
             isSingleLine = true
             ellipsize = TextUtils.TruncateAt.END
         }
         holder.textViewSubtitle.apply {
-            text = AudioData.audioData[position].artist
+            text = AudioData.audioDataList[position].artist
             isSingleLine = true
             ellipsize = TextUtils.TruncateAt.END
         }
@@ -102,7 +102,7 @@ class RecyclerViewAdapter(private val bottomSheetBehavior: BottomSheetBehavior<V
         // Toast out full name
         // 弹出全名
         holder.relativeLayoutRoot.setOnLongClickListener {
-            Toast.makeText(it.context, AudioData.audioData[position].title, Toast.LENGTH_SHORT).show()
+            Toast.makeText(it.context, AudioData.audioDataList[position].title, Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
         

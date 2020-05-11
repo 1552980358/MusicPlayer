@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageViewStatic"
+        android:visibility="gone"
+        tools:ignore="ContentDescription" />
+    
+    <ImageView
+        android:layout_width="@dimen/mainActivity_bottom_sheet_icon_size"
+        android:layout_height="@dimen/mainActivity_bottom_sheet_icon_size"
+        android:layout_margin="@dimen/mainActivity_bottom_sheet_icon_margin"
+        android:id="@+id/imageViewAnim"
+        android:layout_alignParentBottom="true"
+        tools:ignore="ContentDescription" />
+
+</RelativeLayout>

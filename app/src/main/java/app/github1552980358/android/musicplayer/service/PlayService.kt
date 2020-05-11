@@ -143,7 +143,7 @@ class PlayService : MediaBrowserServiceCompat(), MediaPlayerUtil {
         result.detach()
         
         mediaItemList.clear()
-        for (i in AudioData.audioData) {
+        for (i in AudioData.audioDataList) {
             mediaItemList.add(
                 MediaBrowserCompat.MediaItem(
                     MediaMetadataCompat.Builder()

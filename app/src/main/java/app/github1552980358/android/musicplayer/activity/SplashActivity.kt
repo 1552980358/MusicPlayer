@@ -10,7 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import app.github1552980358.android.musicplayer.base.AudioData
-import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataFile
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataDir
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataListFile
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataMapFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.BackgroundThread
 import app.github1552980358.android.musicplayer.base.Constant.Companion.IgnoredFile
 import lib.github1552980358.labourforce.LabourForce
@@ -73,7 +75,7 @@ class SplashActivity : AppCompatActivity() {
                 
                 override fun workContent(workProduct: MutableMap<String, Any?>?, handler: Handler?) {
                     Log.e("BGT", "WorkContent")
-                    File(getExternalFilesDir(AudioDataFile), AudioDataFile).apply {
+                    File(getExternalFilesDir(AudioDataDir), AudioDataListFile).apply {
                         if (!exists())
                             return
                         
@@ -82,13 +84,25 @@ class SplashActivity : AppCompatActivity() {
                         inputStream().use {
                             ObjectInputStream(it).use { ois ->
                                 @Suppress("UNCHECKED_CAST")
-                                AudioData.audioData = ois.readObject() as ArrayList<AudioData>
+                                AudioData.audioDataList = ois.readObject() as ArrayList<AudioData>
                             }
                         }
                         
                     }
                     
-                    File(getExternalFilesDir(AudioDataFile), IgnoredFile).apply {
+                    File(getExternalFilesDir(AudioDataDir), AudioDataMapFile).apply {
+                        if (exists())
+                            return
+    
+                        inputStream().use {
+                            ObjectInputStream(it).use { ois ->
+                                @Suppress("UNCHECKED_CAST")
+                                AudioData.audioDataMap = ois.readObject() as HashMap<String, AudioData>
+                            }
+                        }
+                    }
+                    
+                    File(getExternalFilesDir(AudioDataDir), IgnoredFile).apply {
                         if (!exists())
                             return
                         

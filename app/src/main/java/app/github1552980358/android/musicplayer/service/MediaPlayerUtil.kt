@@ -46,7 +46,8 @@ interface MediaPlayerUtil: MediaPlayer.OnCompletionListener {
             Uri.parse(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString()
                     + File.separator
-                    + mediaId)
+                    + mediaId
+            )
         )
         
         mediaPlayer.prepare()
