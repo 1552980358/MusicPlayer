@@ -10,8 +10,7 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/coordinatorLayout">
+        android:layout_height="match_parent">
         
         <com.google.android.material.appbar.AppBarLayout
             android:layout_height="?attr/actionBarSize"
@@ -23,38 +22,40 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                app:popupTheme="@style/AppTheme.PopupOverlay">
-                
-                <com.google.android.material.tabs.TabLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:id="@+id/tabLayout"
-                    app:tabIndicatorColor="@color/white"
-                    android:layout_gravity="end" />
-            
-            </androidx.appcompat.widget.Toolbar>
+                app:titleTextColor="@color/black"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
         
         </com.google.android.material.appbar.AppBarLayout>
         
-        <!--ListView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/listView"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" /-->
-        
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" >
             
-            <androidx.viewpager.widget.ViewPager
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/viewPager" />
+            <ProgressBar
+                android:layout_width="@dimen/audioImportActivity_icon_size"
+                android:layout_height="@dimen/audioImportActivity_icon_size"
+                android:layout_centerInParent="true"
+                android:id="@+id/progressBar" />
             
-        </LinearLayout>
-        
-        <include layout="@layout/activity_main_bottomsheet" />
+            <ImageView
+                android:layout_width="@dimen/audioImportActivity_icon_size"
+                android:layout_height="@dimen/audioImportActivity_icon_size"
+                android:id="@+id/imageView"
+                android:visibility="gone"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_done"
+                tools:ignore="ContentDescription" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/progressBar"
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/textView"/>
+            
+        </RelativeLayout>
         
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

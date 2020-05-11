@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/mainActivity_bottom_sheet_height"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="@dimen/mainActivity_bottom_sheet_peek_height"
+    app:layout_behavior="@string/bottom_sheet_behavior"
+    android:layout_marginStart="5dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginEnd="5dp"
+    android:id="@+id/cardView">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+    
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/mainActivity_bottom_sheet_collapsed_height"
+            android:orientation="horizontal"
+            android:id="@+id/linearLayoutBottom"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground">
+        
+            <ImageView
+                android:layout_width="@dimen/mainActivity_bottom_sheet_icon_size"
+                android:layout_height="@dimen/mainActivity_bottom_sheet_icon_size"
+                android:id="@+id/imageView"
+                android:layout_margin="@dimen/mainActivity_bottom_sheet_icon_margin"
+                tools:ignore="ContentDescription" />
+        
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+            
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textViewTitle"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/mainActivity_bottom_sheet_title_size" />
+            
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textViewSubtitle" />
+            
+            </LinearLayout>
+        
+        </LinearLayout>
+    
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="@dimen/mainActivity_play_pause_size"
+                android:layout_height="@dimen/mainActivity_play_pause_size"
+                android:button="@null"
+                android:id="@+id/checkBoxPlay"
+                android:layout_centerInParent="true"
+                android:checked="false"
+                android:background="@drawable/ic_main_play_pause"
+                android:layout_marginStart="@dimen/mainActivity_button_margin"
+                android:layout_marginEnd="@dimen/mainActivity_button_margin" />
+            
+            <ImageButton
+                android:layout_width="@dimen/mainActivity_pre_next_size"
+                android:layout_height="@dimen/mainActivity_pre_next_size"
+                android:id="@+id/imageButtonLast"
+                android:background="@drawable/ic_main_last"
+                android:layout_toStartOf="@id/checkBoxPlay"
+                android:layout_centerVertical="true"
+                tools:ignore="ContentDescription" />
+            
+            <ImageButton
+                android:layout_width="@dimen/mainActivity_pre_next_size"
+                android:layout_height="@dimen/mainActivity_pre_next_size"
+                android:id="@+id/imageButtonNext"
+                android:background="@drawable/ic_main_next"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/checkBoxPlay"
+                tools:ignore="ContentDescription" />
+            
+        </RelativeLayout>
+    
+    </LinearLayout>
+    
+</androidx.cardview.widget.CardView>

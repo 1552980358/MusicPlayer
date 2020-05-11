@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mediaSearchActivity_none">Completed!\nNo audio found!</string>
+    <string name="mediaSearchActivity_searching">Searching…</string>
+    <string name="mediaSearchActivity_searched">Completed!\nSearching…\n%d are found!</string>
+</resources>

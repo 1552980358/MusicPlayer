@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="view_media_list_height">60dp</dimen>
+    <dimen name="view_media_list_num_width">40dp</dimen>
+    <dimen name="view_media_list_button_padding">10dp</dimen>
+</resources>

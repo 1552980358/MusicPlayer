@@ -1,0 +1,175 @@
+package app.github1552980358.android.musicplayer.adapter
+
+import android.app.Service
+import android.text.TextUtils
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.PopupMenu
+import android.widget.RelativeLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import app.github1552980358.android.musicplayer.R
+import app.github1552980358.android.musicplayer.base.AudioData
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.android.synthetic.main.view_media_list.view.imageButtonOpts
+
+/**
+ * @file    : [RecyclerViewAdapter]
+ * @author  : 1552980358
+ * @since   : 0.1
+ * @date    : 2020/5/10
+ * @time    : 13:05
+ **/
+
+class RecyclerViewAdapter(private val bottomSheetBehavior: BottomSheetBehavior<View>, private val swipeRefreshLayout: SwipeRefreshLayout) :
+    RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
+    
+    
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(
+            (parent.context.getSystemService(Service.LAYOUT_INFLATER_SERVICE) as LayoutInflater)
+                .inflate(R.layout.view_media_list, parent, false)
+        )
+    }
+    
+    /**
+     * [getItemCount]
+     * @return [Int]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    override fun getItemCount(): Int {
+        return AudioData.audioData.size + 1
+    }
+    
+    /**
+     * [onBindViewHolder]
+     * @param holder [ViewHolder]
+     * @param position [Int]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        
+        // 不显示
+        if (AudioData.audioData.isEmpty()){
+            holder.relativeLayoutRoot.visibility = View.GONE
+            return
+        }
+        if (position == AudioData.audioData.size) {
+            holder.relativeLayoutRoot.isClickable = false
+            holder.imageButtonOpts.visibility = View.GONE
+            return
+        }
+        
+        holder.relativeLayoutRoot.visibility = View.VISIBLE
+        
+        // No need, automatically set when setting onClickListener
+        // 不需要手动设置, 设置监听时会自动启动
+        //holder.imageButtonOpts.isClickable = true
+        
+        holder.textViewNo.text = position.plus(1).toString()
+        holder.textViewTitle.apply {
+            text = AudioData.audioData[position].title
+            isSingleLine = true
+            ellipsize = TextUtils.TruncateAt.END
+        }
+        holder.textViewSubtitle.apply {
+            text = AudioData.audioData[position].artist
+            isSingleLine = true
+            ellipsize = TextUtils.TruncateAt.END
+        }
+        
+        holder.relativeLayoutRoot.setOnClickListener {
+            // Remove action
+            // 清楚动作
+            //holder.textViewTitle.ellipsize = TextUtils.TruncateAt.END
+            //holder.textViewTitle.clearFocus()
+            
+            // Check if collapsing is required
+            // 检测是否需要折叠
+            if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                return@setOnClickListener
+            }
+            
+        }
+        
+        // Toast out full name
+        // 弹出全名
+        holder.relativeLayoutRoot.setOnLongClickListener {
+            Toast.makeText(it.context, AudioData.audioData[position].title, Toast.LENGTH_SHORT).show()
+            return@setOnLongClickListener true
+        }
+        
+        // Options
+        // 选项
+        holder.imageButtonOpts.setOnClickListener {
+            PopupMenu(it.context, holder.imageButtonOpts.imageButtonOpts).apply {
+                inflate(R.menu.menu_audio_opt)
+                show()
+            }
+        }
+        
+        /*
+        holder.linearLayoutRoot.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    //Log.e("MotionEvent", "ACTION_DOWN")
+                    holder.textViewTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
+                    holder.textViewTitle.requestFocus()
+                }
+                MotionEvent.ACTION_UP -> {
+                    //Log.e("MotionEvent", "ACTION_UP")
+                    holder.textViewTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
+                    holder.textViewTitle.clearFocus()
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    //Log.e("MotionEvent", "ACTION_CANCEL")
+                    holder.textViewTitle.ellipsize = TextUtils.TruncateAt.END
+                    holder.textViewTitle.clearFocus()
+                }
+            }
+            return@setOnTouchListener true
+        }
+         */
+        
+    }
+    
+    /**
+     * [ViewHolder]
+     * @param view [View]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        var textViewNo: TextView
+        var textViewTitle: TextView
+        var textViewSubtitle: TextView
+        var relativeLayoutRoot: RelativeLayout
+        var imageButtonOpts: ImageButton
+        
+        init {
+            textViewNo = view.findViewById(R.id.textViewNo)
+            textViewTitle = view.findViewById(R.id.textViewTitle)
+            textViewSubtitle = view.findViewById(R.id.textViewSubtitle)
+            relativeLayoutRoot = view.findViewById(R.id.relativeLayoutRoot)
+            imageButtonOpts = view.findViewById(R.id.imageButtonOpts)
+        }
+        
+    }
+    
+    /**
+     * [updateList]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    fun updateList() {
+        notifyDataSetChanged()
+        swipeRefreshLayout.isRefreshing = false
+    }
+}

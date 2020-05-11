@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mediaSearchActivity_none">已完成搜索!\n未找到音频!</string>
+    <string name="mediaSearchActivity_searching">搜索中…\n已找到%s首音频!</string>
+    <string name="mediaSearchActivity_searched">已完成搜索!\n共找到%s首音频!</string>
+</resources>

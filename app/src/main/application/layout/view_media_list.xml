@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/view_media_list_height"
+    android:minHeight="@dimen/view_media_list_height"
+    android:maxHeight="@dimen/view_media_list_height"
+    android:orientation="horizontal"
+    android:id="@+id/relativeLayoutRoot"
+    android:background="?android:attr/selectableItemBackground">
+    
+    <TextView
+        android:layout_width="@dimen/view_media_list_num_width"
+        android:layout_height="match_parent"
+        android:id="@+id/textViewNo"
+        android:gravity="center" />
+    
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:padding="@dimen/view_media_list_button_padding"
+        android:id="@+id/imageButtonOpts"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_opts"
+        android:background="?android:attr/selectableItemBackground"
+        tools:ignore="ContentDescription" />
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_toStartOf="@id/imageButtonOpts"
+        android:layout_toEndOf="@id/textViewNo">
+        
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewTitle"
+            android:textSize="17sp"
+            android:textColor="@color/black"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:focusableInTouchMode="true"
+            android:scrollHorizontally="true"
+            android:focusable="true" />
+        
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewSubtitle" />
+        
+    </LinearLayout>
+    
+</RelativeLayout>

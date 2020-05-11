@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settingFragment_importMusic_title">载入音频</string>
+    <string name="mainFragment_audio_menu_ignore">忽略</string>
+</resources>
