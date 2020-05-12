@@ -20,6 +20,8 @@ import app.github1552980358.android.musicplayer.base.AudioData
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataMap
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.ignoredData
+import app.github1552980358.android.musicplayer.base.Colour
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumColourFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormal
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataListFile
@@ -31,6 +33,7 @@ import kotlinx.android.synthetic.main.activity_audio_import.progressBar
 import kotlinx.android.synthetic.main.activity_audio_import.textView
 import lib.github1552980358.labourforce.LabourForce
 import lib.github1552980358.labourforce.labours.work.LabourWork
+import mkaflowski.mediastylepalette.MediaNotificationProcessor
 import java.io.File
 import java.io.ObjectOutputStream
 
@@ -105,11 +108,7 @@ class AudioImportActivity : AppCompatActivity() {
                                     artist = getString(getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST))
                                     album = getString(getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM))
                                     duration = getLong(getColumnIndex(MediaStore.Audio.AudioColumns.DURATION))
-                                    Log.e("AudioData", "$id $title $artist $album $duration")
                                 }.apply { audioDataMap[id] = this })
-            
-                                //audioDataMap[getString(getColumnIndex(MediaStore.Audio.AudioColumns._ID))] =
-                                //    AudioData.audioDataList.last()
             
                             } while (moveToNext())
         
@@ -174,6 +173,19 @@ class AudioImportActivity : AppCompatActivity() {
                         byteArray ?: continue
         
                         BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size).run {
+                            // Bitmap colour palette treating
+                            // 图片颜色进行调色板处理
+                            // Credit:
+                            // [https://github.com/mkaflowski/Media-Style-Palette/]
+                            // com.github.mkaflowski:Media-Style-Palette:1.3
+                            MediaNotificationProcessor(this@AudioImportActivity, this).apply {
+                                File(getExternalFilesDir(AlbumColourFile), j.id).outputStream().use { os ->
+                                    ObjectOutputStream(os).use { oos ->
+                                        oos.writeObject(Colour(backgroundColor, primaryTextColor, secondaryTextColor))
+                                    }
+                                }
+                            }
+                            
                             when {
                                 width > height -> {
                                     Bitmap.createBitmap(this, (width - height) / 2, 0, height, height)

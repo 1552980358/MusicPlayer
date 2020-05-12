@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- Play -->
+    <item android:drawable="@drawable/ic_audio_play_normal" android:state_pressed="false" android:state_checked="false" />
+    
+    <item android:drawable="@drawable/ic_audio_play_pressed" android:state_pressed="true" android:state_checked="false" />
+    
+    <!-- Paused -->
+    <item android:drawable="@drawable/ic_audio_pause_normal" android:state_pressed="false" android:state_checked="true" />
+
+    <item android:drawable="@drawable/ic_audio_pause_pressed" android:state_pressed="true" android:state_checked="true" />
+    
+    <!-- Default -->
+    <item android:drawable="@drawable/ic_audio_play_normal" />
+    
+</selector>

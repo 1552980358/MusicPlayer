@@ -10,17 +10,14 @@ package app.github1552980358.android.musicplayer.base
 
 class Constant private constructor() {
     companion object {
-        
         const val BackgroundThread = "BackgroundThread"
         
         const val AudioDataDir = "AudioDataDir"
-        
         const val AudioDataListFile = "AudioDataListFile"
-        
         const val AudioDataMapFile = "AudioDataMapFile"
-        
         const val IgnoredFile = "IgnoredFile"
-        
+        const val AlbumColourFile = "AlbumColourFile"
+    
         const val RootId = "1552980358"
         
         const val AlbumNormal = "AlbumNormal"

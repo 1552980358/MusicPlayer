@@ -208,7 +208,7 @@ class RecyclerViewAdapter(
         init {
             textViewNo = view.findViewById(R.id.textViewNo)
             textViewTitle = view.findViewById(R.id.textViewTitle)
-            textViewSubtitle = view.findViewById(R.id.textViewSubtitle)
+            textViewSubtitle = view.findViewById(R.id.textViewSubtitle2)
             relativeLayoutRoot = view.findViewById(R.id.relativeLayoutRoot)
             imageButtonOpts = view.findViewById(R.id.imageButtonOpts)
         }

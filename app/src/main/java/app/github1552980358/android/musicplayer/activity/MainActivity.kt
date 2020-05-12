@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.text.TextUtils
 import android.util.Log
@@ -21,6 +22,7 @@ import kotlinx.android.synthetic.main.activity_main.tabLayout
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.activity_main.viewPager
 import kotlinx.android.synthetic.main.activity_main_bottomsheet.cardView
+import kotlinx.android.synthetic.main.activity_main_bottomsheet.checkBoxPlay
 import kotlinx.android.synthetic.main.activity_main_bottomsheet.imageView
 import kotlinx.android.synthetic.main.activity_main_bottomsheet.linearLayoutBottom
 import kotlinx.android.synthetic.main.activity_main_bottomsheet.textViewSubtitle
@@ -61,7 +63,7 @@ class MainActivity : BaseAppCompatActivity() {
         val bottomSheetBehavior = BottomSheetBehavior.from(cardView) as BottomSheetBehavior<View>
     
         MainFragment.bottomSheetBehavior = bottomSheetBehavior
-    
+        
         // UI
         viewPager.apply {
             adapter = FragmentPagerAdapter(
@@ -73,6 +75,7 @@ class MainActivity : BaseAppCompatActivity() {
                     bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         }
+        
         tabLayout.apply {
             setupWithViewPager(viewPager)
             getTabAt(0)!!.setIcon(R.drawable.ic_tab_music)
@@ -81,12 +84,15 @@ class MainActivity : BaseAppCompatActivity() {
     
         linearLayoutBottom.setOnClickListener {
             if (mediaControllerCompat.playbackState.state == PlaybackStateCompat.STATE_NONE) {
-                
                 return@setOnClickListener
             }
-            
+    
             startActivityForResult(
-                Intent(this, AudioActivity::class.java),
+                Intent(this, AudioActivity::class.java)
+                    .putExtra("TITLE", mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
+                    .putExtra("ARTIST", mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST))
+                    .putExtra("ALBUM", mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_ALBUM))
+                    .putExtra("ID", mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)),
                 0,
                 ActivityOptionsCompat.makeSceneTransitionAnimation(
                     this,
@@ -170,7 +176,14 @@ class MainActivity : BaseAppCompatActivity() {
      * @since 0.1
      **/
     override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
-    
+        when (state?.state) {
+            PlaybackStateCompat.STATE_BUFFERING, PlaybackStateCompat.STATE_PLAYING -> {
+            
+            }
+            PlaybackStateCompat.STATE_PAUSED -> {
+            
+            }
+        }
     }
     
     /**
@@ -182,6 +195,16 @@ class MainActivity : BaseAppCompatActivity() {
      **/
     override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
         mainFragment.updateList()
+    }
+    
+    /**
+     * [onConnected]
+     * @param [mediaControllerCompat] [MediaControllerCompat]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    override fun onConnected(mediaControllerCompat: MediaControllerCompat) {
+    
     }
     
 }

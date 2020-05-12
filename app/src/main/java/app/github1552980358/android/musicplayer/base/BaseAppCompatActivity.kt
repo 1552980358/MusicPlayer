@@ -8,7 +8,9 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import app.github1552980358.android.musicplayer.base.Constant.Companion.RootId
 import app.github1552980358.android.musicplayer.service.PlayService
+import java.util.*
 
 /**
  * @file    : [BaseAppCompatActivity]
@@ -24,14 +26,14 @@ abstract class BaseAppCompatActivity: AppCompatActivity() {
      * @author 1552980358
      * @since 0.1
      **/
-    lateinit var mediaBrowserCompat: MediaBrowserCompat
+    private lateinit var mediaBrowserCompat: MediaBrowserCompat
     
     /**
      * [connectionCallback] <[MediaBrowserCompat.ConnectionCallback]>
      * @author 1552980358
      * @since 0.1
      **/
-    lateinit var connectionCallback: MediaBrowserCompat.ConnectionCallback
+    private lateinit var connectionCallback: MediaBrowserCompat.ConnectionCallback
     
     /**
      * [subscriptionCallback] <[MediaBrowserCompat.SubscriptionCallback]>
@@ -45,7 +47,7 @@ abstract class BaseAppCompatActivity: AppCompatActivity() {
      * @author 1552980358
      * @since 0.1
      **/
-    lateinit var callback: MediaControllerCompat.Callback
+    private lateinit var callback: MediaControllerCompat.Callback
     
     /**
      * [mediaControllerCompat] <[MediaControllerCompat]>
@@ -84,13 +86,15 @@ abstract class BaseAppCompatActivity: AppCompatActivity() {
                 if (mediaBrowserCompat.isConnected) {
                 
                     // Subscription
-                    mediaBrowserCompat.unsubscribe("root")
-                    mediaBrowserCompat.subscribe("root", subscriptionCallback)
+                    mediaBrowserCompat.unsubscribe(RootId)
+                    mediaBrowserCompat.subscribe(RootId, subscriptionCallback)
                 
                     // Update controller
                     mediaControllerCompat = MediaControllerCompat(this@BaseAppCompatActivity, mediaBrowserCompat.sessionToken)
                     MediaControllerCompat.setMediaController(this@BaseAppCompatActivity, mediaControllerCompat)
                     mediaControllerCompat.registerCallback(callback)
+                    
+                    onConnected(mediaControllerCompat)
                 }
                 
             }
@@ -134,8 +138,28 @@ abstract class BaseAppCompatActivity: AppCompatActivity() {
      **/
     override fun onPause() {
         super.onPause()
-        if (mediaBrowserCompat.isConnected) {
-            mediaBrowserCompat.disconnect()
+        try {
+            if (mediaBrowserCompat.isConnected) {
+                mediaBrowserCompat.disconnect()
+            }
+        } catch (e: Exception) {
+            // Try disconnect 2 seconds later
+            // 两秒后重新尝试断开
+            Timer().apply {
+                schedule(object : TimerTask() {
+                    override fun run() {
+                        runOnUiThread {
+                            try {
+                                if (mediaBrowserCompat.isConnected) {
+                                    mediaBrowserCompat.disconnect()
+                                }
+                            } catch (e: Exception) {
+                                //
+                            }
+                        }
+                    }
+                }, 2000)
+            }
         }
     }
     
@@ -146,8 +170,29 @@ abstract class BaseAppCompatActivity: AppCompatActivity() {
      **/
     override fun onResume() {
         super.onResume()
-        if (!mediaBrowserCompat.isConnected) {
-            mediaBrowserCompat.connect()
+        
+        try {
+            if (!mediaBrowserCompat.isConnected) {
+                mediaBrowserCompat.connect()
+            }
+        } catch (e: Exception) {
+            // Try connect 2 seconds later
+            // 两秒后重新尝试连接
+            Timer().apply {
+                schedule(object : TimerTask() {
+                    override fun run() {
+                        runOnUiThread {
+                            try {
+                                if (!mediaBrowserCompat.isConnected) {
+                                    mediaBrowserCompat.connect()
+                                }
+                            } catch (e: Exception) {
+                                //
+                            }
+                        }
+                    }
+                }, 2000)
+            }
         }
     }
     
@@ -175,5 +220,13 @@ abstract class BaseAppCompatActivity: AppCompatActivity() {
      * @since 0.1
      **/
     abstract fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>)
+    
+    /**
+     * [onConnected]
+     * @param [mediaControllerCompat] [MediaControllerCompat]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    abstract fun onConnected(mediaControllerCompat: MediaControllerCompat)
     
 }
