@@ -13,9 +13,18 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import app.github1552980358.android.musicplayer.R
-import app.github1552980358.android.musicplayer.base.AudioData
+import app.github1552980358.android.musicplayer.activity.MainActivity
+import app.github1552980358.android.musicplayer.base.AudioData.Companion.ignoredData
+import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
+import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataMap
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataDir
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataListFile
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataMapFile
+import app.github1552980358.android.musicplayer.base.Constant.Companion.IgnoredFile
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.view_media_list.view.imageButtonOpts
+import java.io.File
+import java.io.ObjectOutputStream
 
 /**
  * @file    : [RecyclerViewAdapter]
@@ -25,7 +34,11 @@ import kotlinx.android.synthetic.main.view_media_list.view.imageButtonOpts
  * @time    : 13:05
  **/
 
-class RecyclerViewAdapter(private val bottomSheetBehavior: BottomSheetBehavior<View>, private val swipeRefreshLayout: SwipeRefreshLayout) :
+class RecyclerViewAdapter(
+    private val bottomSheetBehavior: BottomSheetBehavior<View>,
+    private val swipeRefreshLayout: SwipeRefreshLayout,
+    private val mainActivity: MainActivity
+) :
     RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
     
     
@@ -43,7 +56,7 @@ class RecyclerViewAdapter(private val bottomSheetBehavior: BottomSheetBehavior<V
      * @since 0.1
      **/
     override fun getItemCount(): Int {
-        return AudioData.audioDataList.size + 1
+        return audioDataList.size + 1
     }
     
     /**
@@ -56,11 +69,11 @@ class RecyclerViewAdapter(private val bottomSheetBehavior: BottomSheetBehavior<V
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         
         // 不显示
-        if (AudioData.audioDataList.isEmpty()){
+        if (audioDataList.isEmpty()){
             holder.relativeLayoutRoot.visibility = View.GONE
             return
         }
-        if (position == AudioData.audioDataList.size) {
+        if (position == audioDataList.size) {
             holder.relativeLayoutRoot.isClickable = false
             holder.imageButtonOpts.visibility = View.GONE
             return
@@ -74,12 +87,12 @@ class RecyclerViewAdapter(private val bottomSheetBehavior: BottomSheetBehavior<V
         
         holder.textViewNo.text = position.plus(1).toString()
         holder.textViewTitle.apply {
-            text = AudioData.audioDataList[position].title
+            text = audioDataList[position].title
             isSingleLine = true
             ellipsize = TextUtils.TruncateAt.END
         }
         holder.textViewSubtitle.apply {
-            text = AudioData.audioDataList[position].artist
+            text = audioDataList[position].artist
             isSingleLine = true
             ellipsize = TextUtils.TruncateAt.END
         }
@@ -97,12 +110,14 @@ class RecyclerViewAdapter(private val bottomSheetBehavior: BottomSheetBehavior<V
                 return@setOnClickListener
             }
             
+            mainActivity.mediaControllerCompat.transportControls.playFromMediaId(audioDataList[position].id, null)
+            
         }
         
         // Toast out full name
         // 弹出全名
         holder.relativeLayoutRoot.setOnLongClickListener {
-            Toast.makeText(it.context, AudioData.audioDataList[position].title, Toast.LENGTH_SHORT).show()
+            Toast.makeText(it.context, audioDataList[position].title, Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true
         }
         
@@ -111,6 +126,43 @@ class RecyclerViewAdapter(private val bottomSheetBehavior: BottomSheetBehavior<V
         holder.imageButtonOpts.setOnClickListener {
             PopupMenu(it.context, holder.imageButtonOpts.imageButtonOpts).apply {
                 inflate(R.menu.menu_audio_opt)
+                setOnMenuItemClickListener {
+                    File(mainActivity.getExternalFilesDir(AudioDataDir), IgnoredFile).appendText(audioDataList[position].id + "\n")
+                    ignoredData.add(audioDataList[position].id)
+                    audioDataList.removeAt(position)
+                    audioDataMap.remove(audioDataList[position].id)
+                    File(mainActivity.getExternalFilesDir(AudioDataDir), AudioDataListFile).apply {
+                        if (!exists()) {
+                            createNewFile()
+                        }
+        
+                        writeText("")
+        
+                        // Write
+                        // 写入
+                        outputStream().use { os ->
+                            ObjectOutputStream(os).use { oos ->
+                                oos.writeObject(audioDataList)
+                            }
+                        }
+                    }
+                    File(mainActivity.getExternalFilesDir(AudioDataDir), AudioDataMapFile).apply {
+                        if (!exists()) {
+                            createNewFile()
+                        }
+        
+                        writeText("")
+        
+                        // Write
+                        // 写入
+                        outputStream().use { os ->
+                            ObjectOutputStream(os).use { oos ->
+                                oos.writeObject(audioDataList)
+                            }
+                        }
+                    }
+                    return@setOnMenuItemClickListener true
+                }
                 show()
             }
         }

@@ -20,7 +20,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
  * @time    : 15:55
  **/
 
-class SettingFragment(private val bottomSheetBehavior: BottomSheetBehavior<View>): PreferenceFragmentCompat() {
+class SettingFragment: PreferenceFragmentCompat() {
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return super.onCreateView(inflater, container, savedInstanceState).apply {

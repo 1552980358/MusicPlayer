@@ -13,6 +13,7 @@ import app.github1552980358.android.musicplayer.R
  * @time    : 16:39
  **/
 
+@Deprecated("Replaced with Share Element provided by Android Framework", ReplaceWith("Share Element"), DeprecationLevel.HIDDEN)
 interface AmplifyDiminishInterface {
     
     fun zoom(imageView: ImageView) {

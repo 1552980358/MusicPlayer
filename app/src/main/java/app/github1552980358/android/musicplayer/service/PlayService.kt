@@ -1,6 +1,5 @@
 package app.github1552980358.android.musicplayer.service
 
-import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
@@ -11,6 +10,7 @@ import android.util.Log
 import androidx.media.MediaBrowserServiceCompat
 import app.github1552980358.android.musicplayer.base.Constant.Companion.RootId
 import app.github1552980358.android.musicplayer.base.AudioData
+import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataMap
 
 /**
  * @file    : [PlayService]
@@ -26,10 +26,6 @@ class PlayService : MediaBrowserServiceCompat(), MediaPlayerUtil {
     //    const val TAG = "PlayService"
     //    const val BrowserID = "PlayServiceID"
     //}
-    
-    companion object {
-    
-    }
     
     private lateinit var playBackStateCompatBuilder: PlaybackStateCompat.Builder
     private lateinit var playStateCompat: PlaybackStateCompat
@@ -118,9 +114,17 @@ class PlayService : MediaBrowserServiceCompat(), MediaPlayerUtil {
                         .build()
                         .apply { playStateCompat = this }
                 )
+                mediaSessionCompat.setMetadata(
+                    MediaMetadataCompat.Builder()
+                        .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId)
+                        .putString(MediaMetadataCompat.METADATA_KEY_TITLE, audioDataMap[mediaId]?.title)
+                        .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, audioDataMap[mediaId]?.artist)
+                        .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, audioDataMap[mediaId]?.album)
+                        .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, audioDataMap[mediaId]?.duration!!)
+                        .build()
+                )
                 onPlayFromMediaId(this@PlayService, mediaPlayer, this, mediaId!!)
             }
-            
         }
         
         mediaSessionCompat = MediaSessionCompat(this, RootId).apply {
@@ -141,31 +145,11 @@ class PlayService : MediaBrowserServiceCompat(), MediaPlayerUtil {
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         Log.e("PlayService", "onLoadChildren")
         result.detach()
-        
-        mediaItemList.clear()
-        for (i in AudioData.audioDataList) {
-            mediaItemList.add(
-                MediaBrowserCompat.MediaItem(
-                    MediaMetadataCompat.Builder()
-                        .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, i.id)
-                        //.putString(MediaMetadataCompat.METADATA_KEY_TITLE, i.title + ";" + i.artist)
-                        //.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, i.album)
-                        .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, i.duration)
-                        .build().description,
-                    MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
-                )
-            )
-        }
-        
         result.sendResult(mediaItemList)
     }
     
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
         return BrowserRoot(RootId, null)//browserRoot
-    }
-    
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        return super.onStartCommand(intent, flags, startId)
     }
     
 }

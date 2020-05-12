@@ -134,7 +134,9 @@ abstract class BaseAppCompatActivity: AppCompatActivity() {
      **/
     override fun onPause() {
         super.onPause()
-        mediaBrowserCompat.disconnect()
+        if (mediaBrowserCompat.isConnected) {
+            mediaBrowserCompat.disconnect()
+        }
     }
     
     /**
@@ -144,7 +146,9 @@ abstract class BaseAppCompatActivity: AppCompatActivity() {
      **/
     override fun onResume() {
         super.onResume()
-        mediaBrowserCompat.connect()
+        if (!mediaBrowserCompat.isConnected) {
+            mediaBrowserCompat.connect()
+        }
     }
     
     /**

@@ -18,7 +18,7 @@ class AudioData: Serializable {
         var audioDataList = ArrayList<AudioData>()
         
         @JvmStatic
-        var audioDataMap = HashMap<String, AudioData>()
+        var audioDataMap = mutableMapOf<String, AudioData>()
         
         @JvmStatic
         var ignoredData = ArrayList<String>()

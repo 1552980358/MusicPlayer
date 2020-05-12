@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.github1552980358.android.musicplayer.R
+import app.github1552980358.android.musicplayer.activity.MainActivity
 import app.github1552980358.android.musicplayer.adapter.RecyclerViewAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.fragment_main.recyclerView
@@ -21,8 +22,12 @@ import kotlinx.android.synthetic.main.fragment_main.swipeRefreshLayout
  * @time    : 15:37
  **/
 
-class MainFragment(private val bottomSheetBehavior: BottomSheetBehavior<View>) :
+class MainFragment :
     Fragment() {
+    
+    companion object {
+        var bottomSheetBehavior: BottomSheetBehavior<View>? = null
+    }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_main, container, false)
@@ -86,12 +91,15 @@ class MainFragment(private val bottomSheetBehavior: BottomSheetBehavior<View>) :
         }
         
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = RecyclerViewAdapter(bottomSheetBehavior, swipeRefreshLayout)
+        recyclerView.adapter = RecyclerViewAdapter(
+            bottomSheetBehavior!!, swipeRefreshLayout,
+            activity as MainActivity
+        )
         
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
-                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                if (bottomSheetBehavior!!.state == BottomSheetBehavior.STATE_EXPANDED)
+                    bottomSheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         })
         

@@ -1,15 +1,18 @@
 package app.github1552980358.android.musicplayer.activity
 
-import android.graphics.BitmapFactory
+import android.app.Activity
+import android.graphics.Color.TRANSPARENT
 import android.os.Bundle
-import android.widget.RelativeLayout
+import android.text.TextUtils
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import app.github1552980358.android.musicplayer.R
-import app.github1552980358.android.musicplayer.base.AmplifyDiminishInterface
-import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormal
-import kotlinx.android.synthetic.main.activity_audio.imageViewAnim
-import kotlinx.android.synthetic.main.activity_audio.imageViewStatic
-import java.io.File
+import kotlinx.android.synthetic.main.activity_audio.imageView
+import kotlinx.android.synthetic.main.activity_audio.textViewTitle
 
 /**
  * @file    : [AudioActivity]
@@ -19,22 +22,29 @@ import java.io.File
  * @time    : 16:32
  **/
 
-class AudioActivity: /*Base*/AppCompatActivity(), AmplifyDiminishInterface {
+class AudioActivity: /*Base*/AppCompatActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
+    
+        window.decorView.systemUiVisibility =
+            (SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or SYSTEM_UI_FLAG_LAYOUT_STABLE)
+    
+        window.navigationBarColor = TRANSPARENT
+        window.statusBarColor =TRANSPARENT
+        
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audio)
-        imageViewStatic.apply {
-            layoutParams = RelativeLayout.LayoutParams(resources.displayMetrics.widthPixels, resources.displayMetrics.widthPixels)
-        }.setImageBitmap(BitmapFactory.decodeStream(File(getExternalFilesDir(AlbumNormal), "40822").inputStream()).apply {
-            imageViewAnim.setImageBitmap(this)
-        })
+        
+        imageView.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, resources.displayMetrics.widthPixels)
+    
+        textViewTitle.isSingleLine = true
+        textViewTitle.ellipsize = TextUtils.TruncateAt.END
+        
     }
     
-    override fun onResume() {
-        super.onResume()
-        zoom(imageViewAnim)
+    override fun onBackPressed() {
+        setResult(Activity.RESULT_OK)
+        super.onBackPressed()
     }
-    
     
 }

@@ -2,17 +2,24 @@ package app.github1552980358.android.musicplayer.activity
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.Matrix
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.base.AudioData
+import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
+import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataMap
+import app.github1552980358.android.musicplayer.base.AudioData.Companion.ignoredData
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormal
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataListFile
@@ -56,7 +63,7 @@ class AudioImportActivity : AppCompatActivity() {
                     searching = true
                     
                     handler?.post {
-                        textView.text = String.format(getString(R.string.mediaSearchActivity_none), 0)
+                        textView.text = String.format(getString(R.string.mediaSearchActivity_searching), 0)
                     }
                     
                     contentResolver
@@ -82,9 +89,9 @@ class AudioImportActivity : AppCompatActivity() {
                                 return
                             }
         
-                            AudioData.audioDataList.clear()
+                            audioDataList.clear()
                             do {
-                                if (AudioData.ignoredData
+                                if (ignoredData
                                         .contains(
                                             getString(getColumnIndex(MediaStore.Audio.AudioColumns._ID))
                                         )
@@ -92,16 +99,17 @@ class AudioImportActivity : AppCompatActivity() {
                                     continue
                                 }
             
-                                AudioData.audioDataList.add(AudioData().apply {
+                                audioDataList.add(AudioData().apply {
                                     id = getString(getColumnIndex(MediaStore.Audio.AudioColumns._ID))
                                     title = getString(getColumnIndex(MediaStore.Audio.AudioColumns.TITLE))
                                     artist = getString(getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST))
                                     album = getString(getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM))
                                     duration = getLong(getColumnIndex(MediaStore.Audio.AudioColumns.DURATION))
-                                })
+                                    Log.e("AudioData", "$id $title $artist $album $duration")
+                                }.apply { audioDataMap[id] = this })
             
-                                AudioData.audioDataMap[getString(getColumnIndex(MediaStore.Audio.AudioColumns._ID))] =
-                                    AudioData.audioDataList.last()
+                                //audioDataMap[getString(getColumnIndex(MediaStore.Audio.AudioColumns._ID))] =
+                                //    AudioData.audioDataList.last()
             
                             } while (moveToNext())
         
@@ -121,7 +129,7 @@ class AudioImportActivity : AppCompatActivity() {
                         // 写入
                         outputStream().use { os ->
                             ObjectOutputStream(os).use { oos ->
-                                oos.writeObject(AudioData.audioDataList)
+                                oos.writeObject(audioDataList)
                             }
                         }
                     }
@@ -136,29 +144,34 @@ class AudioImportActivity : AppCompatActivity() {
                         // 写入
                         outputStream().use { os ->
                             ObjectOutputStream(os).use { oos ->
-                                oos.writeObject(AudioData.audioDataList)
+                                oos.writeObject(audioDataMap)
                             }
                         }
                     }
     
                     val mediaMetadataRetriever = MediaMetadataRetriever()
                     var byteArray: ByteArray?
-    
+                    var paint: Paint
+                    var canvas: Canvas
+                    val mode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
                     val smaller = resources.getDimension(R.dimen.mainActivity_bottom_sheet_icon_size)
                     val matrix1 = Matrix()
                     val matrix2 = Matrix()
     
-                    for (i in AudioData.audioDataList) {
+                    for ((i, j) in audioDataList.withIndex()) {
+                        handler?.post {
+                            textView.text = String.format(getString(R.string.mediaSearchActivity_handling), i, audioDataList.size)
+                        }
+                        
                         mediaMetadataRetriever.setDataSource(
                             this@AudioImportActivity, Uri.parse(
                                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString()
                                     + File.separator
-                                    + i.id
+                                    + j.id
                             )
                         )
                         byteArray = mediaMetadataRetriever.embeddedPicture
                         byteArray ?: continue
-        
         
                         BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size).run {
                             when {
@@ -176,27 +189,29 @@ class AudioImportActivity : AppCompatActivity() {
                             // Extension is not given,
                             // prevent being scanned by system media
                             // 不添加后缀名, 防止被系统相册刷到
-                            File(getExternalFilesDir(SmallAlbumRound), i.id).outputStream().use { ros ->
-                                RoundedBitmapDrawableFactory.create(
-                                    resources,
-                                    //kotlin.run {
-                                        Bitmap.createBitmap(
-                                            this, 0, 0, width, height, matrix1.apply {
-                                                (smaller / width).apply { preScale(this, this) }
-                                            },
-                                            true
-                                        )//.apply {
-                                         //   File(getExternalFilesDir(SmallAlbumRound), i.id).outputStream().use { os ->
-                                         //       compress(Bitmap.CompressFormat.PNG, 100, os)
-                                         //   }
-                                        //}
-                                    //}
-                                ).apply { isCircular = true }.bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, ros)
+                            File(getExternalFilesDir(SmallAlbumRound), j.id).outputStream().use { ros ->
+                                Bitmap.createBitmap(
+                                    this, 0, 0, width, width, matrix1.apply {
+                                        (smaller / width).apply { setScale(this, this) }
+                                    },
+                                    true
+                                ).run {
+                                    // Apply canvas cutting bitmap into circle
+                                    // 利用canvas把图片剪裁成圆形
+                                    Bitmap.createBitmap(width, width, Bitmap.Config.ARGB_8888).apply {
+                                        canvas = Canvas(this)
+                                        paint = Paint()
+                                        paint.isAntiAlias = true
+                                        canvas.drawCircle(width / 2F, width / 2F, width / 2F, paint)
+                                        paint.xfermode = mode
+                                        canvas.drawBitmap(this@run, 0F, 0F, paint)
+                                    }
+                                }.compress(Bitmap.CompressFormat.PNG, 100, ros)
                             }
             
-                            File(getExternalFilesDir(AlbumNormal), i.id).outputStream().use { os ->
+                            File(getExternalFilesDir(AlbumNormal), j.id).outputStream().use { os ->
                                 Bitmap.createBitmap(
-                                    this, 0, 0, width, height, matrix2.apply {
+                                    this, 0, 0, width, width, matrix2.apply {
                                         (resources.displayMetrics.widthPixels / width).toFloat().apply {
                                             setScale(this, this)
                                         }
@@ -214,7 +229,7 @@ class AudioImportActivity : AppCompatActivity() {
                         textView.text =
                             String.format(
                                 getString(R.string.mediaSearchActivity_searched),
-                                AudioData.audioDataList.size
+                                audioDataList.size
                             )
                         imageView.visibility = View.VISIBLE
                         progressBar.visibility = View.INVISIBLE
@@ -232,7 +247,6 @@ class AudioImportActivity : AppCompatActivity() {
                 
             }
         )
-        
         
     }
     

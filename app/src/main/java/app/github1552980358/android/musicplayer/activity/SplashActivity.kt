@@ -91,13 +91,13 @@ class SplashActivity : AppCompatActivity() {
                     }
                     
                     File(getExternalFilesDir(AudioDataDir), AudioDataMapFile).apply {
-                        if (exists())
+                        if (!exists())
                             return
     
                         inputStream().use {
                             ObjectInputStream(it).use { ois ->
                                 @Suppress("UNCHECKED_CAST")
-                                AudioData.audioDataMap = ois.readObject() as HashMap<String, AudioData>
+                                AudioData.audioDataMap = (ois.readObject() as MutableMap<String, AudioData>)
                             }
                         }
                     }
@@ -106,12 +106,7 @@ class SplashActivity : AppCompatActivity() {
                         if (!exists())
                             return
                         
-                        inputStream().use {
-                            ObjectInputStream(it).use { ois ->
-                                @Suppress("UNCHECKED_CAST")
-                                AudioData.ignoredData = ois.readObject() as ArrayList<String>
-                            }
-                        }
+                        AudioData.ignoredData = readLines().toMutableList() as ArrayList<String>
                     }
                     
                 }
