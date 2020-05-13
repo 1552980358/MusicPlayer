@@ -110,7 +110,7 @@ abstract class BaseAppCompatActivity: AppCompatActivity() {
         subscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
             override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
                 Log.e("SubscriptionCallback", "onChildrenLoaded")
-                //this@BaseAppCompatActivity.onChildrenLoaded(parentId, children)
+                this@BaseAppCompatActivity.onChildrenLoaded(parentId, children)
             }
         
             override fun onError(parentId: String) {

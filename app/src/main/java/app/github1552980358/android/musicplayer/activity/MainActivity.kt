@@ -15,6 +15,7 @@ import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.adapter.FragmentPagerAdapter
 import app.github1552980358.android.musicplayer.base.BaseAppCompatActivity
 import app.github1552980358.android.musicplayer.base.Constant.Companion.SmallAlbumRound
+import app.github1552980358.android.musicplayer.base.SystemUtil
 import app.github1552980358.android.musicplayer.fragment.mainActivity.MainFragment
 import app.github1552980358.android.musicplayer.fragment.mainActivity.SettingFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -22,7 +23,6 @@ import kotlinx.android.synthetic.main.activity_main.tabLayout
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.activity_main.viewPager
 import kotlinx.android.synthetic.main.activity_main_bottomsheet.cardView
-import kotlinx.android.synthetic.main.activity_main_bottomsheet.checkBoxPlay
 import kotlinx.android.synthetic.main.activity_main_bottomsheet.imageView
 import kotlinx.android.synthetic.main.activity_main_bottomsheet.linearLayoutBottom
 import kotlinx.android.synthetic.main.activity_main_bottomsheet.textViewSubtitle
@@ -37,7 +37,7 @@ import java.io.File
  * @time    : 21:22
  **/
 
-class MainActivity : BaseAppCompatActivity() {
+class MainActivity : BaseAppCompatActivity(), SystemUtil {
     
     /**
      * [mainFragment] <[MainFragment]>
@@ -92,6 +92,7 @@ class MainActivity : BaseAppCompatActivity() {
                     .putExtra("TITLE", mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
                     .putExtra("ARTIST", mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST))
                     .putExtra("ALBUM", mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_ALBUM))
+                    .putExtra("DURATION", mediaControllerCompat.metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION))
                     .putExtra("ID", mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)),
                 0,
                 ActivityOptionsCompat.makeSceneTransitionAnimation(

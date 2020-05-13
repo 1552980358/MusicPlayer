@@ -12,7 +12,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import app.github1552980358.android.musicplayer.R
@@ -181,7 +180,7 @@ class AudioImportActivity : AppCompatActivity() {
                             MediaNotificationProcessor(this@AudioImportActivity, this).apply {
                                 File(getExternalFilesDir(AlbumColourFile), j.id).outputStream().use { os ->
                                     ObjectOutputStream(os).use { oos ->
-                                        oos.writeObject(Colour(backgroundColor, primaryTextColor, secondaryTextColor))
+                                        oos.writeObject(Colour(backgroundColor, primaryTextColor, secondaryTextColor, isLight))
                                     }
                                 }
                             }

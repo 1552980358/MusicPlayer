@@ -8,9 +8,8 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.media.MediaBrowserServiceCompat
-import app.github1552980358.android.musicplayer.base.Constant.Companion.RootId
-import app.github1552980358.android.musicplayer.base.AudioData
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataMap
+import app.github1552980358.android.musicplayer.base.Constant.Companion.RootId
 
 /**
  * @file    : [PlayService]
@@ -22,11 +21,6 @@ import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDa
 
 class PlayService : MediaBrowserServiceCompat(), MediaPlayerUtil {
     
-    //companion object {
-    //    const val TAG = "PlayService"
-    //    const val BrowserID = "PlayServiceID"
-    //}
-    
     private lateinit var playBackStateCompatBuilder: PlaybackStateCompat.Builder
     private lateinit var playStateCompat: PlaybackStateCompat
     
@@ -36,6 +30,9 @@ class PlayService : MediaBrowserServiceCompat(), MediaPlayerUtil {
     private var mediaItemList = ArrayList<MediaBrowserCompat.MediaItem>()
     
     private var mediaPlayer = MediaPlayer()
+    
+    private var startTime = 0L
+    private var pauseTime = 0L
     
     override fun onCreate() {
         super.onCreate()
@@ -55,36 +52,37 @@ class PlayService : MediaBrowserServiceCompat(), MediaPlayerUtil {
             
             override fun onPlay() {
                 if (playStateCompat.state == PlaybackStateCompat.STATE_PAUSED) {
+                    Log.e("playStateCompat.state", "STATE_BUFFERING")
+                    playStateCompat = PlaybackStateCompat.Builder()
+                        .setState(PlaybackStateCompat.STATE_PLAYING, pauseTime - startTime, 1F)
+                        .build()
+                    startTime = System.currentTimeMillis()
                     onPlay(mediaPlayer)
-                    mediaSessionCompat.setPlaybackState(
-                            playBackStateCompatBuilder
-                                .setState(PlaybackStateCompat.STATE_PLAYING, playStateCompat.position, 1F)
-                                .build()
-                                .apply { playStateCompat = this }
-                    )
+                    mediaSessionCompat.setPlaybackState(playStateCompat)
                     return
                 }
     
                 if (playStateCompat.state == PlaybackStateCompat.STATE_BUFFERING) {
+                    Log.e("playStateCompat.state", "STATE_BUFFERING")
+                    startTime = System.currentTimeMillis()
                     onPlay(mediaPlayer)
-                    mediaSessionCompat.setPlaybackState(
-                        playBackStateCompatBuilder
-                            .setState(PlaybackStateCompat.STATE_PLAYING, 0, 1F)
-                            .build()
-                            .apply { playStateCompat = this }
-                    )
+                    playStateCompat = PlaybackStateCompat.Builder()
+                        .setState(PlaybackStateCompat.STATE_PLAYING, 0L, 1F)
+                        .build()
+                    mediaSessionCompat.setPlaybackState(playStateCompat)
                 }
             }
             
             override fun onPause() {
                 if (playStateCompat.state == PlaybackStateCompat.STATE_PLAYING) {
+                    Log.e("playStateCompat.state", "STATE_PLAYING")
+                    pauseTime = System.currentTimeMillis()
                     onPause(mediaPlayer)
-                    mediaSessionCompat.setPlaybackState(
-                        playBackStateCompatBuilder
-                            .setState(PlaybackStateCompat.STATE_PAUSED, playStateCompat.position, 1F)
-                            .build()
-                            .apply { playStateCompat = this }
-                    )
+                    playStateCompat = PlaybackStateCompat
+                        .Builder()
+                        .setState(PlaybackStateCompat.STATE_PAUSED, pauseTime - startTime, 1F)
+                        .build()
+                    mediaSessionCompat.setPlaybackState(playStateCompat)
                     return
                 }
             }
@@ -94,7 +92,6 @@ class PlayService : MediaBrowserServiceCompat(), MediaPlayerUtil {
             }
             
             override fun onSkipToPrevious() {
-            
             }
             
             override fun onSeekTo(pos: Long) {
@@ -108,12 +105,10 @@ class PlayService : MediaBrowserServiceCompat(), MediaPlayerUtil {
             }
             
             override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
-                mediaSessionCompat.setPlaybackState(
-                    playBackStateCompatBuilder
-                        .setState(PlaybackStateCompat.STATE_BUFFERING, 0, 1F)
-                        .build()
-                        .apply { playStateCompat = this }
-                )
+                playStateCompat = PlaybackStateCompat.Builder()
+                    .setState(PlaybackStateCompat.STATE_BUFFERING, 0L, 1F)
+                    .build()
+                mediaSessionCompat.setPlaybackState(playStateCompat)
                 mediaSessionCompat.setMetadata(
                     MediaMetadataCompat.Builder()
                         .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId)

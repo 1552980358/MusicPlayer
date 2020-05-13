@@ -10,4 +10,4 @@ import java.io.Serializable
  * @time    : 19:58
  **/
 
-class Colour(val backgroundColour: Int, val titleColour: Int, val subtitleColour: Int): Serializable
+class Colour(val backgroundColour: Int, val titleColour: Int, val subtitleColour: Int, val isLight: Boolean): Serializable

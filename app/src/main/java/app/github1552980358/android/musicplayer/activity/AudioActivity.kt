@@ -15,14 +15,19 @@ import android.view.Gravity
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+import android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
+import android.widget.SeekBar
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.base.BaseAppCompatActivity
 import app.github1552980358.android.musicplayer.base.Colour
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumColourFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormal
 import app.github1552980358.android.musicplayer.base.Constant.Companion.BackgroundThread
+import app.github1552980358.android.musicplayer.base.SystemUtil
+import app.github1552980358.android.musicplayer.base.TimeExchange
 import kotlinx.android.synthetic.main.activity_audio.checkBoxPlayPause
 import kotlinx.android.synthetic.main.activity_audio.imageButtonLast
 import kotlinx.android.synthetic.main.activity_audio.imageButtonNext
@@ -48,8 +53,28 @@ import java.io.ObjectInputStream
  * @time    : 16:32
  **/
 
-class AudioActivity : BaseAppCompatActivity() {
+class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
     
+    /**
+     * [seekBarTouched]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    private var seekBarTouched = false
+    
+    /**
+     * [exit]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    private var exit = false
+    
+    /**
+     * [onCreate]
+     * @param savedInstanceState [Bundle]?
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onCreate(savedInstanceState: Bundle?) {
         
         window.decorView.systemUiVisibility =
@@ -82,6 +107,8 @@ class AudioActivity : BaseAppCompatActivity() {
         textViewTitle.text = intent.getStringExtra("TITLE")
         textViewSubtitle1.text = intent.getStringExtra("ALBUM")
         textViewSubtitle2.text = intent.getStringExtra("ARTIST")
+        textViewFull.text = getTimeText(intent.getLongExtra("DURATION", 0L))
+        seekBar.max = intent.getLongExtra("DURATION", 0L).toInt() / 1000
         File(getExternalFilesDir(AlbumNormal), intent.getStringExtra("ID")!!).apply {
             if (!exists())
                 return@apply
@@ -98,7 +125,7 @@ class AudioActivity : BaseAppCompatActivity() {
             inputStream().use { fis ->
                 ObjectInputStream(fis).use { ois ->
                     (ois.readObject() as Colour).apply {
-                        updateLayoutColours(backgroundColour, titleColour, subtitleColour)
+                        updateLayoutColours(backgroundColour, titleColour, subtitleColour, isLight)
                     }
                 }
             }
@@ -110,6 +137,21 @@ class AudioActivity : BaseAppCompatActivity() {
             }
         }
         
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                textViewPassed.text = getTimeText(progress)
+            }
+    
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                seekBarTouched = true
+            }
+    
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                seekBarTouched = false
+            }
+    
+        })
+        
         imageButtonLast.setOnClickListener {
             mediaControllerCompat.transportControls.skipToPrevious()
         }
@@ -118,16 +160,27 @@ class AudioActivity : BaseAppCompatActivity() {
             mediaControllerCompat.transportControls.skipToNext()
         }
     }
-    
+    /**
+     * [onResume]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onResume() {
         super.onResume()
         Log.e("AudioActivity", "onResume")
     }
     
+    /**
+     * [onMetadataChanged]
+     * @param metadata [MediaMetadataCompat]?
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
         textViewTitle.text = metadata?.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
         textViewSubtitle1.text = metadata?.getString(MediaMetadataCompat.METADATA_KEY_ALBUM)
         textViewSubtitle2.text = metadata?.getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
+        textViewFull.text = getTimeText(metadata?.getLong(MediaMetadataCompat.METADATA_KEY_DURATION))
         seekBar.max = metadata?.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)!!.toInt() / 1000
         @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "DuplicatedCode")
         File(
@@ -143,13 +196,18 @@ class AudioActivity : BaseAppCompatActivity() {
             inputStream().use { fis ->
                 ObjectInputStream(fis).use { ois ->
                     (ois.readObject() as Colour).apply {
-                        updateLayoutColours(backgroundColour, titleColour, subtitleColour)
+                        updateLayoutColours(backgroundColour, titleColour, subtitleColour, isLight)
                     }
                 }
             }
         }
     }
     
+    /**
+     * [setUpSeekbar]
+     * @author 1552980358
+     * @since 0.1
+     **/
     @Synchronized
     private fun setUpSeekbar() {
         LabourForce.onDuty.sendWork2Labour(
@@ -158,10 +216,13 @@ class AudioActivity : BaseAppCompatActivity() {
                 .getBuilder()
                 .setWorkContent(object : LabourWorkBuilder.Companion.WorkContent {
                     override fun workContent(workProduct: MutableMap<String, Any?>?, handler: Handler?) {
-                        while (mediaControllerCompat.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
-                            runOnUiThread {
+                        Log.e("setUpSeekbar", "workContent")
+                        do {
+                            if (!seekBarTouched) {
                                 runOnUiThread {
-                                    seekBar.progress = mediaControllerCompat.playbackState.position.toInt() / 1000
+                                    runOnUiThread {
+                                        seekBar.progress = mediaControllerCompat.playbackState.position.toInt() / 1000
+                                    }
                                 }
                             }
                             try {
@@ -169,29 +230,43 @@ class AudioActivity : BaseAppCompatActivity() {
                             } catch (e: Exception) {
                                 //e.printStackTrace()
                             }
-                        }
+                        } while (mediaControllerCompat.playbackState.state == PlaybackStateCompat.STATE_PLAYING && !exit)
                         
                     }
                 })
         )
     }
     
+    /**
+     * [onPlaybackStateChanged]
+     * @param state [PlaybackStateCompat]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
         when (state?.state) {
             PlaybackStateCompat.STATE_BUFFERING -> {
+                Log.e("onPlaybackStateChanged", "STATE_BUFFERING")
                 checkBoxPlayPause.isChecked = true
                 seekBar.progress = 0
             }
             PlaybackStateCompat.STATE_PLAYING -> {
+                Log.e("onPlaybackStateChanged", "STATE_PLAYING")
                 checkBoxPlayPause.isChecked = true
                 setUpSeekbar()
             }
             PlaybackStateCompat.STATE_PAUSED -> {
-        
+                Log.e("onPlaybackStateChanged", "STATE_PAUSED")
+                checkBoxPlayPause.isChecked = false
             }
         }
     }
     
+    /**
+     * [onChildrenLoaded]
+     * @param parentId [String]
+     * @param children [MutableList]<[MediaBrowserCompat.MediaItem]>
+     **/
     override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
         //
     }
@@ -202,6 +277,7 @@ class AudioActivity : BaseAppCompatActivity() {
      * @since 0.1
      **/
     override fun onBackPressed() {
+        exit = true
         setResult(Activity.RESULT_OK)
         super.onBackPressed()
     }
@@ -223,17 +299,25 @@ class AudioActivity : BaseAppCompatActivity() {
                 setUpSeekbar()
             }
             PlaybackStateCompat.STATE_PAUSED -> {
-            
+                checkBoxPlayPause.isChecked = false
+                seekBar.progress = mediaControllerCompat.playbackState.position.toInt() / 1000
             }
         }
-        
     }
     
+    /**
+     * [updateLayoutColours]
+     * @param background [Int]<-16524603>
+     * @param titleColour [Int]<-13172557>
+     * @param subtitleColour [Int]<-10354450>
+     * @param isLight [Boolean]<true>
+     **/
     @Synchronized
     private fun updateLayoutColours(
         background: Int = -16524603,
         titleColour: Int = -13172557,
-        subtitleColour: Int = -10354450
+        subtitleColour: Int = -10354450,
+        isLight: Boolean = true
     ) {
         linearLayoutRoot.background.setTint(background)
         
@@ -251,6 +335,28 @@ class AudioActivity : BaseAppCompatActivity() {
         textViewTitle.setTextColor(titleColour)
         textViewSubtitle1.setTextColor(subtitleColour)
         textViewSubtitle2.setTextColor(subtitleColour)
+        
+        window.decorView.systemUiVisibility =
+            if (isLight) {
+                // On MIUI12, posting [SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR]
+                // will cause white navigation bar background
+                // MIUI12真机测试, 传 [SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR]
+                // 会导致导航栏白色背景
+                if (isMiUi12()) {
+                    (SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        or SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        or SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+                } else {
+                    (SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        or SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        or SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+                        or SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+                }
+            } else {
+                (SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or SYSTEM_UI_FLAG_LAYOUT_STABLE)
+            }
     }
     
 }
