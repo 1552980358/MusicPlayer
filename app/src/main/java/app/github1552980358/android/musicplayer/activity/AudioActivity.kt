@@ -10,6 +10,7 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.text.TextUtils
+import android.util.Log
 import android.view.Gravity
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -58,6 +59,7 @@ class AudioActivity : BaseAppCompatActivity() {
         window.statusBarColor = TRANSPARENT
         
         super.onCreate(savedInstanceState)
+        Log.e("AudioActivity", "onCreate")
         setContentView(R.layout.activity_audio)
         
         imageView.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, resources.displayMetrics.widthPixels)
@@ -117,6 +119,11 @@ class AudioActivity : BaseAppCompatActivity() {
         }
     }
     
+    override fun onResume() {
+        super.onResume()
+        Log.e("AudioActivity", "onResume")
+    }
+    
     override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
         textViewTitle.text = metadata?.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
         textViewSubtitle1.text = metadata?.getString(MediaMetadataCompat.METADATA_KEY_ALBUM)
@@ -143,6 +150,7 @@ class AudioActivity : BaseAppCompatActivity() {
         }
     }
     
+    @Synchronized
     private fun setUpSeekbar() {
         LabourForce.onDuty.sendWork2Labour(
             BackgroundThread,
@@ -150,18 +158,19 @@ class AudioActivity : BaseAppCompatActivity() {
                 .getBuilder()
                 .setWorkContent(object : LabourWorkBuilder.Companion.WorkContent {
                     override fun workContent(workProduct: MutableMap<String, Any?>?, handler: Handler?) {
-                        runOnUiThread {
-                            while (mediaControllerCompat.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
+                        while (mediaControllerCompat.playbackState.state == PlaybackStateCompat.STATE_PLAYING) {
+                            runOnUiThread {
                                 runOnUiThread {
                                     seekBar.progress = mediaControllerCompat.playbackState.position.toInt() / 1000
                                 }
-                                try {
-                                    Thread.sleep(500)
-                                } catch (e: Exception) {
-                                    //e.printStackTrace()
-                                }
+                            }
+                            try {
+                                Thread.sleep(500)
+                            } catch (e: Exception) {
+                                //e.printStackTrace()
                             }
                         }
+                        
                     }
                 })
         )
@@ -184,7 +193,7 @@ class AudioActivity : BaseAppCompatActivity() {
     }
     
     override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
-    
+        //
     }
     
     /**
@@ -214,12 +223,13 @@ class AudioActivity : BaseAppCompatActivity() {
                 setUpSeekbar()
             }
             PlaybackStateCompat.STATE_PAUSED -> {
-        
+            
             }
         }
         
     }
     
+    @Synchronized
     private fun updateLayoutColours(
         background: Int = -16524603,
         titleColour: Int = -13172557,

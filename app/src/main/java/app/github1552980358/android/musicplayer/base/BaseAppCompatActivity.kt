@@ -67,10 +67,12 @@ abstract class BaseAppCompatActivity: AppCompatActivity() {
         
         callback = object : MediaControllerCompat.Callback() {
             override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
+                Log.e("MediaControllerCallback", "onMetadataChanged")
                 this@BaseAppCompatActivity.onMetadataChanged(metadata)
             }
         
             override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
+                Log.e("MediaControllerCallback", "onPlaybackStateChanged")
                 this@BaseAppCompatActivity.onPlaybackStateChanged(state)
             }
         }
@@ -78,11 +80,11 @@ abstract class BaseAppCompatActivity: AppCompatActivity() {
         connectionCallback = object : MediaBrowserCompat.ConnectionCallback() {
         
             override fun onConnectionSuspended() {
-                Log.e("connectionCallback", "onConnectionSuspended")
+                Log.e("ConnectionCallback", "onConnectionSuspended")
             }
         
             override fun onConnected() {
-                Log.e("connectionCallback", "onConnected")
+                Log.e("ConnectionCallback", "onConnected")
                 if (mediaBrowserCompat.isConnected) {
                 
                     // Subscription
@@ -108,7 +110,7 @@ abstract class BaseAppCompatActivity: AppCompatActivity() {
         subscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
             override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
                 Log.e("SubscriptionCallback", "onChildrenLoaded")
-                this@BaseAppCompatActivity.onChildrenLoaded(parentId, children)
+                //this@BaseAppCompatActivity.onChildrenLoaded(parentId, children)
             }
         
             override fun onError(parentId: String) {
