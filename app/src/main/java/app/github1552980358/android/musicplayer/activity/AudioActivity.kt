@@ -147,6 +147,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
             }
     
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                mediaControllerCompat.transportControls.seekTo(seekBar!!.progress * 1000L)
                 seekBarTouched = false
             }
     
