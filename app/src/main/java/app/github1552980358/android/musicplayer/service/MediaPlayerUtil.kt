@@ -1,9 +1,7 @@
 package app.github1552980358.android.musicplayer.service
 
 import android.content.Context
-import android.media.AudioDeviceCallback
 import android.media.MediaPlayer
-import android.media.MediaPlayer.SEEK_PREVIOUS_SYNC
 import android.net.Uri
 import android.provider.MediaStore
 import android.support.v4.media.session.MediaSessionCompat
@@ -17,10 +15,10 @@ import java.io.File
  * @time    : 8:58
  **/
 
-interface MediaPlayerUtil: MediaPlayer.OnCompletionListener {
+interface MediaPlayerUtil {
     
-    fun initialMediaPlayer(mediaPlayer: MediaPlayer) {
-        mediaPlayer.setOnCompletionListener(this)
+    fun initialMediaPlayer(mediaPlayer: MediaPlayer, service: PlayService) {
+        mediaPlayer.setOnCompletionListener(service)
     }
     
     fun onPlay(mediaPlayer: MediaPlayer) {
@@ -55,10 +53,6 @@ interface MediaPlayerUtil: MediaPlayer.OnCompletionListener {
         // Update
         // 更新
         callback.onPlay()
-    }
-    
-    override fun onCompletion(mp: MediaPlayer?) {
-    
     }
     
 }

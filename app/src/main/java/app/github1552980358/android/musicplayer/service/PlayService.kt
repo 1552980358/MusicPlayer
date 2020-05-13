@@ -1,15 +1,33 @@
 package app.github1552980358.android.musicplayer.service
 
+import android.app.Notification
+import android.content.Intent
+import android.graphics.BitmapFactory
 import android.media.MediaPlayer
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY_PAUSE
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_SEEK_TO
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM
 import android.util.Log
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.media.MediaBrowserServiceCompat
+import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataMap
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormal
 import app.github1552980358.android.musicplayer.base.Constant.Companion.RootId
+import app.github1552980358.android.musicplayer.service.CycleMode.LIST_CYCLE
+import app.github1552980358.android.musicplayer.service.CycleMode.RANDOM_ACCESS
+import app.github1552980358.android.musicplayer.service.CycleMode.SINGLE_CYCLE
+import java.io.File
 
 /**
  * @file    : [PlayService]
@@ -19,14 +37,32 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.RootId
  * @time    : 21:22
  **/
 
-class PlayService : MediaBrowserServiceCompat(), MediaPlayerUtil {
+class PlayService : MediaBrowserServiceCompat(),
+    MediaPlayerUtil, NotificationUtil, MediaPlayer.OnCompletionListener {
     
-    private lateinit var playBackStateCompatBuilder: PlaybackStateCompat.Builder
-    private lateinit var playStateCompat: PlaybackStateCompat
+    companion object {
+        
+        private const val START_FLAG = "START_FLAG"
+        private const val STOP_FOREGROUND = "STOP_FOREGROUND"
+        private const val START_FOREGROUND = "START_FOREGROUND"
+        
+        private const val playbackStateActions = (
+            ACTION_PLAY_PAUSE
+                or ACTION_SEEK_TO
+                or ACTION_PLAY_FROM_MEDIA_ID
+                or ACTION_SKIP_TO_NEXT
+                or ACTION_SKIP_TO_PREVIOUS
+                or ACTION_SKIP_TO_QUEUE_ITEM)
+        
+    }
+    
+    private lateinit var playbackStateCompat: PlaybackStateCompat
+    private lateinit var mediaMetadataCompat: MediaMetadataCompat
+    
+    private var cycleMode = SINGLE_CYCLE
     
     private lateinit var mediaSessionCompat: MediaSessionCompat
     private lateinit var mediaSessionCompatCallback: MediaSessionCompat.Callback
-    
     private var mediaItemList = ArrayList<MediaBrowserCompat.MediaItem>()
     
     private var mediaPlayer = MediaPlayer()
@@ -34,55 +70,108 @@ class PlayService : MediaBrowserServiceCompat(), MediaPlayerUtil {
     private var startTime = 0L
     private var pauseTime = 0L
     
+    private lateinit var notificationManagerCompat: NotificationManagerCompat
+    
     override fun onCreate() {
         super.onCreate()
         Log.e("PlayService", "onCreate")
         
-        playBackStateCompatBuilder = PlaybackStateCompat.Builder()
-            .setActions(
-                PlaybackStateCompat.ACTION_PLAY_PAUSE
-                    or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-                    or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
-                    or PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM
-                    or PlaybackStateCompat.ACTION_SEEK_TO
-                    or PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID
-            )
-        
         mediaSessionCompatCallback = object : MediaSessionCompat.Callback() {
             
+            @Suppress("DuplicatedCode")
             override fun onPlay() {
-                if (playStateCompat.state == PlaybackStateCompat.STATE_PAUSED) {
-                    Log.e("playStateCompat.state", "STATE_BUFFERING")
-                    playStateCompat = PlaybackStateCompat.Builder()
+                
+                if (playbackStateCompat.state == PlaybackStateCompat.STATE_PAUSED) {
+                    Log.e("playStateCompat.state", "STATE_PAUSED")
+                    playbackStateCompat = PlaybackStateCompat.Builder()
+                        .setActions(playbackStateActions)
                         .setState(PlaybackStateCompat.STATE_PLAYING, pauseTime - startTime, 1F)
                         .build()
+                    @Suppress("DuplicatedCode")
                     startTime = System.currentTimeMillis()
                     onPlay(mediaPlayer)
-                    mediaSessionCompat.setPlaybackState(playStateCompat)
+                    mediaSessionCompat.setPlaybackState(playbackStateCompat)
+                    
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        startForegroundService(
+                            Intent(this@PlayService, PlayService::class.java)
+                                .putExtra(START_FLAG, START_FOREGROUND)
+                        )
+                    } else {
+                        startService(
+                            Intent(this@PlayService, PlayService::class.java)
+                                .putExtra(START_FLAG, START_FOREGROUND)
+                        )
+                    }
                     return
                 }
     
-                if (playStateCompat.state == PlaybackStateCompat.STATE_BUFFERING) {
+                if (playbackStateCompat.state == PlaybackStateCompat.STATE_PLAYING) {
+                    Log.e("playStateCompat.state", "STATE_PLAYING")
+                    playbackStateCompat = PlaybackStateCompat.Builder()
+                        .setActions(playbackStateActions)
+                        .setState(PlaybackStateCompat.STATE_PLAYING, 0L, 1F)
+                        .build()
+                    startTime = System.currentTimeMillis()
+                    onPlay(mediaPlayer)
+                    mediaSessionCompat.setPlaybackState(playbackStateCompat)
+        
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        startForegroundService(
+                            Intent(this@PlayService, PlayService::class.java)
+                                .putExtra(START_FLAG, START_FOREGROUND)
+                        )
+                    } else {
+                        startService(
+                            Intent(this@PlayService, PlayService::class.java)
+                                .putExtra(START_FLAG, START_FOREGROUND)
+                        )
+                    }
+                    return
+                }
+    
+                if (playbackStateCompat.state == PlaybackStateCompat.STATE_BUFFERING) {
                     Log.e("playStateCompat.state", "STATE_BUFFERING")
                     startTime = System.currentTimeMillis()
                     onPlay(mediaPlayer)
-                    playStateCompat = PlaybackStateCompat.Builder()
+                    playbackStateCompat = PlaybackStateCompat.Builder()
+                        .setActions(playbackStateActions)
                         .setState(PlaybackStateCompat.STATE_PLAYING, 0L, 1F)
                         .build()
-                    mediaSessionCompat.setPlaybackState(playStateCompat)
+                    mediaSessionCompat.setPlaybackState(playbackStateCompat)
+    
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        startForegroundService(
+                            Intent(this@PlayService, PlayService::class.java)
+                                .putExtra(START_FLAG, START_FOREGROUND)
+                        )
+                    } else {
+                        startService(
+                            Intent(this@PlayService, PlayService::class.java)
+                                .putExtra(START_FLAG, START_FOREGROUND)
+                        )
+                    }
                 }
+                
             }
             
             override fun onPause() {
-                if (playStateCompat.state == PlaybackStateCompat.STATE_PLAYING) {
+                if (playbackStateCompat.state == PlaybackStateCompat.STATE_PLAYING) {
                     Log.e("playStateCompat.state", "STATE_PLAYING")
                     pauseTime = System.currentTimeMillis()
                     onPause(mediaPlayer)
-                    playStateCompat = PlaybackStateCompat
+                    playbackStateCompat = PlaybackStateCompat
                         .Builder()
+                        .setActions(playbackStateActions)
                         .setState(PlaybackStateCompat.STATE_PAUSED, pauseTime - startTime, 1F)
                         .build()
-                    mediaSessionCompat.setPlaybackState(playStateCompat)
+                    mediaSessionCompat.setPlaybackState(playbackStateCompat)
+    
+                    startService(
+                        Intent(this@PlayService, PlayService::class.java)
+                            .putExtra(START_FLAG, STOP_FOREGROUND)
+                    )
+    
                     return
                 }
             }
@@ -95,46 +184,52 @@ class PlayService : MediaBrowserServiceCompat(), MediaPlayerUtil {
             }
             
             override fun onSeekTo(pos: Long) {
+                startTime -= (pos -  (System.currentTimeMillis() - startTime))
                 mediaSessionCompat.setPlaybackState(
-                    playBackStateCompatBuilder
-                        .setState(playStateCompat.state, pos, 1F)
+                    PlaybackStateCompat.Builder()
+                        .setState(playbackStateCompat.state, pos, 1F)
+                        .setActions(playbackStateActions)
                         .build()
-                        .apply { playStateCompat = this }
+                        .apply { playbackStateCompat = this }
                 )
                 onSeekTo(mediaPlayer, pos)
             }
             
             override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
-                playStateCompat = PlaybackStateCompat.Builder()
+                playbackStateCompat = PlaybackStateCompat.Builder()
+                    .setActions(playbackStateActions)
                     .setState(PlaybackStateCompat.STATE_BUFFERING, 0L, 1F)
                     .build()
-                mediaSessionCompat.setPlaybackState(playStateCompat)
-                mediaSessionCompat.setMetadata(
-                    MediaMetadataCompat.Builder()
-                        .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId)
-                        .putString(MediaMetadataCompat.METADATA_KEY_TITLE, audioDataMap[mediaId]?.title)
-                        .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, audioDataMap[mediaId]?.artist)
-                        .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, audioDataMap[mediaId]?.album)
-                        .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, audioDataMap[mediaId]?.duration!!)
-                        .build()
-                )
+                mediaSessionCompat.setPlaybackState(playbackStateCompat)
+                mediaMetadataCompat = MediaMetadataCompat.Builder()
+                    .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, mediaId)
+                    .putString(MediaMetadataCompat.METADATA_KEY_TITLE, audioDataMap[mediaId]?.title)
+                    .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, audioDataMap[mediaId]?.artist)
+                    .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, audioDataMap[mediaId]?.album)
+                    .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, audioDataMap[mediaId]?.duration!!)
+                    .build()
+                mediaSessionCompat.setMetadata(mediaMetadataCompat)
                 onPlayFromMediaId(this@PlayService, mediaPlayer, this, mediaId!!)
             }
+            
         }
         
         mediaSessionCompat = MediaSessionCompat(this, RootId).apply {
             setCallback(mediaSessionCompatCallback)
             setPlaybackState(
-                playBackStateCompatBuilder
+                PlaybackStateCompat.Builder()
+                    .setActions(playbackStateActions)
                     .setState(PlaybackStateCompat.STATE_NONE, 0, 1F)
                     .build()
-                    .apply { playStateCompat= this })
-            
+            )
+    
             isActive = true
         }
         sessionToken = mediaSessionCompat.sessionToken
         
-        initialMediaPlayer(mediaPlayer)
+        initialMediaPlayer(mediaPlayer, this)
+        
+        notificationManagerCompat = createNotificationManager(this)
     }
     
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
@@ -143,8 +238,73 @@ class PlayService : MediaBrowserServiceCompat(), MediaPlayerUtil {
         result.sendResult(mediaItemList)
     }
     
+    /**
+     * [onGetRoot]
+     * @param clientPackageName [String]
+     * @param clientUid [Int]
+     * @param rootHints [Bundle]?
+     * @return [Int]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
         return BrowserRoot(RootId, null)//browserRoot
+    }
+    
+    /**
+     * [onStartCommand]
+     * @param intent [Intent]
+     * @param flags [Int]
+     * @param startId [Int]
+     * @return [Int]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        when (intent?.getStringExtra(START_FLAG)) {
+            START_FOREGROUND -> startForeground(this, getNotification())
+            STOP_FOREGROUND -> stopForeground(false)
+        }
+        
+        return super.onStartCommand(intent, flags, startId)
+    }
+    
+    /**
+     * [getNotification]
+     * @return [Notification]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    private fun getNotification(): Notification {
+        return NotificationCompat.Builder(this, NotificationUtil.ChannelId)
+            .setStyle(androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediaSessionCompat.sessionToken))
+            .apply {
+                File(getExternalFilesDir(AlbumNormal), mediaMetadataCompat.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)).apply {
+                    if (exists()) {
+                        setLargeIcon(BitmapFactory.decodeStream(inputStream()))
+                    }
+                }
+            }
+            .setContentTitle(mediaMetadataCompat.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
+            .setContentText("${mediaMetadataCompat.getString(MediaMetadataCompat.METADATA_KEY_ARTIST)} - ${mediaMetadataCompat.getString(MediaMetadataCompat.METADATA_KEY_ALBUM)}")
+            .setSmallIcon(R.mipmap.ic_launcher_round)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setOngoing(false)
+            .build()
+    }
+    
+    override fun onCompletion(mp: MediaPlayer?) {
+        when (cycleMode) {
+            SINGLE_CYCLE -> {
+                mediaSessionCompatCallback.onPlay()
+            }
+            LIST_CYCLE -> {
+            
+            }
+            RANDOM_ACCESS -> {
+            
+            }
+        }
     }
     
 }
