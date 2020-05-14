@@ -16,6 +16,10 @@
         <item name="windowNoTitle" >true</item >
     </style >
     
+    <style name="AppTheme.NoActionBar.Splash" parent="AppTheme.NoActionBar" >
+        <item name="colorPrimaryDark" >@color/white</item >
+    </style >
+    
     <!-- For AudioActivity -->
     <!-- inorder to play animation -->
     <style name="AppTheme.NoActionBar.Translucent" parent="AppTheme.NoActionBar" >
