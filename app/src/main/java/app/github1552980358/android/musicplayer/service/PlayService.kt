@@ -3,6 +3,8 @@ package app.github1552980358.android.musicplayer.service
 import android.app.Notification
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.media.AudioFocusRequest
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
@@ -44,14 +46,34 @@ import java.io.File
  **/
 
 class PlayService : MediaBrowserServiceCompat(),
-    MediaPlayerUtil, NotificationUtil, MediaPlayer.OnCompletionListener {
+    MediaPlayerUtil, NotificationUtil, MediaPlayer.OnCompletionListener, AudioFocusUtil {
     
     companion object {
-        
+    
+        /**
+         * [START_FLAG]
+         * @author 1552980358
+         * @since 0.1
+         **/
         private const val START_FLAG = "START_FLAG"
+        /**
+         * [STOP_FOREGROUND]
+         * @author 1552980358
+         * @since 0.1
+         **/
         private const val STOP_FOREGROUND = "STOP_FOREGROUND"
+        /**
+         * [START_FOREGROUND]
+         * @author 1552980358
+         * @since 0.1
+         **/
         private const val START_FOREGROUND = "START_FOREGROUND"
-        
+    
+        /**
+         * [playbackStateActions]
+         * @author 1552980358
+         * @since 0.1
+         **/
         private const val playbackStateActions = (
             ACTION_PLAY_PAUSE
                 or ACTION_SEEK_TO
@@ -62,31 +84,106 @@ class PlayService : MediaBrowserServiceCompat(),
         
     }
     
+    /**
+     * [playbackStateCompat]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private lateinit var playbackStateCompat: PlaybackStateCompat
+    /**
+     * [mediaMetadataCompat]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private lateinit var mediaMetadataCompat: MediaMetadataCompat
     
+    /**
+     * [cycleMode]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private var cycleMode = SINGLE_CYCLE
     
+    /**
+     * [mediaSessionCompat]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private lateinit var mediaSessionCompat: MediaSessionCompat
+    /**
+     * [mediaSessionCompatCallback]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private lateinit var mediaSessionCompatCallback: MediaSessionCompat.Callback
+    /**
+     * [mediaItemList]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private var mediaItemList = ArrayList<MediaBrowserCompat.MediaItem>()
     
+    /**
+     * [mediaPlayer]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private var mediaPlayer = MediaPlayer()
     
+    /**
+     * [startTime]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private var startTime = 0L
+    /**
+     * [pauseTime]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private var pauseTime = 0L
     
+    /**
+     * [notificationManagerCompat]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private lateinit var notificationManagerCompat: NotificationManagerCompat
     
+    /**
+     * [audioManager]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    private lateinit var audioManager: AudioManager
+    /**
+     * [audioFocusRequest]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    private lateinit var audioFocusRequest: AudioFocusRequest
+    /**
+     * [audioFocusChangeListener]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    private lateinit var audioFocusChangeListener: AudioManager.OnAudioFocusChangeListener
+    
+    /**
+     * [onCreate]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onCreate() {
         super.onCreate()
         Log.e("PlayService", "onCreate")
         
+        // Media Session
         mediaSessionCompatCallback = object : MediaSessionCompat.Callback() {
             
             @Suppress("DuplicatedCode")
             override fun onPlay() {
-                
+                gainAudioFocusRequest(audioManager, audioFocusRequest, audioFocusChangeListener)
                 if (playbackStateCompat.state == STATE_PAUSED) {
                     Log.e("playStateCompat.state", "STATE_PAUSED")
                     playbackStateCompat = PlaybackStateCompat.Builder()
@@ -162,6 +259,7 @@ class PlayService : MediaBrowserServiceCompat(),
             }
             
             override fun onPause() {
+                abandonAudioFocusRequest(audioManager, audioFocusRequest, audioFocusChangeListener)
                 if (playbackStateCompat.state == STATE_PLAYING) {
                     Log.e("playStateCompat.state", "STATE_PLAYING")
                     pauseTime = System.currentTimeMillis()
@@ -232,7 +330,6 @@ class PlayService : MediaBrowserServiceCompat(),
             }
             
         }
-        
         mediaSessionCompat = MediaSessionCompat(this, RootId).apply {
             setCallback(mediaSessionCompatCallback)
             setPlaybackState(
@@ -248,9 +345,25 @@ class PlayService : MediaBrowserServiceCompat(),
         
         initialMediaPlayer(mediaPlayer, this)
         
+        // Notification
         notificationManagerCompat = createNotificationManager(this)
+        
+        // Audio Focus
+        audioManager = getAudioManager(this)
+        audioFocusChangeListener = getOnAudioFocusChangeListener(mediaSessionCompatCallback)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            audioFocusRequest = getAudioFocusRequest(audioFocusChangeListener)
+        }
+        
     }
     
+    /**
+     * [onLoadChildren]
+     * @param parentId [String]
+     * @param result [Result]<[MutableList]<[MediaBrowserCompat.MediaItem]>>
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         Log.e("PlayService", "onLoadChildren")
         result.detach()

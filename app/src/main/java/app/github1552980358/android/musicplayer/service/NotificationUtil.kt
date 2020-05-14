@@ -20,14 +20,37 @@ import androidx.core.app.NotificationManagerCompat
 interface NotificationUtil {
     
     companion object {
-        
+    
+        /**
+         * [ChannelName]
+         * @author 1552980358
+         * @since 0.1
+         **/
         const val ChannelName = "PlayAudioNotification"
+    
+        /**
+         * [ChannelId]
+         * @author 1552980358
+         * @since 0.1
+         **/
         const val ChannelId = "app.github1552980358.android.musicplayer"
-        
+    
+        /**
+         * [ServiceId]
+         * @author 1552980358
+         * @since 0.1
+         **/
         const val ServiceId = 23333
         
     }
     
+    /**
+     * [createNotificationManager]
+     * @param context [Context]
+     * @return [NotificationManagerCompat]
+     * @author 1552980358
+     * @since 0.1
+     **/
     fun createNotificationManager(context: Context): NotificationManagerCompat {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
             return NotificationManagerCompat.from(context)
@@ -37,10 +60,13 @@ interface NotificationUtil {
         return NotificationManagerCompat.from(context)
     }
     
-    fun startForeground(service: Service, notification: Notification) {
-        service.startForeground(ServiceId, notification)
-    }
-    
-    
+    /**
+     * [startForeground]
+     * @param service [Service]
+     * @param notification [Notification]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    fun startForeground(service: Service, notification: Notification) = service.startForeground(ServiceId, notification)
     
 }
