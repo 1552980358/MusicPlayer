@@ -103,6 +103,7 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
         }
     
         textViewTitle.apply {
+            setText(R.string.mainActivity_bottom_sheet_title)
             isSingleLine = true
             ellipsize = TextUtils.TruncateAt.END
             
@@ -111,6 +112,8 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
             isSingleLine = true
             ellipsize = TextUtils.TruncateAt.END
         }
+        
+        imageView.setImageResource(R.drawable.ic_launcher_foreground)
     }
     
     /**

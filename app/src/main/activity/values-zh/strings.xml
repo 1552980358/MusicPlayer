@@ -4,4 +4,7 @@
     <string name="mediaSearchActivity_searching">搜索中…</string>
     <string name="mediaSearchActivity_handling">正在处理专辑封面 (%s/%s)</string>
     <string name="mediaSearchActivity_searched">已完成搜索!\n共找到%s首音频!</string>
+    
+        <string name="mainActivity_bottom_sheet_title">~ 开始你的音乐吧 ~</string>
+
 </resources>
