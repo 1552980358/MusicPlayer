@@ -151,6 +151,16 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
         }
     }
     
+    override fun onBackPressed() {
+        startActivity(
+            Intent().apply {
+                action = Intent.ACTION_MAIN
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                addCategory(Intent.CATEGORY_HOME)
+            }
+        )
+    }
+    
     /**
      * [onMetadataChanged]
      * @param metadata [MediaMetadataCompat]?
