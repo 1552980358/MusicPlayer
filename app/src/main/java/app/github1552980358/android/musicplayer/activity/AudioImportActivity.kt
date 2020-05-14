@@ -113,6 +113,10 @@ class AudioImportActivity : AppCompatActivity() {
         
                             close()
                         }
+                    
+                    // Sort by PinYin characters
+                    // 以拼音字母排序
+                    audioDataList.sortBy { it.titlePinYin }
     
                     // Write to storage
                     // 写入存储

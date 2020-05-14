@@ -1,6 +1,9 @@
 package app.github1552980358.android.musicplayer.base
 
+import com.github.promeg.pinyinhelper.Pinyin
 import java.io.Serializable
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * @file    : [AudioData]
@@ -26,6 +29,11 @@ class AudioData: Serializable {
     }
     
     var title = ""
+        set(value) {
+            titlePinYin = Pinyin.toPinyin(value, "").toUpperCase(Locale.ROOT)
+            field = value
+        }
+    var titlePinYin = ""
     var artist = ""
     var album = ""
     var id = ""
