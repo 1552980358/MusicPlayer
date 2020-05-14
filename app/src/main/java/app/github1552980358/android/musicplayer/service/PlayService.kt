@@ -16,6 +16,10 @@ import android.support.v4.media.session.PlaybackStateCompat.ACTION_SEEK_TO
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_NEXT
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM
+import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
+import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -81,11 +85,11 @@ class PlayService : MediaBrowserServiceCompat(),
             @Suppress("DuplicatedCode")
             override fun onPlay() {
                 
-                if (playbackStateCompat.state == PlaybackStateCompat.STATE_PAUSED) {
+                if (playbackStateCompat.state == STATE_PAUSED) {
                     Log.e("playStateCompat.state", "STATE_PAUSED")
                     playbackStateCompat = PlaybackStateCompat.Builder()
                         .setActions(playbackStateActions)
-                        .setState(PlaybackStateCompat.STATE_PLAYING, pauseTime - startTime, 1F)
+                        .setState(STATE_PLAYING, pauseTime - startTime, 1F)
                         .build()
                     @Suppress("DuplicatedCode")
                     startTime = System.currentTimeMillis()
@@ -106,11 +110,11 @@ class PlayService : MediaBrowserServiceCompat(),
                     return
                 }
     
-                if (playbackStateCompat.state == PlaybackStateCompat.STATE_PLAYING) {
+                if (playbackStateCompat.state == STATE_PLAYING) {
                     Log.e("playStateCompat.state", "STATE_PLAYING")
                     playbackStateCompat = PlaybackStateCompat.Builder()
                         .setActions(playbackStateActions)
-                        .setState(PlaybackStateCompat.STATE_PLAYING, 0L, 1F)
+                        .setState(STATE_PLAYING, 0L, 1F)
                         .build()
                     startTime = System.currentTimeMillis()
                     onPlay(mediaPlayer)
@@ -130,13 +134,13 @@ class PlayService : MediaBrowserServiceCompat(),
                     return
                 }
     
-                if (playbackStateCompat.state == PlaybackStateCompat.STATE_BUFFERING) {
+                if (playbackStateCompat.state == STATE_BUFFERING) {
                     Log.e("playStateCompat.state", "STATE_BUFFERING")
                     startTime = System.currentTimeMillis()
                     onPlay(mediaPlayer)
                     playbackStateCompat = PlaybackStateCompat.Builder()
                         .setActions(playbackStateActions)
-                        .setState(PlaybackStateCompat.STATE_PLAYING, 0L, 1F)
+                        .setState(STATE_PLAYING, 0L, 1F)
                         .build()
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
     
@@ -156,14 +160,14 @@ class PlayService : MediaBrowserServiceCompat(),
             }
             
             override fun onPause() {
-                if (playbackStateCompat.state == PlaybackStateCompat.STATE_PLAYING) {
+                if (playbackStateCompat.state == STATE_PLAYING) {
                     Log.e("playStateCompat.state", "STATE_PLAYING")
                     pauseTime = System.currentTimeMillis()
                     onPause(mediaPlayer)
                     playbackStateCompat = PlaybackStateCompat
                         .Builder()
                         .setActions(playbackStateActions)
-                        .setState(PlaybackStateCompat.STATE_PAUSED, pauseTime - startTime, 1F)
+                        .setState(STATE_PAUSED, pauseTime - startTime, 1F)
                         .build()
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
     
@@ -184,21 +188,34 @@ class PlayService : MediaBrowserServiceCompat(),
             }
             
             override fun onSeekTo(pos: Long) {
-                startTime -= (pos -  (System.currentTimeMillis() - startTime))
-                mediaSessionCompat.setPlaybackState(
-                    PlaybackStateCompat.Builder()
-                        .setState(playbackStateCompat.state, pos, 1F)
+                if (playbackStateCompat.state == STATE_PLAYING) {
+                    Log.e("playStateCompat.state", "STATE_PLAYING")
+                    startTime -= (pos - System.currentTimeMillis() + startTime)
+                    onSeekTo(mediaPlayer, pos)
+                    playbackStateCompat = PlaybackStateCompat.Builder()
+                        .setState(STATE_PLAYING, pos, 1F)
                         .setActions(playbackStateActions)
                         .build()
-                        .apply { playbackStateCompat = this }
-                )
-                onSeekTo(mediaPlayer, pos)
+                    mediaSessionCompat.setPlaybackState(playbackStateCompat)
+                    return
+                }
+                
+                if (playbackStateCompat.state == STATE_PAUSED) {
+                    Log.e("playStateCompat.state", "STATE_PAUSED")
+                    pauseTime += (pos - pauseTime + startTime)
+                    onSeekTo(mediaPlayer, pos)
+                    playbackStateCompat = PlaybackStateCompat.Builder()
+                        .setState(STATE_PAUSED, pos, 1F)
+                        .setActions(playbackStateActions)
+                        .build()
+                    mediaSessionCompat.setPlaybackState(playbackStateCompat)
+                }
             }
             
             override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
                 playbackStateCompat = PlaybackStateCompat.Builder()
                     .setActions(playbackStateActions)
-                    .setState(PlaybackStateCompat.STATE_BUFFERING, 0L, 1F)
+                    .setState(STATE_BUFFERING, 0L, 1F)
                     .build()
                 mediaSessionCompat.setPlaybackState(playbackStateCompat)
                 mediaMetadataCompat = MediaMetadataCompat.Builder()
@@ -219,7 +236,7 @@ class PlayService : MediaBrowserServiceCompat(),
             setPlaybackState(
                 PlaybackStateCompat.Builder()
                     .setActions(playbackStateActions)
-                    .setState(PlaybackStateCompat.STATE_NONE, 0, 1F)
+                    .setState(STATE_NONE, 0, 1F)
                     .build()
             )
     
