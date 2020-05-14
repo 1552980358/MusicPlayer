@@ -109,11 +109,18 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
         textViewSubtitle2.text = intent.getStringExtra("ARTIST")
         textViewFull.text = getTimeText(intent.getLongExtra("DURATION", 0L))
         seekBar.max = intent.getLongExtra("DURATION", 0L).toInt() / 1000
+        
         File(getExternalFilesDir(AlbumNormal), intent.getStringExtra("ID")!!).apply {
-            if (!exists())
+            if (!exists()) {
+                imageView.setImageResource(R.drawable.ic_launcher_foreground)
                 return@apply
-            imageView.setImageBitmap(BitmapFactory.decodeStream(inputStream()))
+            }
+            inputStream().use { `is` ->
+                imageView.setImageBitmap(BitmapFactory.decodeStream(`is`))
+            }
+            
         }
+        
         @Suppress("DuplicatedCode")
         File(getExternalFilesDir(AlbumColourFile), intent.getStringExtra("ID")!!).apply {
             
@@ -183,6 +190,22 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
         textViewSubtitle2.text = metadata?.getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
         textViewFull.text = getTimeText(metadata?.getLong(MediaMetadataCompat.METADATA_KEY_DURATION))
         seekBar.max = metadata?.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)!!.toInt() / 1000
+        
+        File(
+            getExternalFilesDir(AlbumNormal),
+            metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
+        ).apply {
+    
+            if (!exists()) {
+                imageView.setImageResource(R.drawable.ic_launcher_foreground)
+                return@apply
+            }
+            
+            inputStream().use { `is` ->
+                imageView.setImageBitmap(BitmapFactory.decodeStream(`is`))
+            }
+        }
+    
         @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "DuplicatedCode")
         File(
             getExternalFilesDir(AlbumColourFile),
@@ -315,7 +338,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
      **/
     @Synchronized
     private fun updateLayoutColours(
-        background: Int = -16524603,
+        background: Int = -1,
         titleColour: Int = -13172557,
         subtitleColour: Int = -10354450,
         isLight: Boolean = true

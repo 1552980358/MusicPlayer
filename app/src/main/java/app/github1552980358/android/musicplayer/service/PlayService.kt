@@ -23,6 +23,8 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.media.MediaBrowserServiceCompat
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataMap
@@ -298,7 +300,11 @@ class PlayService : MediaBrowserServiceCompat(),
             .apply {
                 File(getExternalFilesDir(AlbumNormal), mediaMetadataCompat.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)).apply {
                     if (exists()) {
-                        setLargeIcon(BitmapFactory.decodeStream(inputStream()))
+                        inputStream().use { `is` ->
+                            setLargeIcon(BitmapFactory.decodeStream(`is`))
+                        }
+                    } else {
+                        setLargeIcon(ContextCompat.getDrawable(this@PlayService, R.drawable.ic_launcher_foreground)?.toBitmap())
                     }
                 }
             }

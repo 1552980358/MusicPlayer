@@ -58,7 +58,7 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
         setContentView(R.layout.activity_main)
     
         setSupportActionBar(toolbar)
-    
+        
         @Suppress("UNCHECKED_CAST")
         val bottomSheetBehavior = BottomSheetBehavior.from(cardView) as BottomSheetBehavior<View>
     
@@ -143,10 +143,15 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
             textViewSubtitle.text = getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
     
             File(getExternalFilesDir(SmallAlbumRound), getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)).apply {
-                if (!exists())
+                if (!exists()) {
+                    imageView.setImageResource(R.drawable.ic_launcher_foreground)
                     return
-        
-                imageView.setImageBitmap(BitmapFactory.decodeStream(inputStream()))
+                }
+    
+                inputStream().use { `is` ->
+                    imageView.setImageBitmap(BitmapFactory.decodeStream(`is`))
+                }
+                
             }
         }
     }
@@ -172,10 +177,14 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
         textViewSubtitle.text = metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
         
         File(getExternalFilesDir(SmallAlbumRound), metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)).apply {
-            if (!exists())
+            if (!exists()) {
+                imageView.setImageResource(R.drawable.ic_launcher_foreground)
                 return
+            }
     
-            imageView.setImageBitmap(BitmapFactory.decodeStream(inputStream()))
+            inputStream().use { `is` ->
+                imageView.setImageBitmap(BitmapFactory.decodeStream(`is`))
+            }
         }
         
     }
