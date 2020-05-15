@@ -1,6 +1,7 @@
 package app.github1552980358.android.musicplayer.service
 
 import android.app.Notification
+import android.app.Service
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.media.AudioFocusRequest
@@ -8,6 +9,8 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
+import android.os.PowerManager.PARTIAL_WAKE_LOCK
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -81,7 +84,13 @@ class PlayService : MediaBrowserServiceCompat(),
                 or ACTION_SKIP_TO_NEXT
                 or ACTION_SKIP_TO_PREVIOUS
                 or ACTION_SKIP_TO_QUEUE_ITEM)
-        
+    
+        /**
+         * [TAG_WAKE_LOCK]
+         * @author 1552980358
+         * @since 0.1
+         **/
+        private const val TAG_WAKE_LOCK = "PlayService:WakeLock"
     }
     
     /**
@@ -129,6 +138,13 @@ class PlayService : MediaBrowserServiceCompat(),
      * @since 0.1
      **/
     private var mediaPlayer = MediaPlayer()
+    
+    /**
+     * [wakeLock]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    private var wakeLock: PowerManager.WakeLock? = null
     
     /**
      * [startTime]
@@ -394,8 +410,40 @@ class PlayService : MediaBrowserServiceCompat(),
      **/
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.getStringExtra(START_FLAG)) {
-            START_FOREGROUND -> startForeground(this, getNotification())
-            STOP_FOREGROUND -> stopForeground(false)
+            START_FOREGROUND -> {
+                startForeground(this, getNotification())
+                
+                /**
+                 * // Call to create wake lock prevent stop playing music
+                 * // 防止停止播放音乐而创建唤醒锁
+                 * mediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK)
+                 **/
+                // Not to create wake lock through setWakeMode() provided by MediaPlayer
+                // which would cause restart of MainActivity and mediaControllerCompat uninitialized，
+                // and throw an uninitialized exception when released by following method
+                // 不使用由MediaPlayer提供创建唤醒锁的setWakeMode()方法, 否则会导致MainActivity重置
+                // 使 mediaControllerCompat 未赋值, 从而抛出异常
+                wakeLock = (getSystemService(Service.POWER_SERVICE) as PowerManager).newWakeLock(PARTIAL_WAKE_LOCK, TAG_WAKE_LOCK)
+                @Suppress("WakelockTimeout")
+                wakeLock!!.acquire()
+            }
+            STOP_FOREGROUND -> {
+                stopForeground(false)
+                /**
+                 * // Reflect to private mWakeLock variable of PowerManager.WakeLock instance
+                 * //from MediaPlayer to release wake lock and reset it
+                 * // 反射获取MediaPlayer储存在私有变量mWakeLock的PowerManager.WakeLock对象,
+                 * // 从而释放唤醒锁, 并且重置
+                 * PlayService::class.java.getField("mWakeLock").apply {
+                 *     (get(mediaPlayer) as PowerManager.WakeLock).release()
+                 *     set(mediaPlayer, null)
+                 * }
+                 * PlayService::class.java.getField("washeld").setBoolean(mediaPlayer, true)
+                 **/
+                // Release wake lock
+                // 释放唤醒锁
+                wakeLock?.release()
+            }
         }
         
         return super.onStartCommand(intent, flags, startId)
@@ -427,6 +475,11 @@ class PlayService : MediaBrowserServiceCompat(),
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setOngoing(false)
             .build()
+    }
+    
+    override fun onDestroy() {
+        mediaPlayer.release()
+        super.onDestroy()
     }
     
     override fun onCompletion(mp: MediaPlayer?) {

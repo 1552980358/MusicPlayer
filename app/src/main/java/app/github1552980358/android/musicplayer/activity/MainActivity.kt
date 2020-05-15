@@ -141,6 +141,7 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        
         mediaControllerCompat.metadata.apply {
             textViewTitle.text = getString(MediaMetadataCompat.METADATA_KEY_TITLE)
             textViewSubtitle.text = getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
@@ -157,6 +158,7 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
                 
             }
         }
+        
     }
     
     override fun onBackPressed() {

@@ -36,8 +36,7 @@ class SplashActivity : AppCompatActivity() {
     private val permissions = arrayOf(
         Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.MODIFY_AUDIO_SETTINGS,
-        Manifest.permission.RECORD_AUDIO
+        Manifest.permission.WAKE_LOCK
     )
     
     @SuppressLint("InlinedApi")
