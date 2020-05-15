@@ -41,7 +41,13 @@ class RecyclerViewAdapter(
 ) :
     RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
     
-    
+    /**
+     * [onCreateViewHolder]
+     * @param parent [ViewGroup]
+     * @param viewType [Int]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             (parent.context.getSystemService(Service.LAYOUT_INFLATER_SERVICE) as LayoutInflater)
@@ -157,7 +163,7 @@ class RecyclerViewAdapter(
                         // 写入
                         outputStream().use { os ->
                             ObjectOutputStream(os).use { oos ->
-                                oos.writeObject(audioDataList)
+                                oos.writeObject(audioDataMap)
                             }
                         }
                     }
@@ -199,20 +205,11 @@ class RecyclerViewAdapter(
      * @since 0.1
      **/
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var textViewNo: TextView
-        var textViewTitle: TextView
-        var textViewSubtitle: TextView
-        var relativeLayoutRoot: RelativeLayout
-        var imageButtonOpts: ImageButton
-        
-        init {
-            textViewNo = view.findViewById(R.id.textViewNo)
-            textViewTitle = view.findViewById(R.id.textViewTitle)
-            textViewSubtitle = view.findViewById(R.id.textViewSubtitle2)
-            relativeLayoutRoot = view.findViewById(R.id.relativeLayoutRoot)
-            imageButtonOpts = view.findViewById(R.id.imageButtonOpts)
-        }
-        
+        var textViewNo: TextView = view.findViewById(R.id.textViewNo)
+        var textViewTitle: TextView = view.findViewById(R.id.textViewTitle)
+        var textViewSubtitle: TextView = view.findViewById(R.id.textViewSubtitle2)
+        var relativeLayoutRoot: RelativeLayout = view.findViewById(R.id.relativeLayoutRoot)
+        var imageButtonOpts: ImageButton = view.findViewById(R.id.imageButtonOpts)
     }
     
     /**
