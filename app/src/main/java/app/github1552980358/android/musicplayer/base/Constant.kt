@@ -13,8 +13,8 @@ class Constant private constructor() {
         const val BackgroundThread = "BackgroundThread"
         
         const val AudioDataDir = "AudioDataDir"
-        const val AudioDataListFile = "AudioDataListFile"
         const val AudioDataMapFile = "AudioDataMapFile"
+        const val AudioDataListFile = "AudioDataListFile"
         const val IgnoredFile = "IgnoredFile"
         const val AlbumColourFile = "AlbumColourFile"
     

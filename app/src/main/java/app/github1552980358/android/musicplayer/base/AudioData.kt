@@ -23,8 +23,8 @@ class AudioData: Serializable {
         @JvmStatic
         var audioDataMap = mutableMapOf<String, AudioData>()
         
-        @JvmStatic
-        var ignoredData = ArrayList<String>()
+        //@JvmStatic
+        //var ignoredData = ArrayList<String>()
         
     }
     

@@ -16,7 +16,6 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDat
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataListFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataMapFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.BackgroundThread
-import app.github1552980358.android.musicplayer.base.Constant.Companion.IgnoredFile
 import app.github1552980358.android.musicplayer.service.PlayService
 import lib.github1552980358.labourforce.LabourForce
 import lib.github1552980358.labourforce.commands.LabourLv
@@ -112,13 +111,14 @@ class SplashActivity : AppCompatActivity() {
                         }
                     }
                     
-                    File(getExternalFilesDir(AudioDataDir), IgnoredFile).apply {
-                        if (!exists())
-                            return@apply
-                        
-                        AudioData.ignoredData = (readLines().toMutableList() as ArrayList<String>)
-                    }
-                    
+                    /**
+                     * File(getExternalFilesDir(AudioDataDir), IgnoredFile).apply {
+                     *    if (!exists())
+                     *        return@apply
+                     *
+                     *    AudioData.ignoredData = (readLines().toMutableList() as ArrayList<String>)
+                     * }
+                    */
                 }
                 
                 override fun workDone(workProduct: MutableMap<String, Any?>?, handler: Handler?) {

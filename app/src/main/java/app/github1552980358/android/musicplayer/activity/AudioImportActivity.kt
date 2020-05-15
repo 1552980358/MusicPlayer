@@ -18,7 +18,6 @@ import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.base.AudioData
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataMap
-import app.github1552980358.android.musicplayer.base.AudioData.Companion.ignoredData
 import app.github1552980358.android.musicplayer.base.Colour
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumColourFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormal
@@ -26,6 +25,7 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDat
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataListFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataMapFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.BackgroundThread
+import app.github1552980358.android.musicplayer.base.Constant.Companion.IgnoredFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.SmallAlbumRound
 import kotlinx.android.synthetic.main.activity_audio_import.imageView
 import kotlinx.android.synthetic.main.activity_audio_import.progressBar
@@ -61,8 +61,18 @@ class AudioImportActivity : AppCompatActivity() {
                 
                 }
                 
+                @Suppress("DuplicatedCode")
                 override fun workContent(workProduct: MutableMap<String, Any?>?, handler: Handler?) {
                     searching = true
+    
+                    var ignoredAudioId = ArrayList<String>()
+                    
+                    File(getExternalFilesDir(AudioDataDir), IgnoredFile).apply {
+                        if (!exists())
+                            return@apply
+    
+                        ignoredAudioId = (readLines().toMutableList() as ArrayList<String>)
+                    }
                     
                     handler?.post {
                         textView.text = String.format(getString(R.string.mediaSearchActivity_searching), 0)
@@ -94,22 +104,27 @@ class AudioImportActivity : AppCompatActivity() {
                             audioDataList.clear()
                             audioDataMap.clear()
                             do {
-                                if (ignoredData
-                                        .contains(
-                                            getString(getColumnIndex(MediaStore.Audio.AudioColumns._ID))
-                                        )
-                                ) {
-                                    continue
-                                }
-                                
-                                audioDataList.add(AudioData().apply {
+                                AudioData().apply {
                                     id = getString(getColumnIndex(MediaStore.Audio.AudioColumns._ID))
                                     title = getString(getColumnIndex(MediaStore.Audio.AudioColumns.TITLE))
                                     artist = getString(getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST))
                                     album = getString(getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM))
                                     duration = getLong(getColumnIndex(MediaStore.Audio.AudioColumns.DURATION))
-                                }.apply { audioDataMap[id] = this })
-            
+                                }.apply {
+                                    audioDataMap[id] = this
+    
+                                    if (ignoredAudioId
+                                            .contains(
+                                                getString(getColumnIndex(MediaStore.Audio.AudioColumns._ID))
+                                            )
+                                    ) {
+                                        @Suppress("LABEL_NAME_CLASH")
+                                        return@apply
+                                    }
+                                    
+                                    audioDataList.add(this)
+                                }
+                                
                             } while (moveToNext())
         
                             close()

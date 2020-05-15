@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.activity.MainActivity
-import app.github1552980358.android.musicplayer.base.AudioData.Companion.ignoredData
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataMap
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataDir
@@ -105,9 +104,9 @@ class RecyclerViewAdapter(
         
         holder.relativeLayoutRoot.setOnClickListener {
             // Remove action
-            // 清楚动作
-            //holder.textViewTitle.ellipsize = TextUtils.TruncateAt.END
-            //holder.textViewTitle.clearFocus()
+            // 清除动作
+            // holder.textViewTitle.ellipsize = TextUtils.TruncateAt.END
+            // holder.textViewTitle.clearFocus()
             
             // Check if collapsing is required
             // 检测是否需要折叠
@@ -136,7 +135,6 @@ class RecyclerViewAdapter(
                     
                     File(mainActivity.getExternalFilesDir(AudioDataDir), IgnoredFile).appendText(audioDataList[position].id + "\n")
                     
-                    ignoredData.add(audioDataList[position].id)
                     audioDataList.removeAt(position)
                     audioDataMap.remove(audioDataList[position].id)
                     File(mainActivity.getExternalFilesDir(AudioDataDir), AudioDataListFile).apply {
