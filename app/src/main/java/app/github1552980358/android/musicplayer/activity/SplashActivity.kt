@@ -87,7 +87,7 @@ class SplashActivity : AppCompatActivity() {
                     Log.e("BGT", "WorkContent")
                     File(getExternalFilesDir(AudioDataDir), AudioDataListFile).apply {
                         if (!exists())
-                            return
+                            return@apply
                         
                         // Import to application
                         // 载入App
@@ -102,7 +102,7 @@ class SplashActivity : AppCompatActivity() {
                     
                     File(getExternalFilesDir(AudioDataDir), AudioDataMapFile).apply {
                         if (!exists())
-                            return
+                            return@apply
     
                         inputStream().use {
                             ObjectInputStream(it).use { ois ->
@@ -114,9 +114,9 @@ class SplashActivity : AppCompatActivity() {
                     
                     File(getExternalFilesDir(AudioDataDir), IgnoredFile).apply {
                         if (!exists())
-                            return
+                            return@apply
                         
-                        AudioData.ignoredData = readLines().toMutableList() as ArrayList<String>
+                        AudioData.ignoredData = (readLines().toMutableList() as ArrayList<String>)
                     }
                     
                 }

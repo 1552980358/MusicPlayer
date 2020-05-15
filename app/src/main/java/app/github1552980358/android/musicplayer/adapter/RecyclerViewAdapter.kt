@@ -133,38 +133,46 @@ class RecyclerViewAdapter(
             PopupMenu(it.context, holder.imageButtonOpts.imageButtonOpts).apply {
                 inflate(R.menu.menu_audio_opt)
                 setOnMenuItemClickListener {
+                    
                     File(mainActivity.getExternalFilesDir(AudioDataDir), IgnoredFile).appendText(audioDataList[position].id + "\n")
+                    
                     ignoredData.add(audioDataList[position].id)
                     audioDataList.removeAt(position)
                     audioDataMap.remove(audioDataList[position].id)
                     File(mainActivity.getExternalFilesDir(AudioDataDir), AudioDataListFile).apply {
-                        if (!exists()) {
-                            createNewFile()
-                        }
-        
-                        writeText("")
+                        //if (!exists()) {
+                        //    createNewFile()
+                        //}
+                        //writeText("")
+                        delete()
+                        createNewFile()
         
                         // Write
                         // 写入
                         outputStream().use { os ->
                             ObjectOutputStream(os).use { oos ->
                                 oos.writeObject(audioDataList)
+                                oos.flush()
                             }
+                            os.flush()
                         }
                     }
                     File(mainActivity.getExternalFilesDir(AudioDataDir), AudioDataMapFile).apply {
-                        if (!exists()) {
-                            createNewFile()
-                        }
-        
-                        writeText("")
+                        //if (!exists()) {
+                        //    createNewFile()
+                        //}
+                        //writeText("")
+                        delete()
+                        createNewFile()
         
                         // Write
                         // 写入
                         outputStream().use { os ->
                             ObjectOutputStream(os).use { oos ->
                                 oos.writeObject(audioDataMap)
+                                oos.flush()
                             }
+                            os.flush()
                         }
                     }
                     return@setOnMenuItemClickListener true

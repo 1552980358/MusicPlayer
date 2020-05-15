@@ -92,6 +92,7 @@ class AudioImportActivity : AppCompatActivity() {
                             }
         
                             audioDataList.clear()
+                            audioDataMap.clear()
                             do {
                                 if (ignoredData
                                         .contains(
@@ -100,7 +101,7 @@ class AudioImportActivity : AppCompatActivity() {
                                 ) {
                                     continue
                                 }
-            
+                                
                                 audioDataList.add(AudioData().apply {
                                     id = getString(getColumnIndex(MediaStore.Audio.AudioColumns._ID))
                                     title = getString(getColumnIndex(MediaStore.Audio.AudioColumns.TITLE))
@@ -121,33 +122,43 @@ class AudioImportActivity : AppCompatActivity() {
                     // Write to storage
                     // 写入存储
                     File(getExternalFilesDir(AudioDataDir), AudioDataListFile).apply {
-                        if (!exists()) {
-                            createNewFile()
+                        //if (!exists()) {
+                        //    createNewFile()
+                        //}
+                        //writeText("")
+                        if (exists()) {
+                            delete()
                         }
-        
-                        writeText("")
+                        createNewFile()
         
                         // Write
                         // 写入
                         outputStream().use { os ->
                             ObjectOutputStream(os).use { oos ->
                                 oos.writeObject(audioDataList)
+                                oos.flush()
                             }
+                            os.flush()
                         }
                     }
                     File(getExternalFilesDir(AudioDataDir), AudioDataMapFile).apply {
-                        if (!exists()) {
-                            createNewFile()
+                        //if (!exists()) {
+                        //    createNewFile()
+                        //}
+                        //writeText("")
+                        if (exists()) {
+                            delete()
                         }
-        
-                        writeText("")
+                        createNewFile()
         
                         // Write
                         // 写入
                         outputStream().use { os ->
                             ObjectOutputStream(os).use { oos ->
                                 oos.writeObject(audioDataMap)
+                                oos.flush()
                             }
+                            os.flush()
                         }
                     }
     
@@ -185,7 +196,9 @@ class AudioImportActivity : AppCompatActivity() {
                                 File(getExternalFilesDir(AlbumColourFile), j.id).outputStream().use { os ->
                                     ObjectOutputStream(os).use { oos ->
                                         oos.writeObject(Colour(backgroundColor, primaryTextColor, secondaryTextColor, isLight))
+                                        oos.flush()
                                     }
+                                    os.flush()
                                 }
                             }
                             
@@ -222,6 +235,7 @@ class AudioImportActivity : AppCompatActivity() {
                                         canvas.drawBitmap(this@run, 0F, 0F, paint)
                                     }
                                 }.compress(Bitmap.CompressFormat.PNG, 100, ros)
+                                ros.flush()
                             }
             
                             File(getExternalFilesDir(AlbumNormal), j.id).outputStream().use { os ->
@@ -233,6 +247,7 @@ class AudioImportActivity : AppCompatActivity() {
                                     },
                                     true
                                 ).compress(Bitmap.CompressFormat.PNG, 100, os)
+                                os.flush()
                             }
             
                         }
