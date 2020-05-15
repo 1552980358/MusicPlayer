@@ -423,9 +423,13 @@ class PlayService : MediaBrowserServiceCompat(),
                 // and throw an uninitialized exception when released by following method
                 // 不使用由MediaPlayer提供创建唤醒锁的setWakeMode()方法, 否则会导致MainActivity重置
                 // 使 mediaControllerCompat 未赋值, 从而抛出异常
-                wakeLock = (getSystemService(Service.POWER_SERVICE) as PowerManager).newWakeLock(PARTIAL_WAKE_LOCK, TAG_WAKE_LOCK)
-                @Suppress("WakelockTimeout")
-                wakeLock!!.acquire()
+                if (wakeLock == null) {
+                    wakeLock = (getSystemService(Service.POWER_SERVICE) as PowerManager).newWakeLock(PARTIAL_WAKE_LOCK, TAG_WAKE_LOCK)
+                }
+                if (!wakeLock!!.isHeld) {
+                    @Suppress("WakelockTimeout")
+                    wakeLock!!.acquire()
+                }
             }
             STOP_FOREGROUND -> {
                 stopForeground(false)
@@ -443,6 +447,7 @@ class PlayService : MediaBrowserServiceCompat(),
                 // Release wake lock
                 // 释放唤醒锁
                 wakeLock?.release()
+                wakeLock = null
             }
         }
         
