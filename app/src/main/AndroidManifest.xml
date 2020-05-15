@@ -20,7 +20,7 @@
         tools:ignore="AllowBackup">
         
         <activity android:name=".activity.SplashActivity"
-            android:theme="@style/AppTheme.NoActionBar.Splash" >
+            android:theme="@style/AppTheme.NoActionBar.SplashActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
