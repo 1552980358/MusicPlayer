@@ -110,6 +110,9 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
         textViewFull.text = getTimeText(intent.getLongExtra("DURATION", 0L))
         seekBar.max = intent.getLongExtra("DURATION", 0L).toInt() / 1000
         
+        imageButtonLast.setOnClickListener { mediaControllerCompat.transportControls.skipToPrevious() }
+        imageButtonNext.setOnClickListener { mediaControllerCompat.transportControls.skipToNext() }
+        
         File(getExternalFilesDir(AlbumNormal), intent.getStringExtra("ID")!!).apply {
             if (!exists()) {
                 imageView.setImageResource(R.drawable.ic_launcher_foreground)
@@ -167,6 +170,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
         imageButtonNext.setOnClickListener {
             mediaControllerCompat.transportControls.skipToNext()
         }
+        
     }
     /**
      * [onResume]
@@ -302,7 +306,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
      **/
     override fun onBackPressed() {
         exit = true
-        setResult(Activity.RESULT_OK)
+        setResult(Activity.RESULT_OK, intent.putExtra("AudioActivity", "Complete"))
         super.onBackPressed()
     }
     
@@ -359,7 +363,8 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
         textViewTitle.setTextColor(titleColour)
         textViewSubtitle1.setTextColor(subtitleColour)
         textViewSubtitle2.setTextColor(subtitleColour)
-        
+    
+        @Suppress("SpellCheckingInspection")
         window.decorView.systemUiVisibility =
             if (isLight) {
                 // On MIUI12, posting [SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR]

@@ -32,6 +32,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.media.MediaBrowserServiceCompat
 import app.github1552980358.android.musicplayer.R
+import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataMap
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormal
 import app.github1552980358.android.musicplayer.base.Constant.Companion.RootId
@@ -83,7 +84,8 @@ class PlayService : MediaBrowserServiceCompat(),
                 or ACTION_PLAY_FROM_MEDIA_ID
                 or ACTION_SKIP_TO_NEXT
                 or ACTION_SKIP_TO_PREVIOUS
-                or ACTION_SKIP_TO_QUEUE_ITEM)
+                or ACTION_SKIP_TO_QUEUE_ITEM
+            )
     
         /**
          * [TAG_WAKE_LOCK]
@@ -91,6 +93,10 @@ class PlayService : MediaBrowserServiceCompat(),
          * @since 0.1
          **/
         private const val TAG_WAKE_LOCK = "PlayService:WakeLock"
+        
+        val playHistory = ArrayList<String>()
+        
+        var currentIndex = -1
     }
     
     /**
@@ -185,6 +191,8 @@ class PlayService : MediaBrowserServiceCompat(),
      **/
     private lateinit var audioFocusChangeListener: AudioManager.OnAudioFocusChangeListener
     
+    private var isForegroundService = false
+    
     /**
      * [onCreate]
      * @author 1552980358
@@ -198,7 +206,9 @@ class PlayService : MediaBrowserServiceCompat(),
         mediaSessionCompatCallback = object : MediaSessionCompat.Callback() {
             
             @Suppress("DuplicatedCode")
+            @Synchronized
             override fun onPlay() {
+                Log.e("MediaSessionCompat", "onPlay")
                 gainAudioFocusRequest(audioManager, audioFocusRequest, audioFocusChangeListener)
                 if (playbackStateCompat.state == STATE_PAUSED) {
                     Log.e("playStateCompat.state", "STATE_PAUSED")
@@ -211,6 +221,9 @@ class PlayService : MediaBrowserServiceCompat(),
                     onPlay(mediaPlayer)
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
                     
+                    if (isForegroundService) {
+                        return
+                    }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         startForegroundService(
                             Intent(this@PlayService, PlayService::class.java)
@@ -235,6 +248,9 @@ class PlayService : MediaBrowserServiceCompat(),
                     onPlay(mediaPlayer)
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
         
+                    if (isForegroundService) {
+                        return
+                    }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         startForegroundService(
                             Intent(this@PlayService, PlayService::class.java)
@@ -259,6 +275,9 @@ class PlayService : MediaBrowserServiceCompat(),
                         .build()
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
     
+                    if (isForegroundService) {
+                        return
+                    }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         startForegroundService(
                             Intent(this@PlayService, PlayService::class.java)
@@ -273,8 +292,10 @@ class PlayService : MediaBrowserServiceCompat(),
                 }
                 
             }
-            
+    
+            @Synchronized
             override fun onPause() {
+                Log.e("MediaSessionCompat", "onPause")
                 abandonAudioFocusRequest(audioManager, audioFocusRequest, audioFocusChangeListener)
                 if (playbackStateCompat.state == STATE_PLAYING) {
                     Log.e("playStateCompat.state", "STATE_PLAYING")
@@ -287,6 +308,9 @@ class PlayService : MediaBrowserServiceCompat(),
                         .build()
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
     
+                    if (!isForegroundService) {
+                        return
+                    }
                     startService(
                         Intent(this@PlayService, PlayService::class.java)
                             .putExtra(START_FLAG, STOP_FOREGROUND)
@@ -295,15 +319,106 @@ class PlayService : MediaBrowserServiceCompat(),
                     return
                 }
             }
-            
-            override fun onSkipToNext() {
-            
-            }
-            
+    
+            @Suppress("DuplicatedCode")
+            @Synchronized
             override fun onSkipToPrevious() {
+                Log.e("MediaSessionCompat", "onSkipToPrevious")
+    
+                if (currentIndex == 0) {
+                    if (playHistory[0] == audioDataList.first().id) {
+                        playHistory.add(0, audioDataList.last().id)
+                    } else {
+                        Log.e("playHistory", playHistory.first())
+                        for ((i, j) in audioDataList.withIndex()) {
+                            if (playHistory[0] != j.id) {
+                                continue
+                            }
+                            
+                            playHistory.add(0, audioDataList[i - 1].id)
+                            break
+                        }
+                        
+                        //playHistory.add(0, audioDataList[audioDataList.indexOf(audioDataMap[playHistory[0]]) - 1].id)
+                    }
+                    playbackStateCompat = PlaybackStateCompat.Builder()
+                        .setActions(playbackStateActions)
+                        .setState(STATE_BUFFERING, 0L, 1F)
+                        .build()
+                    mediaSessionCompat.setPlaybackState(playbackStateCompat)
+                    mediaMetadataCompat = MediaMetadataCompat.Builder()
+                        .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, playHistory[currentIndex])
+                        .putString(MediaMetadataCompat.METADATA_KEY_TITLE, audioDataMap[playHistory[currentIndex]]?.title)
+                        .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, audioDataMap[playHistory[currentIndex]]?.artist)
+                        .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, audioDataMap[playHistory[currentIndex]]?.album)
+                        .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, audioDataMap[playHistory[currentIndex]]?.duration!!)
+                        .build()
+                    mediaSessionCompat.setMetadata(mediaMetadataCompat)
+                    onPlayFromMediaId(this@PlayService, mediaPlayer, this, playHistory[currentIndex])
+                    return
+                }
+                
+                currentIndex--
+                playbackStateCompat = PlaybackStateCompat.Builder()
+                    .setActions(playbackStateActions)
+                    .setState(STATE_BUFFERING, 0L, 1F)
+                    .build()
+                mediaSessionCompat.setPlaybackState(playbackStateCompat)
+                mediaMetadataCompat = MediaMetadataCompat.Builder()
+                    .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, playHistory[currentIndex])
+                    .putString(MediaMetadataCompat.METADATA_KEY_TITLE, audioDataMap[playHistory[currentIndex]]?.title)
+                    .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, audioDataMap[playHistory[currentIndex]]?.artist)
+                    .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, audioDataMap[playHistory[currentIndex]]?.album)
+                    .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, audioDataMap[playHistory[currentIndex]]?.duration!!)
+                    .build()
+                mediaSessionCompat.setMetadata(mediaMetadataCompat)
+                onPlayFromMediaId(this@PlayService, mediaPlayer, this, playHistory[currentIndex])
             }
             
+            @Suppress("DuplicatedCode")
+            @Synchronized
+            override fun onSkipToNext() {
+                Log.e("MediaSessionCompat", "onSkipToNext")
+    
+                if (playHistory.lastIndex != currentIndex) {
+                    currentIndex++
+                    playbackStateCompat = PlaybackStateCompat.Builder()
+                        .setActions(playbackStateActions)
+                        .setState(STATE_BUFFERING, 0L, 1F)
+                        .build()
+                    mediaSessionCompat.setPlaybackState(playbackStateCompat)
+                    mediaMetadataCompat = MediaMetadataCompat.Builder()
+                        .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, playHistory[currentIndex])
+                        .putString(MediaMetadataCompat.METADATA_KEY_TITLE, audioDataMap[playHistory[currentIndex]]?.title)
+                        .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, audioDataMap[playHistory[currentIndex]]?.artist)
+                        .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, audioDataMap[playHistory[currentIndex]]?.album)
+                        .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, audioDataMap[playHistory[currentIndex]]?.duration!!)
+                        .build()
+                    mediaSessionCompat.setMetadata(mediaMetadataCompat)
+                    onPlayFromMediaId(this@PlayService, mediaPlayer, this, playHistory[currentIndex])
+                    return
+                }
+                
+                if (cycleMode == RANDOM_ACCESS) {
+                    onPlayFromMediaId(audioDataList[(0 .. audioDataList.lastIndex).random()].id, null)
+                    return
+                }
+    
+                for ((i, j) in audioDataList.withIndex()) {
+                    if (playHistory[currentIndex] != j.id) {
+                        continue
+                    }
+                    
+                    onPlayFromMediaId(audioDataList[if (i == audioDataList.lastIndex) 0 else i + 1].id, null)
+                    break
+                }
+                
+            }
+    
+            @Synchronized
             override fun onSeekTo(pos: Long) {
+                Log.e("MediaSessionCompat", "onSeekTo")
+                
                 if (playbackStateCompat.state == STATE_PLAYING) {
                     Log.e("playStateCompat.state", "STATE_PLAYING")
                     startTime -= (pos - System.currentTimeMillis() + startTime)
@@ -327,8 +442,11 @@ class PlayService : MediaBrowserServiceCompat(),
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
                 }
             }
-            
+    
+            @Synchronized
             override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
+                Log.e("MediaSessionCompat", "onPlayFromMediaId")
+    
                 playbackStateCompat = PlaybackStateCompat.Builder()
                     .setActions(playbackStateActions)
                     .setState(STATE_BUFFERING, 0L, 1F)
@@ -343,6 +461,8 @@ class PlayService : MediaBrowserServiceCompat(),
                     .build()
                 mediaSessionCompat.setMetadata(mediaMetadataCompat)
                 onPlayFromMediaId(this@PlayService, mediaPlayer, this, mediaId!!)
+                currentIndex++
+                playHistory.add(mediaId)
             }
             
         }
@@ -412,7 +532,7 @@ class PlayService : MediaBrowserServiceCompat(),
         when (intent?.getStringExtra(START_FLAG)) {
             START_FOREGROUND -> {
                 startForeground(this, getNotification())
-                
+                isForegroundService = true
                 /**
                  * // Call to create wake lock prevent stop playing music
                  * // 防止停止播放音乐而创建唤醒锁
@@ -433,6 +553,7 @@ class PlayService : MediaBrowserServiceCompat(),
             }
             STOP_FOREGROUND -> {
                 stopForeground(false)
+                isForegroundService = false
                 /**
                  * // Reflect to private mWakeLock variable of PowerManager.WakeLock instance
                  * //from MediaPlayer to release wake lock and reset it
@@ -446,8 +567,8 @@ class PlayService : MediaBrowserServiceCompat(),
                  **/
                 // Release wake lock
                 // 释放唤醒锁
-                wakeLock?.release()
-                wakeLock = null
+                //wakeLock?.release()
+                //wakeLock = null
             }
         }
         
@@ -492,11 +613,8 @@ class PlayService : MediaBrowserServiceCompat(),
             SINGLE_CYCLE -> {
                 mediaSessionCompatCallback.onPlay()
             }
-            LIST_CYCLE -> {
-            
-            }
-            RANDOM_ACCESS -> {
-            
+            LIST_CYCLE, RANDOM_ACCESS -> {
+                mediaSessionCompatCallback.onSkipToNext()
             }
         }
     }

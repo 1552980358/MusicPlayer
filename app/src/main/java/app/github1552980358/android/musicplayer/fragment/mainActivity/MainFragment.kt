@@ -106,7 +106,7 @@ class MainFragment :
     }
     
     fun updateList() {
-        (recyclerView.adapter!! as RecyclerViewAdapter).updateList()
+        (recyclerView?.adapter as RecyclerViewAdapter?)?.updateList()
     }
     
 }
