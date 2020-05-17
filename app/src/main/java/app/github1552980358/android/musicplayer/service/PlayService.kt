@@ -93,10 +93,22 @@ class PlayService : MediaBrowserServiceCompat(),
          * @since 0.1
          **/
         private const val TAG_WAKE_LOCK = "PlayService:WakeLock"
-        
+    
+        /**
+         * [playHistory]
+         * @author 1552980358
+         * @since 0.1
+         **/
         val playHistory = ArrayList<String>()
-        
+    
+        /**
+         * [currentIndex]
+         * @author 1552980358
+         * @since 0.1
+         **/
         var currentIndex = -1
+        
+        const val CYCLE_MODE = "CYCLE_MODE"
     }
     
     /**
@@ -242,6 +254,7 @@ class PlayService : MediaBrowserServiceCompat(),
                     Log.e("playStateCompat.state", "STATE_PLAYING")
                     playbackStateCompat = PlaybackStateCompat.Builder()
                         .setActions(playbackStateActions)
+                        .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
                         .setState(STATE_PLAYING, 0L, 1F)
                         .build()
                     startTime = System.currentTimeMillis()
@@ -271,6 +284,7 @@ class PlayService : MediaBrowserServiceCompat(),
                     onPlay(mediaPlayer)
                     playbackStateCompat = PlaybackStateCompat.Builder()
                         .setActions(playbackStateActions)
+                        .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
                         .setState(STATE_PLAYING, 0L, 1F)
                         .build()
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
@@ -301,8 +315,8 @@ class PlayService : MediaBrowserServiceCompat(),
                     Log.e("playStateCompat.state", "STATE_PLAYING")
                     pauseTime = System.currentTimeMillis()
                     onPause(mediaPlayer)
-                    playbackStateCompat = PlaybackStateCompat
-                        .Builder()
+                    playbackStateCompat = PlaybackStateCompat.Builder()
+                        .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
                         .setActions(playbackStateActions)
                         .setState(STATE_PAUSED, pauseTime - startTime, 1F)
                         .build()
@@ -361,6 +375,7 @@ class PlayService : MediaBrowserServiceCompat(),
                 currentIndex--
                 playbackStateCompat = PlaybackStateCompat.Builder()
                     .setActions(playbackStateActions)
+                    .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
                     .setState(STATE_BUFFERING, 0L, 1F)
                     .build()
                 mediaSessionCompat.setPlaybackState(playbackStateCompat)
@@ -384,6 +399,7 @@ class PlayService : MediaBrowserServiceCompat(),
                     currentIndex++
                     playbackStateCompat = PlaybackStateCompat.Builder()
                         .setActions(playbackStateActions)
+                        .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
                         .setState(STATE_BUFFERING, 0L, 1F)
                         .build()
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
@@ -425,6 +441,7 @@ class PlayService : MediaBrowserServiceCompat(),
                     onSeekTo(mediaPlayer, pos)
                     playbackStateCompat = PlaybackStateCompat.Builder()
                         .setState(STATE_PLAYING, pos, 1F)
+                        .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
                         .setActions(playbackStateActions)
                         .build()
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
@@ -437,6 +454,7 @@ class PlayService : MediaBrowserServiceCompat(),
                     onSeekTo(mediaPlayer, pos)
                     playbackStateCompat = PlaybackStateCompat.Builder()
                         .setState(STATE_PAUSED, pos, 1F)
+                        .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
                         .setActions(playbackStateActions)
                         .build()
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
@@ -449,6 +467,7 @@ class PlayService : MediaBrowserServiceCompat(),
     
                 playbackStateCompat = PlaybackStateCompat.Builder()
                     .setActions(playbackStateActions)
+                    .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
                     .setState(STATE_BUFFERING, 0L, 1F)
                     .build()
                 mediaSessionCompat.setPlaybackState(playbackStateCompat)
@@ -471,6 +490,7 @@ class PlayService : MediaBrowserServiceCompat(),
             setPlaybackState(
                 PlaybackStateCompat.Builder()
                     .setActions(playbackStateActions)
+                    .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
                     .setState(STATE_NONE, 0, 1F)
                     .build()
             )

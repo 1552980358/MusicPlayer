@@ -29,7 +29,9 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.Backgrou
 import app.github1552980358.android.musicplayer.base.SystemUtil
 import app.github1552980358.android.musicplayer.base.TimeExchange
 import kotlinx.android.synthetic.main.activity_audio.checkBoxPlayPause
+import kotlinx.android.synthetic.main.activity_audio.imageButtonCycle
 import kotlinx.android.synthetic.main.activity_audio.imageButtonLast
+import kotlinx.android.synthetic.main.activity_audio.imageButtonList
 import kotlinx.android.synthetic.main.activity_audio.imageButtonNext
 import kotlinx.android.synthetic.main.activity_audio.imageView
 import kotlinx.android.synthetic.main.activity_audio.linearLayoutRoot
@@ -68,6 +70,11 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
      * @since 0.1
      **/
     private var exit = false
+    
+    /**
+     * [imageButtonCycleColour]
+     **/
+    private var imageButtonCycleColour = -1
     
     /**
      * [onCreate]
@@ -112,6 +119,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
         
         imageButtonLast.setOnClickListener { mediaControllerCompat.transportControls.skipToPrevious() }
         imageButtonNext.setOnClickListener { mediaControllerCompat.transportControls.skipToNext() }
+        imageButtonList.setOnClickListener {  }
         
         File(getExternalFilesDir(AlbumNormal), intent.getStringExtra("ID")!!).apply {
             if (!exists()) {
@@ -162,14 +170,6 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
             }
     
         })
-        
-        imageButtonLast.setOnClickListener {
-            mediaControllerCompat.transportControls.skipToPrevious()
-        }
-        
-        imageButtonNext.setOnClickListener {
-            mediaControllerCompat.transportControls.skipToNext()
-        }
         
     }
     /**
@@ -272,7 +272,8 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
      * @since 0.1
      **/
     override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
-        when (state?.state) {
+        state?:return
+        when (state.state) {
             PlaybackStateCompat.STATE_BUFFERING -> {
                 Log.e("onPlaybackStateChanged", "STATE_BUFFERING")
                 checkBoxPlayPause.isChecked = true
@@ -280,14 +281,29 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
             }
             PlaybackStateCompat.STATE_PLAYING -> {
                 Log.e("onPlaybackStateChanged", "STATE_PLAYING")
-                checkBoxPlayPause.isChecked = true
-                setUpSeekbar()
+                if (!checkBoxPlayPause.isChecked) {
+                    setUpSeekbar()
+                }
             }
             PlaybackStateCompat.STATE_PAUSED -> {
                 Log.e("onPlaybackStateChanged", "STATE_PAUSED")
                 checkBoxPlayPause.isChecked = false
             }
         }
+        
+        when (mediaControllerCompat.playbackState.customActions.first().name) {
+            "SINGLE_CYCLE" -> {
+                imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_single)
+            }
+            "LIST_CYCLE" -> {
+                imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_list)
+            }
+            "RANDOM_ACCESS" -> {
+                imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_random)
+            }
+        }
+    
+        imageButtonCycle.background.setTint(imageButtonCycleColour)
     }
     
     /**
@@ -331,6 +347,21 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
                 seekBar.progress = mediaControllerCompat.playbackState.position.toInt() / 1000
             }
         }
+        
+        when (mediaControllerCompat.playbackState.customActions.first().name) {
+            "SINGLE_CYCLE" -> {
+                imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_single)
+            }
+            "LIST_CYCLE" -> {
+                imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_list)
+            }
+           "RANDOM_ACCESS" -> {
+                imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_random)
+            }
+        }
+    
+        imageButtonCycle.background.setTint(imageButtonCycleColour)
+    
     }
     
     /**
@@ -351,7 +382,10 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
         
         imageButtonLast.background.setTint(titleColour)
         imageButtonNext.background.setTint(titleColour)
+        imageButtonList.background.setTint(titleColour)
+        imageButtonCycle.background.setTint(titleColour)
         checkBoxPlayPause.background.setTint(titleColour)
+        imageButtonCycleColour = titleColour
         
         seekBar.thumb.setTint(titleColour)
         seekBar.progressDrawable.setTint(titleColour)

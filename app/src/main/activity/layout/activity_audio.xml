@@ -61,13 +61,13 @@
             <!-- 控制器 -->
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="130dp"
+                android:layout_height="125dp"
                 android:id="@+id/relativeLayoutBottom"
                 android:layout_alignParentBottom="true">
                 
                 <androidx.appcompat.widget.AppCompatCheckBox
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
                     android:id="@+id/checkBoxPlayPause"
                     android:button="@null"
                     android:background="@drawable/ic_audio_play_pause"
@@ -75,22 +75,43 @@
                     android:layout_margin="10dp"/>
                 
                 <ImageButton
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
                     android:id="@+id/imageButtonLast"
                     android:layout_toStartOf="@id/checkBoxPlayPause"
                     android:background="@drawable/ic_audio_last"
                     android:layout_centerVertical="true"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription"
+                    android:layout_margin="10dp"/>
                 
                 <ImageButton
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
                     android:id="@+id/imageButtonNext"
                     android:layout_toEndOf="@id/checkBoxPlayPause"
                     android:background="@drawable/ic_audio_next"
                     android:layout_centerVertical="true"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription"
+                    android:layout_margin="10dp"/>
+                
+                <ImageButton
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:id="@+id/imageButtonCycle"
+                    android:layout_toStartOf="@id/imageButtonLast"
+                    android:layout_centerVertical="true"
+                    tools:ignore="ContentDescription"
+                    android:layout_margin="10dp"/>
+                
+                <ImageButton
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:id="@+id/imageButtonList"
+                    android:layout_toEndOf="@id/imageButtonNext"
+                    android:background="@drawable/ic_audio_list"
+                    android:layout_centerVertical="true"
+                    tools:ignore="ContentDescription"
+                    android:layout_margin="10dp"/>
                 
             </RelativeLayout>
             

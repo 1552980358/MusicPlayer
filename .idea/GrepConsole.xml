@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GrepConsole">
+    <option name="pinnedGrepConsolesState">
+      <PinnedGrepConsolesState>
+        <option name="map">
+          <map>
+            <entry>
+              <key>
+                <RunConfigurationRef>
+                  <option name="name" value="Logcat" />
+                </RunConfigurationRef>
+              </key>
+              <value>
+                <Pins>
+                  <option name="pins">
+                    <list>
+                      <Pin>
+                        <option name="consoleUUID" value="bcee7d2c-8331-4e78-bb07-577d71fe2a6e" />
+                        <option name="grepModel">
+                          <GrepModel>
+                            <option name="expression" value="&quot;C:\Program Files\JetBrains\IntelliJ IDEA 2019.2.3\jbr\bin\java.exe&quot; &quot;-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2019.2.3\lib\idea_rt.jar=55656:C:\Program Files\JetBrains\IntelliJ IDEA 2019.2.3\bin&quot; -Dfile.encoding=UTF-8 -classpath F:\IoT-RaspberryPi-1552980358\build\classes\kotlin\main;C:\Users\q1552\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib-jdk8\1.3.61\e91d61b7cfd9a45566b580fef18bbd5c32d505b5\kotlin-stdlib-jdk8-1.3.61.jar;C:\Users\q1552\.gradle\caches\modules-2\files-2.1\com.google.code.gson\gson\2.8.6\9180733b7df8542621dc12e21e87557e8c99b8cb\gson-2.8.6.jar;C:\Users\q1552\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib-jdk7\1.3.61\70dffc5f8ac5ea7c34f30deac5b9d8b1d48af066\kotlin-stdlib-jdk7-1.3.61.jar;C:\Users\q1552\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib\1.3.61\4702105e97f7396ae41b113fdbdc180ec1eb1e36\kotlin-stdlib-1.3.61.jar;C:\Users\q1552\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib-common\1.3.61\65abb71d5afb850b68be03987b08e2c864ca3110\kotlin-stdlib-common-1.3.61.jar;C:\Users\q1552\.gradle\caches\modules-2\files-2.1\org.jetbrains\annotations\13.0\919f0dfe192fb4e063e7dacadee7f8bb9a2672a9\annotations-13.0.jar iot.github1552980358.raspberrypi.receiver.EntryKt" />
+                            <option name="unlessExpression" value="" />
+                          </GrepModel>
+                        </option>
+                        <option name="parentConsoleUUID" value="cf906468-c01d-4f3c-b30d-6ace6b5cb75e" />
+                      </Pin>
+                      <Pin>
+                        <option name="consoleUUID" value="6604bcad-e362-46d6-bebd-8775f483a644" />
+                        <option name="grepModel">
+                          <GrepModel>
+                            <option name="expression" value="" />
+                            <option name="unlessExpression" value="" />
+                          </GrepModel>
+                        </option>
+                        <option name="parentConsoleUUID" value="cf906468-c01d-4f3c-b30d-6ace6b5cb75e" />
+                      </Pin>
+                    </list>
+                  </option>
+                </Pins>
+              </value>
+            </entry>
+          </map>
+        </option>
+      </PinnedGrepConsolesState>
+    </option>
+  </component>
+</project>
