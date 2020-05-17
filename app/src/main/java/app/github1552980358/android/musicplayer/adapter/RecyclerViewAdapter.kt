@@ -15,10 +15,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.activity.MainActivity
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
-import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataMap
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataListFile
-import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataMapFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.IgnoredFile
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.view_media_list.view.imageButtonOpts
@@ -134,9 +132,8 @@ class RecyclerViewAdapter(
                 setOnMenuItemClickListener {
                     
                     File(mainActivity.getExternalFilesDir(AudioDataDir), IgnoredFile).appendText(audioDataList[position].id + "\n")
-                    
+
                     audioDataList.removeAt(position)
-                    audioDataMap.remove(audioDataList[position].id)
                     File(mainActivity.getExternalFilesDir(AudioDataDir), AudioDataListFile).apply {
                         //if (!exists()) {
                         //    createNewFile()
@@ -155,24 +152,8 @@ class RecyclerViewAdapter(
                             os.flush()
                         }
                     }
-                    File(mainActivity.getExternalFilesDir(AudioDataDir), AudioDataMapFile).apply {
-                        //if (!exists()) {
-                        //    createNewFile()
-                        //}
-                        //writeText("")
-                        delete()
-                        createNewFile()
-        
-                        // Write
-                        // 写入
-                        outputStream().use { os ->
-                            ObjectOutputStream(os).use { oos ->
-                                oos.writeObject(audioDataMap)
-                                oos.flush()
-                            }
-                            os.flush()
-                        }
-                    }
+
+                    mainActivity.updateList()
                     return@setOnMenuItemClickListener true
                 }
                 show()

@@ -39,6 +39,7 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.RootId
 import app.github1552980358.android.musicplayer.service.CycleMode.LIST_CYCLE
 import app.github1552980358.android.musicplayer.service.CycleMode.RANDOM_ACCESS
 import app.github1552980358.android.musicplayer.service.CycleMode.SINGLE_CYCLE
+import app.github1552980358.android.musicplayer.service.NotificationUtil.Companion.ServiceId
 import java.io.File
 
 /**
@@ -234,6 +235,7 @@ class PlayService : MediaBrowserServiceCompat(),
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
                     
                     if (isForegroundService) {
+                        notificationManagerCompat.notify(ServiceId, getNotification())
                         return
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -262,6 +264,7 @@ class PlayService : MediaBrowserServiceCompat(),
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
         
                     if (isForegroundService) {
+                        notificationManagerCompat.notify(ServiceId, getNotification())
                         return
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -290,6 +293,7 @@ class PlayService : MediaBrowserServiceCompat(),
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
     
                     if (isForegroundService) {
+                        notificationManagerCompat.notify(ServiceId, getNotification())
                         return
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -323,6 +327,7 @@ class PlayService : MediaBrowserServiceCompat(),
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
     
                     if (!isForegroundService) {
+                        notificationManagerCompat.notify(ServiceId, getNotification())
                         return
                     }
                     startService(
@@ -445,6 +450,7 @@ class PlayService : MediaBrowserServiceCompat(),
                         .setActions(playbackStateActions)
                         .build()
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
+                    notificationManagerCompat.notify(ServiceId, getNotification())
                     return
                 }
                 
@@ -458,6 +464,7 @@ class PlayService : MediaBrowserServiceCompat(),
                         .setActions(playbackStateActions)
                         .build()
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
+                    notificationManagerCompat.notify(ServiceId, getNotification())
                 }
             }
     
@@ -479,6 +486,7 @@ class PlayService : MediaBrowserServiceCompat(),
                     .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, audioDataMap[mediaId]?.duration!!)
                     .build()
                 mediaSessionCompat.setMetadata(mediaMetadataCompat)
+                notificationManagerCompat.notify(ServiceId, getNotification())
                 onPlayFromMediaId(this@PlayService, mediaPlayer, this, mediaId!!)
                 currentIndex++
                 playHistory.add(mediaId)

@@ -223,6 +223,15 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
      * @since 0.1
      **/
     override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
+       updateList()
+    }
+
+    /**
+     * [updateList]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    fun updateList() {
         mainFragment.updateList()
     }
     
