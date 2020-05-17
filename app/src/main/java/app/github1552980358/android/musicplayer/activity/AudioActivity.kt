@@ -271,6 +271,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
      * @author 1552980358
      * @since 0.1
      **/
+    @Suppress("DuplicatedCode")
     override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
         state?:return
         when (state.state) {
@@ -290,7 +291,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
                 checkBoxPlayPause.isChecked = false
             }
         }
-        
+
         when (mediaControllerCompat.playbackState.customActions.first().name) {
             "SINGLE_CYCLE" -> {
                 imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_single)
@@ -302,7 +303,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
                 imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_random)
             }
         }
-    
+
         imageButtonCycle.background.setTint(imageButtonCycleColour)
     }
     
@@ -332,6 +333,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
      * @author 1552980358
      * @since 0.1
      **/
+    @Suppress("DuplicatedCode")
     override fun onConnected(mediaControllerCompat: MediaControllerCompat) {
         when (mediaControllerCompat.playbackState.state) {
             PlaybackStateCompat.STATE_BUFFERING -> {
@@ -347,7 +349,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
                 seekBar.progress = mediaControllerCompat.playbackState.position.toInt() / 1000
             }
         }
-        
+
         when (mediaControllerCompat.playbackState.customActions.first().name) {
             "SINGLE_CYCLE" -> {
                 imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_single)
@@ -359,7 +361,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
                 imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_random)
             }
         }
-    
+
         imageButtonCycle.background.setTint(imageButtonCycleColour)
     
     }
