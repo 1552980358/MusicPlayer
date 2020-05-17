@@ -1,6 +1,7 @@
 package app.github1552980358.android.musicplayer.activity
 
 import android.app.Activity
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color.TRANSPARENT
 import android.os.Bundle
@@ -28,6 +29,11 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNor
 import app.github1552980358.android.musicplayer.base.Constant.Companion.BackgroundThread
 import app.github1552980358.android.musicplayer.base.SystemUtil
 import app.github1552980358.android.musicplayer.base.TimeExchange
+import app.github1552980358.android.musicplayer.service.CycleMode.LIST_CYCLE
+import app.github1552980358.android.musicplayer.service.CycleMode.RANDOM_ACCESS
+import app.github1552980358.android.musicplayer.service.CycleMode.SINGLE_CYCLE
+import app.github1552980358.android.musicplayer.service.PlayService
+import app.github1552980358.android.musicplayer.service.PlayService.Companion.START_FLAG
 import kotlinx.android.synthetic.main.activity_audio.checkBoxPlayPause
 import kotlinx.android.synthetic.main.activity_audio.imageButtonCycle
 import kotlinx.android.synthetic.main.activity_audio.imageButtonLast
@@ -73,6 +79,8 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
     
     /**
      * [imageButtonCycleColour]
+     * @author 1552980358
+     * @since 0.1
      **/
     private var imageButtonCycleColour = -1
     
@@ -119,6 +127,19 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
         
         imageButtonLast.setOnClickListener { mediaControllerCompat.transportControls.skipToPrevious() }
         imageButtonNext.setOnClickListener { mediaControllerCompat.transportControls.skipToNext() }
+        imageButtonCycle.setOnClickListener {
+            when (mediaControllerCompat.playbackState.customActions.first().name) {
+                LIST_CYCLE.name -> {
+                    startService(Intent(this, PlayService::class.java).putExtra(START_FLAG, RANDOM_ACCESS.name))
+                }
+                RANDOM_ACCESS.name -> {
+                    startService(Intent(this, PlayService::class.java).putExtra(START_FLAG, SINGLE_CYCLE.name))
+                }
+                SINGLE_CYCLE.name -> {
+                    startService(Intent(this, PlayService::class.java).putExtra(START_FLAG, LIST_CYCLE.name))
+                }
+            }
+        }
         imageButtonList.setOnClickListener {  }
         
         File(getExternalFilesDir(AlbumNormal), intent.getStringExtra("ID")!!).apply {
@@ -293,14 +314,14 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
         }
 
         when (mediaControllerCompat.playbackState.customActions.first().name) {
-            "SINGLE_CYCLE" -> {
-                imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_single)
+            LIST_CYCLE.name -> {
+                imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_cycle)
             }
-            "LIST_CYCLE" -> {
-                imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_list)
-            }
-            "RANDOM_ACCESS" -> {
+            RANDOM_ACCESS.name -> {
                 imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_random)
+            }
+            SINGLE_CYCLE.name -> {
+                imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_single)
             }
         }
 
@@ -351,14 +372,15 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
         }
 
         when (mediaControllerCompat.playbackState.customActions.first().name) {
-            "SINGLE_CYCLE" -> {
-                imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_single)
+            LIST_CYCLE.name -> {
+                imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_cycle)
             }
-            "LIST_CYCLE" -> {
-                imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_list)
-            }
-           "RANDOM_ACCESS" -> {
+            RANDOM_ACCESS.name -> {
                 imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_random)
+
+            }
+            SINGLE_CYCLE.name -> {
+                imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_single)
             }
         }
 

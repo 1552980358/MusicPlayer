@@ -60,7 +60,7 @@ class PlayService : MediaBrowserServiceCompat(),
          * @author 1552980358
          * @since 0.1
          **/
-        private const val START_FLAG = "START_FLAG"
+        const val START_FLAG = "START_FLAG"
         /**
          * [STOP_FOREGROUND]
          * @author 1552980358
@@ -394,12 +394,12 @@ class PlayService : MediaBrowserServiceCompat(),
                 mediaSessionCompat.setMetadata(mediaMetadataCompat)
                 onPlayFromMediaId(this@PlayService, mediaPlayer, this, playHistory[currentIndex])
             }
-            
+
             @Suppress("DuplicatedCode")
             @Synchronized
             override fun onSkipToNext() {
                 Log.e("MediaSessionCompat", "onSkipToNext")
-    
+
                 if (playHistory.lastIndex != currentIndex) {
                     currentIndex++
                     playbackStateCompat = PlaybackStateCompat.Builder()
@@ -419,27 +419,27 @@ class PlayService : MediaBrowserServiceCompat(),
                     onPlayFromMediaId(this@PlayService, mediaPlayer, this, playHistory[currentIndex])
                     return
                 }
-                
+
                 if (cycleMode == RANDOM_ACCESS) {
                     onPlayFromMediaId(audioDataList[(0 .. audioDataList.lastIndex).random()].id, null)
                     return
                 }
-    
+
                 for ((i, j) in audioDataList.withIndex()) {
                     if (playHistory[currentIndex] != j.id) {
                         continue
                     }
-                    
+
                     onPlayFromMediaId(audioDataList[if (i == audioDataList.lastIndex) 0 else i + 1].id, null)
                     break
                 }
-                
+
             }
-    
+
             @Synchronized
             override fun onSeekTo(pos: Long) {
                 Log.e("MediaSessionCompat", "onSeekTo")
-                
+
                 if (playbackStateCompat.state == STATE_PLAYING) {
                     Log.e("playStateCompat.state", "STATE_PLAYING")
                     startTime -= (pos - System.currentTimeMillis() + startTime)
@@ -453,7 +453,7 @@ class PlayService : MediaBrowserServiceCompat(),
                     notificationManagerCompat.notify(ServiceId, getNotification())
                     return
                 }
-                
+
                 if (playbackStateCompat.state == STATE_PAUSED) {
                     Log.e("playStateCompat.state", "STATE_PAUSED")
                     pauseTime += (pos - pauseTime + startTime)
@@ -467,11 +467,11 @@ class PlayService : MediaBrowserServiceCompat(),
                     notificationManagerCompat.notify(ServiceId, getNotification())
                 }
             }
-    
+
             @Synchronized
             override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
                 Log.e("MediaSessionCompat", "onPlayFromMediaId")
-    
+
                 playbackStateCompat = PlaybackStateCompat.Builder()
                     .setActions(playbackStateActions)
                     .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
@@ -491,7 +491,7 @@ class PlayService : MediaBrowserServiceCompat(),
                 currentIndex++
                 playHistory.add(mediaId)
             }
-            
+
         }
         mediaSessionCompat = MediaSessionCompat(this, RootId).apply {
             setCallback(mediaSessionCompatCallback)
@@ -502,25 +502,25 @@ class PlayService : MediaBrowserServiceCompat(),
                     .setState(STATE_NONE, 0, 1F)
                     .build()
             )
-    
+
             isActive = true
         }
         sessionToken = mediaSessionCompat.sessionToken
-        
+
         initialMediaPlayer(mediaPlayer, this)
-        
+
         // Notification
         notificationManagerCompat = createNotificationManager(this)
-        
+
         // Audio Focus
         audioManager = getAudioManager(this)
         audioFocusChangeListener = getOnAudioFocusChangeListener(mediaSessionCompatCallback)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             audioFocusRequest = getAudioFocusRequest(audioFocusChangeListener)
         }
-        
+
     }
-    
+
     /**
      * [onLoadChildren]
      * @param parentId [String]
@@ -533,7 +533,7 @@ class PlayService : MediaBrowserServiceCompat(),
         result.detach()
         result.sendResult(mediaItemList)
     }
-    
+
     /**
      * [onGetRoot]
      * @param clientPackageName [String]
@@ -546,7 +546,7 @@ class PlayService : MediaBrowserServiceCompat(),
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
         return BrowserRoot(RootId, null)//browserRoot
     }
-    
+
     /**
      * [onStartCommand]
      * @param intent [Intent]
@@ -556,7 +556,9 @@ class PlayService : MediaBrowserServiceCompat(),
      * @author 1552980358
      * @since 0.1
      **/
+    @Suppress("DuplicatedCode")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.e("PlayService", "onStartCommand")
         when (intent?.getStringExtra(START_FLAG)) {
             START_FOREGROUND -> {
                 startForeground(this, getNotification())
@@ -595,8 +597,47 @@ class PlayService : MediaBrowserServiceCompat(),
                  **/
                 // Release wake lock
                 // 释放唤醒锁
-                //wakeLock?.release()
-                //wakeLock = null
+                wakeLock?.release()
+                wakeLock = null
+            }
+            LIST_CYCLE.name -> {
+                cycleMode = LIST_CYCLE
+                playbackStateCompat = PlaybackStateCompat.Builder()
+                    .setActions(playbackStateActions)
+                    .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
+                    .setState(playbackStateCompat.state, when (playbackStateCompat.state) {
+                        STATE_PLAYING -> { System.currentTimeMillis() - startTime }
+                        STATE_PAUSED -> { pauseTime - startTime }
+                        STATE_BUFFERING -> { 0L }
+                        else -> { 0L } }, 1F)
+                    .build()
+                mediaSessionCompat.setPlaybackState(playbackStateCompat)
+            }
+            RANDOM_ACCESS.name -> {
+                cycleMode = RANDOM_ACCESS
+                playbackStateCompat = PlaybackStateCompat.Builder()
+                    .setActions(playbackStateActions)
+                    .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
+                    .setState(playbackStateCompat.state, when (playbackStateCompat.state) {
+                        STATE_PLAYING -> { System.currentTimeMillis() - startTime }
+                        STATE_PAUSED -> { pauseTime - startTime }
+                        STATE_BUFFERING -> { 0L }
+                        else -> { 0L } }, 1F)
+                    .build()
+                mediaSessionCompat.setPlaybackState(playbackStateCompat)
+            }
+            SINGLE_CYCLE.name -> {
+                cycleMode = SINGLE_CYCLE
+                playbackStateCompat = PlaybackStateCompat.Builder()
+                    .setActions(playbackStateActions)
+                    .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
+                    .setState(playbackStateCompat.state, when (playbackStateCompat.state) {
+                        STATE_BUFFERING -> { 0L }
+                        STATE_PLAYING -> { System.currentTimeMillis() - startTime }
+                        STATE_PAUSED -> { pauseTime - startTime }
+                        else -> { 0L } }, 1F)
+                    .build()
+                mediaSessionCompat.setPlaybackState(playbackStateCompat)
             }
         }
         

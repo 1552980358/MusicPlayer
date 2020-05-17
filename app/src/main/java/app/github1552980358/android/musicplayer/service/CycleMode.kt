@@ -10,8 +10,8 @@ import java.io.Serializable
  * @time    : 21:59
  **/
 
-enum class CycleMode(@Suppress("UNUSED_PARAMETER") mode: Int): Serializable {
-    LIST_CYCLE(0),
-    SINGLE_CYCLE(1),
-    RANDOM_ACCESS(2)
+enum class CycleMode(@Suppress("UNUSED_PARAMETER") mode: String): Serializable {
+    LIST_CYCLE("LIST_CYCLE"),
+    SINGLE_CYCLE("SINGLE_CYCLE"),
+    RANDOM_ACCESS("RANDOM_ACCESS")
 }
