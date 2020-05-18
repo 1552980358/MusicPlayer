@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.activity.MainActivity
-import app.github1552980358.android.musicplayer.adapter.RecyclerViewAdapter
+import app.github1552980358.android.musicplayer.adapter.MainFragmentRecyclerViewAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.fragment_main.recyclerView
 import kotlinx.android.synthetic.main.fragment_main.swipeRefreshLayout
@@ -91,7 +91,7 @@ class MainFragment :
         }
         
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = RecyclerViewAdapter(
+        recyclerView.adapter = MainFragmentRecyclerViewAdapter(
             bottomSheetBehavior!!, swipeRefreshLayout,
             activity as MainActivity
         )
@@ -106,7 +106,7 @@ class MainFragment :
     }
     
     fun updateList() {
-        (recyclerView?.adapter as RecyclerViewAdapter?)?.updateList()
+        (recyclerView?.adapter as MainFragmentRecyclerViewAdapter?)?.updateList()
     }
     
 }

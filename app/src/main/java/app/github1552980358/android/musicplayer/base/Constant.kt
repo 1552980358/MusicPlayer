@@ -21,7 +21,6 @@ class Constant private constructor() {
         const val RootId = "1552980358"
         
         const val AlbumNormal = "AlbumNormal"
-        
         const val SmallAlbumRound = "SmallAlbumRound"
         
     }

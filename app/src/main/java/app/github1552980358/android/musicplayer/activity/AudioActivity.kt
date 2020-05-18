@@ -29,6 +29,7 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNor
 import app.github1552980358.android.musicplayer.base.Constant.Companion.BackgroundThread
 import app.github1552980358.android.musicplayer.base.SystemUtil
 import app.github1552980358.android.musicplayer.base.TimeExchange
+import app.github1552980358.android.musicplayer.dialog.PlayHistoryDialogFragment
 import app.github1552980358.android.musicplayer.service.CycleMode.LIST_CYCLE
 import app.github1552980358.android.musicplayer.service.CycleMode.RANDOM_ACCESS
 import app.github1552980358.android.musicplayer.service.CycleMode.SINGLE_CYCLE
@@ -140,7 +141,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
                 }
             }
         }
-        imageButtonList.setOnClickListener {  }
+        imageButtonList.setOnClickListener { PlayHistoryDialogFragment.getFragment.showNow(supportFragmentManager) }
         
         File(getExternalFilesDir(AlbumNormal), intent.getStringExtra("ID")!!).apply {
             if (!exists()) {

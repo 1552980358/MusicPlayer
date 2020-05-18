@@ -11,6 +11,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.activity.MainActivity
@@ -24,19 +25,19 @@ import java.io.File
 import java.io.ObjectOutputStream
 
 /**
- * @file    : [RecyclerViewAdapter]
+ * @file    : [MainFragmentRecyclerViewAdapter]
  * @author  : 1552980358
  * @since   : 0.1
  * @date    : 2020/5/10
  * @time    : 13:05
  **/
 
-class RecyclerViewAdapter(
+class MainFragmentRecyclerViewAdapter(
     private val bottomSheetBehavior: BottomSheetBehavior<View>,
     private val swipeRefreshLayout: SwipeRefreshLayout,
     private val mainActivity: MainActivity
 ) :
-    RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
+    Adapter<MainFragmentRecyclerViewAdapter.ViewHolder>() {
     
     /**
      * [onCreateViewHolder]
@@ -186,20 +187,6 @@ class RecyclerViewAdapter(
     }
     
     /**
-     * [ViewHolder]
-     * @param view [View]
-     * @author 1552980358
-     * @since 0.1
-     **/
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var textViewNo: TextView = view.findViewById(R.id.textViewNo)
-        var textViewTitle: TextView = view.findViewById(R.id.textViewTitle)
-        var textViewSubtitle: TextView = view.findViewById(R.id.textViewSubtitle2)
-        var relativeLayoutRoot: RelativeLayout = view.findViewById(R.id.relativeLayoutRoot)
-        var imageButtonOpts: ImageButton = view.findViewById(R.id.imageButtonOpts)
-    }
-    
-    /**
      * [updateList]
      * @author 1552980358
      * @since 0.1
@@ -208,4 +195,19 @@ class RecyclerViewAdapter(
         notifyDataSetChanged()
         swipeRefreshLayout.isRefreshing = false
     }
+    
+    /**
+     * [ViewHolder]
+     * @param view [View]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        var textViewNo: TextView = view.findViewById(R.id.textViewNo)
+        var textViewTitle: TextView = view.findViewById(R.id.textViewTitle)
+        var textViewSubtitle: TextView = view.findViewById(R.id.textViewSubtitle)
+        var relativeLayoutRoot: RelativeLayout = view.findViewById(R.id.relativeLayoutRoot)
+        var imageButtonOpts: ImageButton = view.findViewById(R.id.imageButtonOpts)
+    }
+    
 }

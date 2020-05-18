@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="view_play_history_height">40dp</dimen>
+    <dimen name="view_play_history_textSize">15sp</dimen>
+    <dimen name="view_play_history_text_size">@dimen/view_play_history_height</dimen>
+
+    <dimen name="dialog_play_history_header_height">60dp</dimen>
+    <dimen name="dialog_play_history_root_margins">5dp</dimen>
+    <dimen name="dialog_play_history_title_textSize">15sp</dimen>
+    <dimen name="dialog_play_history_imageView_size">50dp</dimen>
+    <dimen name="dialog_play_history_imageView_margin">5dp</dimen>
+
+</resources>
