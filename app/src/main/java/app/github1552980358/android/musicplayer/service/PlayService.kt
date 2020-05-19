@@ -28,8 +28,6 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.media.MediaBrowserServiceCompat
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
@@ -108,7 +106,12 @@ class PlayService : MediaBrowserServiceCompat(),
          * @since 0.1
          **/
         var currentIndex = -1
-        
+    
+        /**
+         * [CYCLE_MODE]
+         * @author 1552980358
+         * @since 0.1
+         **/
         const val CYCLE_MODE = "CYCLE_MODE"
     }
     
@@ -217,7 +220,12 @@ class PlayService : MediaBrowserServiceCompat(),
         
         // Media Session
         mediaSessionCompatCallback = object : MediaSessionCompat.Callback() {
-            
+    
+            /**
+             * [onPlay]
+             * @author 1552980358
+             * @since 0.1
+             **/
             @Suppress("DuplicatedCode")
             @Synchronized
             override fun onPlay() {
@@ -311,6 +319,11 @@ class PlayService : MediaBrowserServiceCompat(),
                 
             }
     
+            /**
+             * [onPause]
+             * @author 1552980358
+             * @since 0.1
+             **/
             @Synchronized
             override fun onPause() {
                 Log.e("MediaSessionCompat", "onPause")
@@ -339,6 +352,11 @@ class PlayService : MediaBrowserServiceCompat(),
                 }
             }
     
+            /**
+             * [onSkipToPrevious]
+             * @author 1552980358
+             * @since 0.1
+             **/
             @Suppress("DuplicatedCode")
             @Synchronized
             override fun onSkipToPrevious() {
@@ -394,7 +412,12 @@ class PlayService : MediaBrowserServiceCompat(),
                 mediaSessionCompat.setMetadata(mediaMetadataCompat)
                 onPlayFromMediaId(this@PlayService, mediaPlayer, this, playHistory[currentIndex])
             }
-
+    
+            /**
+             * [onSkipToNext]
+             * @author 1552980358
+             * @since 0.1
+             **/
             @Suppress("DuplicatedCode")
             @Synchronized
             override fun onSkipToNext() {
@@ -435,7 +458,12 @@ class PlayService : MediaBrowserServiceCompat(),
                 }
 
             }
-
+    
+            /**
+             * [onSeekTo]
+             * @author 1552980358
+             * @since 0.1
+             **/
             @Synchronized
             override fun onSeekTo(pos: Long) {
                 Log.e("MediaSessionCompat", "onSeekTo")
@@ -467,7 +495,12 @@ class PlayService : MediaBrowserServiceCompat(),
                     notificationManagerCompat.notify(ServiceId, getNotification())
                 }
             }
-
+    
+            /**
+             * [onPlayFromMediaId]
+             * @author 1552980358
+             * @since 0.1
+             **/
             @Synchronized
             override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
                 Log.e("MediaSessionCompat", "onPlayFromMediaId")
@@ -568,11 +601,10 @@ class PlayService : MediaBrowserServiceCompat(),
                  * // 防止停止播放音乐而创建唤醒锁
                  * mediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK)
                  **/
-                // Not to create wake lock through setWakeMode() provided by MediaPlayer
-                // which would cause restart of MainActivity and mediaControllerCompat uninitialized，
-                // and throw an uninitialized exception when released by following method
-                // 不使用由MediaPlayer提供创建唤醒锁的setWakeMode()方法, 否则会导致MainActivity重置
-                // 使 mediaControllerCompat 未赋值, 从而抛出异常
+                // Not to use setWakeMode() method, that can't release wake lock individually
+                // Reflection is also not applied, which is not so efficient as using PowerManager
+                // 不使用setWakeMode()方法, 因为其不能独立释放唤醒锁
+                // 反射也不会使用, 因为其效率不如使用PowerManager的唤醒锁
                 if (wakeLock == null) {
                     wakeLock = (getSystemService(Service.POWER_SERVICE) as PowerManager).newWakeLock(PARTIAL_WAKE_LOCK, TAG_WAKE_LOCK)
                 }
@@ -660,7 +692,7 @@ class PlayService : MediaBrowserServiceCompat(),
                             setLargeIcon(BitmapFactory.decodeStream(`is`))
                         }
                     } else {
-                        setLargeIcon(ContextCompat.getDrawable(this@PlayService, R.drawable.ic_launcher_foreground)?.toBitmap())
+                        setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_launcher_foreground))
                     }
                 }
             }
@@ -674,6 +706,11 @@ class PlayService : MediaBrowserServiceCompat(),
     
     override fun onDestroy() {
         mediaPlayer.release()
+        try {
+            wakeLock?.release()
+        } catch (e: Exception) {
+            //e.printStackTrace()
+        }
         super.onDestroy()
     }
     

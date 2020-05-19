@@ -46,8 +46,19 @@ import java.io.ObjectOutputStream
 
 class AudioImportActivity : AppCompatActivity() {
     
+    /**
+     * [searching]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private var searching = false
     
+    /**
+     * [onCreate]
+     * @param savedInstanceState [Bundle]?
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audio_import)
@@ -295,6 +306,11 @@ class AudioImportActivity : AppCompatActivity() {
         
     }
     
+    /**
+     * [onBackPressed]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onBackPressed() {
         if (!searching)
             super.onBackPressed()

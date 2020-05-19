@@ -16,27 +16,69 @@ import kotlin.collections.ArrayList
 class AudioData: Serializable {
     
     companion object {
-        
+    
+        /**
+         * [audioDataList]
+         * @author 1552980358
+         * @since 0.1
+         **/
         @JvmStatic
         var audioDataList = ArrayList<AudioData>()
-        
+    
+        /**
+         * [audioDataMap]
+         * @author 1552980358
+         * @since 0.1
+         **/
         @JvmStatic
         var audioDataMap = mutableMapOf<String, AudioData>()
         
-        //@JvmStatic
-        //var ignoredData = ArrayList<String>()
-        
     }
     
+    /**
+     * [title]
+     * @author 1552980358
+     * @since 0.1
+     **/
     var title = ""
         set(value) {
             titlePinYin = Pinyin.toPinyin(value, "").toUpperCase(Locale.ROOT)
             field = value
         }
+    
+    /**
+     * [titlePinYin]
+     * @author 1552980358
+     * @since 0.1
+     **/
     var titlePinYin = ""
+    
+    /**
+     * [artist]
+     * @author 1552980358
+     * @since 0.1
+     **/
     var artist = ""
+    
+    /**
+     * [album]
+     * @author 1552980358
+     * @since 0.1
+     **/
     var album = ""
+    
+    /**
+     * [id]
+     * @author 1552980358
+     * @since 0.1
+     **/
     var id = ""
+    
+    /**
+     * [duration]
+     * @author 1552980358
+     * @since 0.1
+     **/
     var duration = 0L
     
 }

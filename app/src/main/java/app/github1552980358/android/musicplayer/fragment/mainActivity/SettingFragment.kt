@@ -22,6 +22,15 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class SettingFragment: PreferenceFragmentCompat() {
     
+    /**
+     * [onCreateView]
+     * @param inflater [LayoutInflater]
+     * @param container [ViewGroup]?
+     * @param savedInstanceState [Bundle]?
+     * @return [View]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return super.onCreateView(inflater, container, savedInstanceState).apply {
             this?:return this
@@ -37,10 +46,15 @@ class SettingFragment: PreferenceFragmentCompat() {
         }
     }
     
+    /**
+     * [onCreatePreferences]
+     * @param savedInstanceState [Bundle]
+     * @param rootKey [String]?
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.fragment_setting)
-    
-        findPreference<PreferenceScreen>("root")
         
         findPreference<Preference>("import_media")?.setOnPreferenceClickListener {
             startActivity(Intent(context, AudioImportActivity::class.java))

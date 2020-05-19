@@ -33,12 +33,23 @@ import java.io.ObjectInputStream
 
 class SplashActivity : AppCompatActivity() {
     
+    /**
+     * [permissions]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private val permissions = arrayOf(
         Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.WAKE_LOCK
     )
     
+    /**
+     * [onCreate]
+     * @param savedInstanceState [Bundle]?
+     * @author 1552980358
+     * @since 0.1
+     **/
     @SuppressLint("InlinedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         
@@ -58,6 +69,14 @@ class SplashActivity : AppCompatActivity() {
         loadMedia()
     }
     
+    /**
+     * [onRequestPermissionsResult]
+     * @param requestCode [Int]
+     * @param permissions [Array]<[String]>
+     * @param grantResults [IntArray]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         for (i in grantResults) {
@@ -69,6 +88,11 @@ class SplashActivity : AppCompatActivity() {
         loadMedia()
     }
     
+    /**
+     * [loadMedia]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private fun loadMedia() {
         LabourForce.onDuty
             .employLabour(BackgroundThread, LabourLv.Mid)
@@ -144,6 +168,11 @@ class SplashActivity : AppCompatActivity() {
         
     }
     
+    /**
+     * [finish]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun finish() {
         super.finish()
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)

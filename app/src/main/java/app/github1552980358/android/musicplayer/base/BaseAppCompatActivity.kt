@@ -66,11 +66,24 @@ abstract class BaseAppCompatActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         
         callback = object : MediaControllerCompat.Callback() {
+    
+            /**
+             * [onMetadataChanged]
+             * @param metadata [MediaMetadataCompat]?
+             * @author 1552980358
+             * @since 0.1
+             **/
             override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
                 Log.e("MediaControllerCallback", "onMetadataChanged")
                 this@BaseAppCompatActivity.onMetadataChanged(metadata)
             }
-        
+    
+            /**
+             * [onPlaybackStateChanged]
+             * @param state [PlaybackStateCompat]?
+             * @author 1552980358
+             * @since 0.1
+             **/
             override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
                 Log.e("MediaControllerCallback", "onPlaybackStateChanged")
                 this@BaseAppCompatActivity.onPlaybackStateChanged(state)
@@ -78,11 +91,21 @@ abstract class BaseAppCompatActivity: AppCompatActivity() {
         }
     
         connectionCallback = object : MediaBrowserCompat.ConnectionCallback() {
-        
+    
+            /**
+             * [onConnectionSuspended]
+             * @author 1552980358
+             * @since 0.1
+             **/
             override fun onConnectionSuspended() {
                 Log.e("ConnectionCallback", "onConnectionSuspended")
             }
-        
+    
+            /**
+             * [onConnected]
+             * @author 1552980358
+             * @since 0.1
+             **/
             override fun onConnected() {
                 Log.e("ConnectionCallback", "onConnected")
                 if (mediaBrowserCompat.isConnected) {
@@ -100,7 +123,12 @@ abstract class BaseAppCompatActivity: AppCompatActivity() {
                 }
                 
             }
-        
+    
+            /**
+             * [onConnectionFailed]
+             * @author 1552980358
+             * @since 0.1
+             **/
             override fun onConnectionFailed() {
                 Log.e("connectionCallback", "onConnectionFailed")
             }
@@ -108,20 +136,42 @@ abstract class BaseAppCompatActivity: AppCompatActivity() {
         }
     
         subscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
+            
+            /**
+             * [onChildrenLoaded]
+             * @param parentId [String]
+             * @param children [MutableList]<[MediaBrowserCompat.MediaItem]>
+             * @author 1552980358
+             * @since 0.1
+             **/
             override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
                 Log.e("SubscriptionCallback", "onChildrenLoaded")
                 this@BaseAppCompatActivity.onChildrenLoaded(parentId, children)
             }
-        
+    
+            /**
+             * [onError]
+             * @param parentId [String]
+             * @author 1552980358
+             * @since 0.1
+             **/
             override fun onError(parentId: String) {
                 super.onError(parentId)
                 Log.e("SubscriptionCallback", "onError")
             }
-        
+    
+            /**
+             * [onError]
+             * @param parentId [String]
+             * @param options [Bundle]
+             * @author 1552980358
+             * @since 0.1
+             **/
             override fun onError(parentId: String, options: Bundle) {
                 super.onError(parentId, options)
                 Log.e("SubscriptionCallback", "onError")
             }
+            
         }
     
         mediaBrowserCompat = MediaBrowserCompat(

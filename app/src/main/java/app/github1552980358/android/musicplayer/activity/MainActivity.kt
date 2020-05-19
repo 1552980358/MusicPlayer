@@ -46,6 +46,8 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
      **/
     private lateinit var mainFragment: MainFragment
     
+    lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+    
     /**
      * [onCreate]
      * @param savedInstanceState [Bundle]?
@@ -60,9 +62,7 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
         setSupportActionBar(toolbar)
         
         @Suppress("UNCHECKED_CAST")
-        val bottomSheetBehavior = BottomSheetBehavior.from(cardView) as BottomSheetBehavior<View>
-    
-        MainFragment.bottomSheetBehavior = bottomSheetBehavior
+        bottomSheetBehavior = BottomSheetBehavior.from(cardView) as BottomSheetBehavior<View>
         
         // UI
         viewPager.apply {
@@ -138,6 +138,8 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
     
     /**
      * [onActivityResult]
+     * @author 1552980358
+     * @since 0.1
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -165,6 +167,11 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
         
     }
     
+    /**
+     * [onBackPressed]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onBackPressed() {
         startActivity(
             Intent().apply {

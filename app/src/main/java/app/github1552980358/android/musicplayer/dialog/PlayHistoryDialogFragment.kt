@@ -34,13 +34,27 @@ class PlayHistoryDialogFragment: BottomSheetDialogFragment() {
     companion object {
         /**
          * [TAG]
-         **/
+         * @author 1552980358
+         * @since 0.1
+         */
         const val TAG = "PlayHistoryDialogFragment"
-        
+    
+        /**
+         * [getFragment]
+         * @author 1552980358
+         * @since 0.1
+         */
         val getFragment = PlayHistoryDialogFragment()
 
     }
-
+    
+    /**
+     * [onCreateDialog]
+     * @param savedInstanceState [Bundle]?
+     * @return [Dialog]
+     * @author 1552980358
+     * @since 0.1
+     */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
             setContentView(R.layout.dialog_play_history)
@@ -66,7 +80,13 @@ class PlayHistoryDialogFragment: BottomSheetDialogFragment() {
             }
         }
     }
-
+    
+    /**
+     * [showNow]
+     * @param manager [FragmentManager]
+     * @author 1552980358
+     * @since 0.1
+     */
     fun showNow(manager: FragmentManager) {
         this.show(manager, TAG)
     }

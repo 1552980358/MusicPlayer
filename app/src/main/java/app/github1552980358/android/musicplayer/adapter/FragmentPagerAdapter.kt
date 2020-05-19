@@ -15,10 +15,23 @@ import androidx.fragment.app.FragmentPagerAdapter
 class FragmentPagerAdapter(fm: FragmentManager, private val fragments: ArrayList<Fragment>):
     FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     
+    /**
+     * [getItem]
+     * @param position [Int]
+     * @return [Fragment]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun getItem(position: Int): Fragment {
         return fragments[position]
     }
     
+    /**
+     * [getCount]
+     * @return [Int]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun getCount(): Int {
         return fragments.size
     }
