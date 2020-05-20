@@ -32,7 +32,7 @@ import androidx.media.MediaBrowserServiceCompat
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataMap
-import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormal
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormalDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.RootId
 import app.github1552980358.android.musicplayer.service.CycleMode.LIST_CYCLE
 import app.github1552980358.android.musicplayer.service.CycleMode.RANDOM_ACCESS
@@ -686,7 +686,7 @@ class PlayService : MediaBrowserServiceCompat(),
         return NotificationCompat.Builder(this, NotificationUtil.ChannelId)
             .setStyle(androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(mediaSessionCompat.sessionToken))
             .apply {
-                File(getExternalFilesDir(AlbumNormal), mediaMetadataCompat.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)).apply {
+                File(getExternalFilesDir(AlbumNormalDir), mediaMetadataCompat.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)).apply {
                     if (exists()) {
                         inputStream().use { `is` ->
                             setLargeIcon(BitmapFactory.decodeStream(`is`))

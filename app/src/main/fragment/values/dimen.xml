@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <dimen name="view_media_list_height">60dp</dimen>
     <dimen name="view_media_list_num_width">40dp</dimen>
     <dimen name="view_media_list_button_padding">10dp</dimen>
     <dimen name="recyclerView_media_list_textSize">15sp</dimen>
+
+    <dimen name="mainFragment_button_height">50dp</dimen>
+    <dimen name="mainFragment_button_margin_bottom">10dp</dimen>
+    <dimen name="mainFragment_button_imageView_size">30dp</dimen>
+    <dimen name="mainFragment_button_textSize">15sp</dimen>
+    <dimen name="mainFragment_button_imageView_margin">5dp</dimen>
+    <dimen name="mainFragment_title_paddings">5dp</dimen>
 
 </resources>

@@ -43,31 +43,43 @@ class Constant private constructor() {
          **/
         const val IgnoredFile = "IgnoredFile"
         /**
-         * [AlbumColourFile]
+         * [SongListFile]
          * @author 1552980358
          * @since 0.1
          **/
-        const val AlbumColourFile = "AlbumColourFile"
-    
+        const val SongListFile = "SongListFile"
+
         /**
          * [RootId]
          * @author 1552980358
          * @since 0.1
          **/
         const val RootId = "1552980358"
-    
+
         /**
-         * [AlbumNormal]
+         * [AlbumNormalDir]
          * @author 1552980358
          * @since 0.1
          **/
-        const val AlbumNormal = "AlbumNormal"
+        const val AlbumNormalDir = "AlbumNormalDir"
         /**
-         * [SmallAlbumRound]
+         * [AlbumRoundDir]
          * @author 1552980358
          * @since 0.1
          **/
-        const val SmallAlbumRound = "SmallAlbumRound"
+        const val AlbumRoundDir = "AlbumRoundDir"
+        /**
+         * [AlbumColourDir]
+         * @author 1552980358
+         * @since 0.1
+         **/
+        const val AlbumColourDir = "AlbumColourDir"
+        /**
+         * [SongListDir]
+         * @author 1552980358
+         * @since 0.1
+         **/
+        const val SongListDir = "SongListDir"
         
     }
 }

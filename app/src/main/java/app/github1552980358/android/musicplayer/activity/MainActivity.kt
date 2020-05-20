@@ -14,8 +14,9 @@ import androidx.core.app.ActivityOptionsCompat
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.adapter.FragmentPagerAdapter
 import app.github1552980358.android.musicplayer.base.BaseAppCompatActivity
-import app.github1552980358.android.musicplayer.base.Constant.Companion.SmallAlbumRound
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumRoundDir
 import app.github1552980358.android.musicplayer.base.SystemUtil
+import app.github1552980358.android.musicplayer.fragment.mainActivity.ListFragment
 import app.github1552980358.android.musicplayer.fragment.mainActivity.MainFragment
 import app.github1552980358.android.musicplayer.fragment.mainActivity.SettingFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -40,12 +41,17 @@ import java.io.File
 class MainActivity : BaseAppCompatActivity(), SystemUtil {
     
     /**
-     * [mainFragment] <[MainFragment]>
+     * [listFragment] <[ListFragment]>
      * @author 1552980358
      * @since 0.1
      **/
-    private lateinit var mainFragment: MainFragment
+    private lateinit var listFragment: ListFragment
     
+    /**
+     * [bottomSheetBehavior]
+     * @author 1552980358
+     * @since 0.1
+     **/
     lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     
     /**
@@ -68,8 +74,9 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
         viewPager.apply {
             adapter = FragmentPagerAdapter(
                 supportFragmentManager,
-                arrayListOf(MainFragment().apply { mainFragment = this }, SettingFragment())
+                arrayListOf(ListFragment().apply { listFragment = this }, MainFragment(), SettingFragment())
             )
+            currentItem = 1
             setOnScrollChangeListener { _, _, _, _, _ ->
                 if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
                     bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -78,8 +85,9 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
         
         tabLayout.apply {
             setupWithViewPager(viewPager)
-            getTabAt(0)!!.setIcon(R.drawable.ic_tab_music)
-            getTabAt(1)!!.setIcon(R.drawable.ic_tab_setting)
+            getTabAt(0)?.setIcon(R.drawable.ic_tab_music)
+            getTabAt(1)?.setIcon(R.drawable.ic_tab_list)
+            getTabAt(2)?.setIcon(R.drawable.ic_tab_setting)
         }
     
         linearLayoutBottom.setOnClickListener {
@@ -114,6 +122,7 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
         }
         
         imageView.setImageResource(R.drawable.ic_launcher_foreground)
+        
     }
     
     /**
@@ -152,7 +161,7 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
             textViewTitle.text = getString(MediaMetadataCompat.METADATA_KEY_TITLE)
             textViewSubtitle.text = getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
     
-            File(getExternalFilesDir(SmallAlbumRound), getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)).apply {
+            File(getExternalFilesDir(AlbumRoundDir), getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)).apply {
                 if (!exists()) {
                     imageView.setImageResource(R.drawable.ic_launcher_foreground)
                     return
@@ -192,7 +201,7 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
         textViewTitle.text = metadata!!.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
         textViewSubtitle.text = metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
         
-        File(getExternalFilesDir(SmallAlbumRound), metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)).apply {
+        File(getExternalFilesDir(AlbumRoundDir), metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)).apply {
             if (!exists()) {
                 imageView.setImageResource(R.drawable.ic_launcher_foreground)
                 return
@@ -239,7 +248,7 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
      * @since 0.1
      **/
     fun updateList() {
-        mainFragment.updateList()
+        listFragment.updateList()
     }
     
     /**

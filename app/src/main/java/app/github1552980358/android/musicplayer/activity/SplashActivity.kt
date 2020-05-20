@@ -16,6 +16,8 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDat
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataListFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataMapFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.BackgroundThread
+import app.github1552980358.android.musicplayer.base.Constant.Companion.SongListFile
+import app.github1552980358.android.musicplayer.base.SongList
 import app.github1552980358.android.musicplayer.service.PlayService
 import lib.github1552980358.labourforce.LabourForce
 import lib.github1552980358.labourforce.commands.LabourLv
@@ -32,7 +34,7 @@ import java.io.ObjectInputStream
  **/
 
 class SplashActivity : AppCompatActivity() {
-    
+
     /**
      * [permissions]
      * @author 1552980358
@@ -43,7 +45,7 @@ class SplashActivity : AppCompatActivity() {
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.WAKE_LOCK
     )
-    
+
     /**
      * [onCreate]
      * @param savedInstanceState [Bundle]?
@@ -52,23 +54,23 @@ class SplashActivity : AppCompatActivity() {
      **/
     @SuppressLint("InlinedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
-        
+
         super.onCreate(savedInstanceState)
         Log.e("SplashActivity", "onCreate")
         setContentView(R.layout.activity_splash)
-    
+
         startService(Intent(this, PlayService::class.java))
-        
+
         for (i in permissions) {
             if (ContextCompat.checkSelfPermission(this, i) == PackageManager.PERMISSION_GRANTED)
                 continue
             ActivityCompat.requestPermissions(this, permissions, 0)
             return
         }
-        
+
         loadMedia()
     }
-    
+
     /**
      * [onRequestPermissionsResult]
      * @param requestCode [Int]
@@ -87,7 +89,7 @@ class SplashActivity : AppCompatActivity() {
         }
         loadMedia()
     }
-    
+
     /**
      * [loadMedia]
      * @author 1552980358
@@ -104,36 +106,49 @@ class SplashActivity : AppCompatActivity() {
                         finish()
                     }
                 }
-                
+
                 override fun workContent(workProduct: MutableMap<String, Any?>?, handler: Handler?) {
                     Log.e("BGT", "WorkContent")
                     File(getExternalFilesDir(AudioDataDir), AudioDataListFile).apply {
                         if (!exists())
                             return@apply
-                        
+
                         // Import to application
                         // 载入App
-                        inputStream().use {
-                            ObjectInputStream(it).use { ois ->
+                        inputStream().use {`is` ->
+                            ObjectInputStream(`is`).use { ois ->
                                 @Suppress("UNCHECKED_CAST")
                                 AudioData.audioDataList = ois.readObject() as ArrayList<AudioData>
                             }
                         }
-                        
+
                     }
-                    
+
                     File(getExternalFilesDir(AudioDataDir), AudioDataMapFile).apply {
                         if (!exists())
                             return@apply
-    
-                        inputStream().use {
-                            ObjectInputStream(it).use { ois ->
+
+                        inputStream().use {`is` ->
+                            ObjectInputStream(`is`).use { ois ->
                                 @Suppress("UNCHECKED_CAST")
                                 AudioData.audioDataMap = (ois.readObject() as MutableMap<String, AudioData>)
                             }
                         }
                     }
-                    
+
+                    File(getExternalFilesDir(AudioDataDir), SongListFile).apply {
+                        if (!exists())
+                            return@apply
+
+                        inputStream().use { `is` ->
+                            ObjectInputStream(`is`).use { ois ->
+                                @Suppress("UNCHECKED_CAST")
+                                SongList.songListInfoList =
+                                    (ois.readObject() as ArrayList<SongList.Companion.SongListInfo>)
+                            }
+                        }
+                    }
+
                     /**
                      * File(getExternalFilesDir(AudioDataDir), IgnoredFile).apply {
                      *    if (!exists())
@@ -143,31 +158,31 @@ class SplashActivity : AppCompatActivity() {
                      * }
                     */
                 }
-                
+
                 override fun workDone(workProduct: MutableMap<String, Any?>?, handler: Handler?) {
                     Log.e("BGT", "WorkDone")
-                    
+
                     handler!!.post {
                         //startService(Intent(this@SplashActivity, PlayService::class.java))
                         startActivity(Intent(this@SplashActivity, MainActivity::class.java))
                         finish()
                     }
                 }
-                
+
                 override fun workFail(e: Exception, workProduct: MutableMap<String, Any?>?, handler: Handler?) {
                     Log.e("BGT", "WorkDone")
-                    
+
                     handler!!.post {
                         //startService(Intent(this@SplashActivity, PlayService::class.java))
                         startActivity(Intent(this@SplashActivity, MainActivity::class.java))
                         finish()
                     }
                 }
-                
+
             })
-        
+
     }
-    
+
     /**
      * [finish]
      * @author 1552980358
@@ -177,5 +192,5 @@ class SplashActivity : AppCompatActivity() {
         super.finish()
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
-    
+
 }

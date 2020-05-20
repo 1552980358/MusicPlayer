@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    
     <string name="settingFragment_importMusic_title">Import audio</string>
+
     <string name="mainFragment_audio_menu_ignore">Ignore</string>
+    <string name="mainFragment_button_audio">All audio</string>
+    <string name="mainFragment_button_settings">Settings</string>
+    <string name="mainFragment_textView_title">Song List</string>
+    <string name="mainFragment_textView_addNew">Add a new &#62;</string>
+    
 </resources>

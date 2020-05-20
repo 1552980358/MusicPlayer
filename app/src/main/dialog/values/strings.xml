@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="createSongListDialog_title">Create song list</string>
+    <string name="createSongListDialog_editText_hint">Input song list title</string>
+    <string name="createSongListDialog_submit">Submit</string>
+    <string name="createSongListDialog_cancel">Cancel</string>
+    
+</resources>

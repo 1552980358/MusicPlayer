@@ -25,19 +25,19 @@ import java.io.File
 import java.io.ObjectOutputStream
 
 /**
- * @file    : [MainFragmentRecyclerViewAdapter]
+ * @file    : [ListFragmentRecyclerViewAdapter]
  * @author  : 1552980358
  * @since   : 0.1
  * @date    : 2020/5/10
  * @time    : 13:05
  **/
 
-class MainFragmentRecyclerViewAdapter(
+class ListFragmentRecyclerViewAdapter(
     private val bottomSheetBehavior: BottomSheetBehavior<View>,
     private val swipeRefreshLayout: SwipeRefreshLayout,
     private val mainActivity: MainActivity
 ) :
-    Adapter<MainFragmentRecyclerViewAdapter.ViewHolder>() {
+    Adapter<ListFragmentRecyclerViewAdapter.ViewHolder>() {
     
     /**
      * [onCreateViewHolder]

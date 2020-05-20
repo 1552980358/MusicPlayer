@@ -24,8 +24,8 @@ import android.widget.SeekBar
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.base.BaseAppCompatActivity
 import app.github1552980358.android.musicplayer.base.Colour
-import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumColourFile
-import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormal
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumColourDir
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormalDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.BackgroundThread
 import app.github1552980358.android.musicplayer.base.SystemUtil
 import app.github1552980358.android.musicplayer.base.TimeExchange
@@ -143,7 +143,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
         }
         imageButtonList.setOnClickListener { PlayHistoryDialogFragment.getFragment.showNow(supportFragmentManager) }
         
-        File(getExternalFilesDir(AlbumNormal), intent.getStringExtra("ID")!!).apply {
+        File(getExternalFilesDir(AlbumNormalDir), intent.getStringExtra("ID")!!).apply {
             if (!exists()) {
                 imageView.setImageResource(R.drawable.ic_launcher_foreground)
                 return@apply
@@ -155,7 +155,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
         }
         
         @Suppress("DuplicatedCode")
-        File(getExternalFilesDir(AlbumColourFile), intent.getStringExtra("ID")!!).apply {
+        File(getExternalFilesDir(AlbumColourDir), intent.getStringExtra("ID")!!).apply {
             
             if (!exists()) {
                 updateLayoutColours()
@@ -218,7 +218,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
         seekBar.max = metadata?.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)!!.toInt() / 1000
         
         File(
-            getExternalFilesDir(AlbumNormal),
+            getExternalFilesDir(AlbumNormalDir),
             metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
         ).apply {
     
@@ -234,7 +234,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
     
         @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "DuplicatedCode")
         File(
-            getExternalFilesDir(AlbumColourFile),
+            getExternalFilesDir(AlbumColourDir),
             metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
         ).apply {
             

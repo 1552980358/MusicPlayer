@@ -35,19 +35,13 @@
             </androidx.appcompat.widget.Toolbar>
         
         </com.google.android.material.appbar.AppBarLayout>
-        
-        <LinearLayout
+            
+        <androidx.viewpager.widget.ViewPager
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-            
-            <androidx.viewpager.widget.ViewPager
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/viewPager" />
-            
-        </LinearLayout>
-    
+            android:id="@+id/viewPager"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
         <include layout="@layout/activity_main_bottomsheet" />
         
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

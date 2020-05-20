@@ -10,8 +10,8 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/dialog_play_history_root_margins"
-        android:layout_marginEnd="@dimen/dialog_play_history_root_margins">
+        android:layout_marginStart="@dimen/playHistoryDialog_root_margins"
+        android:layout_marginEnd="@dimen/playHistoryDialog_root_margins">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -20,14 +20,14 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dialog_play_history_header_height"
+                android:layout_height="@dimen/playHistoryDialog_header_height"
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="@dimen/dialog_play_history_imageView_size"
-                    android:layout_height="@dimen/dialog_play_history_imageView_size"
+                    android:layout_width="@dimen/playHistoryDialog_imageView_size"
+                    android:layout_height="@dimen/playHistoryDialog_imageView_size"
                     android:id="@+id/imageView"
-                    android:layout_margin="@dimen/dialog_play_history_imageView_margin"
+                    android:layout_margin="@dimen/playHistoryDialog_imageView_margin"
                     tools:ignore="ContentDescription" />
 
                 <LinearLayout
@@ -41,7 +41,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/textViewTitle"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/dialog_play_history_title_textSize" />
+                        android:textSize="@dimen/playHistoryDialog_title_textSize" />
 
                     <TextView
                         android:layout_width="match_parent"

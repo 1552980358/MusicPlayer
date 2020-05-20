@@ -1,22 +1,18 @@
 package app.github1552980358.android.musicplayer.dialog
 
 import android.app.Dialog
-import android.content.DialogInterface
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
-import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.activity.AudioActivity
 import app.github1552980358.android.musicplayer.adapter.PlayHistoryDialogRecyclerViewAdapter
-import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormal
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormalDir
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.dialog_play_history.*
 import java.io.File
@@ -68,7 +64,7 @@ class PlayHistoryDialogFragment: BottomSheetDialogFragment() {
             
             textViewTitle.text = (activity as AudioActivity).mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
             textViewSubtitle.text = (activity as AudioActivity).mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
-            File(context.getExternalFilesDir(AlbumNormal), (activity as AudioActivity).mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)).apply {
+            File(context.getExternalFilesDir(AlbumNormalDir), (activity as AudioActivity).mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)).apply {
                 @Suppress("LABEL_NAME_CLASH")
                 if (!exists()) {
                     imageView.setImageResource(R.drawable.ic_launcher_foreground)

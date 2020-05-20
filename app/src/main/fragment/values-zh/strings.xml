@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="settingFragment_importMusic_title">载入音频</string>
+
     <string name="mainFragment_audio_menu_ignore">忽略</string>
+    <string name="mainFragment_button_audio">全部音频</string>
+    <string name="mainFragment_button_settings">设置</string>
+    <string name="mainFragment_textView_title">歌单</string>
+    <string name="mainFragment_textView_addNew">添加歌单 &#62;</string>
+
 </resources>

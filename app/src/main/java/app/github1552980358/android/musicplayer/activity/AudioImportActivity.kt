@@ -19,14 +19,14 @@ import app.github1552980358.android.musicplayer.base.AudioData
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataMap
 import app.github1552980358.android.musicplayer.base.Colour
-import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumColourFile
-import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormal
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumColourDir
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormalDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataListFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataMapFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.BackgroundThread
 import app.github1552980358.android.musicplayer.base.Constant.Companion.IgnoredFile
-import app.github1552980358.android.musicplayer.base.Constant.Companion.SmallAlbumRound
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumRoundDir
 import kotlinx.android.synthetic.main.activity_audio_import.imageView
 import kotlinx.android.synthetic.main.activity_audio_import.progressBar
 import kotlinx.android.synthetic.main.activity_audio_import.textView
@@ -219,7 +219,7 @@ class AudioImportActivity : AppCompatActivity() {
                             // [https://github.com/mkaflowski/Media-Style-Palette/]
                             // com.github.mkaflowski:Media-Style-Palette:1.3
                             MediaNotificationProcessor(this@AudioImportActivity, this).apply {
-                                File(getExternalFilesDir(AlbumColourFile), j.id).outputStream().use { os ->
+                                File(getExternalFilesDir(AlbumColourDir), j.id).outputStream().use { os ->
                                     ObjectOutputStream(os).use { oos ->
                                         oos.writeObject(Colour(backgroundColor, primaryTextColor, secondaryTextColor, isLight))
                                         oos.flush()
@@ -243,7 +243,7 @@ class AudioImportActivity : AppCompatActivity() {
                             // Extension is not given,
                             // prevent being scanned by system media
                             // 不添加后缀名, 防止被系统相册刷到
-                            File(getExternalFilesDir(SmallAlbumRound), j.id).outputStream().use { ros ->
+                            File(getExternalFilesDir(AlbumRoundDir), j.id).outputStream().use { ros ->
                                 Bitmap.createBitmap(
                                     this, 0, 0, width, width, matrix1.apply {
                                         (smaller / width).apply { setScale(this, this) }
@@ -264,7 +264,7 @@ class AudioImportActivity : AppCompatActivity() {
                                 ros.flush()
                             }
             
-                            File(getExternalFilesDir(AlbumNormal), j.id).outputStream().use { os ->
+                            File(getExternalFilesDir(AlbumNormalDir), j.id).outputStream().use { os ->
                                 Bitmap.createBitmap(
                                     this, 0, 0, width, width, matrix2.apply {
                                         (resources.displayMetrics.widthPixels / width).toFloat().apply {
