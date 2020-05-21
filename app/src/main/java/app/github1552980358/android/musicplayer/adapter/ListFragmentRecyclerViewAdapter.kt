@@ -154,11 +154,11 @@ class ListFragmentRecyclerViewAdapter(
                         }
                     }
 
-                    mainActivity.updateList()
+                    //mainActivity.updateList()
+                    notifyDataSetChanged()
                     return@setOnMenuItemClickListener true
                 }
-                show()
-            }
+            }.show()
         }
         
         /*

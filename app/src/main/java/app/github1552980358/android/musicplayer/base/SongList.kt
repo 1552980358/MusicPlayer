@@ -33,7 +33,11 @@ class SongList: Serializable {
              * [listSize]
              **/
             var listSize = 0
-
+    
+            /**
+             *
+             **/
+            var coverPicture = byteArrayOf()
         }
 
     }
@@ -47,5 +51,10 @@ class SongList: Serializable {
      * [audioList]
      **/
     val audioList = arrayListOf<AudioData>()
-
+    
+    /**
+     *
+     **/
+    var coverPicture = byteArrayOf()
+    
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/ignore"
-        android:title="@string/mainFragment_audio_menu_ignore" />
+        android:id="@+id/menu_ignore"
+        android:title="@string/listFragment_audio_menu_ignore" />
 </menu>

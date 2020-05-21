@@ -3,10 +3,13 @@
 
     <string name="settingFragment_importMusic_title">载入音频</string>
 
-    <string name="mainFragment_audio_menu_ignore">忽略</string>
+    <string name="listFragment_audio_menu_ignore">忽略</string>
+    
     <string name="mainFragment_button_audio">全部音频</string>
     <string name="mainFragment_button_settings">设置</string>
     <string name="mainFragment_textView_title">歌单</string>
     <string name="mainFragment_textView_addNew">添加歌单 &#62;</string>
+    <string name="mainFragment_songList_menu_edit">编辑</string>
+    <string name="mainFragment_songList_menu_delete">删除</string>
 
 </resources>

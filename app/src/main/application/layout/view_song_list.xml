@@ -1,36 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:orientation="horizontal">
+    android:layout_height="@dimen/view_song_list_height"
+    android:id="@+id/relativeLayoutRoot"
+    android:maxHeight="@dimen/view_song_list_height"
+    android:background="?android:attr/selectableItemBackground">
     
     <ImageView
-        android:layout_margin="5dp"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_margin="@dimen/view_song_list_imageView_margin"
+        android:layout_width="@dimen/view_song_list_imageView_size"
+        android:layout_height="@dimen/view_song_list_imageView_size"
+        android:id="@+id/imageViewCover"
         android:src="@drawable/ic_launcher_foreground"
+        tools:ignore="ContentDescription" />
+    
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:padding="@dimen/view_song_list_button_padding"
+        android:id="@+id/imageButtonOpts"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_opts"
+        android:background="?android:attr/selectableItemBackground"
         tools:ignore="ContentDescription" />
     
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_toStartOf="@id/imageButtonOpts"
+        android:layout_toEndOf="@id/imageViewCover">
         
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textViewTitle"
-            android:textSize="15sp"
+            android:maxLines="1"
+            android:textSize="@dimen/view_song_list_textViewTitle_size"
             android:textColor="@color/black" />
         
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textViewSubtitle" />
+            android:id="@+id/textViewSubtitle"
+            android:maxLength="1"/>
     
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>
