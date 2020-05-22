@@ -3,11 +3,25 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/swipeRefreshLayout" >
+    android:id="@+id/swipeRefreshLayout">
     
-    <androidx.recyclerview.widget.RecyclerView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/recyclerView" />
+        android:layout_height="match_parent">
+        
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/recyclerView" />
+    
+        <app.github1552980358.android.musicplayer.view.SideLetterView
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:id="@+id/sideLetterView"
+            android:alpha="0"
+            android:layout_marginBottom="60dp"
+            android:layout_alignParentEnd="true" />
+        
+    </RelativeLayout>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

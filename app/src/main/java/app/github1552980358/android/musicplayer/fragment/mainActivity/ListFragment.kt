@@ -1,18 +1,25 @@
 package app.github1552980358.android.musicplayer.fragment.mainActivity
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.activity.MainActivity
 import app.github1552980358.android.musicplayer.adapter.ListFragmentRecyclerViewAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.android.synthetic.main.fragment_list.recyclerView
-import kotlinx.android.synthetic.main.fragment_list.swipeRefreshLayout
+import kotlinx.android.synthetic.main.fragment_list.*
+import java.util.*
+import kotlin.concurrent.thread
 
 /**
  * @file    : [ListFragment]
@@ -46,56 +53,6 @@ class ListFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        /*
-        listView.apply {
-            setOnScrollListener(object : AbsListView.OnScrollListener{
-                override fun onScroll(
-                    view: AbsListView?,
-                    firstVisibleItem: Int,
-                    visibleItemCount: Int,
-                    totalItemCount: Int
-                ) {
-                    //if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
-                    //   bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                }
-            
-                override fun onScrollStateChanged(view: AbsListView?, scrollState: Int) {
-                }
-            })
-        
-            setOnTouchListener { _, _ ->
-                //if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
-                //    bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                return@setOnTouchListener true
-            }
-        
-        
-            adapter = object : BaseAdapter() {
-                override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-                    return (context.getSystemService(Service.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.view_media_list, parent, false).apply {
-                        view.findViewById<TextView>(R.id.textViewNo)?.text = position.toString()
-                        view.findViewById<TextView>(R.id.textViewTitle)?.text = list[position].title
-                        view.findViewById<TextView>(R.id.textViewSubtitle)?.text = list[position].artist
-                        Log.e("getView", position.toString() + " " + list[position].title + " " + list[position].artist)
-                    }
-                }
-            
-                override fun getItem(position: Int): Any {
-                    return list[position]
-                }
-            
-                override fun getItemId(position: Int): Long {
-                    return position.toLong()
-                }
-            
-                override fun getCount(): Int {
-                    return list.size
-                }
-            
-            }
-        }
-         */
-        
         swipeRefreshLayout.setOnRefreshListener {
             updateList()
         }
@@ -107,9 +64,45 @@ class ListFragment :
         )
         
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            var isScrolling = false
+    
+            val listener = object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    if (!isScrolling) {
+                        sideLetterView.visibility = View.GONE
+                    }
+                }
+            }
+            
+            val timer = Timer()
+            
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if ((activity as MainActivity).bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
                     (activity as MainActivity).bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+    
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                when (newState) {
+                    SCROLL_STATE_DRAGGING -> {
+                        isScrolling = true
+                        if (sideLetterView.alpha != 1F) {
+                            sideLetterView.animate().cancel()
+                            sideLetterView.visibility = View.VISIBLE
+                            sideLetterView.animate().alpha(1F).setDuration(500L).setListener(null)
+                        }
+                    }
+                    SCROLL_STATE_IDLE -> {
+                        isScrolling = false
+                        timer.schedule(object : TimerTask() {
+                            override fun run() {
+                                if (isScrolling) {
+                                    return
+                                }
+                                activity?.runOnUiThread { sideLetterView.animate().alpha(0F).setDuration(1000L).setListener(listener) }
+                            }
+                        }, 1000)
+                    }
+                }
             }
         })
         
