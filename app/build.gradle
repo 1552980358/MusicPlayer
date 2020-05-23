@@ -75,7 +75,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
 
     //noinspection GradleDependency
-    implementation 'com.github.1552980358:labourforce:58b8ad70b6'
+    implementation 'com.github.1552980358:labourforce:0.3'
 
     implementation 'com.github.mkaflowski:Media-Style-Palette:1.3'
 

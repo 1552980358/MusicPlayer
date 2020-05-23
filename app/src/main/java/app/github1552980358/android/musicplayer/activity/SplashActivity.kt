@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -56,7 +55,6 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        Log.e("SplashActivity", "onCreate")
         setContentView(R.layout.activity_splash)
 
         startService(Intent(this, PlayService::class.java))
@@ -108,7 +106,6 @@ class SplashActivity : AppCompatActivity() {
                 }
 
                 override fun workContent(workProduct: MutableMap<String, Any?>?, handler: Handler?) {
-                    Log.e("BGT", "WorkContent")
                     File(getExternalFilesDir(AudioDataDir), AudioDataListFile).apply {
                         if (!exists())
                             return@apply
@@ -160,8 +157,6 @@ class SplashActivity : AppCompatActivity() {
                 }
 
                 override fun workDone(workProduct: MutableMap<String, Any?>?, handler: Handler?) {
-                    Log.e("BGT", "WorkDone")
-
                     handler!!.post {
                         //startService(Intent(this@SplashActivity, PlayService::class.java))
                         startActivity(Intent(this@SplashActivity, MainActivity::class.java))
@@ -170,8 +165,6 @@ class SplashActivity : AppCompatActivity() {
                 }
 
                 override fun workFail(e: Exception, workProduct: MutableMap<String, Any?>?, handler: Handler?) {
-                    Log.e("BGT", "WorkDone")
-
                     handler!!.post {
                         //startService(Intent(this@SplashActivity, PlayService::class.java))
                         startActivity(Intent(this@SplashActivity, MainActivity::class.java))

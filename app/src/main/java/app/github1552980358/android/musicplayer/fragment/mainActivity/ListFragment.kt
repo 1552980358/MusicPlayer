@@ -75,6 +75,7 @@ class ListFragment:
         for (i in 0 .. 26) {
             charTable.add(DEFAULT_VALUE_INT)
         }
+        
         @Suppress("DuplicatedCode")
         for ((i, j) in audioDataList.withIndex()) {
             if (j.titlePinYin.first() in 'A' .. 'Z') {
