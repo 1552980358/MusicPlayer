@@ -8,6 +8,7 @@ import android.graphics.Typeface
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
 import app.github1552980358.android.musicplayer.R
@@ -30,7 +31,7 @@ class SideCharView(context: Context, attributeSet: AttributeSet?): View(context,
          * @author 1552980358
          * @since 0.1
          **/
-        fun interface OnTouchEventListener {
+        interface OnTouchEventListener {
 
             /**
              * [onNewCharSelected]
@@ -40,6 +41,22 @@ class SideCharView(context: Context, attributeSet: AttributeSet?): View(context,
              * @since 0.1
              **/
             fun onNewCharSelected(newChar: Char): Boolean
+    
+            /**
+             * [onMotionDown]
+             * @return [Boolean]
+             * @author 1552980358
+             * @since 0.1
+             **/
+            fun onMotionDown(): Boolean
+    
+            /**
+             * [onMotionUp]
+             * @return [Boolean]
+             * @author 1552980358
+             * @since 0.1
+             **/
+            fun onMotionUp(): Boolean
             
         }
         
@@ -189,13 +206,27 @@ class SideCharView(context: Context, attributeSet: AttributeSet?): View(context,
      **/
     fun setOnTouchListener(listener: OnTouchEventListener) {
         super.setOnTouchListener { _, motionEvent ->
-            Log.e("motionEvent", motionEvent.y.toString())
-            Log.e("motionEvent", blockHeight.toString())
+            
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    listener.onNewCharSelected(
+                        letters[(motionEvent.y / blockHeight).run { if (this <= letters.lastIndex) this else letters.lastIndex }.toInt()]
+                    )
+                    @Suppress("LABEL_NAME_CLASH")
+                    return@setOnTouchListener listener.onMotionDown()
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    listener.onNewCharSelected(
+                        letters[(motionEvent.y / blockHeight).run { if (this <= letters.lastIndex) this else letters.lastIndex }.toInt()]
+                    )
+                    @Suppress("LABEL_NAME_CLASH")
+                    return@setOnTouchListener listener.onMotionUp()
+                }
+            }
+            
             @Suppress("LABEL_NAME_CLASH")
             return@setOnTouchListener listener.onNewCharSelected(
-                letters[(motionEvent.y / blockHeight).run { if (this <= letters.lastIndex) this else letters.lastIndex }.toInt()].apply {
-                    Log.e("motionEvent", this.toString())
-                }
+                letters[(motionEvent.y / blockHeight).run { if (this <= letters.lastIndex) this else letters.lastIndex }.toInt()]
             )
         }
     }

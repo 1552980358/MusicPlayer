@@ -12,10 +12,12 @@ import app.github1552980358.android.musicplayer.activity.MainActivity
 import app.github1552980358.android.musicplayer.adapter.ListFragmentRecyclerViewAdapter
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
 import app.github1552980358.android.musicplayer.base.Constant.Companion.DEFAULT_VALUE_INT
+import app.github1552980358.android.musicplayer.view.SideCharView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.android.synthetic.main.fragment_list.sideCharView
+import kotlinx.android.synthetic.main.fragment_list.textViewChar
 import kotlinx.android.synthetic.main.fragment_list.swipeRefreshLayout
 import kotlinx.android.synthetic.main.fragment_list.recyclerView
+import kotlinx.android.synthetic.main.fragment_list.sideCharView
 
 /**
  * @file    : [ListFragment]
@@ -112,15 +114,49 @@ class ListFragment:
         })
         
         var temp:Int
-        sideCharView.setOnTouchListener { newChar: Char ->
-            temp = newChar.run { if (newChar in 'A' .. 'Z') this.toInt() - 64 else 0 }
-            if (charTable[temp] != DEFAULT_VALUE_INT) {
-                (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(charTable[temp], 0)
-                return@setOnTouchListener true
+        sideCharView.setOnTouchListener(object : SideCharView.Companion.OnTouchEventListener {
+    
+            /**
+             * [onNewCharSelected]
+             * @param newChar [Char]
+             * @return [Boolean]
+             * @author 1552980358
+             * @since 0.1
+             **/
+            override fun onNewCharSelected(newChar: Char): Boolean {
+                textViewChar.text = newChar.toString()
+                temp = newChar.run { if (newChar in 'A' .. 'Z') this.toInt() - 64 else 0 }
+                if (charTable[temp] != DEFAULT_VALUE_INT) {
+                    (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(charTable[temp], 0)
+                    return true
+                }
+                sideCharView.updatePosition(newChar)
+                return true
             }
-            sideCharView.updatePosition(newChar)
-            return@setOnTouchListener true
-        }
+    
+            /**
+             * [onMotionDown]
+             * @return [Boolean]
+             * @author 1552980358
+             * @since 0.1
+             **/
+            override fun onMotionDown(): Boolean {
+                textViewChar.visibility = View.VISIBLE
+                return true
+            }
+    
+            /**
+             * [onMotionUp]
+             * @return [Boolean]
+             * @author 1552980358
+             * @since 0.1
+             **/
+            override fun onMotionUp(): Boolean {
+                textViewChar.visibility = View.GONE
+                return true
+            }
+    
+        })
         
     }
     
