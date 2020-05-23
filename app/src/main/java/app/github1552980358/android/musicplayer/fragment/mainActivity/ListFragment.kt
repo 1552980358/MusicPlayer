@@ -13,7 +13,9 @@ import app.github1552980358.android.musicplayer.adapter.ListFragmentRecyclerView
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
 import app.github1552980358.android.musicplayer.base.Constant.Companion.DEFAULT_VALUE_INT
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.android.synthetic.main.fragment_list.*
+import kotlinx.android.synthetic.main.fragment_list.sideCharView
+import kotlinx.android.synthetic.main.fragment_list.swipeRefreshLayout
+import kotlinx.android.synthetic.main.fragment_list.recyclerView
 
 /**
  * @file    : [ListFragment]
@@ -101,22 +103,22 @@ class ListFragment:
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if ((activity as MainActivity).bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
                     (activity as MainActivity).bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                sideLetterView.updatePosition(
+                sideCharView.updatePosition(
                     audioDataList[
                         (recyclerView.getChildAt(0).layoutParams as RecyclerView.LayoutParams).viewAdapterPosition
                     ].titlePinYin.first().run { if (this in 'A' .. 'Z') this else '#' }
                 )
             }
-            
         })
         
         var temp:Int
-        sideLetterView.setOnTouchListener { newChar: Char ->
+        sideCharView.setOnTouchListener { newChar: Char ->
             temp = newChar.run { if (newChar in 'A' .. 'Z') this.toInt() - 64 else 0 }
             if (charTable[temp] != DEFAULT_VALUE_INT) {
-                recyclerView.smoothScrollToPosition(charTable[temp])
+                (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(charTable[temp], 0)
                 return@setOnTouchListener true
             }
+            sideCharView.updatePosition(newChar)
             return@setOnTouchListener true
         }
         

@@ -14,14 +14,14 @@ import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.base.Constant.Companion.DEFAULT_VALUE_FLOAT
 
 /**
- * [SideLetterView]
+ * [SideCharView]
  * @author  : 1552980328
  * @since   :
  * @date    : 2020/5/21
  * @time    : 19:42
  **/
 
-class SideLetterView(context: Context, attributeSet: AttributeSet?): View(context, attributeSet) {
+class SideCharView(context: Context, attributeSet: AttributeSet?): View(context, attributeSet) {
     
     companion object {
 
@@ -146,20 +146,20 @@ class SideLetterView(context: Context, attributeSet: AttributeSet?): View(contex
          * )
          **/
 
-        // Height of each letter
+        // Height of each char
         if (letterHeight == DEFAULT_VALUE_FLOAT) {
             val rect = Rect()
             selectedPaint.getTextBounds(letters[1].toString(), 0, 0, rect)
             letterHeight = rect.bottom.toFloat() - rect.top
         }
     
-        // Block height of each block containing each letter
+        // Block height of each block containing each char
         // 每个字符占用高度
         if (blockHeight == DEFAULT_VALUE_FLOAT) {
             blockHeight = height.toFloat() / letters.size
         }
     
-        // Start point of y-axis pixel of drawing letter
+        // Start point of y-axis pixel of drawing char
         // 开始绘制字符的y轴像素格
         if (drawY == DEFAULT_VALUE_FLOAT) {
             drawY = (blockHeight - letterHeight) / 2
@@ -169,13 +169,13 @@ class SideLetterView(context: Context, attributeSet: AttributeSet?): View(contex
         // 绘制内容
         for ((i, j) in letters.withIndex()) {
             if (selected == j) {
-                // Draw selected letter
+                // Draw selected char
                 // 绘制已选中字母
                 canvas.drawText(j.toString(), (width - selectedPaint.measureText(j.toString())) / 2, blockHeight * i + drawY, selectedPaint)
                 continue
             }
 
-            // Draw un-selected letter
+            // Draw un-selected char
             // 绘制未选择字母
             canvas.drawText(j.toString(), (width - strokePaint.measureText(j.toString())) / 2, blockHeight * i + drawY, strokePaint)
         }
@@ -193,7 +193,9 @@ class SideLetterView(context: Context, attributeSet: AttributeSet?): View(contex
             Log.e("motionEvent", blockHeight.toString())
             @Suppress("LABEL_NAME_CLASH")
             return@setOnTouchListener listener.onNewCharSelected(
-                letters[(motionEvent.y / blockHeight).run { if (this <= letters.lastIndex) this else letters.lastIndex }.toInt()]
+                letters[(motionEvent.y / blockHeight).run { if (this <= letters.lastIndex) this else letters.lastIndex }.toInt()].apply {
+                    Log.e("motionEvent", this.toString())
+                }
             )
         }
     }

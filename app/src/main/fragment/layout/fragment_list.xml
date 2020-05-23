@@ -1,29 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/swipeRefreshLayout">
+    android:layout_height="match_parent">
     
-    <RelativeLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_toStartOf="@id/sideCharView">
         
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/recyclerView"
-            android:layout_toStartOf="@id/sideLetterView"/>
-    
-        <app.github1552980358.android.musicplayer.view.SideLetterView
-            android:layout_width="20dp"
-            android:layout_height="match_parent"
-            android:clickable="true"
-            android:id="@+id/sideLetterView"
-            android:layout_marginBottom="60dp"
-            android:layout_alignParentEnd="true"
-            android:focusable="true" />
+            android:id="@+id/recyclerView"/>
         
-    </RelativeLayout>
-
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    
+    <app.github1552980358.android.musicplayer.view.SideCharView
+        android:layout_width="20dp"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:id="@+id/sideCharView"
+        android:layout_marginBottom="60dp"
+        android:layout_alignParentEnd="true"
+        android:focusable="true" />
+    
+    <TextView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:id="@+id/textViewLetter"/>
+    
+</RelativeLayout>
