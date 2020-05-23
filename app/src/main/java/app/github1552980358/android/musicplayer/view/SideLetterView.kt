@@ -1,11 +1,17 @@
 package app.github1552980358.android.musicplayer.view
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
+import android.graphics.Typeface
+import android.text.TextPaint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
-import androidx.core.graphics.drawable.toBitmap
+import androidx.core.content.ContextCompat
 import app.github1552980358.android.musicplayer.R
+import app.github1552980358.android.musicplayer.base.Constant.Companion.DEFAULT_VALUE_FLOAT
 
 /**
  * [SideLetterView]
@@ -18,28 +24,23 @@ import app.github1552980358.android.musicplayer.R
 class SideLetterView(context: Context, attributeSet: AttributeSet?): View(context, attributeSet) {
     
     companion object {
-    
+
         /**
-         * [DEFAULT_VALUE]
+         * [OnTouchEventListener]
          * @author 1552980358
          * @since 0.1
          **/
-        const val DEFAULT_VALUE = -1F
-    
-        /**
-         * [OnTouchListener]
-         * @author 1552980358
-         * @since 0.1
-         **/
-        fun interface OnTouchListener {
+        fun interface OnTouchEventListener {
+
             /**
-             * [onTouch]
-             * @param letter [String]
+             * [onNewCharSelected]
+             * @param newChar [Char]
              * @return [Boolean]
              * @author 1552980358
              * @since 0.1
              **/
-            fun onTouch(letter: String): Boolean
+            fun onNewCharSelected(newChar: Char): Boolean
+            
         }
         
     }
@@ -49,42 +50,65 @@ class SideLetterView(context: Context, attributeSet: AttributeSet?): View(contex
      * @author 1552980358
      * @since 0.1
      **/
-    private var letterHeight = DEFAULT_VALUE
+    private var letterHeight = DEFAULT_VALUE_FLOAT
+    
     /**
      * [blockHeight]
      * @author 1552980358
      * @since 0.1
      **/
-    private var blockHeight = DEFAULT_VALUE
+    private var blockHeight = DEFAULT_VALUE_FLOAT
     
     /**
      * [drawY]
      * @author 1552980358
      * @since 0.1
      **/
-    private var drawY = DEFAULT_VALUE
-    
+    private var drawY = DEFAULT_VALUE_FLOAT
+
     /**
      * [letters]
      * @author 1552980358
      * @since 0.1
      **/
     private val letters = arrayOf(
-        "#", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-        "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+        '#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
     )
-    
+
     /**
-     * [paint]
+     * [selected]
      * @author 1552980358
      * @since 0.1
      **/
-    private val paint = Paint().apply {
+    private var selected = letters.first()
+    
+    /**
+     * [selectedPaint]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    private val selectedPaint = Paint().apply {
         isAntiAlias = true
-        //typeface = Typeface.DEFAULT_BOLD
+        typeface = Typeface.DEFAULT_BOLD
         // 15sp
         textSize = resources.getDimension(R.dimen.sideLetterView_textSize)
-        style = Paint.Style.FILL
+        style = Paint.Style.FILL_AND_STROKE
+        color = ContextCompat.getColor(context, R.color.colorPrimaryDark)
+    }
+
+    /**
+     * [strokePaint]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    private val strokePaint = TextPaint().apply {
+        isAntiAlias = true
+        typeface = Typeface.DEFAULT_BOLD
+        // 15sp
+        textSize = resources.getDimension(R.dimen.sideLetterView_textSize)
+        style = Paint.Style.STROKE
+        color = ContextCompat.getColor(context, R.color.colorPrimaryDark)
     }
     
     /**
@@ -96,9 +120,6 @@ class SideLetterView(context: Context, attributeSet: AttributeSet?): View(contex
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas ?: return
-        // Draw background
-        // 绘制背景
-        paint.color = Color.BLACK
         
         /**
          * A white space is found between semicircle and cylinder
@@ -116,64 +137,76 @@ class SideLetterView(context: Context, attributeSet: AttributeSet?): View(contex
          * rectF = RectF(0F, height.toFloat() - width.toFloat(), width.toFloat(), height.toFloat())
          * canvas.drawArc(rectF, 0F, 180F, false, paint)
          **/
-        
-        canvas.drawBitmap(
-            context.getDrawable(R.drawable.bg_side_letter_view)?.toBitmap(width, height)!!,
-            null,
-            RectF(0F, 0F, width.toFloat(), height.toFloat()),
-            paint
-        )
-        
-        // height of letters
-        // 字符高度
-        if (letterHeight == DEFAULT_VALUE) {
+        /**
+         * canvas.drawBitmap(
+         *   context.getDrawable(R.drawable.bg_side_letter_view)?.toBitmap(width, height)!!,
+         *   null,
+         *   RectF(0F, 0F, width.toFloat(), height.toFloat()),
+         *   paint
+         * )
+         **/
+
+        // Height of each letter
+        if (letterHeight == DEFAULT_VALUE_FLOAT) {
             val rect = Rect()
-            paint.getTextBounds(letters[1], 0, 0, rect)
+            selectedPaint.getTextBounds(letters[1].toString(), 0, 0, rect)
             letterHeight = rect.bottom.toFloat() - rect.top
         }
-        
+    
         // Block height of each block containing each letter
         // 每个字符占用高度
-        if (blockHeight == DEFAULT_VALUE) {
+        if (blockHeight == DEFAULT_VALUE_FLOAT) {
             blockHeight = height.toFloat() / letters.size
         }
-        
-        // Starting y-axis pixel of drawing letter
+    
+        // Start point of y-axis pixel of drawing letter
         // 开始绘制字符的y轴像素格
-        if (drawY == DEFAULT_VALUE) {
+        if (drawY == DEFAULT_VALUE_FLOAT) {
             drawY = (blockHeight - letterHeight) / 2
         }
-        
-        // Draw letters
-        // 绘制字母
-        paint.color = Color.WHITE
+
+        // Draw content
+        // 绘制内容
         for ((i, j) in letters.withIndex()) {
-            canvas.drawText(j, (width - paint.measureText(j)) / 2, blockHeight * i + drawY, paint)
+            if (selected == j) {
+                // Draw selected letter
+                // 绘制已选中字母
+                canvas.drawText(j.toString(), (width - selectedPaint.measureText(j.toString())) / 2, blockHeight * i + drawY, selectedPaint)
+                continue
+            }
+
+            // Draw un-selected letter
+            // 绘制未选择字母
+            canvas.drawText(j.toString(), (width - strokePaint.measureText(j.toString())) / 2, blockHeight * i + drawY, strokePaint)
         }
-        
     }
     
     /**
      * [setOnTouchListener]
-     * @param l [OnTouchListener]
+     * @param listener [View.OnTouchListener]
      * @author 1552980358
      * @since 0.1
      **/
-    fun setOnTouchListener(l: OnTouchListener) {
+    fun setOnTouchListener(listener: OnTouchEventListener) {
         super.setOnTouchListener { _, motionEvent ->
+            Log.e("motionEvent", motionEvent.y.toString())
+            Log.e("motionEvent", blockHeight.toString())
             @Suppress("LABEL_NAME_CLASH")
-            return@setOnTouchListener l.onTouch(letters[(motionEvent.y / letterHeight).toInt()])
+            return@setOnTouchListener listener.onNewCharSelected(
+                letters[(motionEvent.y / blockHeight).run { if (this <= letters.lastIndex) this else letters.lastIndex }.toInt()]
+            )
         }
     }
     
     /**
-     * [setOnTouchListener]
-     * @param l [View.OnTouchListener]
+     * [updatePosition]
+     * @param newLetter [Char]
      * @author 1552980358
      * @since 0.1
      **/
-    override fun setOnTouchListener(l: View.OnTouchListener?) {
-        throw IllegalAccessError()
+    fun updatePosition(newLetter: Char) {
+        selected = newLetter
+        postInvalidate()
     }
     
 }

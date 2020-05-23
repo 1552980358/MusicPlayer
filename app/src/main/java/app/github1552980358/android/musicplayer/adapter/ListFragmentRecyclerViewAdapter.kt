@@ -2,6 +2,7 @@ package app.github1552980358.android.musicplayer.adapter
 
 import android.app.Service
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -88,7 +89,9 @@ class ListFragmentRecyclerViewAdapter(
         // No need, automatically set when setting onClickListener
         // 不需要手动设置, 设置监听时会自动启动
         //holder.imageButtonOpts.isClickable = true
-        
+
+        Log.e("titlePinYin", audioDataList[position].titlePinYin.first().toString())
+
         holder.textViewNo.text = position.plus(1).toString()
         holder.textViewTitle.apply {
             text = audioDataList[position].title

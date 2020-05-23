@@ -10,6 +10,25 @@ package app.github1552980358.android.musicplayer.base
 
 class Constant private constructor() {
     companion object {
+
+        /**
+         * [DEFAULT_VALUE_FLOAT]
+         * @author 1552980358
+         * @since 0.1
+         **/
+        const val DEFAULT_VALUE_INT = -1
+        /**
+         * [DEFAULT_VALUE_FLOAT]
+         * @author 1552980358
+         * @since 0.1
+         **/
+        const val DEFAULT_VALUE_FLOAT = -1F
+        /**
+         * [DEFAULT_VALUE_STR]
+         * @author 1552980358
+         * @since 0.1
+         **/
+        const val DEFAULT_VALUE_STR = ""
     
         /**
          * [BackgroundThread]

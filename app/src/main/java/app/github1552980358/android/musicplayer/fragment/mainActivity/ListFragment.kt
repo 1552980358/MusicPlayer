@@ -1,25 +1,19 @@
 package app.github1552980358.android.musicplayer.fragment.mainActivity
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING
-import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.activity.MainActivity
 import app.github1552980358.android.musicplayer.adapter.ListFragmentRecyclerViewAdapter
+import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
+import app.github1552980358.android.musicplayer.base.Constant.Companion.DEFAULT_VALUE_INT
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.fragment_list.*
-import java.util.*
-import kotlin.concurrent.thread
 
 /**
  * @file    : [ListFragment]
@@ -29,7 +23,7 @@ import kotlin.concurrent.thread
  * @time    : 15:37
  **/
 
-class ListFragment :
+class ListFragment:
     Fragment() {
     
     /**
@@ -52,59 +46,79 @@ class ListFragment :
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
+        val charTable = arrayListOf<Int>()
+
         swipeRefreshLayout.setOnRefreshListener {
+            @Suppress("DuplicatedCode", "DuplicatedCode")
+            for (i in 0 .. 26) {
+                charTable.add(DEFAULT_VALUE_INT)
+            }
+            @Suppress("DuplicatedCode")
+            for ((i, j) in audioDataList.withIndex()) {
+                if (j.titlePinYin.first() in 'A' .. 'Z') {
+                    if (charTable[j.titlePinYin.first().toInt() - 64] == DEFAULT_VALUE_INT) {
+                        charTable[j.titlePinYin.first().toInt() - 64] = i
+                    }
+                } else if (charTable.first() == DEFAULT_VALUE_INT) {
+                    charTable[0] = i
+                }
+            }
             updateList()
         }
-        
-        recyclerView.layoutManager = LinearLayoutManager(context)
+
+        @Suppress("DuplicatedCode")
+        for (i in 0 .. 26) {
+            charTable.add(DEFAULT_VALUE_INT)
+        }
+        @Suppress("DuplicatedCode")
+        for ((i, j) in audioDataList.withIndex()) {
+            if (j.titlePinYin.first() in 'A' .. 'Z') {
+                if (charTable[j.titlePinYin.first().toInt() - 64] == DEFAULT_VALUE_INT) {
+                    charTable[j.titlePinYin.first().toInt() - 64] = i
+                }
+            } else if (charTable.first() == DEFAULT_VALUE_INT) {
+                charTable[0] = i
+            }
+        }
+
+        val layoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = layoutManager
         recyclerView.adapter = ListFragmentRecyclerViewAdapter(
             (activity as MainActivity).bottomSheetBehavior, swipeRefreshLayout,
             activity as MainActivity
         )
-        
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            var isScrolling = false
-    
-            val listener = object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    if (!isScrolling) {
-                        sideLetterView.visibility = View.GONE
-                    }
-                }
-            }
-            
-            val timer = Timer()
-            
+        recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+
+            /**
+             * [onScrolled]
+             * @param recyclerView [RecyclerView]
+             * @param dx [Int]
+             * @param dy [Int]
+             * @author 1552980358
+             * @since 0.1
+             **/
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if ((activity as MainActivity).bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
                     (activity as MainActivity).bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                sideLetterView.updatePosition(
+                    audioDataList[
+                        (recyclerView.getChildAt(0).layoutParams as RecyclerView.LayoutParams).viewAdapterPosition
+                    ].titlePinYin.first().run { if (this in 'A' .. 'Z') this else '#' }
+                )
             }
-    
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                when (newState) {
-                    SCROLL_STATE_DRAGGING -> {
-                        isScrolling = true
-                        if (sideLetterView.alpha != 1F) {
-                            sideLetterView.animate().cancel()
-                            sideLetterView.visibility = View.VISIBLE
-                            sideLetterView.animate().alpha(1F).setDuration(500L).setListener(null)
-                        }
-                    }
-                    SCROLL_STATE_IDLE -> {
-                        isScrolling = false
-                        timer.schedule(object : TimerTask() {
-                            override fun run() {
-                                if (isScrolling) {
-                                    return
-                                }
-                                activity?.runOnUiThread { sideLetterView.animate().alpha(0F).setDuration(1000L).setListener(listener) }
-                            }
-                        }, 1000)
-                    }
-                }
-            }
+            
         })
+        
+        var temp:Int
+        sideLetterView.setOnTouchListener { newChar: Char ->
+            temp = newChar.run { if (newChar in 'A' .. 'Z') this.toInt() - 64 else 0 }
+            if (charTable[temp] != DEFAULT_VALUE_INT) {
+                recyclerView.smoothScrollToPosition(charTable[temp])
+                return@setOnTouchListener true
+            }
+            return@setOnTouchListener true
+        }
         
     }
     
