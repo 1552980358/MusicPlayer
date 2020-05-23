@@ -19,7 +19,9 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:padding="@dimen/view_media_list_button_padding"
+        android:paddingStart="@dimen/view_media_list_button_padding"
+        android:paddingEnd="@dimen/view_media_list_button_padding"
+        android:foregroundGravity="center"
         android:id="@+id/imageButtonOpts"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"

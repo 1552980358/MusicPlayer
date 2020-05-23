@@ -1,6 +1,7 @@
 package app.github1552980358.android.musicplayer.fragment.mainActivity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -94,7 +95,7 @@ class ListFragment:
             activity as MainActivity
         )
         recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-
+            
             /**
              * [onScrolled]
              * @param recyclerView [RecyclerView]
@@ -112,6 +113,7 @@ class ListFragment:
                     ].titlePinYin.first().run { if (this in 'A' .. 'Z') this else '#' }
                 )
             }
+            
         })
         
         var temp:Int
@@ -129,6 +131,7 @@ class ListFragment:
                 temp = newChar.run { if (newChar in 'A' .. 'Z') this.toInt() - 64 else 0 }
                 if (charTable[temp] != DEFAULT_VALUE_INT) {
                     (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(charTable[temp], 0)
+                    sideCharView.updatePosition(newChar)
                     return true
                 }
                 sideCharView.updatePosition(newChar)
@@ -154,6 +157,7 @@ class ListFragment:
              **/
             override fun onMotionUp(): Boolean {
                 textViewChar.visibility = View.GONE
+                sideCharView.postInvalidate()
                 return true
             }
     

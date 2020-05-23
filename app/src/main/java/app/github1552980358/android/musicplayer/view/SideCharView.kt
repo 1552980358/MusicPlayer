@@ -2,6 +2,7 @@ package app.github1552980358.android.musicplayer.view
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.Typeface
@@ -111,7 +112,6 @@ class SideCharView(context: Context, attributeSet: AttributeSet?): View(context,
         // 15sp
         textSize = resources.getDimension(R.dimen.sideLetterView_textSize)
         style = Paint.Style.FILL_AND_STROKE
-        color = ContextCompat.getColor(context, R.color.colorPrimaryDark)
     }
 
     /**
@@ -125,8 +125,9 @@ class SideCharView(context: Context, attributeSet: AttributeSet?): View(context,
         // 15sp
         textSize = resources.getDimension(R.dimen.sideLetterView_textSize)
         style = Paint.Style.STROKE
-        color = ContextCompat.getColor(context, R.color.colorPrimaryDark)
     }
+    
+    private var isPressing = false
     
     /**
      * [onDraw]
@@ -137,6 +138,15 @@ class SideCharView(context: Context, attributeSet: AttributeSet?): View(context,
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas ?: return
+        
+        if (isPressing) {
+            canvas.drawColor(ContextCompat.getColor(context, R.color.sideLetterView_background))
+            selectedPaint.color = Color.WHITE
+            strokePaint.color = Color.WHITE
+        } else {
+            selectedPaint.color = ContextCompat.getColor(context, R.color.colorPrimaryDark)
+            strokePaint.color = ContextCompat.getColor(context, R.color.colorPrimaryDark)
+        }
         
         /**
          * A white space is found between semicircle and cylinder
@@ -209,6 +219,7 @@ class SideCharView(context: Context, attributeSet: AttributeSet?): View(context,
             
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    isPressing = true
                     listener.onNewCharSelected(
                         letters[(motionEvent.y / blockHeight).run { if (this <= letters.lastIndex) this else letters.lastIndex }.toInt()]
                     )
@@ -216,6 +227,8 @@ class SideCharView(context: Context, attributeSet: AttributeSet?): View(context,
                     return@setOnTouchListener listener.onMotionDown()
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    Log.e("MotionEvent", "ACTION_UP")
+                    isPressing = false
                     listener.onNewCharSelected(
                         letters[(motionEvent.y / blockHeight).run { if (this <= letters.lastIndex) this else letters.lastIndex }.toInt()]
                     )
