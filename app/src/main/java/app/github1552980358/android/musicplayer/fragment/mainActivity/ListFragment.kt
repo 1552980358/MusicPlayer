@@ -1,13 +1,14 @@
 package app.github1552980358.android.musicplayer.fragment.mainActivity
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_SETTLING
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.activity.MainActivity
 import app.github1552980358.android.musicplayer.adapter.ListFragmentRecyclerViewAdapter
@@ -95,7 +96,7 @@ class ListFragment:
             activity as MainActivity
         )
         recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-            
+            private var isUser = false
             /**
              * [onScrolled]
              * @param recyclerView [RecyclerView]
@@ -107,11 +108,28 @@ class ListFragment:
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if ((activity as MainActivity).bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
                     (activity as MainActivity).bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                
+                if (!isUser) {
+                    return
+                }
+                
                 sideCharView.updatePosition(
                     audioDataList[
                         (recyclerView.getChildAt(0).layoutParams as RecyclerView.LayoutParams).viewAdapterPosition
                     ].titlePinYin.first().run { if (this in 'A' .. 'Z') this else '#' }
                 )
+                
+            }
+    
+            /**
+             * [onScrollStateChanged]
+             * @param recyclerView [RecyclerView]
+             * @param newState [Int]
+             * @author 1552980358
+             * @since 0.1
+             **/
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                isUser = newState == SCROLL_STATE_DRAGGING || newState == SCROLL_STATE_SETTLING
             }
             
         })
