@@ -7,4 +7,14 @@
     
     <string name="mainActivity_bottom_sheet_title">~ Start Your Music Now ~</string>
     
+    <string name="songListEditingActivity_title">Edit Song List Information</string>
+    <string name="songListEditingActivity_textView_image">Song List Image</string>
+    <string name="songListEditingActivity_textView_colours">Colors</string>
+    <string name="songListEditingActivity_textView_title">Title</string>
+    <string name="songListEditingActivity_editText_title_hint">Input title</string>
+    <string name="songListEditingActivity_textView_date">Create Day</string>
+    <string name="songListEditingActivity_textView_description">Description</string>
+    <string name="songListEditingActivity_editText_description_hint">No description exists</string>
+    <string name="songListEditingActivity_toast">Title should not be empty</string>
+
 </resources>

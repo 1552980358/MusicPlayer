@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color.TRANSPARENT
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
@@ -27,6 +26,11 @@ import app.github1552980358.android.musicplayer.base.Colour
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumColourDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormalDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.BackgroundThread
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_ALBUM
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_ARTIST
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_DURATION
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_ID
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_TITLE
 import app.github1552980358.android.musicplayer.base.SystemUtil
 import app.github1552980358.android.musicplayer.base.TimeExchange
 import app.github1552980358.android.musicplayer.dialog.PlayHistoryDialogFragment
@@ -51,6 +55,7 @@ import kotlinx.android.synthetic.main.activity_audio.textViewSubtitle2
 import kotlinx.android.synthetic.main.activity_audio.textViewTitle
 import lib.github1552980358.labourforce.LabourForce
 import lib.github1552980358.labourforce.labours.work.LabourWorkBuilder
+import lib.github1552980358.labourforce.labours.work.LabourWorkBuilder.Companion.WorkContent
 import java.io.File
 import java.io.ObjectInputStream
 
@@ -120,16 +125,16 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
             ellipsize = TextUtils.TruncateAt.END
         }
         
-        textViewTitle.text = intent.getStringExtra("TITLE")
-        textViewSubtitle1.text = intent.getStringExtra("ALBUM")
-        textViewSubtitle2.text = intent.getStringExtra("ARTIST")
-        textViewFull.text = getTimeText(intent.getLongExtra("DURATION", 0L))
-        seekBar.max = intent.getLongExtra("DURATION", 0L).toInt() / 1000
+        textViewTitle.text = intent.getStringExtra(INTENT_AUDIO_TITLE)
+        textViewSubtitle1.text = intent.getStringExtra(INTENT_AUDIO_ALBUM)
+        textViewSubtitle2.text = intent.getStringExtra(INTENT_AUDIO_ARTIST)
+        textViewFull.text = getTimeText(intent.getLongExtra(INTENT_AUDIO_DURATION, 0L))
+        seekBar.max = intent.getLongExtra(INTENT_AUDIO_DURATION, 0L).toInt() / 1000
         
         imageButtonLast.setOnClickListener { mediaControllerCompat.transportControls.skipToPrevious() }
         imageButtonNext.setOnClickListener { mediaControllerCompat.transportControls.skipToNext() }
         imageButtonCycle.setOnClickListener {
-            when (mediaControllerCompat.playbackState.customActions.first().name) {
+            when (mediaControllerCompat.playbackState.customActions.first().action) {
                 LIST_CYCLE.name -> {
                     startService(Intent(this, PlayService::class.java).putExtra(START_FLAG, RANDOM_ACCESS.name))
                 }
@@ -143,7 +148,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
         }
         imageButtonList.setOnClickListener { PlayHistoryDialogFragment.getFragment.showNow(supportFragmentManager) }
         
-        File(getExternalFilesDir(AlbumNormalDir), intent.getStringExtra("ID")!!).apply {
+        File(getExternalFilesDir(AlbumNormalDir), intent.getStringExtra(INTENT_AUDIO_ID)!!).apply {
             if (!exists()) {
                 imageView.setImageResource(R.drawable.ic_launcher_foreground)
                 return@apply
@@ -155,7 +160,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
         }
         
         @Suppress("DuplicatedCode")
-        File(getExternalFilesDir(AlbumColourDir), intent.getStringExtra("ID")!!).apply {
+        File(getExternalFilesDir(AlbumColourDir), intent.getStringExtra(INTENT_AUDIO_ID)!!).apply {
             
             if (!exists()) {
                 updateLayoutColours()
@@ -165,7 +170,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
             inputStream().use { fis ->
                 ObjectInputStream(fis).use { ois ->
                     (ois.readObject() as Colour).apply {
-                        updateLayoutColours(backgroundColour, titleColour, subtitleColour, isLight)
+                        updateLayoutColours(backgroundColour, primaryTextColour, secondaryTextColour, isLight)
                     }
                 }
             }
@@ -246,7 +251,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
             inputStream().use { fis ->
                 ObjectInputStream(fis).use { ois ->
                     (ois.readObject() as Colour).apply {
-                        updateLayoutColours(backgroundColour, titleColour, subtitleColour, isLight)
+                        updateLayoutColours(backgroundColour, primaryTextColour, secondaryTextColour, isLight)
                     }
                 }
             }
@@ -264,25 +269,22 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
             BackgroundThread,
             LabourWorkBuilder
                 .getBuilder()
-                .setWorkContent(object : LabourWorkBuilder.Companion.WorkContent {
-                    override fun workContent(workProduct: MutableMap<String, Any?>?, handler: Handler?) {
-                        Log.e("setUpSeekbar", "workContent")
-                        do {
-                            if (!seekBarTouched) {
+                .setWorkContent(WorkContent { _, _ ->
+                    Log.e("setUpSeekbar", "workContent")
+                    do {
+                        if (!seekBarTouched) {
+                            runOnUiThread {
                                 runOnUiThread {
-                                    runOnUiThread {
-                                        seekBar.progress = mediaControllerCompat.playbackState.position.toInt() / 1000
-                                    }
+                                    seekBar.progress = mediaControllerCompat.playbackState.position.toInt() / 1000
                                 }
                             }
-                            try {
-                                Thread.sleep(500)
-                            } catch (e: Exception) {
-                                //e.printStackTrace()
-                            }
-                        } while (mediaControllerCompat.playbackState.state == PlaybackStateCompat.STATE_PLAYING && !exit)
-                        
-                    }
+                        }
+                        try {
+                            Thread.sleep(500)
+                        } catch (e: Exception) {
+                            //e.printStackTrace()
+                        }
+                    } while (mediaControllerCompat.playbackState.state == PlaybackStateCompat.STATE_PLAYING && !exit)
                 })
         )
     }
@@ -372,7 +374,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
             }
         }
 
-        when (mediaControllerCompat.playbackState.customActions.first().name) {
+        when (mediaControllerCompat.playbackState.customActions.first().action) {
             LIST_CYCLE.name -> {
                 imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_cycle)
             }
@@ -392,36 +394,36 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
     /**
      * [updateLayoutColours]
      * @param background [Int]<-16524603>
-     * @param titleColour [Int]<-13172557>
-     * @param subtitleColour [Int]<-10354450>
+     * @param primary [Int]<-13172557>
+     * @param secondary [Int]<-10354450>
      * @param isLight [Boolean]<true>
      **/
     @Synchronized
     private fun updateLayoutColours(
         background: Int = -1,
-        titleColour: Int = -13172557,
-        subtitleColour: Int = -10354450,
+        primary: Int = -13172557,
+        secondary: Int = -10354450,
         isLight: Boolean = true
     ) {
         linearLayoutRoot.background.setTint(background)
         
-        imageButtonLast.background.setTint(titleColour)
-        imageButtonNext.background.setTint(titleColour)
-        imageButtonList.background.setTint(titleColour)
-        imageButtonCycle.background.setTint(titleColour)
-        checkBoxPlayPause.background.setTint(titleColour)
-        imageButtonCycleColour = titleColour
+        imageButtonLast.background.setTint(primary)
+        imageButtonNext.background.setTint(primary)
+        imageButtonList.background.setTint(primary)
+        imageButtonCycle.background.setTint(primary)
+        checkBoxPlayPause.background.setTint(primary)
+        imageButtonCycleColour = primary
         
-        seekBar.thumb.setTint(titleColour)
-        seekBar.progressDrawable.setTint(titleColour)
-        seekBar.indeterminateDrawable.setTint(subtitleColour)
+        seekBar.thumb.setTint(primary)
+        seekBar.progressDrawable.setTint(primary)
+        seekBar.indeterminateDrawable.setTint(secondary)
         
-        textViewPassed.setTextColor(titleColour)
-        textViewFull.setTextColor(titleColour)
-        textViewDivider.setTextColor(titleColour)
-        textViewTitle.setTextColor(titleColour)
-        textViewSubtitle1.setTextColor(subtitleColour)
-        textViewSubtitle2.setTextColor(subtitleColour)
+        textViewPassed.setTextColor(primary)
+        textViewFull.setTextColor(primary)
+        textViewDivider.setTextColor(primary)
+        textViewTitle.setTextColor(primary)
+        textViewSubtitle1.setTextColor(secondary)
+        textViewSubtitle2.setTextColor(secondary)
     
         @Suppress("SpellCheckingInspection")
         window.decorView.systemUiVisibility =

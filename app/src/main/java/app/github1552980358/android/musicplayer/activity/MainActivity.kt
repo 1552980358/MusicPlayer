@@ -2,6 +2,7 @@ package app.github1552980358.android.musicplayer.activity
 
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -15,6 +16,11 @@ import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.adapter.FragmentPagerAdapter
 import app.github1552980358.android.musicplayer.base.BaseAppCompatActivity
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumRoundDir
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_ALBUM
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_ARTIST
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_DURATION
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_ID
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_TITLE
 import app.github1552980358.android.musicplayer.base.SystemUtil
 import app.github1552980358.android.musicplayer.fragment.mainActivity.ListFragment
 import app.github1552980358.android.musicplayer.fragment.mainActivity.MainFragment
@@ -97,11 +103,11 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
     
             startActivityForResult(
                 Intent(this, AudioActivity::class.java)
-                    .putExtra("TITLE", mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
-                    .putExtra("ARTIST", mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST))
-                    .putExtra("ALBUM", mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_ALBUM))
-                    .putExtra("DURATION", mediaControllerCompat.metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION))
-                    .putExtra("ID", mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)),
+                    .putExtra(INTENT_AUDIO_TITLE, mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
+                    .putExtra(INTENT_AUDIO_ARTIST, mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST))
+                    .putExtra(INTENT_AUDIO_ALBUM, mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_ALBUM))
+                    .putExtra(INTENT_AUDIO_DURATION, mediaControllerCompat.metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION))
+                    .putExtra(INTENT_AUDIO_ID, mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)),
                 0,
                 ActivityOptionsCompat.makeSceneTransitionAnimation(
                     this,

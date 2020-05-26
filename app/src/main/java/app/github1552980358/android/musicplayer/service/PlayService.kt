@@ -33,6 +33,8 @@ import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataMap
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormalDir
+import app.github1552980358.android.musicplayer.base.Constant.Companion.CurrentSongList
+import app.github1552980358.android.musicplayer.base.Constant.Companion.FULL_LIST
 import app.github1552980358.android.musicplayer.base.Constant.Companion.RootId
 import app.github1552980358.android.musicplayer.service.CycleMode.LIST_CYCLE
 import app.github1552980358.android.musicplayer.service.CycleMode.RANDOM_ACCESS
@@ -207,7 +209,14 @@ class PlayService : MediaBrowserServiceCompat(),
      **/
     private lateinit var audioFocusChangeListener: AudioManager.OnAudioFocusChangeListener
     
+    /**
+     * [isForegroundService]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private var isForegroundService = false
+    
+    private var currentSongList = FULL_LIST
     
     /**
      * [onCreate]
@@ -235,6 +244,8 @@ class PlayService : MediaBrowserServiceCompat(),
                     Log.e("playStateCompat.state", "STATE_PAUSED")
                     playbackStateCompat = PlaybackStateCompat.Builder()
                         .setActions(playbackStateActions)
+                        .addCustomAction(cycleMode.name, CYCLE_MODE, R.drawable.ic_launcher_foreground)
+                        .addCustomAction(currentSongList, CurrentSongList, R.drawable.ic_launcher_foreground)
                         .setState(STATE_PLAYING, pauseTime - startTime, 1F)
                         .build()
                     @Suppress("DuplicatedCode")
@@ -264,7 +275,8 @@ class PlayService : MediaBrowserServiceCompat(),
                     Log.e("playStateCompat.state", "STATE_PLAYING")
                     playbackStateCompat = PlaybackStateCompat.Builder()
                         .setActions(playbackStateActions)
-                        .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
+                        .addCustomAction(cycleMode.name, CYCLE_MODE, R.drawable.ic_launcher_foreground)
+                        .addCustomAction(currentSongList, CurrentSongList, R.drawable.ic_launcher_foreground)
                         .setState(STATE_PLAYING, 0L, 1F)
                         .build()
                     startTime = System.currentTimeMillis()
@@ -333,7 +345,8 @@ class PlayService : MediaBrowserServiceCompat(),
                     pauseTime = System.currentTimeMillis()
                     onPause(mediaPlayer)
                     playbackStateCompat = PlaybackStateCompat.Builder()
-                        .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
+                        .addCustomAction(cycleMode.name, CYCLE_MODE, R.drawable.ic_launcher_foreground)
+                        .addCustomAction(currentSongList, CurrentSongList, R.drawable.ic_launcher_foreground)
                         .setActions(playbackStateActions)
                         .setState(STATE_PAUSED, pauseTime - startTime, 1F)
                         .build()
@@ -380,6 +393,8 @@ class PlayService : MediaBrowserServiceCompat(),
                     }
                     playbackStateCompat = PlaybackStateCompat.Builder()
                         .setActions(playbackStateActions)
+                        .addCustomAction(cycleMode.name, CYCLE_MODE, R.drawable.ic_launcher_foreground)
+                        .addCustomAction(currentSongList, CurrentSongList, R.drawable.ic_launcher_foreground)
                         .setState(STATE_BUFFERING, 0L, 1F)
                         .build()
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
@@ -427,7 +442,8 @@ class PlayService : MediaBrowserServiceCompat(),
                     currentIndex++
                     playbackStateCompat = PlaybackStateCompat.Builder()
                         .setActions(playbackStateActions)
-                        .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
+                        .addCustomAction(cycleMode.name, CYCLE_MODE, R.drawable.ic_launcher_foreground)
+                        .addCustomAction(currentSongList, CurrentSongList, R.drawable.ic_launcher_foreground)
                         .setState(STATE_BUFFERING, 0L, 1F)
                         .build()
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
@@ -474,7 +490,8 @@ class PlayService : MediaBrowserServiceCompat(),
                     onSeekTo(mediaPlayer, pos)
                     playbackStateCompat = PlaybackStateCompat.Builder()
                         .setState(STATE_PLAYING, pos, 1F)
-                        .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
+                        .addCustomAction(cycleMode.name, CYCLE_MODE, R.drawable.ic_launcher_foreground)
+                        .addCustomAction(currentSongList, CurrentSongList, R.drawable.ic_launcher_foreground)
                         .setActions(playbackStateActions)
                         .build()
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
@@ -504,10 +521,15 @@ class PlayService : MediaBrowserServiceCompat(),
             @Synchronized
             override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
                 Log.e("MediaSessionCompat", "onPlayFromMediaId")
-
+                if (currentSongList != extras?.getString(CurrentSongList)!!) {
+                    playHistory.clear()
+                    currentSongList = extras.getString(CurrentSongList)!!
+                }
+                
                 playbackStateCompat = PlaybackStateCompat.Builder()
                     .setActions(playbackStateActions)
-                    .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
+                    .addCustomAction(cycleMode.name, CYCLE_MODE, R.drawable.ic_launcher_foreground)
+                    .addCustomAction(extras.getString(CurrentSongList), CurrentSongList, R.drawable.ic_launcher_foreground)
                     .setState(STATE_BUFFERING, 0L, 1F)
                     .build()
                 mediaSessionCompat.setPlaybackState(playbackStateCompat)
@@ -704,6 +726,11 @@ class PlayService : MediaBrowserServiceCompat(),
             .build()
     }
     
+    /**
+     * [onDestroy]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onDestroy() {
         mediaPlayer.release()
         try {
@@ -714,6 +741,12 @@ class PlayService : MediaBrowserServiceCompat(),
         super.onDestroy()
     }
     
+    /**
+     * [onCompletion]
+     * @param mp [MediaPlayer]?
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onCompletion(mp: MediaPlayer?) {
         when (cycleMode) {
             SINGLE_CYCLE -> {
@@ -724,5 +757,5 @@ class PlayService : MediaBrowserServiceCompat(),
             }
         }
     }
-    
+
 }

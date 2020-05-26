@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="app.github1552980358.android.musicplayer">
     
@@ -20,21 +21,21 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
         
-        <activity android:name=".activity.SplashActivity"
-            android:theme="@style/AppTheme.NoActionBar.SplashActivity" >
+        <activity
+            android:name=".activity.SplashActivity"
+            android:theme="@style/AppTheme.NoActionBar.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         
-        <activity android:name=".activity.MainActivity"
+        <activity
+            android:name=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:launchMode="singleTask">
             <!--intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter-->
         </activity>
@@ -42,19 +43,29 @@
         <activity
             android:name=".activity.AudioActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask" />
         
-        <activity android:name=".activity.AudioImportActivity"
+        <activity
+            android:name=".activity.AudioImportActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         
-        <service android:name=".service.PlayService"
+        <activity
+            android:name=".activity.SongListActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        
+        <activity
+            android:name=".activity.SongListEditingActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        
+        <service
+            android:name=".service.PlayService"
             android:foregroundServiceType="mediaPlayback"
             tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
-        
+    
     </application>
 
 </manifest>

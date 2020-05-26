@@ -30,6 +30,18 @@ class Constant private constructor() {
          **/
         const val DEFAULT_VALUE_STR = ""
     
+        /*****************************************/
+        const val INTENT_AUDIO_TITLE = "INTENT_AUDIO_TITLE"
+        const val INTENT_AUDIO_ARTIST = "INTENT_AUDIO_ARTIST"
+        const val INTENT_AUDIO_ALBUM = "INTENT_AUDIO_ALBUM"
+        const val INTENT_AUDIO_ID = "INTENT_AUDIO_ID"
+        const val INTENT_AUDIO_DURATION = "INTENT_AUDIO_DURATION"
+        
+        /*****************************************/
+        const val INTENT_SONG_LIST_INFO = "INTENT_SONG_LIST_INFO"
+        const val INTENT_SONG_LIST_POS = "INTENT_SONG_LIST_POS"
+    
+        /*****************************************/
         /**
          * [BackgroundThread]
          * @author 1552980358
@@ -37,6 +49,7 @@ class Constant private constructor() {
          **/
         const val BackgroundThread = "BackgroundThread"
     
+        /*****************************************/
         /**
          * [AudioDataDir]
          * @author 1552980358
@@ -67,7 +80,8 @@ class Constant private constructor() {
          * @since 0.1
          **/
         const val SongListFile = "SongListFile"
-
+    
+        /*****************************************/
         /**
          * [RootId]
          * @author 1552980358
@@ -75,6 +89,7 @@ class Constant private constructor() {
          **/
         const val RootId = "1552980358"
 
+        /*****************************************/
         /**
          * [AlbumNormalDir]
          * @author 1552980358
@@ -99,6 +114,23 @@ class Constant private constructor() {
          * @since 0.1
          **/
         const val SongListDir = "SongListDir"
+        /**
+         * [SongListCoverDir]
+         * @author 1552980358
+         * @since 0.1
+         **/
+        const val SongListCoverDir = "SongListCoverDir"
+    
+        /*****************************************/
+        /**
+         * [CurrentSongList]
+         **/
+        const val CurrentSongList = "CurrentSongList"
+    
+        /**
+         * [FULL_LIST]
+         **/
+        const val FULL_LIST = "FULL_LIST"
         
     }
 }

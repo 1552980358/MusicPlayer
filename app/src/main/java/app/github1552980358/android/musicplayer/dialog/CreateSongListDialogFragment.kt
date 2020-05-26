@@ -11,8 +11,8 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDat
 import app.github1552980358.android.musicplayer.base.Constant.Companion.SongListDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.SongListFile
 import app.github1552980358.android.musicplayer.base.SongList
-import app.github1552980358.android.musicplayer.base.SongList.Companion.SongListInfo
-import app.github1552980358.android.musicplayer.base.SongList.Companion.songListInfoList
+import app.github1552980358.android.musicplayer.base.SongListInfo
+import app.github1552980358.android.musicplayer.base.SongListInfo.Companion.songListInfoList
 import app.github1552980358.android.musicplayer.fragment.mainActivity.MainFragment
 import kotlinx.android.synthetic.main.dialog_create_song_list.*
 import java.io.File
@@ -40,7 +40,10 @@ class CreateSongListDialogFragment : DialogFragment() {
             .setView(R.layout.dialog_create_song_list)
             .setPositiveButton(R.string.createSongListDialog_submit) { _, _ ->
                 songListInfoList.add(
-                    SongListInfo().apply { listName = contentText?:throw Exception() }
+                    SongListInfo().apply {
+                        listTitle = contentText?:throw Exception()
+                        createDate = System.currentTimeMillis()
+                    }
                 )
                 File(requireContext().getExternalFilesDir(AudioDataDir), SongListFile).apply {
                     if (exists())

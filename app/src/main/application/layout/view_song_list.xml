@@ -40,6 +40,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/textViewTitle"
             android:maxLines="1"
+            android:ellipsize="end"
             android:textSize="@dimen/view_song_list_textViewTitle_size"
             android:textColor="@color/black" />
         
@@ -47,7 +48,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textViewSubtitle"
-            android:maxLength="1"/>
+            android:maxLines="1"
+            android:ellipsize="end"/>
     
     </LinearLayout>
 

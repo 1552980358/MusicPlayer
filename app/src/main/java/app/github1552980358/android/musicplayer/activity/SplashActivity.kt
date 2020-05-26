@@ -16,7 +16,8 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDat
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataMapFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.BackgroundThread
 import app.github1552980358.android.musicplayer.base.Constant.Companion.SongListFile
-import app.github1552980358.android.musicplayer.base.SongList
+import app.github1552980358.android.musicplayer.base.SongListInfo
+import app.github1552980358.android.musicplayer.base.SongListInfo.Companion.songListInfoList
 import app.github1552980358.android.musicplayer.service.PlayService
 import lib.github1552980358.labourforce.LabourForce
 import lib.github1552980358.labourforce.commands.LabourLv
@@ -25,7 +26,7 @@ import java.io.File
 import java.io.ObjectInputStream
 
 /**
- * @file    : SplashActivity
+ * @file    : [SplashActivity]
  * @author  : 1552980358
  * @since   : 0.1
  * @date    : 2020/5/9
@@ -140,8 +141,8 @@ class SplashActivity : AppCompatActivity() {
                         inputStream().use { `is` ->
                             ObjectInputStream(`is`).use { ois ->
                                 @Suppress("UNCHECKED_CAST")
-                                SongList.songListInfoList =
-                                    (ois.readObject() as ArrayList<SongList.Companion.SongListInfo>)
+                                songListInfoList =
+                                    (ois.readObject() as ArrayList<SongListInfo>)
                             }
                         }
                     }

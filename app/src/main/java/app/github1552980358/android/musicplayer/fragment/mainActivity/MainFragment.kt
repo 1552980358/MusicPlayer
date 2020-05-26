@@ -1,5 +1,6 @@
 package app.github1552980358.android.musicplayer.fragment.mainActivity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +11,15 @@ import androidx.viewpager.widget.ViewPager
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.activity.MainActivity
 import app.github1552980358.android.musicplayer.adapter.SongListRecyclerViewAdapter
-import app.github1552980358.android.musicplayer.base.SongList
+import app.github1552980358.android.musicplayer.base.SongListInfo
+import app.github1552980358.android.musicplayer.base.SongListInfo.Companion.songListInfoList
 import app.github1552980358.android.musicplayer.dialog.CreateSongListDialogFragment
-import kotlinx.android.synthetic.main.fragment_main.*
+import kotlinx.android.synthetic.main.fragment_main.recyclerView
+import kotlinx.android.synthetic.main.fragment_main.relativeLayoutAudio
+import kotlinx.android.synthetic.main.fragment_main.relativeLayoutSettings
+import kotlinx.android.synthetic.main.fragment_main.swipeRefreshLayout
+import kotlinx.android.synthetic.main.fragment_main.textViewNewList
+
 
 /**
  * [MainFragment]
@@ -63,12 +70,31 @@ class MainFragment : Fragment() {
         }
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = SongListRecyclerViewAdapter(SongList.songListInfoList)
+        recyclerView.adapter = SongListRecyclerViewAdapter(songListInfoList, this)
 
     }
-
-    fun updateList(songList: ArrayList<SongList.Companion.SongListInfo>) {
+    
+    /**
+     * [onActivityResult]
+     * @param requestCode [Int]
+     * @param resultCode [Int]
+     * @param data [Intent]?
+     * @author 1552980358
+     * @since 0.1
+     **/
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        updateList(songListInfoList)
+    }
+    
+    /**
+     * [updateList]
+     * @param songList [ArrayList]<[SongListInfo]>
+     * @author 1552980358
+     * @since 0.1
+     **/
+    fun updateList(songList: ArrayList<SongListInfo>) {
         (recyclerView.adapter as SongListRecyclerViewAdapter).updateList(songList)
     }
-
+    
 }

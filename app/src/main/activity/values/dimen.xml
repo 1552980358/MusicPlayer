@@ -13,4 +13,6 @@
     
     <dimen name="audioImportActivity_icon_size">50dp</dimen>
     
+    <dimen name="songListEditingActivity_bitmap_cutting_size">50dp</dimen>
+    
 </resources>

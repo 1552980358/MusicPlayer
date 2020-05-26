@@ -6,5 +6,15 @@
     <string name="mediaSearchActivity_searched">已完成搜索!\n共找到%s首音频!</string>
     
     <string name="mainActivity_bottom_sheet_title">~ 开始你的音乐吧 ~</string>
+    
+    <string name="songListEditingActivity_title">编辑歌单信息</string>
+    <string name="songListEditingActivity_textView_colours">颜色</string>
+    <string name="songListEditingActivity_textView_image">封面</string>
+    <string name="songListEditingActivity_textView_title">名称</string>
+    <string name="songListEditingActivity_editText_title_hint">名称</string>
+    <string name="songListEditingActivity_textView_date">创建日期</string>
+    <string name="songListEditingActivity_textView_description">描述</string>
+    <string name="songListEditingActivity_editText_description_hint">暂无描述</string>
+    <string name="songListEditingActivity_toast">名称不得为空</string>
 
 </resources>

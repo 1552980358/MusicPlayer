@@ -12,36 +12,6 @@ import java.io.Serializable
 
 class SongList: Serializable {
 
-    companion object {
-
-        /**
-         * [songListInfoList]
-         **/
-        var songListInfoList = arrayListOf<SongListInfo>()
-
-        /**
-         * [SongListInfo]
-         **/
-        class SongListInfo : Serializable {
-
-            /**
-             * [listName]
-             **/
-            var listName = ""
-
-            /**
-             * [listSize]
-             **/
-            var listSize = 0
-    
-            /**
-             *
-             **/
-            var coverPicture = byteArrayOf()
-        }
-
-    }
-
     /**
      * [listName]
      **/
@@ -51,10 +21,5 @@ class SongList: Serializable {
      * [audioList]
      **/
     val audioList = arrayListOf<AudioData>()
-    
-    /**
-     *
-     **/
-    var coverPicture = byteArrayOf()
     
 }

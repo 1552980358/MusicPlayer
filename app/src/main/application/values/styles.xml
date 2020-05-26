@@ -29,6 +29,9 @@
     <!-- Toolbar -->
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
     
+    <!-- Toolbar -->
+    <style name="AppTheme.PopupOverlay.DARK" parent="ThemeOverlay.AppCompat.Dark" />
+    
     <!-- DrawerToggle -->
     <style name="AppTheme.DrawerToggle" parent="Widget.AppCompat.DrawerArrowToggle" >
         <item name="color">@color/black</item>

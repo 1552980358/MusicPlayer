@@ -1,8 +1,8 @@
 package app.github1552980358.android.musicplayer.adapter
 
 import android.app.Service
+import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +19,8 @@ import app.github1552980358.android.musicplayer.activity.MainActivity
 import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataListFile
+import app.github1552980358.android.musicplayer.base.Constant.Companion.CurrentSongList
+import app.github1552980358.android.musicplayer.base.Constant.Companion.FULL_LIST
 import app.github1552980358.android.musicplayer.base.Constant.Companion.IgnoredFile
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.view_media_list.view.imageButtonOpts
@@ -90,8 +92,6 @@ class ListFragmentRecyclerViewAdapter(
         // 不需要手动设置, 设置监听时会自动启动
         //holder.imageButtonOpts.isClickable = true
 
-        Log.e("titlePinYin", audioDataList[position].titlePinYin.first().toString())
-
         holder.textViewNo.text = position.plus(1).toString()
         holder.textViewTitle.apply {
             text = audioDataList[position].title
@@ -117,7 +117,10 @@ class ListFragmentRecyclerViewAdapter(
                 return@setOnClickListener
             }
             
-            mainActivity.mediaControllerCompat.transportControls.playFromMediaId(audioDataList[position].id, null)
+            mainActivity.mediaControllerCompat.transportControls.playFromMediaId(
+                audioDataList[position].id,
+                Bundle().apply { putString(CurrentSongList, FULL_LIST) }
+            )
             
         }
         
@@ -163,29 +166,6 @@ class ListFragmentRecyclerViewAdapter(
                 }
             }.show()
         }
-        
-        /*
-        holder.linearLayoutRoot.setOnTouchListener { v, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    //Log.e("MotionEvent", "ACTION_DOWN")
-                    holder.textViewTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
-                    holder.textViewTitle.requestFocus()
-                }
-                MotionEvent.ACTION_UP -> {
-                    //Log.e("MotionEvent", "ACTION_UP")
-                    holder.textViewTitle.ellipsize = TextUtils.TruncateAt.MARQUEE
-                    holder.textViewTitle.clearFocus()
-                }
-                MotionEvent.ACTION_CANCEL -> {
-                    //Log.e("MotionEvent", "ACTION_CANCEL")
-                    holder.textViewTitle.ellipsize = TextUtils.TruncateAt.END
-                    holder.textViewTitle.clearFocus()
-                }
-            }
-            return@setOnTouchListener true
-        }
-         */
         
     }
     
