@@ -124,11 +124,15 @@ class Constant private constructor() {
         /*****************************************/
         /**
          * [CurrentSongList]
+         * @author 1552980358
+         * @since 0.1
          **/
         const val CurrentSongList = "CurrentSongList"
     
         /**
          * [FULL_LIST]
+         * @author 1552980358
+         * @since 0.1
          **/
         const val FULL_LIST = "FULL_LIST"
         

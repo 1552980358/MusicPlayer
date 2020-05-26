@@ -13,6 +13,11 @@ import lib.github1552980358.labourforce.android.Application
 
 class Application : Application() {
     
+    /**
+     * [onCreate]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onCreate() {
         super.onCreate()
         Log.e("Application", "onCreate")

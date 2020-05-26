@@ -29,11 +29,29 @@ import java.io.ObjectOutputStream
 class CreateSongListDialogFragment : DialogFragment() {
 
     companion object {
+    
+        /**
+         * [TAG]
+         * @author 1552980358
+         * @since 0.1
+         **/
         const val TAG = "AddSongListDialogFragment"
+        
     }
-
+    
+    /**
+     * [contentText]
+     * @author 1552980358
+     * @since 0.1
+     **/
     var contentText = "" as String?
-
+    
+    /**
+     * [onCreateDialog]
+     * @param savedInstanceState [Bundle]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(requireContext())
             .setTitle(R.string.createSongListDialog_title)
@@ -87,7 +105,13 @@ class CreateSongListDialogFragment : DialogFragment() {
                 }
             }
     }
-
+    
+    /**
+     * [showNow]
+     * @param manager [FragmentManager]
+     * @author 1552980358
+     * @since 0.1
+     **/
     fun showNow(manager: FragmentManager) {
         super.showNow(manager, TAG)
     }

@@ -186,10 +186,35 @@ class ListFragmentRecyclerViewAdapter(
      * @since 0.1
      **/
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        /**
+         * [textViewNo]
+         * @author 1552980358
+         * @since 0.1
+         **/
         var textViewNo: TextView = view.findViewById(R.id.textViewNo)
+        /**
+         * [textViewTitle]
+         * @author 1552980358
+         * @since 0.1
+         **/
         var textViewTitle: TextView = view.findViewById(R.id.textViewTitle)
+        /**
+         * [textViewSubtitle]
+         * @author 1552980358
+         * @since 0.1
+         **/
         var textViewSubtitle: TextView = view.findViewById(R.id.textViewSubtitle)
+        /**
+         * [relativeLayoutRoot]
+         * @author 1552980358
+         * @since 0.1
+         **/
         var relativeLayoutRoot: RelativeLayout = view.findViewById(R.id.relativeLayoutRoot)
+        /**
+         * [imageButtonOpts]
+         * @author 1552980358
+         * @since 0.1
+         **/
         var imageButtonOpts: ImageButton = view.findViewById(R.id.imageButtonOpts)
     }
     

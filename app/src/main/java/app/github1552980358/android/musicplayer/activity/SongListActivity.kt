@@ -47,10 +47,26 @@ import java.io.ObjectInputStream
 
 class SongListActivity: BaseAppCompatActivity(), TimeExchange {
     
+    /**
+     * [bottomSheetBehavior]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     
+    /**
+     * [songListCover]
+     * @author 1552980358
+     * @since 0.1
+     **/
     var songListCover: SongListCover? = null
     
+    /**
+     * [onCreate]
+     * @param savedInstanceState [Bundle]?
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onCreate(savedInstanceState: Bundle?) {
         val songListInfo = intent?.getSerializableExtra(INTENT_SONG_LIST_INFO) as SongListInfo
         
@@ -130,22 +146,43 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
         
     }
     
-    override fun onResume() {
-        super.onResume()
-    }
-    
+    /**
+     * [onMetadataChanged]
+     * @param metadata [MediaBrowserCompat]?
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
     
     }
     
+    /**
+     * [onMetadataChanged]
+     * @param state [PlaybackStateCompat]?
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
     
     }
     
+    /**
+     * [onMetadataChanged]
+     * @param parentId [String]
+     * @param children [MutableList]<[MediaBrowserCompat.MediaItem]>
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
     
     }
     
+    /**
+     * [onConnected]
+     * @param mediaControllerCompat [MediaControllerCompat]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onConnected(mediaControllerCompat: MediaControllerCompat) {
     
     }

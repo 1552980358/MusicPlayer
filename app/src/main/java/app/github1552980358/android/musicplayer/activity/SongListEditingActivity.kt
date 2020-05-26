@@ -46,15 +46,46 @@ import java.io.ObjectOutputStream
 
 class SongListEditingActivity: AppCompatActivity(), TimeExchange {
     
+    /**
+     * [bitmap]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private lateinit var bitmap: Bitmap
     
+    /**
+     * [songListCover]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private lateinit var songListCover: SongListCover
+    /**
+     * [songListInfo]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private lateinit var songListInfo: SongListInfo
     
+    /**
+     * [pos]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private var pos = DEFAULT_VALUE_INT
     
+    /**
+     * [bitmap]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private val bitmapSize by lazy { resources.getDimension(R.dimen.songListEditingActivity_bitmap_cutting_size) }
     
+    /**
+     * [onCreate]
+     * @param savedInstanceState [Bundle]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_song_list_editing)
@@ -121,6 +152,14 @@ class SongListEditingActivity: AppCompatActivity(), TimeExchange {
         
     }
     
+    /**
+     * [onActivityResult]
+     * @param requestCode [Int]
+     * @param resultCode [Int]
+     * @param data [Intent]?
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         data?:return
@@ -161,6 +200,11 @@ class SongListEditingActivity: AppCompatActivity(), TimeExchange {
         
     }
     
+    /**
+     * [finish]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun finish() {
         if (pos == DEFAULT_VALUE_INT) {
             super.finish()
@@ -208,6 +252,11 @@ class SongListEditingActivity: AppCompatActivity(), TimeExchange {
         super.finish()
     }
     
+    /**
+     * [onBackPressed]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onBackPressed() {
         finish()
     }

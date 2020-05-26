@@ -151,15 +151,41 @@ class SongListRecyclerViewAdapter(arrayList: ArrayList<SongListInfo>, private va
     
     /**
      * [ViewHolder]
+     * @param view [View]
      * @author 1552980358
      * @since 0.1
      **/
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        val textViewTitle = view.findViewById<TextView>(R.id.textViewTitle)!!
-        val textViewSubtitle = view.findViewById<TextView>(R.id.textViewSubtitle)!!
-        val relativeLayoutRoot = view.findViewById<RelativeLayout>(R.id.relativeLayoutRoot)!!
-        val imageViewCover = view.findViewById<ImageView>(R.id.imageViewCover)!!
-        val imageButtonOpts = view.findViewById<ImageButton>(R.id.imageButtonOpts)!!
+        /**
+         * [textViewTitle]
+         * @author 1552980358
+         * @since 0.1
+         **/
+        val textViewTitle: TextView = view.findViewById(R.id.textViewTitle)!!
+        /**
+         * [textViewSubtitle]
+         * @author 1552980358
+         * @since 0.1
+         **/
+        val textViewSubtitle: TextView = view.findViewById(R.id.textViewSubtitle)!!
+        /**
+         * [relativeLayoutRoot]
+         * @author 1552980358
+         * @since 0.1
+         **/
+        val relativeLayoutRoot: RelativeLayout = view.findViewById(R.id.relativeLayoutRoot)!!
+        /**
+         * [imageViewCover]
+         * @author 1552980358
+         * @since 0.1
+         **/
+        val imageViewCover: ImageView = view.findViewById(R.id.imageViewCover)!!
+        /**
+         * [imageButtonOpts]
+         * @author 1552980358
+         * @since 0.1
+         **/
+        val imageButtonOpts: ImageButton = view.findViewById(R.id.imageButtonOpts)!!
     }
     
 }

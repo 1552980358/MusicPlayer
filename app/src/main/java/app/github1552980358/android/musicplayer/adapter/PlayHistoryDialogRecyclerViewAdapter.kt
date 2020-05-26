@@ -74,9 +74,24 @@ class PlayHistoryDialogRecyclerViewAdapter(
      * @since 0.1
      **/
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        val textViewTitle = view.findViewById<TextView>(R.id.textViewTitle)!!
-        val textViewNo = view.findViewById<TextView>(R.id.textViewNo)!!
-        val relativeLayoutRoot = view.findViewById<RelativeLayout>(R.id.relativeLayoutRoot)!!
+        /**
+         * [textViewTitle]
+         * @author 1552980358
+         * @since 0.1
+         **/
+        val textViewTitle: TextView = view.findViewById(R.id.textViewTitle)
+        /**
+         * [textViewNo]
+         * @author 1552980358
+         * @since 0.1
+         **/
+        val textViewNo: TextView = view.findViewById(R.id.textViewNo)
+        /**
+         * [relativeLayoutRoot]
+         * @author 1552980358
+         * @since 0.1
+         **/
+        val relativeLayoutRoot: RelativeLayout = view.findViewById(R.id.relativeLayoutRoot)
     }
     
 }
