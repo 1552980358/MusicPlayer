@@ -2,7 +2,6 @@ package app.github1552980358.android.musicplayer.activity
 
 import android.content.Intent
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -30,6 +29,9 @@ import kotlinx.android.synthetic.main.activity_main.tabLayout
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.activity_main.viewPager
 import kotlinx.android.synthetic.main.activity_main_bottomsheet.cardView
+import kotlinx.android.synthetic.main.activity_main_bottomsheet.checkBoxPlay
+import kotlinx.android.synthetic.main.activity_main_bottomsheet.imageButtonLast
+import kotlinx.android.synthetic.main.activity_main_bottomsheet.imageButtonNext
 import kotlinx.android.synthetic.main.activity_main_bottomsheet.imageView
 import kotlinx.android.synthetic.main.activity_main_bottomsheet.linearLayoutBottom
 import kotlinx.android.synthetic.main.activity_main_bottomsheet.textViewSubtitle
@@ -128,6 +130,20 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
         }
         
         imageView.setImageResource(R.drawable.ic_launcher_foreground)
+        
+        checkBoxPlay.setOnClickListener {
+            mediaControllerCompat.transportControls.apply {
+                if (checkBoxPlay.isChecked) play() else pause()
+            }
+        }
+        
+        imageButtonLast.setOnClickListener {
+            mediaControllerCompat.transportControls.skipToPrevious()
+        }
+        
+        imageButtonNext.setOnClickListener {
+            mediaControllerCompat.transportControls.skipToNext()
+        }
         
     }
     
@@ -229,10 +245,10 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
     override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
         when (state?.state) {
             PlaybackStateCompat.STATE_BUFFERING, PlaybackStateCompat.STATE_PLAYING -> {
-            
+                checkBoxPlay.isChecked = true
             }
             PlaybackStateCompat.STATE_PAUSED -> {
-            
+                checkBoxPlay.isChecked = false
             }
         }
     }

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/view_media_list_height"
-    android:minHeight="@dimen/view_media_list_height"
-    android:maxHeight="@dimen/view_media_list_height"
+    android:minHeight="60dp"
+    android:maxHeight="60dp"
     android:orientation="horizontal"
     android:id="@+id/relativeLayoutRoot"
     android:background="?android:attr/selectableItemBackground">
@@ -19,8 +19,8 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:paddingStart="@dimen/view_media_list_button_padding"
-        android:paddingEnd="@dimen/view_media_list_button_padding"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
         android:foregroundGravity="center"
         android:id="@+id/imageButtonOpts"
         android:layout_alignParentEnd="true"
@@ -41,17 +41,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textViewTitle"
-            android:textSize="@dimen/recyclerView_media_list_textSize"
+            android:textSize="15sp"
             android:textColor="@color/black"
-            android:maxLines="1"
-            android:ellipsize="end" />
+            android:ellipsize="end"
+            android:maxLines="1"/>
         
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textViewSubtitle"
-            android:maxLines="1"
-            android:ellipsize="end" />
+            android:ellipsize="end"
+            android:maxLines="1"/>
     
     </LinearLayout>
 

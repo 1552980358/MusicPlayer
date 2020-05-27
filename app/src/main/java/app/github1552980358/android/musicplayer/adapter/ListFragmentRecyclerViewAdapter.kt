@@ -2,7 +2,6 @@ package app.github1552980358.android.musicplayer.adapter
 
 import android.app.Service
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.activity.MainActivity
-import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
+import app.github1552980358.android.musicplayer.base.AudioData
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataListFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.CurrentSongList
@@ -36,11 +35,13 @@ import java.io.ObjectOutputStream
  **/
 
 class ListFragmentRecyclerViewAdapter(
-    private val bottomSheetBehavior: BottomSheetBehavior<View>,
-    private val swipeRefreshLayout: SwipeRefreshLayout,
-    private val mainActivity: MainActivity
+    private val activity: MainActivity,
+    list: ArrayList<AudioData>,
+    private val swipeRefreshLayout: SwipeRefreshLayout
 ) :
     Adapter<ListFragmentRecyclerViewAdapter.ViewHolder>() {
+    
+    private var audioDataList = list
     
     /**
      * [onCreateViewHolder]
@@ -86,6 +87,9 @@ class ListFragmentRecyclerViewAdapter(
             return
         }
         
+        // If it is not set, some items might be affected by visibility
+        // set above causing they invisible
+        // 如果此项不设置, 有些子按键会被以上设置影响而导致无法被看到
         holder.relativeLayoutRoot.visibility = View.VISIBLE
         
         // No need, automatically set when setting onClickListener
@@ -95,13 +99,9 @@ class ListFragmentRecyclerViewAdapter(
         holder.textViewNo.text = position.plus(1).toString()
         holder.textViewTitle.apply {
             text = audioDataList[position].title
-            isSingleLine = true
-            ellipsize = TextUtils.TruncateAt.END
         }
         holder.textViewSubtitle.apply {
             text = audioDataList[position].artist
-            isSingleLine = true
-            ellipsize = TextUtils.TruncateAt.END
         }
         
         holder.relativeLayoutRoot.setOnClickListener {
@@ -112,12 +112,12 @@ class ListFragmentRecyclerViewAdapter(
             
             // Check if collapsing is required
             // 检测是否需要折叠
-            if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            if (activity.bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+                activity.bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                 return@setOnClickListener
             }
             
-            mainActivity.mediaControllerCompat.transportControls.playFromMediaId(
+            activity.mediaControllerCompat.transportControls.playFromMediaId(
                 audioDataList[position].id,
                 Bundle().apply { putString(CurrentSongList, FULL_LIST) }
             )
@@ -138,10 +138,10 @@ class ListFragmentRecyclerViewAdapter(
                 inflate(R.menu.menu_audio_opt)
                 setOnMenuItemClickListener {
                     
-                    File(mainActivity.getExternalFilesDir(AudioDataDir), IgnoredFile).appendText(audioDataList[position].id + "\n")
+                    File(activity.getExternalFilesDir(AudioDataDir), IgnoredFile).appendText(audioDataList[position].id + "\n")
 
                     audioDataList.removeAt(position)
-                    File(mainActivity.getExternalFilesDir(AudioDataDir), AudioDataListFile).apply {
+                    File(activity.getExternalFilesDir(AudioDataDir), AudioDataListFile).apply {
                         //if (!exists()) {
                         //    createNewFile()
                         //}
@@ -174,7 +174,8 @@ class ListFragmentRecyclerViewAdapter(
      * @author 1552980358
      * @since 0.1
      **/
-    fun updateList() {
+    fun updateList(list: ArrayList<AudioData>) {
+        audioDataList = list
         notifyDataSetChanged()
         swipeRefreshLayout.isRefreshing = false
     }

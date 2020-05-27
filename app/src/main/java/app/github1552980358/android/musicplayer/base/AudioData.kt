@@ -2,8 +2,7 @@ package app.github1552980358.android.musicplayer.base
 
 import com.github.promeg.pinyinhelper.Pinyin
 import java.io.Serializable
-import java.util.*
-import kotlin.collections.ArrayList
+import java.util.Locale
 
 /**
  * @file    : [AudioData]
@@ -14,26 +13,6 @@ import kotlin.collections.ArrayList
  **/
 
 class AudioData: Serializable {
-    
-    companion object {
-    
-        /**
-         * [audioDataList]
-         * @author 1552980358
-         * @since 0.1
-         **/
-        @JvmStatic
-        var audioDataList = ArrayList<AudioData>()
-    
-        /**
-         * [audioDataMap]
-         * @author 1552980358
-         * @since 0.1
-         **/
-        @JvmStatic
-        var audioDataMap = mutableMapOf<String, AudioData>()
-        
-    }
     
     /**
      * [title]

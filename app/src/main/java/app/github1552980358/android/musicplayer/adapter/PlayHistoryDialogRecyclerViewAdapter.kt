@@ -43,7 +43,7 @@ class PlayHistoryDialogRecyclerViewAdapter(
      * @since 0.1
      **/
     override fun getItemCount(): Int {
-        return PlayService.playHistory.size
+        return 0
     }
     
     /**
@@ -56,14 +56,13 @@ class PlayHistoryDialogRecyclerViewAdapter(
         holder.textViewNo.text = position.plus(1).toString()
         
         // title
-        holder.textViewTitle.text = AudioData.audioDataMap[PlayService.playHistory[PlayService.playHistory.lastIndex - position]]?.run {
-            "$title - $artist"
-        }
+        //holder.textViewTitle.text = AudioData.audioDataMap[PlayService.playHistory[PlayService.playHistory.lastIndex - position]]?.run {
+        //    "$title - $artist"
+        //}
         holder.textViewTitle.isSingleLine = true
         holder.textViewTitle.ellipsize = TextUtils.TruncateAt.END
         holder.relativeLayoutRoot.setOnClickListener {
-            parentActivity.mediaControllerCompat.transportControls
-                .playFromMediaId(PlayService.playHistory[PlayService.playHistory.lastIndex - position], null)
+        
         }
     }
     

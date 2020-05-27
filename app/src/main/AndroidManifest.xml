@@ -60,7 +60,8 @@
         <service
             android:name=".service.PlayService"
             android:foregroundServiceType="mediaPlayback"
-            tools:ignore="ExportedService">
+            tools:ignore="ExportedService"
+            android:process=":PlayService">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>

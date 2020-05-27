@@ -1,5 +1,6 @@
 package app.github1552980358.android.musicplayer.activity
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -16,8 +17,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.base.AudioData
-import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
-import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataMap
+//import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
+//import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataMap
 import app.github1552980358.android.musicplayer.base.Colour
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumColourDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormalDir
@@ -27,6 +28,10 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDat
 import app.github1552980358.android.musicplayer.base.Constant.Companion.BackgroundThread
 import app.github1552980358.android.musicplayer.base.Constant.Companion.IgnoredFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumRoundDir
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INITIALIZE
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INITIALIZE_EXTRA
+import app.github1552980358.android.musicplayer.service.PlayService
+import app.github1552980358.android.musicplayer.service.PlayService.Companion.START_FLAG
 import kotlinx.android.synthetic.main.activity_audio_import.imageView
 import kotlinx.android.synthetic.main.activity_audio_import.progressBar
 import kotlinx.android.synthetic.main.activity_audio_import.textView
@@ -35,6 +40,7 @@ import lib.github1552980358.labourforce.labours.work.LabourWork
 import mkaflowski.mediastylepalette.MediaNotificationProcessor
 import java.io.File
 import java.io.ObjectOutputStream
+import java.io.Serializable
 
 /**
  * @file    : [AudioImportActivity]
@@ -52,6 +58,9 @@ class AudioImportActivity : AppCompatActivity() {
      * @since 0.1
      **/
     private var searching = false
+    
+    private var audioDataMap = mutableMapOf<String, AudioData>()
+    private var audioDataList = ArrayList<AudioData>()
     
     /**
      * [onCreate]
@@ -112,8 +121,9 @@ class AudioImportActivity : AppCompatActivity() {
                                 return
                             }
         
-                            audioDataList.clear()
-                            audioDataMap.clear()
+                            //audioDataList.clear()
+                            //audioDataMap.clear()
+                            
                             do {
                                 AudioData().apply {
                                     id = getString(getColumnIndex(MediaStore.Audio.AudioColumns._ID))
@@ -295,6 +305,13 @@ class AudioImportActivity : AppCompatActivity() {
                 
                 override fun workDone(workProduct: MutableMap<String, Any?>?, handler: Handler?) {
                     searching = false
+                    runOnUiThread {
+                        startService(
+                            Intent(this@AudioImportActivity, PlayService::class.java)
+                                .putExtra(START_FLAG, INITIALIZE)
+                                .putExtra(INITIALIZE_EXTRA, audioDataMap as Serializable)
+                        )
+                    }
                 }
                 
                 override fun workFail(e: Exception, workProduct: MutableMap<String, Any?>?, handler: Handler?) {

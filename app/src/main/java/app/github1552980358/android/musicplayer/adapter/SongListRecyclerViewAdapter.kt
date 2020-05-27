@@ -13,6 +13,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Adapter
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.activity.SongListActivity
 import app.github1552980358.android.musicplayer.activity.SongListEditingActivity
@@ -37,8 +38,11 @@ import java.io.ObjectOutputStream
  * @time    : 11:01
  **/
 
-class SongListRecyclerViewAdapter(arrayList: ArrayList<SongListInfo>, private val fragment: Fragment):
-    RecyclerView.Adapter<SongListRecyclerViewAdapter.ViewHolder>() {
+class SongListRecyclerViewAdapter(
+    arrayList: ArrayList<SongListInfo>,
+    private val fragment: Fragment
+):
+    Adapter<SongListRecyclerViewAdapter.ViewHolder>() {
     
     /**
      * [data]

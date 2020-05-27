@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.os.PowerManager.PARTIAL_WAKE_LOCK
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -30,17 +31,23 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.media.MediaBrowserServiceCompat
 import app.github1552980358.android.musicplayer.R
-import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
-import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataMap
+import app.github1552980358.android.musicplayer.base.AudioData
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormalDir
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataDir
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataListFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.CurrentSongList
 import app.github1552980358.android.musicplayer.base.Constant.Companion.FULL_LIST
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INITIALIZE
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INITIALIZE_EXTRA
 import app.github1552980358.android.musicplayer.base.Constant.Companion.RootId
+import app.github1552980358.android.musicplayer.base.Constant.Companion.SongListDir
+import app.github1552980358.android.musicplayer.base.SongList
 import app.github1552980358.android.musicplayer.service.CycleMode.LIST_CYCLE
 import app.github1552980358.android.musicplayer.service.CycleMode.RANDOM_ACCESS
 import app.github1552980358.android.musicplayer.service.CycleMode.SINGLE_CYCLE
 import app.github1552980358.android.musicplayer.service.NotificationUtil.Companion.ServiceId
 import java.io.File
+import java.io.ObjectInputStream
 
 /**
  * @file    : [PlayService]
@@ -94,28 +101,29 @@ class PlayService : MediaBrowserServiceCompat(),
          * @since 0.1
          **/
         private const val TAG_WAKE_LOCK = "PlayService:WakeLock"
-    
-        /**
-         * [playHistory]
-         * @author 1552980358
-         * @since 0.1
-         **/
-        val playHistory = ArrayList<String>()
-    
-        /**
-         * [currentIndex]
-         * @author 1552980358
-         * @since 0.1
-         **/
-        var currentIndex = -1
-    
+        
         /**
          * [CYCLE_MODE]
          * @author 1552980358
          * @since 0.1
          **/
         const val CYCLE_MODE = "CYCLE_MODE"
+        
     }
+    
+    /**
+     * [playHistory]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    val playHistory = ArrayList<String>()
+    
+    /**
+     * [currentIndex]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    var currentIndex = -1
     
     /**
      * [playbackStateCompat]
@@ -218,6 +226,10 @@ class PlayService : MediaBrowserServiceCompat(),
     
     private var currentSongList = FULL_LIST
     
+    private var songList = arrayListOf<AudioData>()
+    
+    private lateinit var audioDataMap: MutableMap<String, AudioData>
+    
     /**
      * [onCreate]
      * @author 1552980358
@@ -307,7 +319,8 @@ class PlayService : MediaBrowserServiceCompat(),
                     onPlay(mediaPlayer)
                     playbackStateCompat = PlaybackStateCompat.Builder()
                         .setActions(playbackStateActions)
-                        .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
+                        .addCustomAction(cycleMode.name, CYCLE_MODE, R.drawable.ic_launcher_foreground)
+                        .addCustomAction(currentSongList, CurrentSongList, R.drawable.ic_launcher_foreground)
                         .setState(STATE_PLAYING, 0L, 1F)
                         .build()
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
@@ -376,20 +389,18 @@ class PlayService : MediaBrowserServiceCompat(),
                 Log.e("MediaSessionCompat", "onSkipToPrevious")
     
                 if (currentIndex == 0) {
-                    if (playHistory[0] == audioDataList.first().id) {
-                        playHistory.add(0, audioDataList.last().id)
+                    if (playHistory[0] == songList.first().id) {
+                        playHistory.add(0, songList.last().id)
                     } else {
-                        Log.e("playHistory", playHistory.first())
-                        for ((i, j) in audioDataList.withIndex()) {
+                        for ((i, j) in songList.withIndex()) {
                             if (playHistory[0] != j.id) {
                                 continue
                             }
                             
-                            playHistory.add(0, audioDataList[i - 1].id)
+                            playHistory.add(0, songList[i - 1].id)
                             break
                         }
                         
-                        //playHistory.add(0, audioDataList[audioDataList.indexOf(audioDataMap[playHistory[0]]) - 1].id)
                     }
                     playbackStateCompat = PlaybackStateCompat.Builder()
                         .setActions(playbackStateActions)
@@ -425,6 +436,7 @@ class PlayService : MediaBrowserServiceCompat(),
                     .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, audioDataMap[playHistory[currentIndex]]?.duration!!)
                     .build()
                 mediaSessionCompat.setMetadata(mediaMetadataCompat)
+                
                 onPlayFromMediaId(this@PlayService, mediaPlayer, this, playHistory[currentIndex])
             }
     
@@ -460,16 +472,16 @@ class PlayService : MediaBrowserServiceCompat(),
                 }
 
                 if (cycleMode == RANDOM_ACCESS) {
-                    onPlayFromMediaId(audioDataList[(0 .. audioDataList.lastIndex).random()].id, null)
+                    onPlayFromMediaId(songList[(0 .. songList.lastIndex).random()].id, null)
                     return
                 }
 
-                for ((i, j) in audioDataList.withIndex()) {
+                for ((i, j) in songList.withIndex()) {
                     if (playHistory[currentIndex] != j.id) {
                         continue
                     }
 
-                    onPlayFromMediaId(audioDataList[if (i == audioDataList.lastIndex) 0 else i + 1].id, null)
+                    onPlayFromMediaId(songList[if (i == songList.lastIndex) 0 else i + 1].id, null)
                     break
                 }
 
@@ -513,6 +525,7 @@ class PlayService : MediaBrowserServiceCompat(),
                 }
             }
     
+            var newList = false
             /**
              * [onPlayFromMediaId]
              * @author 1552980358
@@ -520,10 +533,13 @@ class PlayService : MediaBrowserServiceCompat(),
              **/
             @Synchronized
             override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
+                
                 Log.e("MediaSessionCompat", "onPlayFromMediaId")
                 if (currentSongList != extras?.getString(CurrentSongList)!!) {
                     playHistory.clear()
+                    currentIndex = -1
                     currentSongList = extras.getString(CurrentSongList)!!
+                    newList = true
                 }
                 
                 playbackStateCompat = PlaybackStateCompat.Builder()
@@ -542,8 +558,37 @@ class PlayService : MediaBrowserServiceCompat(),
                     .build()
                 mediaSessionCompat.setMetadata(mediaMetadataCompat)
                 notificationManagerCompat.notify(ServiceId, getNotification())
+                
+                if (newList) {
+                    songList.clear()
+                    if (currentSongList == FULL_LIST) {
+                       File(getExternalFilesDir(AudioDataDir), AudioDataListFile).apply {
+                           if (!exists()) {
+                               return@apply
+                           }
+                           
+                           inputStream().use { `is` ->
+                               ObjectInputStream(`is`).use { ois ->
+                                   @Suppress("UNCHECKED_CAST")
+                                   songList = (ois.readObject() as ArrayList<AudioData>)
+                               }
+                           }
+                       }
+                    } else {
+                        File(getExternalFilesDir(SongListDir), currentSongList).apply {
+                            inputStream().use { `is` ->
+                                ObjectInputStream(`is`).use { ois ->
+                                    songList = (ois.readObject() as SongList).audioList
+                                }
+                            }
+                        }
+                    }
+                    newList = false
+                }
+                
                 onPlayFromMediaId(this@PlayService, mediaPlayer, this, mediaId!!)
                 currentIndex++
+                
                 playHistory.add(mediaId)
             }
 
@@ -586,6 +631,22 @@ class PlayService : MediaBrowserServiceCompat(),
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         Log.e("PlayService", "onLoadChildren")
         result.detach()
+        
+        mediaItemList.clear()
+        
+        songList.forEach { audioData ->
+            mediaItemList.add(
+                MediaBrowserCompat.MediaItem(
+                    MediaDescriptionCompat.Builder()
+                        .setTitle(audioData.title)
+                        .setSubtitle(audioData.artist)
+                        .setMediaId(audioData.id)
+                        .build(),
+                    MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+                )
+            )
+        }
+        
         result.sendResult(mediaItemList)
     }
 
@@ -615,6 +676,12 @@ class PlayService : MediaBrowserServiceCompat(),
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.e("PlayService", "onStartCommand")
         when (intent?.getStringExtra(START_FLAG)) {
+            
+            INITIALIZE -> {
+                @Suppress("UNCHECKED_CAST")
+                audioDataMap = (intent.getSerializableExtra(INITIALIZE_EXTRA) as MutableMap<String, AudioData>)
+            }
+            
             START_FOREGROUND -> {
                 startForeground(this, getNotification())
                 isForegroundService = true
@@ -635,6 +702,7 @@ class PlayService : MediaBrowserServiceCompat(),
                     wakeLock!!.acquire()
                 }
             }
+            
             STOP_FOREGROUND -> {
                 stopForeground(false)
                 isForegroundService = false
@@ -654,6 +722,7 @@ class PlayService : MediaBrowserServiceCompat(),
                 wakeLock?.release()
                 wakeLock = null
             }
+            
             LIST_CYCLE.name -> {
                 cycleMode = LIST_CYCLE
                 playbackStateCompat = PlaybackStateCompat.Builder()
@@ -667,6 +736,7 @@ class PlayService : MediaBrowserServiceCompat(),
                     .build()
                 mediaSessionCompat.setPlaybackState(playbackStateCompat)
             }
+            
             RANDOM_ACCESS.name -> {
                 cycleMode = RANDOM_ACCESS
                 playbackStateCompat = PlaybackStateCompat.Builder()
@@ -680,6 +750,7 @@ class PlayService : MediaBrowserServiceCompat(),
                     .build()
                 mediaSessionCompat.setPlaybackState(playbackStateCompat)
             }
+            
             SINGLE_CYCLE.name -> {
                 cycleMode = SINGLE_CYCLE
                 playbackStateCompat = PlaybackStateCompat.Builder()
@@ -693,6 +764,9 @@ class PlayService : MediaBrowserServiceCompat(),
                     .build()
                 mediaSessionCompat.setPlaybackState(playbackStateCompat)
             }
+            
+            
+            
         }
         
         return super.onStartCommand(intent, flags, startId)

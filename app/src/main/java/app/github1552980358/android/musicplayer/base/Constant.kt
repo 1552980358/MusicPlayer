@@ -10,6 +10,9 @@ package app.github1552980358.android.musicplayer.base
 
 class Constant private constructor() {
     companion object {
+        
+        const val INITIALIZE = "INITIALIZE"
+        const val INITIALIZE_EXTRA = "INITIALIZE_EXTRA"
 
         /**
          * [DEFAULT_VALUE_FLOAT]

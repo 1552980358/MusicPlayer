@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_SETTLING
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.activity.MainActivity
 import app.github1552980358.android.musicplayer.adapter.ListFragmentRecyclerViewAdapter
-import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
+import app.github1552980358.android.musicplayer.base.AudioData
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataDir
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataListFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.DEFAULT_VALUE_INT
 import app.github1552980358.android.musicplayer.view.SideCharView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -20,6 +22,8 @@ import kotlinx.android.synthetic.main.fragment_list.textViewChar
 import kotlinx.android.synthetic.main.fragment_list.swipeRefreshLayout
 import kotlinx.android.synthetic.main.fragment_list.recyclerView
 import kotlinx.android.synthetic.main.fragment_list.sideCharView
+import java.io.File
+import java.io.ObjectInputStream
 
 /**
  * @file    : [ListFragment]
@@ -31,6 +35,10 @@ import kotlinx.android.synthetic.main.fragment_list.sideCharView
 
 class ListFragment:
     Fragment() {
+    
+    private lateinit var audioDataList: ArrayList<AudioData>
+    
+    private val charTable = arrayListOf<Int>()
     
     /**
      * [onCreateView]
@@ -52,48 +60,22 @@ class ListFragment:
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val charTable = arrayListOf<Int>()
+    
+        updateAudioDataList()
+        updateCharTable()
 
         swipeRefreshLayout.setOnRefreshListener {
-            @Suppress("DuplicatedCode", "DuplicatedCode")
-            for (i in 0 .. 26) {
-                charTable.add(DEFAULT_VALUE_INT)
-            }
-            @Suppress("DuplicatedCode")
-            for ((i, j) in audioDataList.withIndex()) {
-                if (j.titlePinYin.first() in 'A' .. 'Z') {
-                    if (charTable[j.titlePinYin.first().toInt() - 64] == DEFAULT_VALUE_INT) {
-                        charTable[j.titlePinYin.first().toInt() - 64] = i
-                    }
-                } else if (charTable.first() == DEFAULT_VALUE_INT) {
-                    charTable[0] = i
-                }
-            }
+            charTable.clear()
+            updateAudioDataList()
+            updateCharTable()
             updateList()
         }
 
-        @Suppress("DuplicatedCode")
-        for (i in 0 .. 26) {
-            charTable.add(DEFAULT_VALUE_INT)
-        }
-        
-        @Suppress("DuplicatedCode")
-        for ((i, j) in audioDataList.withIndex()) {
-            if (j.titlePinYin.first() in 'A' .. 'Z') {
-                if (charTable[j.titlePinYin.first().toInt() - 64] == DEFAULT_VALUE_INT) {
-                    charTable[j.titlePinYin.first().toInt() - 64] = i
-                }
-            } else if (charTable.first() == DEFAULT_VALUE_INT) {
-                charTable[0] = i
-            }
-        }
-
-        val layoutManager = LinearLayoutManager(context)
-        recyclerView.layoutManager = layoutManager
+        recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = ListFragmentRecyclerViewAdapter(
-            (activity as MainActivity).bottomSheetBehavior, swipeRefreshLayout,
-            activity as MainActivity
+            activity as MainActivity,
+            audioDataList,
+            swipeRefreshLayout
         )
         recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             private var isUser = false
@@ -189,7 +171,39 @@ class ListFragment:
      * @since 0.1
      */
     fun updateList() {
-        (recyclerView?.adapter as ListFragmentRecyclerViewAdapter?)?.updateList()
+        (recyclerView?.adapter as ListFragmentRecyclerViewAdapter?)?.updateList(audioDataList)
+    }
+    
+    private fun updateAudioDataList() {
+        File(requireContext().getExternalFilesDir(AudioDataDir), AudioDataListFile).apply {
+            if (!exists()) {
+                audioDataList = ArrayList()
+                return@apply
+            }
+        
+            inputStream().use { `is` ->
+                ObjectInputStream(`is`).use { ois ->
+                    @Suppress("UNCHECKED_CAST")
+                    audioDataList = (ois.readObject() as ArrayList<AudioData>)
+                }
+            }
+        }
+    }
+    
+    private fun updateCharTable() {
+        for (i in 0 .. 26) {
+            charTable.add(DEFAULT_VALUE_INT)
+        }
+    
+        for ((i, j) in audioDataList.withIndex()) {
+            if (j.titlePinYin.first() in 'A' .. 'Z') {
+                if (charTable[j.titlePinYin.first().toInt() - 64] == DEFAULT_VALUE_INT) {
+                    charTable[j.titlePinYin.first().toInt() - 64] = i
+                }
+            } else if (charTable.first() == DEFAULT_VALUE_INT) {
+                charTable[0] = i
+            }
+        }
     }
     
 }
