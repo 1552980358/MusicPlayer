@@ -30,8 +30,20 @@ class SongListContentRecyclerViewAdapter(
 ):
     Adapter<SongListContentRecyclerViewAdapter.ViewHolder>() {
     
+    /**
+     * [songList]
+     * @author  : 1552980358
+     * @since 0.1
+     **/
     private var songList = list
     
+    /**
+     * [onCreateViewHolder]
+     * @param parent [ViewGroup]
+     * @param viewType [Int]
+     * @author  : 1552980358
+     * @since 0.1
+     **/
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             (activity.getSystemService(Service.LAYOUT_INFLATER_SERVICE) as LayoutInflater)
@@ -39,10 +51,23 @@ class SongListContentRecyclerViewAdapter(
         )
     }
     
+    /**
+     * [getItemCount]
+     * @return [Int]
+     * @author  : 1552980358
+     * @since 0.1
+     **/
     override fun getItemCount(): Int {
         return songList.size + 1
     }
     
+    /**
+     * [onBindViewHolder]
+     * @param holder [ViewHolder]
+     * @param position [Int]
+     * @author  : 1552980358
+     * @since 0.1
+     **/
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (songList.isEmpty()) {
             holder.relativeLayoutRoot.visibility = View.GONE
@@ -74,9 +99,29 @@ class SongListContentRecyclerViewAdapter(
     }
     
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
-            val relativeLayoutRoot: RelativeLayout = view.findViewById(R.id.relativeLayoutRoot)
+        /**
+         * [relativeLayoutRoot]
+         * @author  : 1552980358
+         * @since 0.1
+         **/
+        val relativeLayoutRoot: RelativeLayout = view.findViewById(R.id.relativeLayoutRoot)
+        /**
+         * [textViewTitle]
+         * @author  : 1552980358
+         * @since 0.1
+         **/
         val textViewTitle: TextView = view.findViewById(R.id.textViewTitle)
+        /**
+         * [textViewSubtitle]
+         * @author  : 1552980358
+         * @since 0.1
+         **/
         val textViewSubtitle: TextView = view.findViewById(R.id.textViewSubtitle)
+        /**
+         * [imageButtonOpts]
+         * @author  : 1552980358
+         * @since 0.1
+         **/
         val imageButtonOpts: ImageButton = view.findViewById(R.id.imageButtonOpts)
     }
     

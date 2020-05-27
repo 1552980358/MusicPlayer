@@ -17,8 +17,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.base.AudioData
-//import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataList
-//import app.github1552980358.android.musicplayer.base.AudioData.Companion.audioDataMap
 import app.github1552980358.android.musicplayer.base.Colour
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumColourDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormalDir

@@ -12,14 +12,39 @@ import java.io.Serializable
 
 class SongListCover: Serializable {
     
+    /**
+     * [image]
+     * @author 1552980358
+     * @since 0.1
+     **/
     var image = byteArrayOf()
     
+    /**
+     * [backgroundColour]
+     * @author 1552980358
+     * @since 0.1
+     **/
     var backgroundColour = 0
     
+    /**
+     * [primaryTextColour]
+     * @author 1552980358
+     * @since 0.1
+     **/
     var primaryTextColour = 0
     
+    /**
+     * [secondaryTextColour]
+     * @author 1552980358
+     * @since 0.1
+     **/
     var secondaryTextColour = 0
     
+    /**
+     * [isLight]
+     * @author 1552980358
+     * @since 0.1
+     **/
     var isLight = true
     
 }

@@ -10,10 +10,21 @@ package app.github1552980358.android.musicplayer.base
 
 class Constant private constructor() {
     companion object {
-        
+    
+        /**
+         * [INITIALIZE]
+         * @author 1552980358
+         * @since 0.1
+         **/
         const val INITIALIZE = "INITIALIZE"
+        /**
+         * [INITIALIZE_EXTRA]
+         * @author 1552980358
+         * @since 0.1
+         **/
         const val INITIALIZE_EXTRA = "INITIALIZE_EXTRA"
-
+    
+        /*****************************************/
         /**
          * [DEFAULT_VALUE_FLOAT]
          * @author 1552980358
@@ -34,14 +45,49 @@ class Constant private constructor() {
         const val DEFAULT_VALUE_STR = ""
     
         /*****************************************/
+        /**
+         * [INTENT_AUDIO_TITLE]
+         * @author 1552980358
+         * @since 0.1
+         **/
         const val INTENT_AUDIO_TITLE = "INTENT_AUDIO_TITLE"
+        /**
+         * [INTENT_AUDIO_ARTIST]
+         * @author 1552980358
+         * @since 0.1
+         **/
         const val INTENT_AUDIO_ARTIST = "INTENT_AUDIO_ARTIST"
+        /**
+         * [INTENT_AUDIO_ALBUM]
+         * @author 1552980358
+         * @since 0.1
+         **/
         const val INTENT_AUDIO_ALBUM = "INTENT_AUDIO_ALBUM"
+        /**
+         * [INTENT_AUDIO_ID]
+         * @author 1552980358
+         * @since 0.1
+         **/
         const val INTENT_AUDIO_ID = "INTENT_AUDIO_ID"
+        /**
+         * [INTENT_AUDIO_DURATION]
+         * @author 1552980358
+         * @since 0.1
+         **/
         const val INTENT_AUDIO_DURATION = "INTENT_AUDIO_DURATION"
         
         /*****************************************/
+        /**
+         * [INTENT_SONG_LIST_INFO]
+         * @author 1552980358
+         * @since 0.1
+         **/
         const val INTENT_SONG_LIST_INFO = "INTENT_SONG_LIST_INFO"
+        /**
+         * [INTENT_SONG_LIST_POS]
+         * @author 1552980358
+         * @since 0.1
+         **/
         const val INTENT_SONG_LIST_POS = "INTENT_SONG_LIST_POS"
     
         /*****************************************/

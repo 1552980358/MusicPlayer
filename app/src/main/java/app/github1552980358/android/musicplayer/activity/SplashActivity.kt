@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.base.AudioData
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataDir
-import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataListFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataMapFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.BackgroundThread
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INITIALIZE
@@ -102,6 +101,14 @@ class SplashActivity : AppCompatActivity() {
         LabourForce.onDuty
             .employLabour(BackgroundThread, LabourLv.Mid)
             .sendWork2Labour(BackgroundThread, object : LabourWork(Handler()) {
+    
+                /**
+                 * [dutyEnd]
+                 * @param workProduct [MutableList]<[String], [Any]?>
+                 * @param handler [Handler]?
+                 * @author 1552980358
+                 * @since 0.1
+                 **/
                 override fun dutyEnd(workProduct: MutableMap<String, Any?>?, handler: Handler?) {
                     handler!!.post {
                         //startService(Intent(this@SplashActivity, PlayService::class.java))
@@ -109,8 +116,14 @@ class SplashActivity : AppCompatActivity() {
                         finish()
                     }
                 }
-
-                
+    
+                /**
+                 * [workContent]
+                 * @param workProduct [MutableList]<[String], [Any]?>
+                 * @param handler [Handler]?
+                 * @author 1552980358
+                 * @since 0.1
+                 **/
                 override fun workContent(workProduct: MutableMap<String, Any?>?, handler: Handler?) {
                     
                     /**
@@ -171,7 +184,14 @@ class SplashActivity : AppCompatActivity() {
                      * }
                     */
                 }
-
+                
+                /**
+                 * [workDone]
+                 * @param workProduct [MutableList]<[String], [Any]?>
+                 * @param handler [Handler]?
+                 * @author 1552980358
+                 * @since 0.1
+                 **/
                 override fun workDone(workProduct: MutableMap<String, Any?>?, handler: Handler?) {
                     handler!!.post {
                         //startService(Intent(this@SplashActivity, PlayService::class.java))
@@ -179,7 +199,15 @@ class SplashActivity : AppCompatActivity() {
                         finish()
                     }
                 }
-
+    
+                /**
+                 * [workFail]
+                 * @param e [Exception]
+                 * @param workProduct [MutableList]<[String], [Any]?>
+                 * @param handler [Handler]?
+                 * @author 1552980358
+                 * @since 0.1
+                 **/
                 override fun workFail(e: Exception, workProduct: MutableMap<String, Any?>?, handler: Handler?) {
                     handler!!.post {
                         //startService(Intent(this@SplashActivity, PlayService::class.java))

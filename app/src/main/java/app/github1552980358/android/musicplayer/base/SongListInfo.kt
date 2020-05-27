@@ -16,6 +16,8 @@ class SongListInfo : Serializable {
         
         /**
          * [songListInfoList]
+         * @author 1552980358
+         * @since 0.1
          **/
         var songListInfoList = arrayListOf<SongListInfo>()
     

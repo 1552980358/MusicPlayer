@@ -7,7 +7,7 @@ import app.github1552980358.android.musicplayer.R
 
 /**
  * @file    : [AmplifyDiminishInterface]
- * @author  : 1552980358
+ * @author  : 1552980328
  * @since   : 0.1
  * @date    : 2020/5/11
  * @time    : 16:39
@@ -16,6 +16,11 @@ import app.github1552980358.android.musicplayer.R
 @Deprecated("Replaced with Share Element provided by Android Framework", ReplaceWith("Share Element"), DeprecationLevel.HIDDEN)
 interface AmplifyDiminishInterface {
     
+    /**
+     * [zoom]
+     * @author 1552980328
+     * @since 0.1
+     **/
     fun zoom(imageView: ImageView) {
         val margin = imageView.context.resources.getDimension(R.dimen.mainActivity_bottom_sheet_icon_margin)
         

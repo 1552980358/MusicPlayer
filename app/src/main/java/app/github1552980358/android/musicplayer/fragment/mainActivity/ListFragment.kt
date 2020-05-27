@@ -174,6 +174,11 @@ class ListFragment:
         (recyclerView?.adapter as ListFragmentRecyclerViewAdapter?)?.updateList(audioDataList)
     }
     
+    /**
+     * [updateAudioDataList]
+     * @author 1552980358
+     * @since 0.1
+     */
     private fun updateAudioDataList() {
         File(requireContext().getExternalFilesDir(AudioDataDir), AudioDataListFile).apply {
             if (!exists()) {
@@ -190,6 +195,11 @@ class ListFragment:
         }
     }
     
+    /**
+     * [updateCharTable]
+     * @author 1552980358
+     * @since 0.1
+     */
     private fun updateCharTable() {
         for (i in 0 .. 26) {
             charTable.add(DEFAULT_VALUE_INT)

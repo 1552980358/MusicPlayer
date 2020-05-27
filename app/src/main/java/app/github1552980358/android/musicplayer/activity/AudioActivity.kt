@@ -183,14 +183,34 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
         }
         
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            /**
+             * [onProgressChanged]
+             * @param seekBar [SeekBar]
+             * @param progress [Int]
+             * @param fromUser [Boolean]
+             * @author 1552980358
+             * @since 0.1
+             **/
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 textViewPassed.text = getTimeText(progress)
             }
-    
+            
+            /**
+             * [onStartTrackingTouch]
+             * @param seekBar [SeekBar]
+             * @author 1552980358
+             * @since 0.1
+             **/
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
                 seekBarTouched = true
             }
     
+            /**
+             * [onStartTrackingTouch]
+             * @param seekBar [SeekBar]?
+             * @author 1552980358
+             * @since 0.1
+             **/
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 mediaControllerCompat.transportControls.seekTo(seekBar!!.progress * 1000L)
                 seekBarTouched = false

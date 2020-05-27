@@ -44,7 +44,7 @@ class CreateSongListDialogFragment : DialogFragment() {
      * @author 1552980358
      * @since 0.1
      **/
-    var contentText = "" as String?
+    private var contentText = "" as String?
     
     /**
      * [onCreateDialog]

@@ -55,7 +55,6 @@ class PlayHistoryDialogFragment: BottomSheetDialogFragment() {
         return super.onCreateDialog(savedInstanceState).apply {
             setContentView(R.layout.dialog_play_history)
             
-            
             linearLayoutRoot.layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, context.resources.displayMetrics.heightPixels / 2)
             (linearLayoutRoot.parent as FrameLayout).setBackgroundColor(Color.TRANSPARENT)
             

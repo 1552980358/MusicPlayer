@@ -224,10 +224,25 @@ class PlayService : MediaBrowserServiceCompat(),
      **/
     private var isForegroundService = false
     
+    /**
+     * [currentSongList]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private var currentSongList = FULL_LIST
     
+    /**
+     * [songList]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private var songList = arrayListOf<AudioData>()
     
+    /**
+     * [audioDataMap]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private lateinit var audioDataMap: MutableMap<String, AudioData>
     
     /**
