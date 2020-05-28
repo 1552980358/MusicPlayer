@@ -113,9 +113,6 @@ class AudioImportActivity : AppCompatActivity() {
         
                             if (!moveToFirst()) {
                                 close()
-                                handler?.post {
-                                    textView.text = String.format(getString(R.string.mediaSearchActivity_none), 0)
-                                }
                                 return
                             }
         
@@ -286,7 +283,6 @@ class AudioImportActivity : AppCompatActivity() {
             
                         }
         
-        
                     }
     
                     handler?.post {
@@ -303,6 +299,13 @@ class AudioImportActivity : AppCompatActivity() {
                 
                 override fun workDone(workProduct: MutableMap<String, Any?>?, handler: Handler?) {
                     searching = false
+                    if (audioDataList.isEmpty()) {
+                        handler?.post {
+                            imageView.visibility = View.VISIBLE
+                            progressBar.visibility = View.INVISIBLE
+                            textView.text = String.format(getString(R.string.mediaSearchActivity_none), 0)
+                        }
+                    }
                     runOnUiThread {
                         startService(
                             Intent(this@AudioImportActivity, PlayService::class.java)
