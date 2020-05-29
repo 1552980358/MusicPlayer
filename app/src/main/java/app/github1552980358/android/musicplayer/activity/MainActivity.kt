@@ -72,7 +72,7 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
         super.onCreate(savedInstanceState)
         Log.e("MainActivity", "onCreate")
         setContentView(R.layout.activity_main)
-    
+        
         setSupportActionBar(toolbar)
         
         @Suppress("UNCHECKED_CAST")

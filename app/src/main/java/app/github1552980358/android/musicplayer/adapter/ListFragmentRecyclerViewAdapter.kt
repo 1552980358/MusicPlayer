@@ -1,6 +1,7 @@
 package app.github1552980358.android.musicplayer.adapter
 
 import android.app.Service
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +22,7 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDat
 import app.github1552980358.android.musicplayer.base.Constant.Companion.CurrentSongList
 import app.github1552980358.android.musicplayer.base.Constant.Companion.FULL_LIST
 import app.github1552980358.android.musicplayer.base.Constant.Companion.IgnoredFile
+import app.github1552980358.android.musicplayer.dialog.AddToSongListDialogFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.view_media_list.view.imageButtonOpts
 import java.io.File
@@ -136,32 +138,38 @@ class ListFragmentRecyclerViewAdapter(
         holder.imageButtonOpts.setOnClickListener {
             PopupMenu(it.context, holder.imageButtonOpts.imageButtonOpts).apply {
                 inflate(R.menu.menu_audio_opt)
-                setOnMenuItemClickListener {
+                setOnMenuItemClickListener { menuItem ->
                     
-                    File(activity.getExternalFilesDir(AudioDataDir), IgnoredFile).appendText(audioDataList[position].id + "\n")
-
-                    audioDataList.removeAt(position)
-                    File(activity.getExternalFilesDir(AudioDataDir), AudioDataListFile).apply {
-                        //if (!exists()) {
-                        //    createNewFile()
-                        //}
-                        //writeText("")
-                        delete()
-                        createNewFile()
-        
-                        // Write
-                        // 写入
-                        outputStream().use { os ->
-                            ObjectOutputStream(os).use { oos ->
-                                oos.writeObject(audioDataList)
-                                oos.flush()
-                            }
-                            os.flush()
+                    when (menuItem.itemId) {
+                        
+                        R.id.menu_add_to_list -> {
+                            AddToSongListDialogFragment().showNow(activity.supportFragmentManager, audioDataList[position])
                         }
+                        
+                        R.id.menu_ignore -> {
+                            File(activity.getExternalFilesDir(AudioDataDir), IgnoredFile).appendText(audioDataList[position].id + "\n")
+    
+                            audioDataList.removeAt(position)
+                            File(activity.getExternalFilesDir(AudioDataDir), AudioDataListFile).apply {
+                                delete()
+                                createNewFile()
+        
+                                // Write
+                                // 写入
+                                outputStream().use { os ->
+                                    ObjectOutputStream(os).use { oos ->
+                                        oos.writeObject(audioDataList)
+                                        oos.flush()
+                                    }
+                                    os.flush()
+                                }
+                            }
+    
+                            notifyDataSetChanged()
+                        }
+                        
                     }
-
-                    //mainActivity.updateList()
-                    notifyDataSetChanged()
+                    
                     return@setOnMenuItemClickListener true
                 }
             }.show()

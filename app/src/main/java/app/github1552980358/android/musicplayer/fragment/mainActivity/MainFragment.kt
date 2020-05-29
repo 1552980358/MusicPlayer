@@ -30,6 +30,8 @@ import kotlinx.android.synthetic.main.fragment_main.textViewNewList
  **/
 
 class MainFragment : Fragment() {
+    
+    private var onCreated = false
 
     /**
      * [onCreateView]
@@ -89,12 +91,22 @@ class MainFragment : Fragment() {
     
     /**
      * [updateList]
-     * @param songList [ArrayList]<[SongListInfo]>
+     * @param songListInfoList [ArrayList]<[SongListInfo]>
      * @author 1552980358
      * @since 0.1
      **/
-    fun updateList(songList: ArrayList<SongListInfo>) {
-        (recyclerView.adapter as SongListRecyclerViewAdapter).updateList(songList)
+    fun updateList(songListInfoList: ArrayList<SongListInfo>) {
+        (recyclerView.adapter as SongListRecyclerViewAdapter).updateList(songListInfoList)
     }
+    
+    override fun onResume() {
+        super.onResume()
+        if (!onCreated) {
+            onCreated = true
+            return
+        }
+        (recyclerView.adapter as SongListRecyclerViewAdapter).updateList(songListInfoList)
+    }
+    
     
 }

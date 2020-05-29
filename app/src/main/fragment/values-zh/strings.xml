@@ -2,7 +2,8 @@
 <resources>
 
     <string name="settingFragment_importMusic_title">载入音频</string>
-
+    
+    <string name="listFragment_audio_menu_add_to_list">添加到歌单…</string>
     <string name="listFragment_audio_menu_ignore">忽略</string>
     
     <string name="mainFragment_button_audio">全部音频</string>

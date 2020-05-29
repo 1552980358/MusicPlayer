@@ -11,21 +11,21 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.activity.AudioActivity
-import app.github1552980358.android.musicplayer.adapter.PlayHistoryDialogRecyclerViewAdapter
+import app.github1552980358.android.musicplayer.adapter.SongListDialogRecyclerViewAdapter
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormalDir
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.dialog_play_history.*
 import java.io.File
 
 /**
- * [PlayHistoryDialogFragment]
+ * [SongListDialogFragment]
  * @author  : 1552980328
  * @since   : 0.1
  * @date    : 2020/5/17
  * @time    : 22:26
  **/
 
-class PlayHistoryDialogFragment: BottomSheetDialogFragment() {
+class SongListDialogFragment: BottomSheetDialogFragment() {
 
     companion object {
         /**
@@ -40,7 +40,7 @@ class PlayHistoryDialogFragment: BottomSheetDialogFragment() {
          * @author 1552980358
          * @since 0.1
          */
-        val getFragment = PlayHistoryDialogFragment()
+        val getFragment = SongListDialogFragment()
 
     }
     
@@ -59,7 +59,7 @@ class PlayHistoryDialogFragment: BottomSheetDialogFragment() {
             (linearLayoutRoot.parent as FrameLayout).setBackgroundColor(Color.TRANSPARENT)
             
             recyclerView.layoutManager = LinearLayoutManager(context)
-            recyclerView.adapter = PlayHistoryDialogRecyclerViewAdapter(activity as AudioActivity)
+            recyclerView.adapter = SongListDialogRecyclerViewAdapter(activity as AudioActivity)
             
             textViewTitle.text = (activity as AudioActivity).mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
             textViewSubtitle.text = (activity as AudioActivity).mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST)

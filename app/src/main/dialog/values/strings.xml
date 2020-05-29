@@ -6,4 +6,7 @@
     <string name="createSongListDialog_submit">Submit</string>
     <string name="createSongListDialog_cancel">Cancel</string>
     
+    <string name="addToSongListDialog_title">Add to song list…</string>
+    <string name="addToSongListDialog_create_new">Create a new song list</string>
+
 </resources>

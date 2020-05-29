@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataDir
@@ -45,6 +46,13 @@ class CreateSongListDialogFragment : DialogFragment() {
      * @since 0.1
      **/
     private var contentText = "" as String?
+    
+    /**
+     * [assignFragment]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    private var assignFragment: Fragment? = null
     
     /**
      * [onCreateDialog]
@@ -91,7 +99,12 @@ class CreateSongListDialogFragment : DialogFragment() {
                         os.flush()
                     }
                 }
-                (parentFragment as MainFragment?)?.updateList(songListInfoList)
+                
+                if (parentFragment is AddToSongListDialogFragment) {
+                    (parentFragment as AddToSongListDialogFragment).updateList(songListInfoList)
+                } else {
+                    (parentFragment as MainFragment?)?.updateList(songListInfoList)
+                }
             }
             .setNegativeButton(R.string.createSongListDialog_cancel) { _, _ ->
                 dismiss()
@@ -104,6 +117,16 @@ class CreateSongListDialogFragment : DialogFragment() {
                     contentText = content.toString()
                 }
             }
+    }
+    
+    /**
+     * [setFragment]
+     * @param fragment [Fragment]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    fun setFragment(fragment: Fragment) {
+        assignFragment = fragment
     }
     
     /**

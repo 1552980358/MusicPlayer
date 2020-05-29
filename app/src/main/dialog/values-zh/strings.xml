@@ -6,4 +6,7 @@
     <string name="createSongListDialog_submit">提交</string>
     <string name="createSongListDialog_cancel">取消</string>
     
+    <string name="addToSongListDialog_title">添加到歌单…</string>
+    <string name="addToSongListDialog_create_new">创建新歌单</string>
+
 </resources>

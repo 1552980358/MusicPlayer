@@ -2,16 +2,16 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/playHistoryDialog_height"
-    android:minHeight="@dimen/playHistoryDialog_height"
-    android:maxHeight="@dimen/playHistoryDialog_height"
+    android:layout_height="@dimen/songListDialog_height"
+    android:minHeight="@dimen/songListDialog_height"
+    android:maxHeight="@dimen/songListDialog_height"
     android:orientation="horizontal"
     android:id="@+id/relativeLayoutRoot"
     android:background="?android:attr/selectableItemBackground">
 
     <TextView
-        android:layout_width="@dimen/playHistoryDialog_text_size"
-        android:layout_height="@dimen/playHistoryDialog_text_size"
+        android:layout_width="@dimen/songListDialog_text_size"
+        android:layout_height="@dimen/songListDialog_text_size"
         android:id="@+id/textViewNo"
         android:gravity="center" />
 
@@ -19,9 +19,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textViewTitle"
-        android:textSize="@dimen/playHistoryDialog_textSize"
+        android:textSize="@dimen/songListDialog_textSize"
         android:layout_toEndOf="@id/textViewNo"
         android:layout_centerVertical="true"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textColor="@color/black"/>
 
 </RelativeLayout>

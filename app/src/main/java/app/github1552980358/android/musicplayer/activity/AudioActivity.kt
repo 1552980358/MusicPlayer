@@ -33,7 +33,7 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_A
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_TITLE
 import app.github1552980358.android.musicplayer.base.SystemUtil
 import app.github1552980358.android.musicplayer.base.TimeExchange
-import app.github1552980358.android.musicplayer.dialog.PlayHistoryDialogFragment
+import app.github1552980358.android.musicplayer.dialog.SongListDialogFragment
 import app.github1552980358.android.musicplayer.service.CycleMode.LIST_CYCLE
 import app.github1552980358.android.musicplayer.service.CycleMode.RANDOM_ACCESS
 import app.github1552980358.android.musicplayer.service.CycleMode.SINGLE_CYCLE
@@ -68,6 +68,13 @@ import java.io.ObjectInputStream
  **/
 
 class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
+    
+    /**
+     * [songList]
+     * @author 1552980358
+     * @since 0.1
+     */
+    var songList = mutableListOf<MediaBrowserCompat.MediaItem>()
     
     /**
      * [seekBarTouched]
@@ -146,7 +153,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
                 }
             }
         }
-        imageButtonList.setOnClickListener { PlayHistoryDialogFragment.getFragment.showNow(supportFragmentManager) }
+        imageButtonList.setOnClickListener { SongListDialogFragment.getFragment.showNow(supportFragmentManager) }
         
         File(getExternalFilesDir(AlbumNormalDir), intent.getStringExtra(INTENT_AUDIO_ID)!!).apply {
             if (!exists()) {
@@ -357,7 +364,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
      * @param children [MutableList]<[MediaBrowserCompat.MediaItem]>
      **/
     override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
-        //
+        songList = children
     }
     
     /**

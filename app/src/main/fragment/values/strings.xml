@@ -2,7 +2,8 @@
 <resources>
     
     <string name="settingFragment_importMusic_title">Import audio</string>
-
+    
+    <string name="listFragment_audio_menu_add_to_list">Add to song list…</string>
     <string name="listFragment_audio_menu_ignore">Ignore</string>
     
     <string name="mainFragment_button_audio">All audio</string>

@@ -11,21 +11,19 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.activity.AudioActivity
-import app.github1552980358.android.musicplayer.base.AudioData
-import app.github1552980358.android.musicplayer.service.PlayService
 
 /**
- * [PlayHistoryDialogRecyclerViewAdapter]
+ * [SongListDialogRecyclerViewAdapter]
  * @author  : 1552980328
  * @since   : 0.1
  * @date    : 2020/5/18
  * @time    : 10:32
  **/
 
-class PlayHistoryDialogRecyclerViewAdapter(
+class SongListDialogRecyclerViewAdapter(
     private val parentActivity: AudioActivity
 ):
-    Adapter<PlayHistoryDialogRecyclerViewAdapter.ViewHolder>() {
+    Adapter<SongListDialogRecyclerViewAdapter.ViewHolder>() {
     
     /**
      * [onCreateViewHolder]
@@ -34,7 +32,7 @@ class PlayHistoryDialogRecyclerViewAdapter(
      **/
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder((parent.context.getSystemService(Service.LAYOUT_INFLATER_SERVICE)as LayoutInflater)
-            .inflate(R.layout.view_history_list, parent, false) )
+            .inflate(R.layout.view_song_list_dialog_content, parent, false) )
     }
     
     /**
@@ -59,6 +57,10 @@ class PlayHistoryDialogRecyclerViewAdapter(
         //holder.textViewTitle.text = AudioData.audioDataMap[PlayService.playHistory[PlayService.playHistory.lastIndex - position]]?.run {
         //    "$title - $artist"
         //}
+        
+        holder.textViewTitle.text = parentActivity.songList[parentActivity.songList.lastIndex - position].run {
+            description.title.toString() + " - " + description.subtitle.toString()
+        }
         holder.textViewTitle.isSingleLine = true
         holder.textViewTitle.ellipsize = TextUtils.TruncateAt.END
         holder.relativeLayoutRoot.setOnClickListener {
