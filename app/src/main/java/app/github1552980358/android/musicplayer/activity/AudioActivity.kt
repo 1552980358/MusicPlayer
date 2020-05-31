@@ -55,7 +55,6 @@ import kotlinx.android.synthetic.main.activity_audio.textViewSubtitle2
 import kotlinx.android.synthetic.main.activity_audio.textViewTitle
 import lib.github1552980358.labourforce.LabourForce
 import lib.github1552980358.labourforce.labours.work.LabourWorkBuilder
-import lib.github1552980358.labourforce.labours.work.LabourWorkBuilder.Companion.WorkContent
 import java.io.File
 import java.io.ObjectInputStream
 
@@ -296,7 +295,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
             BackgroundThread,
             LabourWorkBuilder
                 .getBuilder()
-                .setWorkContent(WorkContent { _, _ ->
+                .setWorkContent { _, _ ->
                     Log.e("setUpSeekbar", "workContent")
                     do {
                         if (!seekBarTouched) {
@@ -312,7 +311,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
                             //e.printStackTrace()
                         }
                     } while (mediaControllerCompat.playbackState.state == PlaybackStateCompat.STATE_PLAYING && !exit)
-                })
+                }
         )
     }
     

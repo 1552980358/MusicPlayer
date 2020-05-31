@@ -7,7 +7,6 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import androidx.core.app.ActivityOptionsCompat
@@ -113,23 +112,16 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
                 0,
                 ActivityOptionsCompat.makeSceneTransitionAnimation(
                     this,
-                    imageView, "img"
+                    imageView, "imageView"
                 ).toBundle()
             )
-        }
-    
-        textViewTitle.apply {
-            setText(R.string.mainActivity_bottom_sheet_title)
-            isSingleLine = true
-            ellipsize = TextUtils.TruncateAt.END
             
         }
-        textViewSubtitle.apply {
-            isSingleLine = true
-            ellipsize = TextUtils.TruncateAt.END
-        }
+    
+        textViewTitle.setText(R.string.mainActivity_bottom_sheet_title)
+        textViewSubtitle.visibility = View.GONE
         
-        imageView.setImageResource(R.drawable.ic_launcher_foreground)
+        imageView.setImageResource(R.drawable.ic_default_cover)
         
         checkBoxPlay.setOnClickListener {
             mediaControllerCompat.transportControls.apply {
@@ -181,6 +173,10 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
         
         mediaControllerCompat.metadata.apply {
             textViewTitle.text = getString(MediaMetadataCompat.METADATA_KEY_TITLE)
+            
+            if (textViewSubtitle.visibility == View.GONE) {
+                textViewSubtitle.visibility = View.VISIBLE
+            }
             textViewSubtitle.text = getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
     
             File(getExternalFilesDir(AlbumRoundDir), getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)).apply {
@@ -221,6 +217,9 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
      **/
     override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
         textViewTitle.text = metadata!!.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
+        if (textViewSubtitle.visibility == View.GONE) {
+            textViewSubtitle.visibility = View.VISIBLE
+        }
         textViewSubtitle.text = metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
         
         File(getExternalFilesDir(AlbumRoundDir), metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)).apply {

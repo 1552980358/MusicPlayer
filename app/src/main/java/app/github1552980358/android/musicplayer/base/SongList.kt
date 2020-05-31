@@ -10,7 +10,7 @@ import java.io.Serializable
  * @time    : 11:40
  **/
 
-class SongList: Serializable {
+class SongList: Serializable, ArrayListUtil {
 
     /**
      * [listName]
@@ -27,15 +27,23 @@ class SongList: Serializable {
     val audioList = arrayListOf<AudioData>()
     
     /**
+     * [audioListRandom]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    var audioListRandom = arrayListOf<AudioData>()
+    
+    /**
      * [add]
      * @param audioData [AudioData]
      * @return [SongList]
      * @author 1552980358
      * @since 0.1
      **/
-    fun add(audioData: AudioData): SongList {
+    fun add(audioData: AudioData) = this.apply {
         audioList.add(audioData)
-        return this
+        audioList.sortBy { it.titlePinYin }
+        audioListRandom = copyAndShuffle(audioList)
     }
     
     /**
@@ -44,7 +52,11 @@ class SongList: Serializable {
      * @author 1552980358
      * @since 0.1
      **/
-    fun add(list: List<AudioData>) = this.apply { list.forEach { audioData -> audioList.add(audioData) } }
+    fun add(list: List<AudioData>) = this.apply {
+        list.forEach { audioData -> audioList.add(audioData) }
+        audioList.sortBy { it.titlePinYin }
+        audioListRandom = copyAndShuffle(audioList)
+    }
     
     /**
      * [insert]
@@ -54,7 +66,11 @@ class SongList: Serializable {
      * @author 1552980358
      * @since 0.1
      **/
-    fun insert(index: Int, audioData: AudioData) = this.apply { audioList.add(index, audioData) }
+    fun insert(index: Int, audioData: AudioData) = this.apply {
+        audioList.add(index, audioData)
+        audioList.sortBy { it.titlePinYin }
+        audioListRandom = copyAndShuffle(audioList)
+    }
     
     /**
      * [remove]
@@ -63,6 +79,9 @@ class SongList: Serializable {
      * @author 1552980358
      * @since 0.1
      **/
-    fun remove(index: Int) = this.apply { audioList.removeAt(index) }
+    fun remove(index: Int) = this.apply {
+        audioList.removeAt(index)
+        audioListRandom = copyAndShuffle(audioList)
+    }
     
 }

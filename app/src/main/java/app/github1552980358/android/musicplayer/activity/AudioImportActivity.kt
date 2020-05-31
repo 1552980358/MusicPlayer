@@ -9,13 +9,16 @@ import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.media.MediaMetadataRetriever
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import app.github1552980358.android.musicplayer.R
+import app.github1552980358.android.musicplayer.base.ArrayListUtil
 import app.github1552980358.android.musicplayer.base.AudioData
 import app.github1552980358.android.musicplayer.base.Colour
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumColourDir
@@ -26,6 +29,7 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDat
 import app.github1552980358.android.musicplayer.base.Constant.Companion.BackgroundThread
 import app.github1552980358.android.musicplayer.base.Constant.Companion.IgnoredFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumRoundDir
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataListRandomFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INITIALIZE
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INITIALIZE_EXTRA
 import app.github1552980358.android.musicplayer.service.PlayService
@@ -35,6 +39,7 @@ import kotlinx.android.synthetic.main.activity_audio_import.progressBar
 import kotlinx.android.synthetic.main.activity_audio_import.textView
 import lib.github1552980358.labourforce.LabourForce
 import lib.github1552980358.labourforce.labours.work.LabourWork
+import lib.github1552980358.labourforce.labours.work.LabourWorkBuilder
 import mkaflowski.mediastylepalette.MediaNotificationProcessor
 import java.io.File
 import java.io.ObjectOutputStream
@@ -48,7 +53,7 @@ import java.io.Serializable
  * @time    : 9:18
  **/
 
-class AudioImportActivity : AppCompatActivity() {
+class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
     
     /**
      * [searching]
@@ -74,21 +79,18 @@ class AudioImportActivity : AppCompatActivity() {
         
         LabourForce.onDuty.sendWork2Labour(
             BackgroundThread,
-            object : LabourWork(Handler()) {
-                override fun dutyEnd(workProduct: MutableMap<String, Any?>?, handler: Handler?) {
-                
-                }
-                
-                @Suppress("DuplicatedCode")
-                override fun workContent(workProduct: MutableMap<String, Any?>?, handler: Handler?) {
+            LabourWorkBuilder.getBuilder(Handler())
+                .setWorkContent { _, handler ->
+                    Log.e("setWorkContent", "startSearching")
+                    
                     searching = true
-    
+                    
                     var ignoredAudioId = ArrayList<String>()
                     
                     File(getExternalFilesDir(AudioDataDir), IgnoredFile).apply {
                         if (!exists())
                             return@apply
-    
+                        
                         ignoredAudioId = (readLines().toMutableList() as ArrayList<String>)
                     }
                     
@@ -108,14 +110,14 @@ class AudioImportActivity : AppCompatActivity() {
                                 handler?.post {
                                     textView.setText(R.string.mediaSearchActivity_none)
                                 }
-                                return
+                                return@setWorkContent
                             }
-        
+                            
                             if (!moveToFirst()) {
                                 close()
-                                return
+                                return@setWorkContent
                             }
-        
+                            
                             //audioDataList.clear()
                             //audioDataMap.clear()
                             
@@ -128,7 +130,7 @@ class AudioImportActivity : AppCompatActivity() {
                                     duration = getLong(getColumnIndex(MediaStore.Audio.AudioColumns.DURATION))
                                 }.apply {
                                     audioDataMap[id] = this
-    
+                                    
                                     if (ignoredAudioId
                                             .contains(
                                                 getString(getColumnIndex(MediaStore.Audio.AudioColumns._ID))
@@ -142,14 +144,14 @@ class AudioImportActivity : AppCompatActivity() {
                                 }
                                 
                             } while (moveToNext())
-        
+                            
                             close()
                         }
                     
                     // Sort by PinYin characters
                     // 以拼音字母排序
                     audioDataList.sortBy { it.titlePinYin }
-    
+                    
                     // Write to storage
                     // 写入存储
                     File(getExternalFilesDir(AudioDataDir), AudioDataListFile).apply {
@@ -161,7 +163,7 @@ class AudioImportActivity : AppCompatActivity() {
                             delete()
                         }
                         createNewFile()
-        
+                        
                         // Write
                         // 写入
                         outputStream().use { os ->
@@ -181,7 +183,7 @@ class AudioImportActivity : AppCompatActivity() {
                             delete()
                         }
                         createNewFile()
-        
+                        
                         // Write
                         // 写入
                         outputStream().use { os ->
@@ -192,7 +194,21 @@ class AudioImportActivity : AppCompatActivity() {
                             os.flush()
                         }
                     }
-    
+                    File(getExternalFilesDir(AudioDataDir), AudioDataListRandomFile).apply {
+                        if (exists()) {
+                            delete()
+                        }
+                        createNewFile()
+                        
+                        outputStream().use { os ->
+                            ObjectOutputStream(os).use { oos ->
+                                oos.writeObject(copyAndShuffle(audioDataList))
+                                oos.flush()
+                            }
+                            os.flush()
+                        }
+                    }
+                    
                     val mediaMetadataRetriever = MediaMetadataRetriever()
                     var byteArray: ByteArray?
                     var paint: Paint
@@ -201,10 +217,11 @@ class AudioImportActivity : AppCompatActivity() {
                     val smaller = resources.getDimension(R.dimen.mainActivity_bottom_sheet_icon_size)
                     val matrix1 = Matrix()
                     val matrix2 = Matrix()
-    
+                    
                     for ((i, j) in audioDataList.withIndex()) {
                         handler?.post {
-                            textView.text = String.format(getString(R.string.mediaSearchActivity_handling), i, audioDataList.size)
+                            textView.text =
+                                String.format(getString(R.string.mediaSearchActivity_handling), i, audioDataList.size)
                         }
                         
                         mediaMetadataRetriever.setDataSource(
@@ -216,7 +233,7 @@ class AudioImportActivity : AppCompatActivity() {
                         )
                         byteArray = mediaMetadataRetriever.embeddedPicture
                         byteArray ?: continue
-        
+                        
                         BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size).run {
                             // Bitmap colour palette treating
                             // 图片颜色进行调色板处理
@@ -226,7 +243,14 @@ class AudioImportActivity : AppCompatActivity() {
                             MediaNotificationProcessor(this@AudioImportActivity, this).apply {
                                 File(getExternalFilesDir(AlbumColourDir), j.id).outputStream().use { os ->
                                     ObjectOutputStream(os).use { oos ->
-                                        oos.writeObject(Colour(backgroundColor, primaryTextColor, secondaryTextColor, isLight))
+                                        oos.writeObject(
+                                            Colour(
+                                                backgroundColor,
+                                                primaryTextColor,
+                                                secondaryTextColor,
+                                                isLight
+                                            )
+                                        )
                                         oos.flush()
                                     }
                                     os.flush()
@@ -268,7 +292,7 @@ class AudioImportActivity : AppCompatActivity() {
                                 }.compress(Bitmap.CompressFormat.PNG, 100, ros)
                                 ros.flush()
                             }
-            
+                            
                             File(getExternalFilesDir(AlbumNormalDir), j.id).outputStream().use { os ->
                                 Bitmap.createBitmap(
                                     this, 0, 0, width, width, matrix2.apply {
@@ -280,11 +304,13 @@ class AudioImportActivity : AppCompatActivity() {
                                 ).compress(Bitmap.CompressFormat.PNG, 100, os)
                                 os.flush()
                             }
-            
+                            
                         }
-        
+                        
                     }
-    
+                    
+                    
+                    
                     handler?.post {
                         textView.text =
                             String.format(
@@ -294,10 +320,8 @@ class AudioImportActivity : AppCompatActivity() {
                         imageView.visibility = View.VISIBLE
                         progressBar.visibility = View.INVISIBLE
                     }
-    
                 }
-                
-                override fun workDone(workProduct: MutableMap<String, Any?>?, handler: Handler?) {
+                .setWorkDone { _, handler ->
                     searching = false
                     if (audioDataList.isEmpty()) {
                         handler?.post {
@@ -314,14 +338,15 @@ class AudioImportActivity : AppCompatActivity() {
                         )
                     }
                 }
-                
-                override fun workFail(e: Exception, workProduct: MutableMap<String, Any?>?, handler: Handler?) {
+                .setWorkFail { e, _, handler ->
                     searching = false
+                    handler?.post {
+                        imageView.visibility = View.VISIBLE
+                        progressBar.visibility = View.INVISIBLE
+                        textView.text = getString(R.string.mediaSearchActivity_fail) + e.toString()
+                    }
                 }
-                
-            }
         )
-        
     }
     
     /**

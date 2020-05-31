@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-    
+        
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/mainActivity_bottom_sheet_collapsed_height"
@@ -26,36 +26,40 @@
             android:clickable="true"
             android:focusable="true"
             android:background="?android:attr/selectableItemBackground">
-        
+            
             <ImageView
                 android:layout_width="@dimen/mainActivity_bottom_sheet_icon_size"
                 android:layout_height="@dimen/mainActivity_bottom_sheet_icon_size"
                 android:id="@+id/imageView"
                 android:layout_margin="@dimen/mainActivity_bottom_sheet_icon_margin"
                 tools:ignore="ContentDescription" />
-        
+            
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical">
-            
+                
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/textViewTitle"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/mainActivity_bottom_sheet_title_size" />
-            
+                    android:textSize="@dimen/mainActivity_bottom_sheet_title_size"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+                
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/textViewSubtitle" />
+                    android:id="@+id/textViewSubtitle"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
             
             </LinearLayout>
         
         </LinearLayout>
-    
+        
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -88,9 +92,9 @@
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@id/checkBoxPlay"
                 tools:ignore="ContentDescription" />
-            
+        
         </RelativeLayout>
     
     </LinearLayout>
-    
+
 </androidx.cardview.widget.CardView>

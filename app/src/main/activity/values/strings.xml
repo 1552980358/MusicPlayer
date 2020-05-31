@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="mediaSearchActivity_none">Completed!\nNo audio found!</string>
+    <string name="mediaSearchActivity_fail">Failed: </string>
     <string name="mediaSearchActivity_searching">Searching…</string>
     <string name="mediaSearchActivity_handling">Handling with album cover (%s/%s)</string>
     <string name="mediaSearchActivity_searched">Completed!\nSearching…\n%d are found!</string>
@@ -16,5 +17,7 @@
     <string name="songListEditingActivity_textView_description">Description</string>
     <string name="songListEditingActivity_editText_description_hint">No description exists</string>
     <string name="songListEditingActivity_toast">Title should not be empty</string>
+    
+    <string name="songListActivity_bottom_sheet_title">@string/mainActivity_bottom_sheet_title</string>
 
 </resources>

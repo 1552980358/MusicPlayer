@@ -2,6 +2,7 @@ package app.github1552980358.android.musicplayer.adapter
 
 import android.app.Service
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,8 +28,7 @@ class SongListContentRecyclerViewAdapter(
     private val activity: SongListActivity,
     private val songListTitle: String,
     list: ArrayList<AudioData>
-):
-    Adapter<SongListContentRecyclerViewAdapter.ViewHolder>() {
+): Adapter<SongListContentRecyclerViewAdapter.ViewHolder>() {
     
     /**
      * [songList]
@@ -85,15 +85,18 @@ class SongListContentRecyclerViewAdapter(
         holder.relativeLayoutRoot.visibility = View.VISIBLE
         
         holder.relativeLayoutRoot.setOnClickListener {
-        
-        }
-        holder.textViewTitle.text = songList[position].title
-        holder.textViewSubtitle.text = songList[position].artist
-        holder.imageButtonOpts.setOnClickListener {
-            activity.mediaControllerCompat.transportControls.prepareFromMediaId(
+            Log.e("relativeLayoutRoot", "onClick")
+            activity.mediaControllerCompat.transportControls.playFromMediaId(
                 songList[position].id,
                 Bundle().apply { putString(CurrentSongList, songListTitle) }
             )
+        }
+        
+        holder.textViewNo.text = position.plus(1).toString()
+        holder.textViewTitle.text = songList[position].title
+        holder.textViewSubtitle.text = songList[position].artist
+        holder.imageButtonOpts.setOnClickListener {
+        
         }
         
     }
@@ -105,18 +108,28 @@ class SongListContentRecyclerViewAdapter(
          * @since 0.1
          **/
         val relativeLayoutRoot: RelativeLayout = view.findViewById(R.id.relativeLayoutRoot)
+    
+        /**
+         * [textViewNo]
+         * @author  : 1552980358
+         * @since 0.1
+         **/
+        val textViewNo: TextView = view.findViewById(R.id.textViewNo)
+        
         /**
          * [textViewTitle]
          * @author  : 1552980358
          * @since 0.1
          **/
         val textViewTitle: TextView = view.findViewById(R.id.textViewTitle)
+        
         /**
          * [textViewSubtitle]
          * @author  : 1552980358
          * @since 0.1
          **/
         val textViewSubtitle: TextView = view.findViewById(R.id.textViewSubtitle)
+        
         /**
          * [imageButtonOpts]
          * @author  : 1552980358

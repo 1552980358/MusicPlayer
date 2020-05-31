@@ -14,3 +14,5 @@
 .cxx
 /.idea/dictionaries/q1552.xml
 /app/release
+/.settings
+/.project

@@ -3,6 +3,7 @@ package app.github1552980358.android.musicplayer.adapter
 import android.app.Service
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.support.v4.media.MediaMetadataCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +16,16 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import app.github1552980358.android.musicplayer.R
+import app.github1552980358.android.musicplayer.activity.MainActivity
 import app.github1552980358.android.musicplayer.activity.SongListActivity
 import app.github1552980358.android.musicplayer.activity.SongListEditingActivity
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataDir
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_ALBUM
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_ARTIST
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_DURATION
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_ID
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_PRESENT
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_TITLE
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_SONG_LIST_INFO
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_SONG_LIST_POS
 import app.github1552980358.android.musicplayer.base.Constant.Companion.SongListCoverDir
@@ -90,7 +98,51 @@ class SongListRecyclerViewAdapter(
         holder.textViewSubtitle.text = data[position].listSize.toString()
         holder.relativeLayoutRoot.setOnClickListener {
             fragment.startActivity(
-                Intent(fragment.requireContext(), SongListActivity::class.java).putExtra(INTENT_SONG_LIST_INFO, data[position])
+                Intent(fragment.requireContext(), SongListActivity::class.java)
+                    .putExtra(INTENT_SONG_LIST_INFO, data[position])
+                    .apply {
+                        if ((fragment.requireActivity() as MainActivity).mediaControllerCompat.metadata == null) {
+                            putExtra(INTENT_AUDIO_PRESENT, false)
+                            return@apply
+                        }
+                        putExtra(INTENT_AUDIO_PRESENT, true)
+                        putExtra(
+                            INTENT_AUDIO_TITLE,
+                            (fragment.requireActivity() as MainActivity)
+                                .mediaControllerCompat
+                                .metadata
+                                .getString(MediaMetadataCompat.METADATA_KEY_TITLE)
+                        )
+                        putExtra(
+                            INTENT_AUDIO_ARTIST,
+                            (fragment.requireActivity() as MainActivity)
+                                .mediaControllerCompat
+                                .metadata
+                                .getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
+                        )
+                        putExtra(
+                            INTENT_AUDIO_ALBUM,
+                            (fragment.requireActivity() as MainActivity)
+                                .mediaControllerCompat
+                                .metadata
+                                .getString(MediaMetadataCompat.METADATA_KEY_ALBUM)
+                        )
+                        putExtra(
+                            INTENT_AUDIO_ID,
+                            (fragment.requireActivity() as MainActivity)
+                                .mediaControllerCompat
+                                .metadata
+                                .getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
+                        )
+                        putExtra(
+                            INTENT_AUDIO_DURATION,
+                            (fragment.requireActivity() as MainActivity)
+                                .mediaControllerCompat
+                                .metadata
+                                .getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
+                        )
+                    }
+                    
             )
         }
         holder.imageButtonOpts.setOnClickListener { imageButtonOpts ->

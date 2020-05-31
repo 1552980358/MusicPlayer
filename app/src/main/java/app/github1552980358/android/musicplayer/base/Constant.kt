@@ -46,6 +46,10 @@ class Constant private constructor() {
     
         /*****************************************/
         /**
+         *
+         **/
+        const val INTENT_AUDIO_PRESENT = "INTENT_AUDIO_PRESENT"
+        /**
          * [INTENT_AUDIO_TITLE]
          * @author 1552980358
          * @since 0.1
@@ -117,6 +121,10 @@ class Constant private constructor() {
          * @since 0.1
          **/
         const val AudioDataListFile = "AudioDataListFile"
+        /**
+         * [AudioDataListRandomFile]
+         **/
+        const val AudioDataListRandomFile = "AudioDataListRandomFile"
         /**
          * [IgnoredFile]
          * @author 1552980358
