@@ -343,7 +343,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
             }
         }
 
-        when (mediaControllerCompat.playbackState.customActions.first().name) {
+        when (mediaControllerCompat.playbackState.customActions.first().action) {
             LIST_CYCLE.name -> {
                 imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_cycle)
             }

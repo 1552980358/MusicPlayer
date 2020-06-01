@@ -157,7 +157,7 @@ class PlayService: MediaBrowserServiceCompat(),
      * @author 1552980358
      * @since 0.1
      **/
-    private var cycleMode = SINGLE_CYCLE
+    private var cycleMode = LIST_CYCLE
     
     /**
      * [mediaPlayer]
@@ -692,6 +692,7 @@ class PlayService: MediaBrowserServiceCompat(),
             }
     
             START_FOREGROUND -> {
+                Log.e("PlayService", "START_FOREGROUND")
                 startForeground(this, getNotification())
                 isForegroundService = true
                 /**
@@ -716,6 +717,8 @@ class PlayService: MediaBrowserServiceCompat(),
             }
     
             STOP_FOREGROUND -> {
+                Log.e("PlayService", "STOP_FOREGROUND")
+    
                 stopForeground(false)
                 isForegroundService = false
                 /**
@@ -736,24 +739,19 @@ class PlayService: MediaBrowserServiceCompat(),
             }
     
             LIST_CYCLE.name -> {
+                Log.e("PlayService", "LIST_CYCLE")
+    
                 cycleMode = LIST_CYCLE
                 playbackStateCompat = PlaybackStateCompat.Builder()
                     .setActions(playbackStateActions)
-                    .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
+                    .addCustomAction(cycleMode.name, CYCLE_MODE, R.drawable.ic_launcher_foreground)
+                    .addCustomAction(currentSongList, CurrentSongList, R.drawable.ic_launcher_foreground)
                     .setState(
                         playbackStateCompat.state, when (playbackStateCompat.state) {
-                            STATE_PLAYING -> {
-                                System.currentTimeMillis() - startTime
-                            }
-                            STATE_PAUSED -> {
-                                pauseTime - startTime
-                            }
-                            STATE_BUFFERING -> {
-                                0L
-                            }
-                            else -> {
-                                0L
-                            }
+                            STATE_BUFFERING -> 0L
+                            STATE_PLAYING -> System.currentTimeMillis() - startTime
+                            STATE_PAUSED -> pauseTime - startTime
+                            else -> 0L
                         }, 1F
                     )
                     .build()
@@ -761,24 +759,19 @@ class PlayService: MediaBrowserServiceCompat(),
             }
     
             RANDOM_ACCESS.name -> {
+                Log.e("PlayService", "RANDOM_ACCESS")
+    
                 cycleMode = RANDOM_ACCESS
                 playbackStateCompat = PlaybackStateCompat.Builder()
                     .setActions(playbackStateActions)
-                    .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
+                    .addCustomAction(cycleMode.name, CYCLE_MODE, R.drawable.ic_launcher_foreground)
+                    .addCustomAction(currentSongList, CurrentSongList, R.drawable.ic_launcher_foreground)
                     .setState(
                         playbackStateCompat.state, when (playbackStateCompat.state) {
-                            STATE_PLAYING -> {
-                                System.currentTimeMillis() - startTime
-                            }
-                            STATE_PAUSED -> {
-                                pauseTime - startTime
-                            }
-                            STATE_BUFFERING -> {
-                                0L
-                            }
-                            else -> {
-                                0L
-                            }
+                            STATE_BUFFERING -> 0L
+                            STATE_PLAYING -> System.currentTimeMillis() - startTime
+                            STATE_PAUSED -> pauseTime - startTime
+                            else -> 0L
                         }, 1F
                     )
                     .build()
@@ -786,24 +779,19 @@ class PlayService: MediaBrowserServiceCompat(),
             }
     
             SINGLE_CYCLE.name -> {
+                Log.e("PlayService", "SINGLE_CYCLE")
+    
                 cycleMode = SINGLE_CYCLE
                 playbackStateCompat = PlaybackStateCompat.Builder()
                     .setActions(playbackStateActions)
-                    .addCustomAction(CYCLE_MODE, cycleMode.name, R.drawable.ic_launcher_foreground)
+                    .addCustomAction(cycleMode.name, CYCLE_MODE, R.drawable.ic_launcher_foreground)
+                    .addCustomAction(currentSongList, CurrentSongList, R.drawable.ic_launcher_foreground)
                     .setState(
                         playbackStateCompat.state, when (playbackStateCompat.state) {
-                            STATE_BUFFERING -> {
-                                0L
-                            }
-                            STATE_PLAYING -> {
-                                System.currentTimeMillis() - startTime
-                            }
-                            STATE_PAUSED -> {
-                                pauseTime - startTime
-                            }
-                            else -> {
-                                0L
-                            }
+                            STATE_BUFFERING -> 0L
+                            STATE_PLAYING -> System.currentTimeMillis() - startTime
+                            STATE_PAUSED -> pauseTime - startTime
+                            else -> 0L
                         }, 1F
                     )
                     .build()

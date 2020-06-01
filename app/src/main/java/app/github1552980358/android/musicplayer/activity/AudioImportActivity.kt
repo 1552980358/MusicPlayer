@@ -309,8 +309,6 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                         
                     }
                     
-                    
-                    
                     handler?.post {
                         textView.text =
                             String.format(
