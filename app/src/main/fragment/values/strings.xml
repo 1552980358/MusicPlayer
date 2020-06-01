@@ -5,6 +5,10 @@
     
     <string name="listFragment_audio_menu_add_to_list">Add to song list…</string>
     <string name="listFragment_audio_menu_ignore">Ignore</string>
+    <string name="listFragment_audio_menu_ignore_dialog_title">Confirmation</string>
+    <string name="listFragment_audio_menu_ignore_dialog_content">Confirmed to ignore %d from list?</string>
+    <string name="listFragment_audio_menu_ignore_dialog_positive">Confirm</string>
+    <string name="listFragment_audio_menu_ignore_dialog_negative">Cancel</string>
     
     <string name="mainFragment_button_audio">All audio</string>
     <string name="mainFragment_button_settings">Settings</string>

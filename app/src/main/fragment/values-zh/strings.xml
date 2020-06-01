@@ -5,6 +5,11 @@
     
     <string name="listFragment_audio_menu_add_to_list">添加到歌单…</string>
     <string name="listFragment_audio_menu_ignore">忽略</string>
+    <string name="listFragment_audio_menu_ignore_dialog_title">确定删除</string>
+    <string name="listFragment_audio_menu_ignore_dialog_content">确定将 %s 从列表中忽略？</string>
+    <string name="listFragment_audio_menu_ignore_dialog_positive">确定</string>
+    <string name="listFragment_audio_menu_ignore_dialog_negative">取消</string>
+    
     
     <string name="mainFragment_button_audio">全部音频</string>
     <string name="mainFragment_button_settings">设置</string>

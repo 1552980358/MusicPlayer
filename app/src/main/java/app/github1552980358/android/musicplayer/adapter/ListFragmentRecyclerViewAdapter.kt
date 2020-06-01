@@ -1,7 +1,7 @@
 package app.github1552980358.android.musicplayer.adapter
 
+import android.app.AlertDialog
 import android.app.Service
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -147,25 +147,33 @@ class ListFragmentRecyclerViewAdapter(
                         }
                         
                         R.id.menu_ignore -> {
-                            File(activity.getExternalFilesDir(AudioDataDir), IgnoredFile).appendText(audioDataList[position].id + "\n")
+                            AlertDialog.Builder(activity)
+                                .setTitle(R.string.listFragment_audio_menu_ignore_dialog_title)
+                                .setMessage(String.format(activity.getString(R.string.listFragment_audio_menu_ignore_dialog_content), audioDataList[position].title))
+                                .setNegativeButton(R.string.listFragment_audio_menu_ignore_dialog_negative) { _, _ ->  }
+                                .setPositiveButton(R.string.listFragment_audio_menu_ignore_dialog_positive) { _, _ ->
+                                    File(activity.getExternalFilesDir(AudioDataDir), IgnoredFile).appendText(audioDataList[position].id + "\n")
     
-                            audioDataList.removeAt(position)
-                            File(activity.getExternalFilesDir(AudioDataDir), AudioDataListFile).apply {
-                                delete()
-                                createNewFile()
+                                    audioDataList.removeAt(position)
+                                    File(activity.getExternalFilesDir(AudioDataDir), AudioDataListFile).apply {
+                                        delete()
+                                        createNewFile()
         
-                                // Write
-                                // 写入
-                                outputStream().use { os ->
-                                    ObjectOutputStream(os).use { oos ->
-                                        oos.writeObject(audioDataList)
-                                        oos.flush()
+                                        // Write
+                                        // 写入
+                                        outputStream().use { os ->
+                                            ObjectOutputStream(os).use { oos ->
+                                                oos.writeObject(audioDataList)
+                                                oos.flush()
+                                            }
+                                            os.flush()
+                                        }
                                     }
-                                    os.flush()
-                                }
-                            }
     
-                            notifyDataSetChanged()
+                                    notifyDataSetChanged()
+                                }
+                                .show()
+                            
                         }
                         
                     }
