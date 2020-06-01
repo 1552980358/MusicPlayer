@@ -312,6 +312,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
                         }
                     } while (mediaControllerCompat.playbackState.state == PlaybackStateCompat.STATE_PLAYING && !exit)
                 }
+                .build()
         )
     }
     

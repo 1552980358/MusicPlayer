@@ -346,6 +346,7 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                         textView.text = getString(R.string.mediaSearchActivity_fail) + e.toString()
                     }
                 }
+                .build()
         )
     }
     
