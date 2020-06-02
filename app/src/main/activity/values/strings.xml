@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="mediaSearchActivity_none">Completed!\nNo audio found!</string>
-    <string name="mediaSearchActivity_fail">Failed: </string>
-    <string name="mediaSearchActivity_searching">Searching…</string>
-    <string name="mediaSearchActivity_handling">Handling with album cover (%s/%s)</string>
-    <string name="mediaSearchActivity_searched">Completed!\nSearching…\n%d are found!</string>
+    <string name="audioImportActivity_toolbar_searching">Searching from data base…</string>
+    <string name="audioImportActivity_toolbar_handling">Handling with album cover…</string>
+    <string name="audioImportActivity_toolbar_complete">Completed</string>
+    <string name="audioImportActivity_toolbar_failed">Failed</string>
+    <string name="audioImportActivity_none">Completed!\nNo audio found!</string>
+    <string name="audioImportActivity_fail">Failed: </string>
+    <string name="audioImportActivity_searching">Searching…</string>
+    <string name="audioImportActivity_handling">Handling with album cover (%s/%s)</string>
+    <string name="audioImportActivity_searched">Completed!\nSearching…\n%d are found!</string>
     
     <string name="mainActivity_bottom_sheet_title">~ Start Your Music Now ~</string>
     

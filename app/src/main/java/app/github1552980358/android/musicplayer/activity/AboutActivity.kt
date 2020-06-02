@@ -45,6 +45,7 @@ class AboutActivity: AppCompatActivity() {
                 finish()
                 return
             }
+            
         }
         
         setSupportActionBar(toolbar)

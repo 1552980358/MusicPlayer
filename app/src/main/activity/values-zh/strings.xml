@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="mediaSearchActivity_none">已完成搜索!\n未找到音频!</string>
-    <string name="mediaSearchActivity_fail">搜索失败: </string>
-    <string name="mediaSearchActivity_searching">搜索中…</string>
-    <string name="mediaSearchActivity_handling">正在处理专辑封面 (%s/%s)</string>
-    <string name="mediaSearchActivity_searched">已完成搜索!\n共找到%s首音频!</string>
+    <string name="audioImportActivity_toolbar_searching">从数据量搜索中…</string>
+    <string name="audioImportActivity_toolbar_handling">处理专辑封面中…</string>
+    <string name="audioImportActivity_toolbar_complete">完成</string>
+    <string name="audioImportActivity_toolbar_failed">失败</string>
+    <string name="audioImportActivity_none">已完成搜索!\n未找到音频!</string>
+    <string name="audioImportActivity_fail">搜索失败: </string>
+    <string name="audioImportActivity_searching">搜索中…</string>
+    <string name="audioImportActivity_handling">正在处理专辑封面 (%s/%s)</string>
+    <string name="audioImportActivity_searched">已完成搜索!\n共找到%s首音频!</string>
     
     <string name="mainActivity_bottom_sheet_title">~ 开始你的音乐吧 ~</string>
     

@@ -36,6 +36,7 @@ import app.github1552980358.android.musicplayer.service.PlayService.Companion.ST
 import kotlinx.android.synthetic.main.activity_audio_import.imageView
 import kotlinx.android.synthetic.main.activity_audio_import.progressBar
 import kotlinx.android.synthetic.main.activity_audio_import.textView
+import kotlinx.android.synthetic.main.activity_audio_import.toolbar
 import lib.github1552980358.labourforce.LabourForce
 import lib.github1552980358.labourforce.labours.work.LabourWorkBuilder
 import mkaflowski.mediastylepalette.MediaNotificationProcessor
@@ -73,7 +74,15 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audio_import)
         
-        textView.text = String.format(getString(R.string.mediaSearchActivity_searching), 0)
+        textView.text = String.format(getString(R.string.audioImportActivity_searching), 0)
+        
+        toolbar.setTitle(R.string.audioImportActivity_toolbar_searching)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
         
         LabourForce.onDuty.sendWork2Labour(
             BackgroundThread,
@@ -93,7 +102,7 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                     }
                     
                     handler?.post {
-                        textView.text = String.format(getString(R.string.mediaSearchActivity_searching), 0)
+                        textView.text = String.format(getString(R.string.audioImportActivity_searching), 0)
                     }
                     
                     contentResolver
@@ -106,7 +115,8 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                         ).apply {
                             if (this == null) {
                                 handler?.post {
-                                    textView.setText(R.string.mediaSearchActivity_none)
+                                    toolbar.setTitle(R.string.audioImportActivity_toolbar_complete)
+                                    textView.setText(R.string.audioImportActivity_none)
                                 }
                                 return@setWorkContent
                             }
@@ -218,8 +228,9 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                     
                     for ((i, j) in audioDataList.withIndex()) {
                         handler?.post {
+                            toolbar.setTitle(R.string.audioImportActivity_toolbar_handling)
                             textView.text =
-                                String.format(getString(R.string.mediaSearchActivity_handling), i, audioDataList.size)
+                                String.format(getString(R.string.audioImportActivity_handling), i, audioDataList.size)
                         }
                         
                         mediaMetadataRetriever.setDataSource(
@@ -308,9 +319,10 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                     }
                     
                     handler?.post {
+                        toolbar.setTitle(R.string.audioImportActivity_toolbar_complete)
                         textView.text =
                             String.format(
-                                getString(R.string.mediaSearchActivity_searched),
+                                getString(R.string.audioImportActivity_searched),
                                 audioDataList.size
                             )
                         imageView.visibility = View.VISIBLE
@@ -323,7 +335,8 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                         handler?.post {
                             imageView.visibility = View.VISIBLE
                             progressBar.visibility = View.INVISIBLE
-                            textView.text = String.format(getString(R.string.mediaSearchActivity_none), 0)
+                            textView.text = String.format(getString(R.string.audioImportActivity_none), 0)
+                            toolbar.setTitle(R.string.audioImportActivity_toolbar_complete)
                         }
                     }
                     runOnUiThread {
@@ -337,13 +350,15 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                 .setWorkFail { e, _, handler ->
                     searching = false
                     handler?.post {
+                        toolbar.setTitle(R.string.audioImportActivity_toolbar_failed)
                         imageView.visibility = View.VISIBLE
                         progressBar.visibility = View.INVISIBLE
-                        textView.text = getString(R.string.mediaSearchActivity_fail) + e.toString()
+                        textView.text = getString(R.string.audioImportActivity_fail) + e.toString()
                     }
                 }
                 .build()
         )
+        
     }
     
     /**
