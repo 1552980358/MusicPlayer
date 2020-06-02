@@ -1,0 +1,94 @@
+Name : MusicPlayer
+Author : 1552980358
+Copyright : Copyright© 2020, 1552980358
+Type : Open Source Software
+Platform : Google Android® OS
+Compile SDK : Android 10.0 R4 (SDK 29)
+Min SDK : Android 5.0 Lollipop (SDK 21)
+Target JVM : JVM 1.8
+Compile JDK : OpenJDK
+JDK Version : OpenJDK 14.0.1
+Gradle : Gradle 6.3
+Open-source License : GNU General Public License v3.0
+Application ID : app.github1552980358.android.musicplayer
+Repo Link : https://github.com/1552980358/MusicPlayer
+
+-------------------------
+labourforce
+-------------------------
+Author : 1552980358
+Package Name : lib.github1552980358.labourforce
+Copyright : Copyright© 2020, 1552980358
+Open-source License : Apache License 2.0
+Gradle Dependency :
+    com.github.1552980358:labourforce:ae4aed364a
+Repo Link : https://github.com/1552980358/labourforce
+
+-------------------------
+Android Open Source Project
+-------------------------
+Author : Google
+Copyright : Copyright© Google
+Open-source License : Apache License 2.0
+Official Website : https://source.android.com/
+
+-------------------------
+Kotlin Standard Library JDK 8
+-------------------------
+Author : JetBrains
+Copyright : Copyright© Kotlin Foundation
+Open-source License : Apache License 2.0
+Gradle Dependency :
+    org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4-M1
+Repo Link : https://github.com/JetBrains/kotlin
+Official Website : https://kotlinlang.org/
+
+-------------------------
+Androidx Jetpack
+-------------------------
+Author: Google
+Package Name: androidx.*
+Copyright: Copyright© Google
+Open-source License : Apache License 2.0
+Gradle Dependencies :
+    androidx.appcompat:appcompat:1.1.0
+    androidx.core:core-ktx:1.2.0
+    androidx.constraintlayout:constraintlayout:1.1.3
+    androidx.legacy:legacy-support-v4:1.0.0
+    androidx.preference:preference:1.1.1
+    androidx.media:media:1.2.0-alpha02
+    androidx.preference:preference-ktx:1.1.1
+Official Website : https://developer.android.com/jetpack
+
+-------------------------
+Material Components For Android
+-------------------------
+Author : Google
+Package Name : com.google.android.material
+Copyright : Copyright© Google
+Open-source License : Apache License 2.0
+Gradle Dependency :
+    com.google.android.material:material:1.1.0
+Official Website : https://maven.google.com/
+
+-------------------------
+Media-Style-Palette
+-------------------------
+Author : mkaflowski
+Package Name : mkaflowski.mediastylepalette
+Copyright : Copyright© mkaflowski
+Gradle Dependency :
+    com.github.mkaflowski:Media-Style-Palette:1.3
+Repo Link : https://github.com/mkaflowski/Media-Style-Palette
+
+-------------------------
+TinyPinyin
+-------------------------
+Author : promeG
+Package Name : com.github.promeg
+Copyright : Copyright© promeg
+Open-source License : Apache License 2.0
+Gradle Dependencies :
+    com.github.promeg:tinypinyin:2.0.3
+    com.github.promeg:tinypinyin-lexicons-android-cncity:2.0.3
+Repo Link : https://github.com/promeG/TinyPinyin

@@ -9,7 +9,10 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
 import app.github1552980358.android.musicplayer.R
+import app.github1552980358.android.musicplayer.activity.AboutActivity
 import app.github1552980358.android.musicplayer.activity.AudioImportActivity
+import app.github1552980358.android.musicplayer.base.Constant.Companion.ABOUT_INTENT_EXTRA
+import app.github1552980358.android.musicplayer.base.Constant.Companion.ABOUT_INTENT_LICENSE
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 /**
@@ -58,6 +61,14 @@ class SettingFragment: PreferenceFragmentCompat() {
         
         findPreference<Preference>("import_media")?.setOnPreferenceClickListener {
             startActivity(Intent(context, AudioImportActivity::class.java))
+            return@setOnPreferenceClickListener true
+        }
+    
+        findPreference<Preference>("license")?.setOnPreferenceClickListener {
+            startActivity(
+                Intent(context, AboutActivity::class.java)
+                    .putExtra(ABOUT_INTENT_EXTRA, ABOUT_INTENT_LICENSE)
+            )
             return@setOnPreferenceClickListener true
         }
         

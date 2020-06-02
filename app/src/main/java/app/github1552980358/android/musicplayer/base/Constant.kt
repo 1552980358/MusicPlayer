@@ -193,5 +193,13 @@ class Constant private constructor() {
          **/
         const val FULL_LIST = "FULL_LIST"
         
+        /*****************************************/
+        
+        const val ABOUT_INTENT_EXTRA = "ABOUT_INTENT_EXTRA"
+        
+        const val ABOUT_INTENT_LICENSE = "ABOUT_INTENT_LICENSE"
+        
+        
     }
+    
 }

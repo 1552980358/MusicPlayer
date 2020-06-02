@@ -9,7 +9,6 @@ import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.media.MediaMetadataRetriever
-import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -38,7 +37,6 @@ import kotlinx.android.synthetic.main.activity_audio_import.imageView
 import kotlinx.android.synthetic.main.activity_audio_import.progressBar
 import kotlinx.android.synthetic.main.activity_audio_import.textView
 import lib.github1552980358.labourforce.LabourForce
-import lib.github1552980358.labourforce.labours.work.LabourWork
 import lib.github1552980358.labourforce.labours.work.LabourWorkBuilder
 import mkaflowski.mediastylepalette.MediaNotificationProcessor
 import java.io.File

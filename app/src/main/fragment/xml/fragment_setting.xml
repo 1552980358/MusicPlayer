@@ -9,4 +9,16 @@
         app:iconSpaceReserved="false"
         android:title="@string/settingFragment_importMusic_title" />
     
+    <PreferenceCategory
+        android:title="@string/settingFragment_about_title"
+        app:iconSpaceReserved="false" >
+    
+        <Preference
+            android:key="license"
+            android:title="@string/settingFragment_about_license_title"
+            android:summary="@string/settingFragment_about_license_content"
+            app:iconSpaceReserved="false" />
+        
+    </PreferenceCategory>
+    
 </PreferenceScreen>

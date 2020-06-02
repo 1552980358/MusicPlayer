@@ -19,5 +19,7 @@
     <string name="songListEditingActivity_toast">Title should not be empty</string>
     
     <string name="songListActivity_bottom_sheet_title">@string/mainActivity_bottom_sheet_title</string>
+    
+    <string name="aboutActivity_title_license">Open Source Licenses</string>
 
 </resources>

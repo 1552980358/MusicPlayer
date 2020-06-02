@@ -2,6 +2,9 @@
 <resources>
     
     <string name="settingFragment_importMusic_title">Import audio</string>
+    <string name="settingFragment_about_title">About</string>
+    <string name="settingFragment_about_license_title">Open Source Licenses</string>
+    <string name="settingFragment_about_license_content" translatable="false">Open Source Licenses</string>
     
     <string name="listFragment_audio_menu_add_to_list">Add to song list…</string>
     <string name="listFragment_audio_menu_ignore">Ignore</string>
