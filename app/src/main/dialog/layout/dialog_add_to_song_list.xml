@@ -3,8 +3,9 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:maxHeight="350dp"
-    android:minHeight="50dp">
+    android:maxHeight="@dimen/dialog_add_to_song_list_maxHeight"
+    android:minHeight="@dimen/dialog_add_to_song_list_minHeight"
+    android:layout_marginBottom="@dimen/dialog_add_to_song_list_marginBottom">
     
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"

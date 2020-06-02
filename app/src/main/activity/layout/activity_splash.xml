@@ -7,8 +7,8 @@
     android:background="@color/colorPrimaryDark">
     
     <ImageView
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="@dimen/splashActivity_imageView_size"
+        android:layout_height="@dimen/splashActivity_imageView_size"
         android:layout_centerInParent="true"
         android:tint="@color/white"
         android:src="@drawable/ic_launcher_foreground"

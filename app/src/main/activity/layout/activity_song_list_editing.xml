@@ -39,23 +39,23 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/relativeLayoutImage"
                 android:background="?android:attr/selectableItemBackground"
-                android:padding="15dp">
+                android:padding="@dimen/songListEditingActivity_contentView_padding">
                 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/textViewImage"
                     android:text="@string/songListEditingActivity_textView_image"
-                    android:textSize="15sp"
+                    android:textSize="@dimen/songListEditingActivity_textView_textSize"
                     android:textColor="@color/black"
                     android:layout_centerVertical="true"
                     tools:ignore="RelativeOverlap" />
                 
                 <ImageView
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="@dimen/songListEditingActivity_imageView_size"
+                    android:layout_height="@dimen/songListEditingActivity_imageView_size"
                     android:id="@+id/imageViewCover"
-                    android:textSize="15sp"
+                    android:textSize="@dimen/songListEditingActivity_textView_textSize"
                     android:layout_centerVertical="true"
                     android:layout_alignParentEnd="true"
                     tools:ignore="ContentDescription" />
@@ -65,13 +65,13 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="15dp">
+                android:padding="@dimen/songListEditingActivity_contentView_padding">
                 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:textSize="15sp"
+                    android:textSize="@dimen/songListEditingActivity_textView_textSize"
                     android:text="@string/songListEditingActivity_textView_colours"
                     android:layout_centerVertical="true"
                     tools:ignore="RelativeOverlap" />
@@ -85,20 +85,20 @@
                     android:layout_centerVertical="true">
                     
                     <View
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginEnd="10dp"
+                        android:layout_width="@dimen/songListEditingActivity_view_size"
+                        android:layout_height="@dimen/songListEditingActivity_view_size"
+                        android:layout_marginEnd="@dimen/songListEditingActivity_view_marginEnd"
                         android:id="@+id/view_backgroundColour" />
                     
                     <View
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginEnd="10dp"
+                        android:layout_width="@dimen/songListEditingActivity_view_size"
+                        android:layout_height="@dimen/songListEditingActivity_view_size"
+                        android:layout_marginEnd="@dimen/songListEditingActivity_view_marginEnd"
                         android:id="@+id/view_titleColour" />
                     
                     <View
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="@dimen/songListEditingActivity_view_size"
+                        android:layout_height="@dimen/songListEditingActivity_view_size"
                         android:id="@+id/view_subtitleColour" />
                 
                 </LinearLayout>
@@ -109,7 +109,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
-                android:padding="15dp"
+                android:padding="@dimen/songListEditingActivity_contentView_padding"
                 android:id="@+id/relativeLayoutTitle">
                 
                 <TextView
@@ -117,10 +117,10 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/textViewTitle"
                     android:text="@string/songListEditingActivity_textView_title"
-                    android:textSize="15sp"
+                    android:textSize="@dimen/songListEditingActivity_textView_textSize"
                     android:textColor="@color/black"
                     tools:ignore="RelativeOverlap"
-                    android:layout_marginEnd="20dp" />
+                    android:layout_marginEnd="@dimen/songListEditingActivity_textView_marginEnd" />
                 
                 <EditText
                     android:layout_width="match_parent"
@@ -128,7 +128,7 @@
                     android:id="@+id/editTextTitle"
                     android:layout_toEndOf="@id/textViewTitle"
                     android:maxLength="20"
-                    android:textSize="15sp"
+                    android:textSize="@dimen/songListEditingActivity_textView_textSize"
                     android:inputType="textMultiLine"
                     android:layout_alignParentEnd="true"
                     android:background="@null"
@@ -143,7 +143,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
-                android:padding="15dp"
+                android:padding="@dimen/songListEditingActivity_contentView_padding"
                 android:clickable="true"
                 android:focusable="true">
                 
@@ -152,17 +152,17 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/textViewDateTitle"
                     android:text="@string/songListEditingActivity_textView_date"
-                    android:textSize="15sp"
+                    android:textSize="@dimen/songListEditingActivity_textView_textSize"
                     android:textColor="@color/black"
                     android:layout_centerVertical="true"
                     tools:ignore="RelativeOverlap"
-                    android:layout_marginEnd="20dp" />
+                    android:layout_marginEnd="@dimen/songListEditingActivity_textView_marginEnd" />
                 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/textViewDateContent"
-                    android:textSize="15sp"
+                    android:textSize="@dimen/songListEditingActivity_textView_textSize"
                     android:layout_centerVertical="true"
                     android:layout_alignParentEnd="true"
                     tools:ignore="RelativeOverlap" />
@@ -173,7 +173,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
-                android:padding="15dp"
+                android:padding="@dimen/songListEditingActivity_contentView_padding"
                 android:id="@+id/relativeLayoutDescription">
                 
                 <TextView
@@ -181,9 +181,9 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/textViewDescription"
                     android:text="@string/songListEditingActivity_textView_description"
-                    android:textSize="15sp"
+                    android:textSize="@dimen/songListEditingActivity_textView_textSize"
                     android:textColor="@color/black"
-                    android:layout_marginEnd="20dp"
+                    android:layout_marginEnd="@dimen/songListEditingActivity_textView_marginEnd"
                     tools:ignore="RelativeOverlap" />
                 
                 <EditText
@@ -196,7 +196,7 @@
                     android:background="@null"
                     android:layout_centerVertical="true"
                     android:gravity="end"
-                    android:textSize="15sp"
+                    android:textSize="@dimen/songListEditingActivity_textView_textSize"
                     android:hint="@string/songListEditingActivity_editText_description_hint"
                     android:importantForAutofill="no" />
             

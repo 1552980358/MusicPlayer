@@ -18,9 +18,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp"
+        android:layout_marginTop="@dimen/audioActivity_container_marginTop"
+        android:layout_marginStart="@dimen/audioActivity_container_marginSide"
+        android:layout_marginEnd="@dimen/audioActivity_container_marginSide"
         android:orientation="vertical">
         
         <!-- Audio information -->
@@ -28,91 +28,92 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
+            
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="28sp"
+                android:textSize="@dimen/audioActivity_textViewTitle_textSize"
                 android:id="@+id/textViewTitle"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="@dimen/audioActivity_textViewTitle_marginBottom"
                 android:textColor="@color/white" />
-        
+            
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textViewSubtitle1"
                 android:textColor="@color/white"
-                android:textSize="20sp"/>
+                android:textSize="@dimen/audioActivity_textViewSubtitle1_textSize" />
             
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textViewSubtitle2"
                 android:textColor="@color/white"
-                android:textSize="17sp"/>
-            
+                android:textSize="@dimen/audioActivity_textViewSubtitle2_textSize" />
+        
         </LinearLayout>
         
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent">
             
             <!-- Controller -->
             <!-- 控制器 -->
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="125dp"
+                android:layout_height="@dimen/audioActivity_controllerRoot_height"
                 android:id="@+id/relativeLayoutBottom"
                 android:layout_alignParentBottom="true">
                 
                 <androidx.appcompat.widget.AppCompatCheckBox
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
+                    android:layout_width="@dimen/audioActivity_controller_size"
+                    android:layout_height="@dimen/audioActivity_controller_size"
                     android:id="@+id/checkBoxPlayPause"
                     android:button="@null"
                     android:background="@drawable/ic_audio_play_pause"
                     android:layout_centerInParent="true"
-                    android:layout_margin="10dp"/>
+                    android:layout_margin="@dimen/audioActivity_controller_margin" />
                 
                 <ImageButton
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="@dimen/audioActivity_imageButtons_size"
+                    android:layout_height="@dimen/audioActivity_imageButtons_size"
                     android:id="@+id/imageButtonLast"
                     android:layout_toStartOf="@id/checkBoxPlayPause"
                     android:background="@drawable/ic_audio_last"
                     android:layout_centerVertical="true"
                     tools:ignore="ContentDescription"
-                    android:layout_margin="10dp"/>
+                    android:layout_margin="@dimen/audioActivity_imageButtons_margin" />
                 
                 <ImageButton
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="@dimen/audioActivity_imageButtons_size"
+                    android:layout_height="@dimen/audioActivity_imageButtons_size"
                     android:id="@+id/imageButtonNext"
                     android:layout_toEndOf="@id/checkBoxPlayPause"
                     android:background="@drawable/ic_audio_next"
                     android:layout_centerVertical="true"
                     tools:ignore="ContentDescription"
-                    android:layout_margin="10dp"/>
+                    android:layout_margin="@dimen/audioActivity_imageButtons_margin" />
                 
                 <ImageButton
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="@dimen/audioActivity_imageButtons_size"
+                    android:layout_height="@dimen/audioActivity_imageButtons_size"
                     android:id="@+id/imageButtonCycle"
                     android:layout_toStartOf="@id/imageButtonLast"
                     android:layout_centerVertical="true"
                     tools:ignore="ContentDescription"
-                    android:layout_margin="10dp"/>
+                    android:layout_margin="@dimen/audioActivity_imageButtons_margin" />
                 
                 <ImageButton
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="@dimen/audioActivity_imageButtons_size"
+                    android:layout_height="@dimen/audioActivity_imageButtons_size"
                     android:id="@+id/imageButtonList"
                     android:layout_toEndOf="@id/imageButtonNext"
                     android:background="@drawable/ic_audio_list"
                     android:layout_centerVertical="true"
                     tools:ignore="ContentDescription"
-                    android:layout_margin="10dp"/>
-                
+                    android:layout_margin="@dimen/audioActivity_imageButtons_margin" />
+            
             </RelativeLayout>
             
             <!-- Time -->
@@ -121,13 +122,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="@dimen/audioActivity_time_marginBottom"
                 android:layout_above="@id/relativeLayoutBottom">
+                
                 <SeekBar
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/seekBar" />
-            
+                
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -158,13 +160,13 @@
                         android:textColor="@color/white"
                         android:layout_toEndOf="@id/textViewDivider"
                         tools:ignore="HardcodedText,RelativeOverlap" />
-                    
-                </RelativeLayout>
                 
-            </LinearLayout>
+                </RelativeLayout>
             
-        </RelativeLayout>
+            </LinearLayout>
         
-    </LinearLayout>
+        </RelativeLayout>
     
+    </LinearLayout>
+
 </LinearLayout>

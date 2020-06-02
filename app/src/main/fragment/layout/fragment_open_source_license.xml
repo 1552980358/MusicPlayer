@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:textIsSelectable="true"
         android:id="@+id/textViewContent"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp" />
+        android:paddingStart="@dimen/openSourceLicenseFragment_textView_paddings"
+        android:paddingEnd="@dimen/openSourceLicenseFragment_textView_paddings" />
 
 </ScrollView>

@@ -3,20 +3,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:maxHeight="50dp"
-    android:minHeight="50dp"
+    android:layout_height="@dimen/view_song_list_dialog_content_height"
+    android:maxHeight="@dimen/view_song_list_dialog_content_height"
+    android:minHeight="@dimen/view_song_list_dialog_content_height"
     android:id="@+id/relativeLayoutRoot"
-    android:padding="5dp"
+    android:padding="@dimen/view_song_list_dialog_content_padding"
     android:background="?android:attr/selectableItemBackground">
     
     <ImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/view_song_list_dialog_imageView_size"
+        android:layout_height="@dimen/view_song_list_dialog_imageView_size"
         android:id="@+id/imageViewCover"
         tools:ignore="ContentDescription"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="5dp"/>
+        android:layout_marginEnd="@dimen/view_song_list_dialog_imageView_marginEnd"/>
     
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/textViewTitle"
             android:textColor="@color/black"
-            android:textSize="15sp"
+            android:textSize="@dimen/view_song_list_dialog_textView_textSize"
             android:maxLines="1"
             android:ellipsize="end"/>
         

@@ -8,9 +8,9 @@
     app:behavior_hideable="false"
     app:behavior_peekHeight="@dimen/mainActivity_bottom_sheet_peek_height"
     app:layout_behavior="@string/bottom_sheet_behavior"
-    android:layout_marginStart="5dp"
-    android:layout_marginBottom="5dp"
-    android:layout_marginEnd="5dp"
+    android:layout_marginStart="@dimen/mainActivity_button_margin"
+    android:layout_marginBottom="@dimen/mainActivity_button_margin"
+    android:layout_marginEnd="@dimen/mainActivity_button_margin"
     android:id="@+id/cardView">
     
     <LinearLayout

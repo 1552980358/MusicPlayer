@@ -8,7 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/swipeRefreshLayout">
-        <!--android:layout_toStartOf="@id/sideCharView"-->
         
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
@@ -18,20 +17,20 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     
     <app.github1552980358.android.musicplayer.view.SideCharView
-        android:layout_width="20dp"
+        android:layout_width="@dimen/fragmentList_sideCharView_width"
         android:layout_height="match_parent"
         android:clickable="true"
         android:id="@+id/sideCharView"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="@dimen/fragmentList_sideCharView_marginBottom"
         android:layout_alignParentEnd="true"
         android:focusable="true" />
     
     <TextView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/fragmentList_textView_size"
+        android:layout_height="@dimen/fragmentList_textView_size"
         android:id="@+id/textViewChar"
         android:gravity="center"
-        android:textSize="25sp"
+        android:textSize="@dimen/fragmentList_textView_textSize"
         android:layout_centerInParent="true"
         android:textColor="@color/white"
         android:background="@color/black"

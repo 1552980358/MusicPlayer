@@ -13,5 +13,9 @@
     <dimen name="createSongDialog_list_paddings">10dp</dimen>
     <dimen name="createSongDialog_relativeLayout_marginTop">5dp</dimen>
 
+    <dimen name="dialog_add_to_song_list_maxHeight">355dp</dimen>
+    <dimen name="dialog_add_to_song_list_minHeight">55dp</dimen>
+    <dimen name="dialog_add_to_song_list_marginBottom">5dp</dimen>
+
 
 </resources>

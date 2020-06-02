@@ -20,18 +20,18 @@
             android:baselineAligned="false">
             
             <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="@dimen/mainFragment_button_height"
+                android:layout_width="@dimen/listFragment_layout_weight_width"
+                android:layout_height="@dimen/listFragment_button_height"
                 android:id="@+id/relativeLayoutAudio"
                 android:layout_weight="1"
                 android:background="?android:attr/selectableItemBackground"
-                android:layout_marginBottom="@dimen/mainFragment_button_margin_bottom">
+                android:layout_marginBottom="@dimen/listFragment_button_margin_bottom">
         
                 <ImageView
-                    android:layout_width="@dimen/mainFragment_button_imageView_size"
-                    android:layout_height="@dimen/mainFragment_button_imageView_size"
+                    android:layout_width="@dimen/listFragment_button_imageView_size"
+                    android:layout_height="@dimen/listFragment_button_imageView_size"
                     android:id="@+id/imageViewAudio"
-                    android:layout_margin="@dimen/mainFragment_button_imageView_margin"
+                    android:layout_margin="@dimen/listFragment_button_imageView_margin"
                     android:src="@drawable/ic_action_left"
                     tools:ignore="ContentDescription"
                     android:layout_centerVertical="true"/>
@@ -41,25 +41,25 @@
                     android:layout_height="wrap_content"
                     android:text="@string/mainFragment_button_audio"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/mainFragment_button_textSize"
+                    android:textSize="@dimen/listFragment_button_textSize"
                     android:layout_toEndOf="@id/imageViewAudio"
                     android:layout_centerVertical="true" />
     
             </RelativeLayout>
     
             <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="@dimen/mainFragment_button_height"
+                android:layout_width="@dimen/listFragment_layout_weight_width"
+                android:layout_height="@dimen/listFragment_button_height"
                 android:id="@+id/relativeLayoutSettings"
                 android:layout_weight="1"
                 android:background="?android:attr/selectableItemBackground"
-                android:layout_marginBottom="@dimen/mainFragment_button_margin_bottom">
+                android:layout_marginBottom="@dimen/listFragment_button_margin_bottom">
         
                 <ImageView
-                    android:layout_width="@dimen/mainFragment_button_imageView_size"
-                    android:layout_height="@dimen/mainFragment_button_imageView_size"
+                    android:layout_width="@dimen/listFragment_button_imageView_size"
+                    android:layout_height="@dimen/listFragment_button_imageView_size"
                     android:id="@+id/imageViewSettings"
-                    android:layout_margin="@dimen/mainFragment_button_imageView_margin"
+                    android:layout_margin="@dimen/listFragment_button_imageView_margin"
                     android:src="@drawable/ic_action_right"
                     tools:ignore="ContentDescription"
                     android:layout_centerVertical="true"
@@ -71,7 +71,7 @@
                     android:text="@string/mainFragment_button_settings"
                     android:textColor="@color/black"
                     android:gravity="end"
-                    android:textSize="@dimen/mainFragment_button_textSize"
+                    android:textSize="@dimen/listFragment_button_textSize"
                     android:layout_toStartOf="@id/imageViewSettings"
                     android:layout_centerVertical="true" />
     
@@ -82,10 +82,10 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="10dp"
-            android:paddingTop="@dimen/mainFragment_title_paddings"
-            android:paddingBottom="@dimen/mainFragment_title_paddings"
-            android:paddingEnd="10dp">
+            android:paddingStart="@dimen/listFragment_title_paddingTop"
+            android:paddingTop="@dimen/listFragment_title_paddingSides"
+            android:paddingBottom="@dimen/listFragment_title_paddingSides"
+            android:paddingEnd="@dimen/listFragment_title_paddingTop">
 
             <TextView
                 android:layout_width="wrap_content"

@@ -22,7 +22,7 @@
             
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
-                android:layout_height="270dp"
+                android:layout_height="@dimen/songListActivity_header_height"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:toolbarId="@id/toolbar"
                 android:id="@+id/collapsingToolbarLayout">
@@ -41,16 +41,16 @@
                     android:id="@+id/linearLayoutHeader"
                     android:orientation="horizontal"
                     android:layout_marginTop="?attr/actionBarSize"
-                    android:paddingTop="10dp"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp">
+                    android:paddingTop="@dimen/songListActivity_header_content_marginTop"
+                    android:paddingStart="@dimen/songListActivity_header_content_marginSides"
+                    android:paddingEnd="@dimen/songListActivity_header_content_marginSides">
                     
                     <ImageView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="@dimen/songListActivity_header_imageView_size"
+                        android:layout_height="@dimen/songListActivity_header_imageView_size"
                         android:src="@drawable/ic_default_cover"
                         android:id="@+id/imageViewCover"
-                        android:layout_marginEnd="10dp"
+                        android:layout_marginEnd="@dimen/songListActivity_header_imageView_marginEnd"
                         tools:ignore="ContentDescription" />
                     
                     <LinearLayout
