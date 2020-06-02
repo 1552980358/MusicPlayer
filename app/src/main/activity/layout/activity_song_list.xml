@@ -48,7 +48,7 @@
                     <ImageView
                         android:layout_width="@dimen/songListActivity_header_imageView_size"
                         android:layout_height="@dimen/songListActivity_header_imageView_size"
-                        android:src="@drawable/ic_default_cover"
+                        android:src="@drawable/ic_default_cover_transparent_background"
                         android:id="@+id/imageViewCover"
                         android:layout_marginEnd="@dimen/songListActivity_header_imageView_marginEnd"
                         tools:ignore="ContentDescription" />
