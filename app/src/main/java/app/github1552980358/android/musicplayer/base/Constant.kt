@@ -95,6 +95,11 @@ class Constant private constructor() {
          **/
         const val INTENT_SONG_LIST_POS = "INTENT_SONG_LIST_POS"
     
+        /**
+         * [INTENT_SONG_LIST_COVER]
+         * @author 1552980358
+         * @since 0.1
+         **/
         const val INTENT_SONG_LIST_COVER = "INTENT_SONG_LIST_COVER"
     
         /*****************************************/
@@ -195,14 +200,22 @@ class Constant private constructor() {
          * @since 0.1
          **/
         const val FULL_LIST = "FULL_LIST"
-        
+    
         /*****************************************/
-        
+        /**
+         * [ABOUT_INTENT_EXTRA]
+         * @author 1552980358
+         * @since 0.1
+         **/
         const val ABOUT_INTENT_EXTRA = "ABOUT_INTENT_EXTRA"
-        
+    
+        /**
+         * [ABOUT_INTENT_LICENSE]
+         * @author 1552980358
+         * @since 0.1
+         **/
         const val ABOUT_INTENT_LICENSE = "ABOUT_INTENT_LICENSE"
-        
-        
+    
     }
     
 }
