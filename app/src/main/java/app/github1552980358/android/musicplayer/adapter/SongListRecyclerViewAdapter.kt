@@ -34,6 +34,7 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.SongList
 import app.github1552980358.android.musicplayer.base.SongListCover
 import app.github1552980358.android.musicplayer.base.SongListInfo
 import app.github1552980358.android.musicplayer.base.SongListInfo.Companion.songListInfoList
+import app.github1552980358.android.musicplayer.base.os
 import java.io.File
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
@@ -159,24 +160,28 @@ class SongListRecyclerViewAdapter(
                                     .putExtra(INTENT_SONG_LIST_POS, position),
                                 1)
                         }
-                    
+    
                         R.id.menu_delete_list -> {
-                            File(imageButtonOpts.context.getExternalFilesDir(SongListCoverDir), songListInfoList[position].listTitle).apply {
+                            File(
+                                imageButtonOpts.context.getExternalFilesDir(SongListCoverDir),
+                                songListInfoList[position].listTitle
+                            ).apply {
                                 if (exists()) {
                                     delete()
                                 }
                             }
-                            File(imageButtonOpts.context.getExternalFilesDir(SongListDir), songListInfoList.removeAt(position).listTitle)
+                            File(
+                                imageButtonOpts.context.getExternalFilesDir(SongListDir),
+                                songListInfoList.removeAt(position).listTitle
+                            )
                                 .delete()
                             File(imageButtonOpts.context.getExternalFilesDir(AudioDataDir), SongListFile).apply {
                                 delete()
                                 createNewFile()
-                                outputStream().use { os ->
-                                    ObjectOutputStream(os).use { oos ->
+                                outputStream().os { os ->
+                                    ObjectOutputStream(os).os { oos ->
                                         oos.writeObject(songListInfoList)
-                                        oos.flush()
                                     }
-                                    os.flush()
                                 }
                             }
                             notifyDataSetChanged()

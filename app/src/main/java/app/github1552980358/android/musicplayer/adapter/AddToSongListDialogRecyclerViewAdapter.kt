@@ -20,6 +20,7 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.SongList
 import app.github1552980358.android.musicplayer.base.SongList
 import app.github1552980358.android.musicplayer.base.SongListCover
 import app.github1552980358.android.musicplayer.base.SongListInfo
+import app.github1552980358.android.musicplayer.base.os
 import app.github1552980358.android.musicplayer.dialog.AddToSongListDialogFragment
 import app.github1552980358.android.musicplayer.dialog.CreateSongListDialogFragment
 import java.io.File
@@ -113,18 +114,16 @@ class AddToSongListDialogRecyclerViewAdapter(
                         return@setOnClickListener
                     }
                 }
-                
+    
                 songList.add(audioData)
-                
+    
                 delete()
                 createNewFile()
-                
-                outputStream().use { os ->
-                    ObjectOutputStream(os).use { oos ->
+    
+                outputStream().os { os ->
+                    ObjectOutputStream(os).os { oos ->
                         oos.writeObject(songList)
-                        oos.flush()
                     }
-                    os.flush()
                 }
             }
             
@@ -136,13 +135,11 @@ class AddToSongListDialogRecyclerViewAdapter(
                     delete()
                 }
                 createNewFile()
-                
-                outputStream().use { os ->
-                    ObjectOutputStream(os).use { oos ->
+    
+                outputStream().os { os ->
+                    ObjectOutputStream(os).os { oos ->
                         oos.writeObject(songListInfoList)
-                        oos.flush()
                     }
-                    os.flush()
                 }
             }
             

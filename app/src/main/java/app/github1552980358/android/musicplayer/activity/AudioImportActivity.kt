@@ -22,15 +22,16 @@ import app.github1552980358.android.musicplayer.base.AudioData
 import app.github1552980358.android.musicplayer.base.Colour
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumColourDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormalDir
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumRoundDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataListFile
+import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataListRandomFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataMapFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.BackgroundThread
-import app.github1552980358.android.musicplayer.base.Constant.Companion.IgnoredFile
-import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumRoundDir
-import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataListRandomFile
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INITIALIZE
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INITIALIZE_EXTRA
+import app.github1552980358.android.musicplayer.base.Constant.Companion.IgnoredFile
+import app.github1552980358.android.musicplayer.base.os
 import app.github1552980358.android.musicplayer.service.PlayService
 import app.github1552980358.android.musicplayer.service.PlayService.Companion.START_FLAG
 import kotlinx.android.synthetic.main.activity_audio_import.imageView
@@ -171,15 +172,14 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                             delete()
                         }
                         createNewFile()
-                        
+    
                         // Write
                         // 写入
-                        outputStream().use { os ->
-                            ObjectOutputStream(os).use { oos ->
+    
+                        outputStream().os { os ->
+                            ObjectOutputStream(os).os { oos ->
                                 oos.writeObject(audioDataList)
-                                oos.flush()
                             }
-                            os.flush()
                         }
                     }
                     File(getExternalFilesDir(AudioDataDir), AudioDataMapFile).apply {
@@ -191,15 +191,14 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                             delete()
                         }
                         createNewFile()
-                        
+    
                         // Write
                         // 写入
-                        outputStream().use { os ->
-                            ObjectOutputStream(os).use { oos ->
+    
+                        outputStream().os { os ->
+                            ObjectOutputStream(os).os { oos ->
                                 oos.writeObject(audioDataMap)
-                                oos.flush()
                             }
-                            os.flush()
                         }
                     }
                     File(getExternalFilesDir(AudioDataDir), AudioDataListRandomFile).apply {
@@ -207,13 +206,11 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                             delete()
                         }
                         createNewFile()
-                        
-                        outputStream().use { os ->
-                            ObjectOutputStream(os).use { oos ->
+    
+                        outputStream().os { os ->
+                            ObjectOutputStream(os).os { oos ->
                                 oos.writeObject(copyAndShuffle(audioDataList))
-                                oos.flush()
                             }
-                            os.flush()
                         }
                     }
                     
@@ -250,8 +247,8 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                             // [https://github.com/mkaflowski/Media-Style-Palette/]
                             // com.github.mkaflowski:Media-Style-Palette:1.3
                             MediaNotificationProcessor(this@AudioImportActivity, this).apply {
-                                File(getExternalFilesDir(AlbumColourDir), j.id).outputStream().use { os ->
-                                    ObjectOutputStream(os).use { oos ->
+                                File(getExternalFilesDir(AlbumColourDir), j.id).outputStream().os { os ->
+                                    ObjectOutputStream(os).os { oos ->
                                         oos.writeObject(
                                             Colour(
                                                 backgroundColor,
@@ -260,9 +257,7 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                                                 isLight
                                             )
                                         )
-                                        oos.flush()
                                     }
-                                    os.flush()
                                 }
                             }
                             
@@ -281,7 +276,7 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                             // Extension is not given,
                             // prevent being scanned by system media
                             // 不添加后缀名, 防止被系统相册刷到
-                            File(getExternalFilesDir(AlbumRoundDir), j.id).outputStream().use { ros ->
+                            File(getExternalFilesDir(AlbumRoundDir), j.id).outputStream().os { os ->
                                 Bitmap.createBitmap(
                                     this, 0, 0, width, width, matrix1.apply {
                                         (smaller / width).apply { setScale(this, this) }
@@ -298,11 +293,9 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                                         paint.xfermode = mode
                                         canvas.drawBitmap(this@run, 0F, 0F, paint)
                                     }
-                                }.compress(Bitmap.CompressFormat.PNG, 100, ros)
-                                ros.flush()
+                                }.compress(Bitmap.CompressFormat.PNG, 100, os)
                             }
-                            
-                            File(getExternalFilesDir(AlbumNormalDir), j.id).outputStream().use { os ->
+                            File(getExternalFilesDir(AlbumNormalDir), j.id).outputStream().os { os ->
                                 Bitmap.createBitmap(
                                     this, 0, 0, width, width, matrix2.apply {
                                         (resources.displayMetrics.widthPixels / width).toFloat().apply {
@@ -311,9 +304,7 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                                     },
                                     true
                                 ).compress(Bitmap.CompressFormat.PNG, 100, os)
-                                os.flush()
                             }
-                            
                         }
                         
                     }

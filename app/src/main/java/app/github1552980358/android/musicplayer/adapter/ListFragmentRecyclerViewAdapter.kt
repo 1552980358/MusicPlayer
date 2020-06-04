@@ -22,6 +22,7 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDat
 import app.github1552980358.android.musicplayer.base.Constant.Companion.CurrentSongList
 import app.github1552980358.android.musicplayer.base.Constant.Companion.FULL_LIST
 import app.github1552980358.android.musicplayer.base.Constant.Companion.IgnoredFile
+import app.github1552980358.android.musicplayer.base.os
 import app.github1552980358.android.musicplayer.dialog.AddToSongListDialogFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.view_media_list.view.imageButtonOpts
@@ -145,35 +146,40 @@ class ListFragmentRecyclerViewAdapter(
                         R.id.menu_add_to_list -> {
                             AddToSongListDialogFragment().showNow(activity.supportFragmentManager, audioDataList[position])
                         }
-                        
+    
                         R.id.menu_ignore -> {
                             AlertDialog.Builder(activity)
                                 .setTitle(R.string.listFragment_audio_menu_ignore_dialog_title)
-                                .setMessage(String.format(activity.getString(R.string.listFragment_audio_menu_ignore_dialog_content), audioDataList[position].title))
-                                .setNegativeButton(R.string.listFragment_audio_menu_ignore_dialog_negative) { _, _ ->  }
+                                .setMessage(
+                                    String.format(
+                                        activity.getString(R.string.listFragment_audio_menu_ignore_dialog_content),
+                                        audioDataList[position].title
+                                    )
+                                )
+                                .setNegativeButton(R.string.listFragment_audio_menu_ignore_dialog_negative) { _, _ -> }
                                 .setPositiveButton(R.string.listFragment_audio_menu_ignore_dialog_positive) { _, _ ->
-                                    File(activity.getExternalFilesDir(AudioDataDir), IgnoredFile).appendText(audioDataList[position].id + "\n")
-    
+                                    File(activity.getExternalFilesDir(AudioDataDir), IgnoredFile).appendText(
+                                        audioDataList[position].id + "\n"
+                                    )
+                
                                     audioDataList.removeAt(position)
                                     File(activity.getExternalFilesDir(AudioDataDir), AudioDataListFile).apply {
                                         delete()
                                         createNewFile()
-        
+                    
                                         // Write
                                         // 写入
-                                        outputStream().use { os ->
-                                            ObjectOutputStream(os).use { oos ->
+                                        outputStream().os { os ->
+                                            ObjectOutputStream(os).os { oos ->
                                                 oos.writeObject(audioDataList)
-                                                oos.flush()
                                             }
-                                            os.flush()
                                         }
                                     }
-    
+                
                                     notifyDataSetChanged()
                                 }
                                 .show()
-                            
+        
                         }
                         
                     }

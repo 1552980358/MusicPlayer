@@ -22,6 +22,7 @@ import app.github1552980358.android.musicplayer.base.SongListCover
 import app.github1552980358.android.musicplayer.base.SongListInfo
 import app.github1552980358.android.musicplayer.base.SongListInfo.Companion.songListInfoList
 import app.github1552980358.android.musicplayer.base.TimeExchange
+import app.github1552980358.android.musicplayer.base.os
 import kotlinx.android.synthetic.main.activity_song_list_editing.editTextDescription
 import kotlinx.android.synthetic.main.activity_song_list_editing.editTextTitle
 import kotlinx.android.synthetic.main.activity_song_list_editing.imageViewCover
@@ -216,12 +217,10 @@ class SongListEditingActivity: AppCompatActivity(), TimeExchange {
         File(getExternalFilesDir(AudioDataDir), SongListFile).apply {
             delete()
             createNewFile()
-            outputStream().use { os ->
-                ObjectOutputStream(os).use { oos ->
+            outputStream().os { os ->
+                ObjectOutputStream(os).os { oos ->
                     oos.writeObject(songListInfoList)
-                    oos.flush()
                 }
-                os.flush()
             }
         }
         
@@ -240,12 +239,10 @@ class SongListEditingActivity: AppCompatActivity(), TimeExchange {
                 delete()
             createNewFile()
     
-            outputStream().use { os ->
-                ObjectOutputStream(os).use { oos ->
+            outputStream().os { os ->
+                ObjectOutputStream(os).os { oos ->
                     oos.writeObject(songListCover)
-                    oos.flush()
                 }
-                os.flush()
             }
         }
     

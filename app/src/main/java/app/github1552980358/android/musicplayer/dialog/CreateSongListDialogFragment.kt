@@ -14,8 +14,10 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.SongList
 import app.github1552980358.android.musicplayer.base.SongList
 import app.github1552980358.android.musicplayer.base.SongListInfo
 import app.github1552980358.android.musicplayer.base.SongListInfo.Companion.songListInfoList
+import app.github1552980358.android.musicplayer.base.os
 import app.github1552980358.android.musicplayer.fragment.mainActivity.MainFragment
-import kotlinx.android.synthetic.main.dialog_create_song_list.*
+import kotlinx.android.synthetic.main.dialog_create_song_list.editTextTitle
+import kotlinx.android.synthetic.main.dialog_create_song_list.textViewCount
 import java.io.File
 import java.io.ObjectOutputStream
 
@@ -75,28 +77,24 @@ class CreateSongListDialogFragment : DialogFragment() {
                     if (exists())
                         delete()
                     createNewFile()
-
-                    outputStream().use { os ->
-                        ObjectOutputStream(os).use { oos ->
+    
+                    outputStream().os { os ->
+                        ObjectOutputStream(os).os { oos ->
                             oos.writeObject(songListInfoList)
-                            oos.flush()
                         }
-                        os.flush()
                     }
                 }
                 File(requireContext().getExternalFilesDir(SongListDir), contentText?:throw Exception()).apply {
                     if (parentFile!!.exists()) {
                         parentFile!!.mkdirs()
                     }
-
+    
                     createNewFile()
-
-                    outputStream().use { os ->
-                        ObjectOutputStream(os).use { oos ->
-                            oos.writeObject(SongList().apply { listName = contentText?:throw Exception() })
-                            oos.flush()
+    
+                    outputStream().os { os ->
+                        ObjectOutputStream(os).os { oos ->
+                            oos.writeObject(SongList().apply { listName = contentText ?: throw Exception() })
                         }
-                        os.flush()
                     }
                 }
                 
