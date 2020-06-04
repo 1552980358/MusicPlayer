@@ -101,6 +101,7 @@ class SongListRecyclerViewAdapter(
                 Intent(fragment.requireContext(), SongListActivity::class.java)
                     .putExtra(INTENT_SONG_LIST_INFO, data[position])
                     .apply {
+                        putExtra(INTENT_SONG_LIST_POS, position)
                         if ((fragment.requireActivity() as MainActivity).mediaControllerCompat.metadata == null) {
                             putExtra(INTENT_AUDIO_PRESENT, false)
                             return@apply

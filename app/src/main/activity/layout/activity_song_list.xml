@@ -33,6 +33,7 @@
                     android:id="@+id/toolbar"
                     app:popupTheme="@style/AppTheme.PopupOverlay"
                     app:titleTextColor="@color/black"
+                    app:menu="@menu/menu_song_list_activity"
                     app:layout_collapseMode="pin" />
                 
                 <LinearLayout
@@ -73,14 +74,14 @@
                             android:maxLines="1"
                             android:textColor="@color/black"
                             android:ellipsize="end" />
-                        
+    
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/textViewDescription"
                             android:ellipsize="end"
                             android:maxLines="4"
-                            android:textColor="@color/black"/>
+                            android:textColor="@color/black" />
                     
                     </LinearLayout>
                 
@@ -89,12 +90,12 @@
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         
         </com.google.android.material.appbar.AppBarLayout>
-        
+    
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/recyclerView"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
         
         <include layout="@layout/activity_song_list_bottomsheet" />
     

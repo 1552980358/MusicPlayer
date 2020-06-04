@@ -13,6 +13,7 @@ import androidx.core.widget.addTextChangedListener
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDataDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.DEFAULT_VALUE_INT
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_SONG_LIST_COVER
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_SONG_LIST_INFO
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_SONG_LIST_POS
 import app.github1552980358.android.musicplayer.base.Constant.Companion.SongListCoverDir
@@ -238,7 +239,7 @@ class SongListEditingActivity: AppCompatActivity(), TimeExchange {
             if (exists())
                 delete()
             createNewFile()
-            
+    
             outputStream().use { os ->
                 ObjectOutputStream(os).use { oos ->
                     oos.writeObject(songListCover)
@@ -247,8 +248,12 @@ class SongListEditingActivity: AppCompatActivity(), TimeExchange {
                 os.flush()
             }
         }
-        
-        setResult(Activity.RESULT_OK)
+    
+        setResult(
+            Activity.RESULT_OK,
+            Intent().putExtra(INTENT_SONG_LIST_INFO, songListInfo)
+                .putExtra(INTENT_SONG_LIST_COVER, songListCover)
+        )
         super.finish()
     }
     

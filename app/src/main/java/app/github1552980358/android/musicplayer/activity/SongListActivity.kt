@@ -10,6 +10,8 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -20,13 +22,17 @@ import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.adapter.SongListContentRecyclerViewAdapter
 import app.github1552980358.android.musicplayer.base.BaseAppCompatActivity
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumRoundDir
-import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_TITLE
-import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_ARTIST
+import app.github1552980358.android.musicplayer.base.Constant.Companion.DEFAULT_VALUE_INT
+import app.github1552980358.android.musicplayer.base.Constant.Companion.DEFAULT_VALUE_STR
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_ALBUM
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_ARTIST
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_DURATION
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_ID
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_PRESENT
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_AUDIO_TITLE
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_SONG_LIST_COVER
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_SONG_LIST_INFO
+import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_SONG_LIST_POS
 import app.github1552980358.android.musicplayer.base.Constant.Companion.SongListCoverDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.SongListDir
 import app.github1552980358.android.musicplayer.base.SongList
@@ -61,11 +67,7 @@ import java.io.ObjectInputStream
 
 class SongListActivity: BaseAppCompatActivity(), TimeExchange {
     
-    //private var currentTitle = ""
-    //private var currentArtist = ""
-    //private var currentId = ""
-    //private var currentAlbum = ""
-    //private var currentDuration = 0L
+    private lateinit var songListInfo: SongListInfo
     
     /**
      * [bottomSheetBehavior]
@@ -88,6 +90,10 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
      **/
     private lateinit var songList: SongList
     
+    private var position = DEFAULT_VALUE_INT
+    
+    private var listTitle = DEFAULT_VALUE_STR
+    
     /**
      * [onCreate]
      * @param savedInstanceState [Bundle]?
@@ -96,8 +102,8 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
      **/
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.e("SongListActivity", "onCreate")
-    
-        val songListInfo = intent?.getSerializableExtra(INTENT_SONG_LIST_INFO) as SongListInfo
+        
+        songListInfo = intent?.getSerializableExtra(INTENT_SONG_LIST_INFO) as SongListInfo
         
         File(getExternalFilesDir(SongListCoverDir), songListInfo.listTitle).apply {
             @Suppress("LABEL_NAME_CLASH")
@@ -142,6 +148,7 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
             if (!hasCoverImage) {
                 collapsingToolbarLayout.setCollapsedTitleTextColor(Color.BLACK)
                 collapsingToolbarLayout.setExpandedTitleColor(Color.BLACK)
+                toolbar.overflowIcon?.setTint(Color.BLACK)
                 return@apply
             }
             
@@ -158,6 +165,7 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
                 textViewDescription.setTextColor(secondaryTextColour)
                 collapsingToolbarLayout.setCollapsedTitleTextColor(primaryTextColour)
                 collapsingToolbarLayout.setExpandedTitleColor(primaryTextColour)
+                toolbar.overflowIcon?.setTint(primaryTextColour)
             }
             
         }
@@ -175,7 +183,73 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
         @Suppress("UNCHECKED_CAST")
         bottomSheetBehavior = BottomSheetBehavior.from(cardView) as BottomSheetBehavior<View>
         
-        File(getExternalFilesDir(SongListDir), songListInfo.listTitle).apply {
+        listTitle = songListInfo.listTitle
+        
+        readSongList()
+        
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = SongListContentRecyclerViewAdapter(this, songList.listName, songList.audioList)
+        
+        checkBoxPlay.setOnClickListener {
+            mediaControllerCompat.transportControls.apply {
+                if (checkBoxPlay.isChecked) play() else pause()
+            }
+        }
+        
+        linearLayoutBottom.setOnClickListener {
+            if (mediaControllerCompat.playbackState.state == PlaybackStateCompat.STATE_NONE) {
+                return@setOnClickListener
+            }
+            startActivityForResult(
+                Intent(this, AudioActivity::class.java)
+                    .putExtra(
+                        INTENT_AUDIO_TITLE,
+                        mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
+                    )
+                    .putExtra(
+                        INTENT_AUDIO_ARTIST,
+                        mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
+                    )
+                    .putExtra(
+                        INTENT_AUDIO_ALBUM,
+                        mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_ALBUM)
+                    )
+                    .putExtra(
+                        INTENT_AUDIO_DURATION,
+                        mediaControllerCompat.metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
+                    )
+                    .putExtra(
+                        INTENT_AUDIO_ID,
+                        mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
+                    ),
+                0,
+                ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    this,
+                    imageView, "imageView"
+                ).toBundle()
+            )
+        }
+        
+        position = intent?.getIntExtra(INTENT_SONG_LIST_POS, DEFAULT_VALUE_INT) ?: DEFAULT_VALUE_INT
+        
+        if (!intent.getBooleanExtra(INTENT_AUDIO_PRESENT, false)) {
+            textViewTitle_bottom_sheet.setText(R.string.songListActivity_bottom_sheet_title)
+            textViewSubtitle_bottom_sheet.visibility = View.GONE
+            return
+        }
+        
+        textViewTitle_bottom_sheet.text = intent.getStringExtra(INTENT_AUDIO_TITLE)
+        textViewSubtitle_bottom_sheet.text = intent.getStringExtra(INTENT_AUDIO_ARTIST)
+        
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        Log.e("SongListActivity", "onResume")
+    }
+    
+    private fun readSongList() {
+        File(getExternalFilesDir(SongListDir), listTitle).apply {
             if (!exists()) {
                 finish()
                 return
@@ -188,49 +262,6 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
                 
             }
         }
-        
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = SongListContentRecyclerViewAdapter(this, songList.listName, songList.audioList)
-        
-        checkBoxPlay.setOnClickListener {
-            mediaControllerCompat.transportControls.apply {
-                if (checkBoxPlay.isChecked) play() else pause()
-            }
-        }
-    
-        linearLayoutBottom.setOnClickListener {
-            if (mediaControllerCompat.playbackState.state == PlaybackStateCompat.STATE_NONE) {
-                return@setOnClickListener
-            }
-            startActivityForResult(
-                Intent(this, AudioActivity::class.java)
-                    .putExtra(INTENT_AUDIO_TITLE, mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE))
-                    .putExtra(INTENT_AUDIO_ARTIST, mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST))
-                    .putExtra(INTENT_AUDIO_ALBUM, mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_ALBUM))
-                    .putExtra(INTENT_AUDIO_DURATION, mediaControllerCompat.metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION))
-                    .putExtra(INTENT_AUDIO_ID, mediaControllerCompat.metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)),
-                0,
-                ActivityOptionsCompat.makeSceneTransitionAnimation(
-                    this,
-                    imageView, "imageView"
-                ).toBundle()
-            )
-        }
-        
-        if (!intent.getBooleanExtra(INTENT_AUDIO_PRESENT, false)) {
-            textViewTitle_bottom_sheet.setText(R.string.songListActivity_bottom_sheet_title)
-            textViewSubtitle_bottom_sheet.visibility = View.GONE
-            return
-        }
-    
-        textViewTitle_bottom_sheet.text = intent.getStringExtra(INTENT_AUDIO_TITLE)
-        textViewSubtitle_bottom_sheet.text = intent.getStringExtra(INTENT_AUDIO_ARTIST)
-        
-    }
-    
-    override fun onResume() {
-        super.onResume()
-        Log.e("SongListActivity", "onResume")
     }
     
     /**
@@ -270,11 +301,11 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
      **/
     override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
         when (state?.state) {
-            
+    
             PlaybackStateCompat.STATE_BUFFERING, PlaybackStateCompat.STATE_PLAYING -> {
                 checkBoxPlay.isChecked = true
             }
-            
+    
             PlaybackStateCompat.STATE_PAUSED -> {
                 checkBoxPlay.isChecked = false
             }
@@ -291,6 +322,47 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
      **/
     override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
         //
+    }
+    
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_song_list_activity, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+    
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_song_list_edit_info -> {
+                startActivityForResult(
+                    Intent(this, SongListEditingActivity::class.java)
+                        .putExtra(INTENT_SONG_LIST_INFO, songListInfo)
+                        .putExtra(INTENT_SONG_LIST_POS, position), 0
+                )
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+    
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        //readSongList()
+        //(recyclerView.adapter as SongListContentRecyclerViewAdapter).notifyDataSetChanged()
+        
+        
+        songListCover = (data?.getSerializableExtra(INTENT_SONG_LIST_COVER) as SongListCover?)?.apply {
+            imageViewCover.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.size))
+            appBarLayout.setBackgroundColor(backgroundColour)
+            textViewTitle.setTextColor(primaryTextColour)
+            textViewSubtitle.setTextColor(secondaryTextColour)
+            textViewDescription.setTextColor(secondaryTextColour)
+            collapsingToolbarLayout.setCollapsedTitleTextColor(primaryTextColour)
+            collapsingToolbarLayout.setExpandedTitleColor(primaryTextColour)
+            toolbar.overflowIcon?.setTint(primaryTextColour)
+        }
+        
+        songListInfo = (data?.getSerializableExtra(INTENT_SONG_LIST_INFO) as SongListInfo).apply {
+            textViewTitle_bottom_sheet.text = listTitle
+        }
+        
     }
     
     /**
@@ -311,7 +383,7 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
             }
             
         }
-    
+        
     }
     
 }

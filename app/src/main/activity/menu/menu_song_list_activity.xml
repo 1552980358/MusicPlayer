@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <item
+        android:id="@+id/menu_song_list_edit_info"
+        android:title="@string/songListActivity_menu_edit_info" />
+
+</menu>

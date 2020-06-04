@@ -23,6 +23,7 @@
     <string name="songListEditingActivity_toast">名称不得为空</string>
     
     <string name="songListActivity_bottom_sheet_title">@string/mainActivity_bottom_sheet_title</string>
+    <string name="songListActivity_menu_edit_info">编辑歌单信息</string>
     
     <string name="aboutActivity_title_license">开源许可证</string>
 

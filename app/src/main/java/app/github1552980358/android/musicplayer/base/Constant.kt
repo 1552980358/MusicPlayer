@@ -87,12 +87,15 @@ class Constant private constructor() {
          * @since 0.1
          **/
         const val INTENT_SONG_LIST_INFO = "INTENT_SONG_LIST_INFO"
+    
         /**
          * [INTENT_SONG_LIST_POS]
          * @author 1552980358
          * @since 0.1
          **/
         const val INTENT_SONG_LIST_POS = "INTENT_SONG_LIST_POS"
+    
+        const val INTENT_SONG_LIST_COVER = "INTENT_SONG_LIST_COVER"
     
         /*****************************************/
         /**
