@@ -53,10 +53,10 @@ import kotlinx.android.synthetic.main.activity_audio.textViewPassed
 import kotlinx.android.synthetic.main.activity_audio.textViewSubtitle1
 import kotlinx.android.synthetic.main.activity_audio.textViewSubtitle2
 import kotlinx.android.synthetic.main.activity_audio.textViewTitle
+import lib.github1552980358.ktExtension.jvm.javaClass.readObjectAs
 import lib.github1552980358.labourforce.LabourForce
 import lib.github1552980358.labourforce.labours.work.LabourWorkBuilder
 import java.io.File
-import java.io.ObjectInputStream
 
 /**
  * @file    : [AudioActivity]
@@ -167,19 +167,25 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
         
         @Suppress("DuplicatedCode")
         File(getExternalFilesDir(AlbumColourDir), intent.getStringExtra(INTENT_AUDIO_ID)!!).apply {
-            
+    
             if (!exists()) {
                 updateLayoutColours()
                 return@apply
             }
-            
-            inputStream().use { fis ->
-                ObjectInputStream(fis).use { ois ->
-                    (ois.readObject() as Colour).apply {
-                        updateLayoutColours(backgroundColour, primaryTextColour, secondaryTextColour, isLight)
-                    }
-                }
+    
+            readObjectAs<Colour>()?.apply {
+                updateLayoutColours(backgroundColour, primaryTextColour, secondaryTextColour, isLight)
             }
+            /**
+             * inputStream().use { fis ->
+             *     ObjectInputStream(fis).use { ois ->
+             *         (ois.readObject() as Colour).apply {
+             *             updateLayoutColours(backgroundColour, primaryTextColour, secondaryTextColour, isLight)
+             *         }
+             *     }
+             * }
+             **/
+    
         }
         
         checkBoxPlayPause.setOnClickListener {
@@ -268,19 +274,23 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
             getExternalFilesDir(AlbumColourDir),
             metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
         ).apply {
-            
+    
             if (!exists()) {
                 updateLayoutColours()
                 return@apply
             }
-            
-            inputStream().use { fis ->
-                ObjectInputStream(fis).use { ois ->
-                    (ois.readObject() as Colour).apply {
-                        updateLayoutColours(backgroundColour, primaryTextColour, secondaryTextColour, isLight)
-                    }
-                }
+            readObjectAs<Colour>()?.apply {
+                updateLayoutColours(backgroundColour, primaryTextColour, secondaryTextColour, isLight)
             }
+            /**
+             * inputStream().use { fis ->
+             *     ObjectInputStream(fis).use { ois ->
+             *         (ois.readObject() as Colour).apply {
+             *             updateLayoutColours(backgroundColour, primaryTextColour, secondaryTextColour, isLight)
+             *         }
+             *     }
+             * }
+             **/
         }
     }
     

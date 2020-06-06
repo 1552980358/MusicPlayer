@@ -22,12 +22,11 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDat
 import app.github1552980358.android.musicplayer.base.Constant.Companion.CurrentSongList
 import app.github1552980358.android.musicplayer.base.Constant.Companion.FULL_LIST
 import app.github1552980358.android.musicplayer.base.Constant.Companion.IgnoredFile
-import app.github1552980358.android.musicplayer.base.os
 import app.github1552980358.android.musicplayer.dialog.AddToSongListDialogFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.view_media_list.view.imageButtonOpts
+import lib.github1552980358.ktExtension.jvm.javaClass.writeObject
 import java.io.File
-import java.io.ObjectOutputStream
 
 /**
  * @file    : [ListFragmentRecyclerViewAdapter]
@@ -169,11 +168,14 @@ class ListFragmentRecyclerViewAdapter(
                     
                                         // Write
                                         // 写入
-                                        outputStream().os { os ->
-                                            ObjectOutputStream(os).os { oos ->
-                                                oos.writeObject(audioDataList)
-                                            }
-                                        }
+                                        writeObject(audioDataList)
+                                        /**
+                                         * outputStream().os { os ->
+                                         *     ObjectOutputStream(os).os { oos ->
+                                         *         oos.writeObject(audioDataList)
+                                         *     }
+                                         * }
+                                         **/
                                     }
                 
                                     notifyDataSetChanged()

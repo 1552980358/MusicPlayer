@@ -20,12 +20,11 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.SongList
 import app.github1552980358.android.musicplayer.base.SongList
 import app.github1552980358.android.musicplayer.base.SongListCover
 import app.github1552980358.android.musicplayer.base.SongListInfo
-import app.github1552980358.android.musicplayer.base.os
 import app.github1552980358.android.musicplayer.dialog.AddToSongListDialogFragment
 import app.github1552980358.android.musicplayer.dialog.CreateSongListDialogFragment
+import lib.github1552980358.ktExtension.jvm.javaClass.readObjectAs
+import lib.github1552980358.ktExtension.jvm.javaClass.writeObject
 import java.io.File
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
 
 /**
  * [AddToSongListDialogRecyclerViewAdapter]
@@ -102,11 +101,14 @@ class AddToSongListDialogRecyclerViewAdapter(
                 if (!exists()) {
                     songList = SongList().apply { listName = songListInfoList[position - 1].listTitle }
                 } else {
-                    inputStream().use { `is` ->
-                        ObjectInputStream(`is`).use { ois ->
-                            songList = ois.readObject() as SongList
-                        }
-                    }
+                    /**
+                     * inputStream().use { `is` ->
+                     *    ObjectInputStream(`is`).use { ois ->
+                     *        songList = ois.readObject() as SongList
+                     *    }
+                     * }
+                     **/
+                    songList = readObjectAs()!!
                 }
                 
                 songList.audioList.forEach { audioData ->
@@ -120,11 +122,14 @@ class AddToSongListDialogRecyclerViewAdapter(
                 delete()
                 createNewFile()
     
-                outputStream().os { os ->
-                    ObjectOutputStream(os).os { oos ->
-                        oos.writeObject(songList)
-                    }
-                }
+                /**
+                 * outputStream().os { os ->
+                 *     ObjectOutputStream(os).os { oos ->
+                 *         oos.writeObject(songList)
+                 *     }
+                 * }
+                 **/
+                writeObject(songList)
             }
             
             // Update size of song list
@@ -136,11 +141,14 @@ class AddToSongListDialogRecyclerViewAdapter(
                 }
                 createNewFile()
     
-                outputStream().os { os ->
-                    ObjectOutputStream(os).os { oos ->
-                        oos.writeObject(songListInfoList)
-                    }
-                }
+                /**
+                 * outputStream().os { os ->
+                 *     ObjectOutputStream(os).os { oos ->
+                 *         oos.writeObject(songListInfoList)
+                 *     }
+                 * }
+                 **/
+                writeObject(songListInfoList)
             }
             
             (fragment as AddToSongListDialogFragment).dismiss()
@@ -149,12 +157,17 @@ class AddToSongListDialogRecyclerViewAdapter(
         
         if (songListInfoList[position - 1].hasCoverImage) {
             File(fragment.requireContext().getExternalFilesDir(SongListCoverDir), songListInfoList[position].listTitle).apply {
-                inputStream().use { `is` ->
-                    ObjectInputStream(`is`).use { ois ->
-                        (ois.readObject() as SongListCover).apply {
-                            holder.imageViewCover.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.size))
-                        }
-                    }
+                /**
+                 * inputStream().use { `is` ->
+                 *    ObjectInputStream(`is`).use { ois ->
+                 *        (ois.readObject() as SongListCover).apply {
+                 *            holder.imageViewCover.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.size))
+                 *        }
+                 *    }
+                 * }
+                 **/
+                readObjectAs<SongListCover>()!!.apply {
+                    holder.imageViewCover.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.size))
                 }
             }
         } else {

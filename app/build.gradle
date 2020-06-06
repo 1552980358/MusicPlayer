@@ -102,7 +102,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.2.0'
+    implementation 'androidx.core:core-ktx:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.preference:preference:1.1.1'
@@ -113,6 +113,8 @@ dependencies {
 
     //noinspection GradleDependency
     implementation 'com.github.1552980358:labourforce:ae4aed364a'
+    implementation 'com.github.1552980358:KtExtensionAndroid:615e8780fd'
+    implementation "com.github.1552980358:KtExtension:ae3da9f8a5"
 
     implementation 'com.github.mkaflowski:Media-Style-Palette:1.3'
 

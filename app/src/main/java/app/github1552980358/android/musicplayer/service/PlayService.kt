@@ -1,5 +1,8 @@
+@file:Suppress("WakelockTimeout")
+
 package app.github1552980358.android.musicplayer.service
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.Service
 import android.content.Intent
@@ -45,13 +48,12 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.INITIALI
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INITIALIZE_EXTRA
 import app.github1552980358.android.musicplayer.base.Constant.Companion.RootId
 import app.github1552980358.android.musicplayer.base.Constant.Companion.SongListDir
-import app.github1552980358.android.musicplayer.base.SongList
 import app.github1552980358.android.musicplayer.service.CycleMode.LIST_CYCLE
 import app.github1552980358.android.musicplayer.service.CycleMode.RANDOM_ACCESS
 import app.github1552980358.android.musicplayer.service.CycleMode.SINGLE_CYCLE
 import app.github1552980358.android.musicplayer.service.NotificationUtil.Companion.ServiceId
+import lib.github1552980358.ktExtension.jvm.javaClass.readObjectAs
 import java.io.File
-import java.io.ObjectInputStream
 
 /**
  * @file    : [PlayService]
@@ -241,7 +243,7 @@ class PlayService: MediaBrowserServiceCompat(),
      * @author 1552980358
      * @since 0.1
      **/
-    private lateinit var audioDataMap: MutableMap<String, AudioData>
+    private lateinit var audioDataMap: HashMap<String, AudioData>
     
     /**
      * [currentIndex]
@@ -407,13 +409,13 @@ class PlayService: MediaBrowserServiceCompat(),
             @Synchronized
             override fun onSkipToPrevious() {
                 Log.e("MediaSessionCompat", "onSkipToPrevious")
-    
+                
                 if (currentIndex == 0) {
                     currentIndex = songList.lastIndex
                 } else {
                     currentIndex--
                 }
-    
+                
                 playbackStateCompat = PlaybackStateCompat.Builder()
                     .setActions(playbackStateActions)
                     .addCustomAction(cycleMode.name, CYCLE_MODE, R.drawable.ic_launcher_foreground)
@@ -434,7 +436,7 @@ class PlayService: MediaBrowserServiceCompat(),
                     .build()
                 mediaSessionCompat.setMetadata(mediaMetadataCompat)
                 notificationManagerCompat.notify(ServiceId, getNotification())
-    
+                
                 onPlayFromMediaId(this@PlayService, mediaPlayer, this, songList[currentIndex].id)
                 
             }
@@ -454,7 +456,7 @@ class PlayService: MediaBrowserServiceCompat(),
                 } else {
                     currentIndex++
                 }
-    
+                
                 playbackStateCompat = PlaybackStateCompat.Builder()
                     .setActions(playbackStateActions)
                     .addCustomAction(cycleMode.name, CYCLE_MODE, R.drawable.ic_launcher_foreground)
@@ -542,27 +544,32 @@ class PlayService: MediaBrowserServiceCompat(),
                             if (!exists()) {
                                 return@apply
                             }
-                            
-                            inputStream().use { `is` ->
-                                ObjectInputStream(`is`).use { ois ->
-                                    @Suppress("UNCHECKED_CAST")
-                                    songList = ois.readObject() as ArrayList<AudioData>
-                                }
-                            }
+                            songList = readObjectAs() ?: ArrayList()
+                            /**
+                             * inputStream().use { `is` ->
+                             *     ObjectInputStream(`is`).use { ois ->
+                             *         @Suppress("UNCHECKED_CAST")
+                             *         songList = ois.readObject() as ArrayList<AudioData>
+                             *     }
+                             * }
+                             **/
                         }
                     } else {
                         File(getExternalFilesDir(SongListDir), currentSongList).apply {
                             if (!exists()) {
                                 return@apply
                             }
+                            songList = readObjectAs() ?: ArrayList()
+                            /**
+                             * inputStream().use { `is` ->
+                             *     ObjectInputStream(`is`).use { ois ->
+                             *         (ois.readObject() as SongList).apply {
+                             *             songList = if (cycleMode == RANDOM_ACCESS) audioListRandom else audioList
+                             *         }
+                             *     }
+                             * }
+                             **/
                             
-                            inputStream().use { `is` ->
-                                ObjectInputStream(`is`).use { ois ->
-                                    (ois.readObject() as SongList).apply {
-                                        songList = if (cycleMode == RANDOM_ACCESS) audioListRandom else audioList
-                                    }
-                                }
-                            }
                         }
                     }
                 }
@@ -681,6 +688,7 @@ class PlayService: MediaBrowserServiceCompat(),
      * @author 1552980358
      * @since 0.1
      **/
+    @SuppressLint("WakelockTimeout")
     @Suppress("DuplicatedCode")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.e("PlayService", "onStartCommand")
@@ -688,9 +696,9 @@ class PlayService: MediaBrowserServiceCompat(),
     
             INITIALIZE -> {
                 @Suppress("UNCHECKED_CAST")
-                audioDataMap = (intent.getSerializableExtra(INITIALIZE_EXTRA) as MutableMap<String, AudioData>)
+                audioDataMap = (intent.getSerializableExtra(INITIALIZE_EXTRA) as HashMap<String, AudioData>)
             }
-    
+            
             START_FOREGROUND -> {
                 Log.e("PlayService", "START_FOREGROUND")
                 startForeground(this, getNotification())
@@ -715,10 +723,10 @@ class PlayService: MediaBrowserServiceCompat(),
                     wakeLock!!.acquire()
                 }
             }
-    
+            
             STOP_FOREGROUND -> {
                 Log.e("PlayService", "STOP_FOREGROUND")
-    
+                
                 stopForeground(false)
                 isForegroundService = false
                 /**
@@ -737,10 +745,10 @@ class PlayService: MediaBrowserServiceCompat(),
                 wakeLock?.release()
                 wakeLock = null
             }
-    
+            
             LIST_CYCLE.name -> {
                 Log.e("PlayService", "LIST_CYCLE")
-    
+                
                 cycleMode = LIST_CYCLE
                 playbackStateCompat = PlaybackStateCompat.Builder()
                     .setActions(playbackStateActions)
@@ -757,10 +765,10 @@ class PlayService: MediaBrowserServiceCompat(),
                     .build()
                 mediaSessionCompat.setPlaybackState(playbackStateCompat)
             }
-    
+            
             RANDOM_ACCESS.name -> {
                 Log.e("PlayService", "RANDOM_ACCESS")
-    
+                
                 cycleMode = RANDOM_ACCESS
                 playbackStateCompat = PlaybackStateCompat.Builder()
                     .setActions(playbackStateActions)
@@ -777,10 +785,10 @@ class PlayService: MediaBrowserServiceCompat(),
                     .build()
                 mediaSessionCompat.setPlaybackState(playbackStateCompat)
             }
-    
+            
             SINGLE_CYCLE.name -> {
                 Log.e("PlayService", "SINGLE_CYCLE")
-    
+                
                 cycleMode = SINGLE_CYCLE
                 playbackStateCompat = PlaybackStateCompat.Builder()
                     .setActions(playbackStateActions)

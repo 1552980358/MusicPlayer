@@ -54,6 +54,7 @@ import kotlinx.android.synthetic.main.activity_song_list_bottomsheet.imageView
 import kotlinx.android.synthetic.main.activity_song_list_bottomsheet.linearLayoutBottom
 import kotlinx.android.synthetic.main.activity_song_list_bottomsheet.textViewSubtitle_bottom_sheet
 import kotlinx.android.synthetic.main.activity_song_list_bottomsheet.textViewTitle_bottom_sheet
+import lib.github1552980358.ktExtension.jvm.javaClass.readObjectAs
 import java.io.File
 import java.io.ObjectInputStream
 
@@ -114,17 +115,20 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
                     or SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
                 return@apply
             }
-            
+    
             // Load image and colours
             // 加载图片以及颜色
-            inputStream().use { `is` ->
-                ObjectInputStream(`is`).use { ois ->
-                    songListCover = (ois.readObject() as SongListCover)
-                }
-            }
-            
+            songListCover = readObjectAs()!!
+            /**
+             * inputStream().use { `is` ->
+             *     ObjectInputStream(`is`).use { ois ->
+             *         songListCover = (ois.readObject() as SongListCover)
+             *     }
+             * }
+             **/
+    
             window.statusBarColor = songListCover!!.backgroundColour
-            
+    
             @SuppressLint("InlinedApi")
             if (songListCover!!.isLight) {
                 window.decorView.systemUiVisibility = (SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN

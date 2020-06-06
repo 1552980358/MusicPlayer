@@ -17,16 +17,14 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.Backgrou
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INITIALIZE
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INITIALIZE_EXTRA
 import app.github1552980358.android.musicplayer.base.Constant.Companion.SongListFile
-import app.github1552980358.android.musicplayer.base.SongListInfo
 import app.github1552980358.android.musicplayer.base.SongListInfo.Companion.songListInfoList
 import app.github1552980358.android.musicplayer.service.PlayService
 import app.github1552980358.android.musicplayer.service.PlayService.Companion.START_FLAG
+import lib.github1552980358.ktExtension.jvm.javaClass.readObjectAs
 import lib.github1552980358.labourforce.LabourForce
 import lib.github1552980358.labourforce.commands.LabourLv
 import lib.github1552980358.labourforce.labours.work.LabourWork
 import java.io.File
-import java.io.ObjectInputStream
-import java.io.Serializable
 
 /**
  * @file    : [SplashActivity]
@@ -146,33 +144,43 @@ class SplashActivity : AppCompatActivity() {
                     File(getExternalFilesDir(AudioDataDir), AudioDataMapFile).apply {
                         if (!exists())
                             return@apply
-
-                        inputStream().use {`is` ->
-                            ObjectInputStream(`is`).use { ois ->
-                                // @Suppress("UNCHECKED_CAST")
-                                // AudioData.audioDataMap = (ois.readObject() as MutableMap<String, AudioData>)
-                                @Suppress("UNCHECKED_CAST")
-                                startService(
-                                    Intent(this@SplashActivity, PlayService::class.java)
-                                        .putExtra(START_FLAG, INITIALIZE)
-                                        .putExtra(INITIALIZE_EXTRA, (ois.readObject() as MutableMap<String, AudioData>) as Serializable)
-                                )
-                            }
-                        }
+    
+                        startService(
+                            Intent(this@SplashActivity, PlayService::class.java)
+                                .putExtra(START_FLAG, INITIALIZE)
+                                .putExtra(INITIALIZE_EXTRA, readObjectAs<HashMap<String, AudioData>>())
+                        )
+                        /**
+                         * inputStream().use {`is` ->
+                         *     ObjectInputStream(`is`).use { ois ->
+                         *          // @Suppress("UNCHECKED_CAST")
+                         *          // AudioData.audioDataMap = (ois.readObject() as MutableMap<String, AudioData>)
+                         *         @Suppress("UNCHECKED_CAST")
+                         *         startService(
+                         *             Intent(this@SplashActivity, PlayService::class.java)
+                         *                 .putExtra(START_FLAG, INITIALIZE)
+                         *                 .putExtra(INITIALIZE_EXTRA, (ois.readObject() as MutableMap<String, AudioData>) as Serializable)
+                         *         )
+                         *     }
+                         * }
+                         **/
                     }
 
                     File(getExternalFilesDir(AudioDataDir), SongListFile).apply {
                         if (!exists())
                             return@apply
-
-                        inputStream().use { `is` ->
-                            ObjectInputStream(`is`).use { ois ->
-                                @Suppress("UNCHECKED_CAST")
-                                songListInfoList =
-                                    (ois.readObject() as ArrayList<SongListInfo>)
-                            }
-                        }
-                        
+    
+                        songListInfoList = readObjectAs() ?: ArrayList()
+    
+                        /**
+                         * inputStream().use { `is` ->
+                         *     ObjectInputStream(`is`).use { ois ->
+                         *         @Suppress("UNCHECKED_CAST")
+                         *          songListInfoList =
+                         *              (ois.readObject() as ArrayList<SongListInfo>)
+                         *     }
+                         * }
+                         **/
                     }
 
                     /**

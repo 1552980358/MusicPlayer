@@ -18,12 +18,12 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.AudioDat
 import app.github1552980358.android.musicplayer.base.Constant.Companion.DEFAULT_VALUE_INT
 import app.github1552980358.android.musicplayer.view.SideCharView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.android.synthetic.main.fragment_list.textViewChar
-import kotlinx.android.synthetic.main.fragment_list.swipeRefreshLayout
 import kotlinx.android.synthetic.main.fragment_list.recyclerView
 import kotlinx.android.synthetic.main.fragment_list.sideCharView
+import kotlinx.android.synthetic.main.fragment_list.swipeRefreshLayout
+import kotlinx.android.synthetic.main.fragment_list.textViewChar
+import lib.github1552980358.ktExtension.jvm.javaClass.readObjectAs
 import java.io.File
-import java.io.ObjectInputStream
 
 /**
  * @file    : [ListFragment]
@@ -185,13 +185,16 @@ class ListFragment:
                 audioDataList = ArrayList()
                 return@apply
             }
-        
-            inputStream().use { `is` ->
-                ObjectInputStream(`is`).use { ois ->
-                    @Suppress("UNCHECKED_CAST")
-                    audioDataList = (ois.readObject() as ArrayList<AudioData>)
-                }
-            }
+    
+            audioDataList = readObjectAs() ?: ArrayList()
+            /**
+             * inputStream().use { `is` ->
+             *     ObjectInputStream(`is`).use { ois ->
+             *         @Suppress("UNCHECKED_CAST")
+             *         audioDataList = (ois.readObject() as ArrayList<AudioData>)
+             *     }
+             * }
+             **/
         }
     }
     

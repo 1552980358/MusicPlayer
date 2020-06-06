@@ -22,7 +22,6 @@ import app.github1552980358.android.musicplayer.base.SongListCover
 import app.github1552980358.android.musicplayer.base.SongListInfo
 import app.github1552980358.android.musicplayer.base.SongListInfo.Companion.songListInfoList
 import app.github1552980358.android.musicplayer.base.TimeExchange
-import app.github1552980358.android.musicplayer.base.os
 import kotlinx.android.synthetic.main.activity_song_list_editing.editTextDescription
 import kotlinx.android.synthetic.main.activity_song_list_editing.editTextTitle
 import kotlinx.android.synthetic.main.activity_song_list_editing.imageViewCover
@@ -32,11 +31,11 @@ import kotlinx.android.synthetic.main.activity_song_list_editing.toolbar
 import kotlinx.android.synthetic.main.activity_song_list_editing.view_backgroundColour
 import kotlinx.android.synthetic.main.activity_song_list_editing.view_subtitleColour
 import kotlinx.android.synthetic.main.activity_song_list_editing.view_titleColour
+import lib.github1552980358.ktExtension.jvm.javaClass.readObjectAs
+import lib.github1552980358.ktExtension.jvm.javaClass.writeObject
 import mkaflowski.mediastylepalette.MediaNotificationProcessor
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
 
 /**
  * [SongListEditingActivity]
@@ -113,16 +112,26 @@ class SongListEditingActivity: AppCompatActivity(), TimeExchange {
                     @Suppress("LABEL_NAME_CLASH")
                     return@apply
                 }
-                
-                inputStream().use { `is` ->
-                    ObjectInputStream(`is`).use { ois ->
-                        songListCover = (ois.readObject() as SongListCover)
-                        imageViewCover.setImageBitmap(BitmapFactory.decodeByteArray(songListCover.image, 0, songListCover.image.size))
-                        view_titleColour.setBackgroundColor(songListCover.primaryTextColour)
-                        view_subtitleColour.setBackgroundColor(songListCover.secondaryTextColour)
-                        view_backgroundColour.setBackgroundColor(songListCover.backgroundColour)
-                    }
+    
+                readObjectAs<SongListCover>()?.apply {
+                    songListCover = this
+                    imageViewCover.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.size))
+                    view_titleColour.setBackgroundColor(primaryTextColour)
+                    view_subtitleColour.setBackgroundColor(secondaryTextColour)
+                    view_backgroundColour.setBackgroundColor(backgroundColour)
                 }
+                /**
+                 * inputStream().use { `is` ->
+                 *     ObjectInputStream(`is`).use { ois ->
+                 *         songListCover = (ois.readObject() as SongListCover)
+                 *         imageViewCover.setImageBitmap(BitmapFactory.decodeByteArray(songListCover.image, 0, songListCover.image.size))
+                 *         view_titleColour.setBackgroundColor(songListCover.primaryTextColour)
+                 *         view_subtitleColour.setBackgroundColor(songListCover.secondaryTextColour)
+                 *         view_backgroundColour.setBackgroundColor(songListCover.backgroundColour)
+                 *     }
+                 * }
+                 **/
+    
             }
         }
         
@@ -217,11 +226,16 @@ class SongListEditingActivity: AppCompatActivity(), TimeExchange {
         File(getExternalFilesDir(AudioDataDir), SongListFile).apply {
             delete()
             createNewFile()
-            outputStream().os { os ->
-                ObjectOutputStream(os).os { oos ->
-                    oos.writeObject(songListInfoList)
-                }
-            }
+    
+            writeObject(songListInfoList)
+    
+            /**
+             * outputStream().os { os ->
+             *     ObjectOutputStream(os).os { oos ->
+             *         oos.writeObject(songListInfoList)
+             *     }
+             * }
+             **/
         }
         
         if (!::bitmap.isInitialized) {
@@ -239,11 +253,14 @@ class SongListEditingActivity: AppCompatActivity(), TimeExchange {
                 delete()
             createNewFile()
     
-            outputStream().os { os ->
-                ObjectOutputStream(os).os { oos ->
-                    oos.writeObject(songListCover)
-                }
-            }
+            writeObject(songListCover)
+            /**
+             * outputStream().os { os ->
+             *     ObjectOutputStream(os).os { oos ->
+             *         oos.writeObject(songListCover)
+             *     }
+             * }
+             **/
         }
     
         setResult(

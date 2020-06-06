@@ -2,7 +2,6 @@ package app.github1552980358.android.musicplayer.adapter
 
 import android.app.Service
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.support.v4.media.MediaMetadataCompat
 import android.view.LayoutInflater
 import android.view.View
@@ -34,10 +33,10 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.SongList
 import app.github1552980358.android.musicplayer.base.SongListCover
 import app.github1552980358.android.musicplayer.base.SongListInfo
 import app.github1552980358.android.musicplayer.base.SongListInfo.Companion.songListInfoList
-import app.github1552980358.android.musicplayer.base.os
+import lib.github1552980358.ktExtension.android.java.toBitmap
+import lib.github1552980358.ktExtension.jvm.javaClass.readObjectAs
+import lib.github1552980358.ktExtension.jvm.javaClass.writeObject
 import java.io.File
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
 
 /**
  * [SongListRecyclerViewAdapter]
@@ -50,8 +49,7 @@ import java.io.ObjectOutputStream
 class SongListRecyclerViewAdapter(
     arrayList: ArrayList<SongListInfo>,
     private val fragment: Fragment
-):
-    Adapter<SongListRecyclerViewAdapter.ViewHolder>() {
+): Adapter<SongListRecyclerViewAdapter.ViewHolder>() {
     
     /**
      * [data]
@@ -144,7 +142,7 @@ class SongListRecyclerViewAdapter(
                                 .getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
                         )
                     }
-                    
+
             )
         }
         holder.imageButtonOpts.setOnClickListener { imageButtonOpts ->
@@ -152,13 +150,14 @@ class SongListRecyclerViewAdapter(
                 inflate(R.menu.menu_song_list)
                 setOnMenuItemClickListener { menuItem ->
                     when (menuItem.itemId) {
-                    
+    
                         R.id.menu_edit_list -> {
                             fragment.startActivityForResult(
                                 Intent(fragment.requireContext(), SongListEditingActivity::class.java)
                                     .putExtra(INTENT_SONG_LIST_INFO, data[position])
                                     .putExtra(INTENT_SONG_LIST_POS, position),
-                                1)
+                                1
+                            )
                         }
     
                         R.id.menu_delete_list -> {
@@ -173,16 +172,22 @@ class SongListRecyclerViewAdapter(
                             File(
                                 imageButtonOpts.context.getExternalFilesDir(SongListDir),
                                 songListInfoList.removeAt(position).listTitle
-                            )
-                                .delete()
+                            ).apply {
+                                if (exists()) {
+                                    delete()
+                                }
+                            }
                             File(imageButtonOpts.context.getExternalFilesDir(AudioDataDir), SongListFile).apply {
                                 delete()
                                 createNewFile()
-                                outputStream().os { os ->
-                                    ObjectOutputStream(os).os { oos ->
-                                        oos.writeObject(songListInfoList)
-                                    }
-                                }
+                                writeObject(songListInfoList)
+                                /**
+                                 * outputStream().os { os ->
+                                 *     ObjectOutputStream(os).os { oos ->
+                                 *         oos.writeObject(songListInfoList)
+                                 *     }
+                                 * }
+                                 **/
                             }
                             notifyDataSetChanged()
                         }
@@ -199,14 +204,19 @@ class SongListRecyclerViewAdapter(
             if (!exists()) {
                 return
             }
-            
-            inputStream().use { `is` ->
-                ObjectInputStream(`is`).use { ois ->
-                    (ois.readObject() as SongListCover).image.apply {
-                        holder.imageViewCover.setImageBitmap(BitmapFactory.decodeByteArray(this, 0, size))
-                    }
-                }
+    
+            readObjectAs<SongListCover>()?.apply {
+                holder.imageViewCover.setImageBitmap(image.toBitmap())
             }
+            /**
+             * inputStream().use { `is` ->
+             *     ObjectInputStream(`is`).use { ois ->
+             *         (ois.readObject() as SongListCover).image.apply {
+             *             holder.imageViewCover.setImageBitmap(BitmapFactory.decodeByteArray(this, 0, size))
+             *         }
+             *     }
+             * }
+             **/
         }
         
     }
@@ -224,24 +234,28 @@ class SongListRecyclerViewAdapter(
          * @since 0.1
          **/
         val textViewTitle: TextView = view.findViewById(R.id.textViewTitle)!!
+    
         /**
          * [textViewSubtitle]
          * @author 1552980358
          * @since 0.1
          **/
         val textViewSubtitle: TextView = view.findViewById(R.id.textViewSubtitle)!!
+    
         /**
          * [relativeLayoutRoot]
          * @author 1552980358
          * @since 0.1
          **/
         val relativeLayoutRoot: RelativeLayout = view.findViewById(R.id.relativeLayoutRoot)!!
+    
         /**
          * [imageViewCover]
          * @author 1552980358
          * @since 0.1
          **/
         val imageViewCover: ImageView = view.findViewById(R.id.imageViewCover)!!
+    
         /**
          * [imageButtonOpts]
          * @author 1552980358

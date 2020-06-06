@@ -35,6 +35,7 @@ import kotlinx.android.synthetic.main.activity_main_bottomsheet.imageView
 import kotlinx.android.synthetic.main.activity_main_bottomsheet.linearLayoutBottom
 import kotlinx.android.synthetic.main.activity_main_bottomsheet.textViewSubtitle
 import kotlinx.android.synthetic.main.activity_main_bottomsheet.textViewTitle
+import lib.github1552980358.ktExtension.android.java.readAsBitmap
 import java.io.File
 
 /**
@@ -185,10 +186,14 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
                     return
                 }
     
-                inputStream().use { `is` ->
-                    imageView.setImageBitmap(BitmapFactory.decodeStream(`is`))
-                }
-                
+                imageView.setImageBitmap(readAsBitmap())
+                /**
+                 * inputStream().use { `is` ->
+                 *     imageView.setImageBitmap(BitmapFactory.decodeStream(`is`))
+                 * }
+                 **/
+    
+    
             }
         }
         

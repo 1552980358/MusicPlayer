@@ -7,13 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceScreen
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.activity.AboutActivity
 import app.github1552980358.android.musicplayer.activity.AudioImportActivity
 import app.github1552980358.android.musicplayer.base.Constant.Companion.ABOUT_INTENT_EXTRA
 import app.github1552980358.android.musicplayer.base.Constant.Companion.ABOUT_INTENT_LICENSE
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 /**
  * @file    : [SettingFragment]

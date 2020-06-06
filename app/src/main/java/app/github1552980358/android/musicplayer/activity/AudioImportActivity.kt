@@ -3,11 +3,7 @@ package app.github1552980358.android.musicplayer.activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Canvas
 import android.graphics.Matrix
-import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Bundle
@@ -31,18 +27,19 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.Backgrou
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INITIALIZE
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INITIALIZE_EXTRA
 import app.github1552980358.android.musicplayer.base.Constant.Companion.IgnoredFile
-import app.github1552980358.android.musicplayer.base.os
 import app.github1552980358.android.musicplayer.service.PlayService
 import app.github1552980358.android.musicplayer.service.PlayService.Companion.START_FLAG
 import kotlinx.android.synthetic.main.activity_audio_import.imageView
 import kotlinx.android.synthetic.main.activity_audio_import.progressBar
 import kotlinx.android.synthetic.main.activity_audio_import.textView
 import kotlinx.android.synthetic.main.activity_audio_import.toolbar
+import lib.github1552980358.ktExtension.android.graphics.cutCircle
+import lib.github1552980358.ktExtension.android.graphics.writePNGToFile
+import lib.github1552980358.ktExtension.jvm.javaClass.writeObject
 import lib.github1552980358.labourforce.LabourForce
 import lib.github1552980358.labourforce.labours.work.LabourWorkBuilder
 import mkaflowski.mediastylepalette.MediaNotificationProcessor
 import java.io.File
-import java.io.ObjectOutputStream
 import java.io.Serializable
 
 /**
@@ -62,7 +59,18 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
      **/
     private var searching = false
     
-    private var audioDataMap = mutableMapOf<String, AudioData>()
+    /**
+     * [audioDataMap]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    private var audioDataMap = hashMapOf<String, AudioData>()
+    
+    /**
+     * [audioDataList]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private var audioDataList = ArrayList<AudioData>()
     
     /**
@@ -176,11 +184,14 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                         // Write
                         // 写入
     
-                        outputStream().os { os ->
-                            ObjectOutputStream(os).os { oos ->
-                                oos.writeObject(audioDataList)
-                            }
-                        }
+                        /**
+                         * outputStream().os { os ->
+                         *     ObjectOutputStream(os).os { oos ->
+                         *         oos.writeObject(audioDataList)
+                         *     }
+                         * }
+                         **/
+                        writeObject(audioDataList)
                     }
                     File(getExternalFilesDir(AudioDataDir), AudioDataMapFile).apply {
                         //if (!exists()) {
@@ -195,11 +206,14 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                         // Write
                         // 写入
     
-                        outputStream().os { os ->
-                            ObjectOutputStream(os).os { oos ->
-                                oos.writeObject(audioDataMap)
-                            }
-                        }
+                        /**
+                         * outputStream().os { os ->
+                         *    ObjectOutputStream(os).os { oos ->
+                         *        oos.writeObject(audioDataMap)
+                         *    }
+                         * }
+                         **/
+                        writeObject(audioDataMap)
                     }
                     File(getExternalFilesDir(AudioDataDir), AudioDataListRandomFile).apply {
                         if (exists()) {
@@ -207,22 +221,25 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                         }
                         createNewFile()
     
-                        outputStream().os { os ->
-                            ObjectOutputStream(os).os { oos ->
-                                oos.writeObject(copyAndShuffle(audioDataList))
-                            }
-                        }
+                        /**
+                         * outputStream().os { os ->
+                         *    ObjectOutputStream(os).os { oos ->
+                         *        oos.writeObject(copyAndShuffle(audioDataList))
+                         *    }
+                         * }
+                         **/
+                        writeObject(copyAndShuffle(audioDataList))
                     }
-                    
+    
                     val mediaMetadataRetriever = MediaMetadataRetriever()
                     var byteArray: ByteArray?
-                    var paint: Paint
-                    var canvas: Canvas
-                    val mode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+                    //var paint: Paint
+                    //var canvas: Canvas
+                    //val mode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
                     val smaller = resources.getDimension(R.dimen.mainActivity_bottom_sheet_icon_size)
                     val matrix1 = Matrix()
                     val matrix2 = Matrix()
-                    
+    
                     for ((i, j) in audioDataList.withIndex()) {
                         handler?.post {
                             toolbar.setTitle(R.string.audioImportActivity_toolbar_handling)
@@ -247,18 +264,29 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                             // [https://github.com/mkaflowski/Media-Style-Palette/]
                             // com.github.mkaflowski:Media-Style-Palette:1.3
                             MediaNotificationProcessor(this@AudioImportActivity, this).apply {
-                                File(getExternalFilesDir(AlbumColourDir), j.id).outputStream().os { os ->
-                                    ObjectOutputStream(os).os { oos ->
-                                        oos.writeObject(
-                                            Colour(
-                                                backgroundColor,
-                                                primaryTextColor,
-                                                secondaryTextColor,
-                                                isLight
-                                            )
-                                        )
-                                    }
-                                }
+                                File(getExternalFilesDir(AlbumColourDir), j.id).writeObject(
+                                    Colour(
+                                        backgroundColor,
+                                        primaryTextColor,
+                                        secondaryTextColor,
+                                        isLight
+                                    )
+                                )
+                                /**
+                                 * .outputStream().os { os ->
+                                 *     ObjectOutputStream(os).os { oos ->
+                                 *         oos.writeObject(
+                                 *             Colour(
+                                 *                 backgroundColor,
+                                 *                 primaryTextColor,
+                                 *                 secondaryTextColor,
+                                 *                 isLight
+                                 *             )
+                                 *         )
+                                 *     }
+                                 * }
+                                 **/
+    
                             }
                             
                             when {
@@ -276,35 +304,41 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                             // Extension is not given,
                             // prevent being scanned by system media
                             // 不添加后缀名, 防止被系统相册刷到
-                            File(getExternalFilesDir(AlbumRoundDir), j.id).outputStream().os { os ->
-                                Bitmap.createBitmap(
-                                    this, 0, 0, width, width, matrix1.apply {
-                                        (smaller / width).apply { setScale(this, this) }
-                                    },
-                                    true
-                                ).run {
-                                    // Apply canvas cutting bitmap into circle
-                                    // 利用canvas把图片剪裁成圆形
-                                    Bitmap.createBitmap(width, width, Bitmap.Config.ARGB_8888).apply {
-                                        canvas = Canvas(this)
-                                        paint = Paint()
-                                        paint.isAntiAlias = true
-                                        canvas.drawCircle(width / 2F, width / 2F, width / 2F, paint)
-                                        paint.xfermode = mode
-                                        canvas.drawBitmap(this@run, 0F, 0F, paint)
+                            //File(getExternalFilesDir(AlbumRoundDir), j.id).outputStream().os { os ->
+                            Bitmap.createBitmap(
+                                this, 0, 0, width, width, matrix1.apply {
+                                    (smaller / width).apply { setScale(this, this) }
+                                },
+                                true
+                            ).cutCircle().writePNGToFile(File(getExternalFilesDir(AlbumRoundDir), j.id))
+                            //.run {
+                            // Apply canvas cutting bitmap into circle
+                            // 利用canvas把图片剪裁成圆形
+                            //Bitmap.createBitmap(width, width, Bitmap.Config.ARGB_8888).apply {
+                            //    canvas = Canvas(this)
+                            //    paint = Paint()
+                            //    paint.isAntiAlias = true
+                            //    canvas.drawCircle(width / 2F, width / 2F, width / 2F, paint)
+                            //    paint.xfermode = mode
+                            //    canvas.drawBitmap(this@run, 0F, 0F, paint)
+                            //}
+                            //}.compress(Bitmap.CompressFormat.PNG, 100, os)
+                            //}
+                            //File(getExternalFilesDir(AlbumNormalDir), j.id).outputStream().os { os ->
+                            Bitmap.createBitmap(
+                                this, 0, 0, width, width, matrix2.apply {
+                                    (resources.displayMetrics.widthPixels / width).toFloat().apply {
+                                        setScale(this, this)
                                     }
-                                }.compress(Bitmap.CompressFormat.PNG, 100, os)
-                            }
-                            File(getExternalFilesDir(AlbumNormalDir), j.id).outputStream().os { os ->
-                                Bitmap.createBitmap(
-                                    this, 0, 0, width, width, matrix2.apply {
-                                        (resources.displayMetrics.widthPixels / width).toFloat().apply {
-                                            setScale(this, this)
-                                        }
-                                    },
-                                    true
-                                ).compress(Bitmap.CompressFormat.PNG, 100, os)
-                            }
+                                },
+                                true
+                            ).writePNGToFile(
+                                File(
+                                    getExternalFilesDir(AlbumNormalDir),
+                                    j.id
+                                )
+                            )//.compress(Bitmap.CompressFormat.PNG, 100, os)
+                            //}
                         }
                         
                     }
@@ -358,8 +392,9 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
      * @since 0.1
      **/
     override fun onBackPressed() {
-        if (!searching)
+        if (!searching) {
             super.onBackPressed()
+        }
     }
     
 }
