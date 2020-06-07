@@ -14,12 +14,11 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.SongList
 import app.github1552980358.android.musicplayer.base.SongList
 import app.github1552980358.android.musicplayer.base.SongListInfo
 import app.github1552980358.android.musicplayer.base.SongListInfo.Companion.songListInfoList
-import app.github1552980358.android.musicplayer.base.os
 import app.github1552980358.android.musicplayer.fragment.mainActivity.MainFragment
 import kotlinx.android.synthetic.main.dialog_create_song_list.editTextTitle
 import kotlinx.android.synthetic.main.dialog_create_song_list.textViewCount
+import lib.github1552980358.ktExtension.jvm.javaClass.writeObject
 import java.io.File
-import java.io.ObjectOutputStream
 
 /**
  * [CreateSongListDialogFragment]
@@ -78,11 +77,14 @@ class CreateSongListDialogFragment : DialogFragment() {
                         delete()
                     createNewFile()
     
-                    outputStream().os { os ->
-                        ObjectOutputStream(os).os { oos ->
-                            oos.writeObject(songListInfoList)
-                        }
-                    }
+                    writeObject(songListInfoList)
+                    /**
+                     * outputStream().os { os ->
+                     *     ObjectOutputStream(os).os { oos ->
+                     *         oos.writeObject(songListInfoList)
+                     *     }
+                     * }
+                     **/
                 }
                 File(requireContext().getExternalFilesDir(SongListDir), contentText?:throw Exception()).apply {
                     if (parentFile!!.exists()) {
@@ -91,11 +93,15 @@ class CreateSongListDialogFragment : DialogFragment() {
     
                     createNewFile()
     
-                    outputStream().os { os ->
-                        ObjectOutputStream(os).os { oos ->
-                            oos.writeObject(SongList().apply { listName = contentText ?: throw Exception() })
-                        }
-                    }
+                    writeObject(SongList().apply { listName = contentText ?: throw Exception() })
+                    /**
+                     * outputStream().os { os ->
+                     *     ObjectOutputStream(os).os { oos ->
+                     *         oos.writeObject(SongList().apply { listName = contentText ?: throw Exception() })
+                     *     }
+                     * }
+                     **/
+    
                 }
                 
                 if (parentFragment is AddToSongListDialogFragment) {

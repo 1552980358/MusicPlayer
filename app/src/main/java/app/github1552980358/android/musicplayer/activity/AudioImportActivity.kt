@@ -310,7 +310,7 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                                     (smaller / width).apply { setScale(this, this) }
                                 },
                                 true
-                            ).cutCircle().writePNGToFile(File(getExternalFilesDir(AlbumRoundDir), j.id))
+                            ).cutCircle()?.writePNGToFile(File(getExternalFilesDir(AlbumRoundDir), j.id))
                             //.run {
                             // Apply canvas cutting bitmap into circle
                             // 利用canvas把图片剪裁成圆形
