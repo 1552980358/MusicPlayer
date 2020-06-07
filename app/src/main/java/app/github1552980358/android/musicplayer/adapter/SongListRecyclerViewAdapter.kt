@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
@@ -141,8 +142,11 @@ class SongListRecyclerViewAdapter(
                                 .metadata
                                 .getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
                         )
-                    }
-
+                    },
+                ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    fragment.requireActivity(),
+                    holder.imageViewCover, "imageView"
+                ).toBundle()
             )
         }
         holder.imageButtonOpts.setOnClickListener { imageButtonOpts ->
