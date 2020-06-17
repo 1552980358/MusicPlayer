@@ -52,7 +52,7 @@ import app.github1552980358.android.musicplayer.service.CycleMode.LIST_CYCLE
 import app.github1552980358.android.musicplayer.service.CycleMode.RANDOM_ACCESS
 import app.github1552980358.android.musicplayer.service.CycleMode.SINGLE_CYCLE
 import app.github1552980358.android.musicplayer.service.NotificationUtil.Companion.ServiceId
-import lib.github1552980358.ktExtension.jvm.javaClass.readObjectAs
+import lib.github1552980358.ktExtension.jvm.io.readObjectAs
 import java.io.File
 
 /**

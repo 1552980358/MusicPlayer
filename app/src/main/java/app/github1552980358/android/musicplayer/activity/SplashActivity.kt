@@ -20,7 +20,7 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.SongList
 import app.github1552980358.android.musicplayer.base.SongListInfo.Companion.songListInfoList
 import app.github1552980358.android.musicplayer.service.PlayService
 import app.github1552980358.android.musicplayer.service.PlayService.Companion.START_FLAG
-import lib.github1552980358.ktExtension.jvm.javaClass.readObjectAs
+import lib.github1552980358.ktExtension.jvm.io.readObjectAs
 import lib.github1552980358.labourforce.LabourForce
 import lib.github1552980358.labourforce.commands.LabourLv
 import lib.github1552980358.labourforce.labours.work.LabourWork

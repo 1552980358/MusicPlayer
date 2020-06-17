@@ -18,13 +18,20 @@ class SongList: Serializable, ArrayListUtil {
      * @since 0.1
      **/
     var listName = ""
-
+    
     /**
      * [audioList]
      * @author 1552980358
      * @since 0.1
      **/
     val audioList = arrayListOf<AudioData>()
+    
+    /**
+     * [audioListCustom]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    val audioListCustom = arrayListOf<AudioData>()
     
     /**
      * [audioListRandom]
@@ -41,6 +48,7 @@ class SongList: Serializable, ArrayListUtil {
      * @since 0.1
      **/
     fun add(audioData: AudioData) = this.apply {
+        audioListCustom.add(audioData)
         audioList.add(audioData)
         audioList.sortBy { it.titlePinYin }
         audioListRandom = copyAndShuffle(audioList)
@@ -53,34 +61,11 @@ class SongList: Serializable, ArrayListUtil {
      * @since 0.1
      **/
     fun add(list: List<AudioData>) = this.apply {
-        list.forEach { audioData -> audioList.add(audioData) }
+        list.forEach { audioData ->
+            audioListCustom.add(audioData)
+            audioList.add(audioData)
+        }
         audioList.sortBy { it.titlePinYin }
-        audioListRandom = copyAndShuffle(audioList)
-    }
-    
-    /**
-     * [insert]
-     * @param index [Int]
-     * @param audioData [AudioData]
-     * @return [SongList]
-     * @author 1552980358
-     * @since 0.1
-     **/
-    fun insert(index: Int, audioData: AudioData) = this.apply {
-        audioList.add(index, audioData)
-        audioList.sortBy { it.titlePinYin }
-        audioListRandom = copyAndShuffle(audioList)
-    }
-    
-    /**
-     * [remove]
-     * @param index [Int]
-     * @return [SongList]
-     * @author 1552980358
-     * @since 0.1
-     **/
-    fun remove(index: Int) = this.apply {
-        audioList.removeAt(index)
         audioListRandom = copyAndShuffle(audioList)
     }
     

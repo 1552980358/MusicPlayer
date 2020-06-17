@@ -25,7 +25,7 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.IgnoredF
 import app.github1552980358.android.musicplayer.dialog.AddToSongListDialogFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.view_media_list.view.imageButtonOpts
-import lib.github1552980358.ktExtension.jvm.javaClass.writeObject
+import lib.github1552980358.ktExtension.jvm.io.writeObject
 import java.io.File
 
 /**

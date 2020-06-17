@@ -23,7 +23,11 @@
     <string name="songListEditingActivity_toast">名称不得为空</string>
     
     <string name="songListActivity_bottom_sheet_title">@string/mainActivity_bottom_sheet_title</string>
+    <string name="songListActivity_menu_change_sort_custom">排序更改为手动</string>
+    <string name="songListActivity_menu_change_sort_name">排序更改为按歌曲名</string>
     <string name="songListActivity_menu_edit_info">编辑歌单信息</string>
+    .
+    <string name="songListActivity_menu_edit_sequence">编辑歌曲排序</string>
     
     <string name="aboutActivity_title_license">开源许可证</string>
 

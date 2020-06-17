@@ -91,14 +91,19 @@ class SongListContentRecyclerViewAdapter(
                 Bundle().apply { putString(CurrentSongList, songListTitle) }
             )
         }
-        
+    
         holder.textViewNo.text = position.plus(1).toString()
         holder.textViewTitle.text = songList[position].title
         holder.textViewSubtitle.text = songList[position].artist
         holder.imageButtonOpts.setOnClickListener {
         
         }
-        
+    
+    }
+    
+    fun updateSongList(list: ArrayList<AudioData>) {
+        songList = list
+        notifyDataSetChanged()
     }
     
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -108,7 +113,7 @@ class SongListContentRecyclerViewAdapter(
          * @since 0.1
          **/
         val relativeLayoutRoot: RelativeLayout = view.findViewById(R.id.relativeLayoutRoot)
-    
+        
         /**
          * [textViewNo]
          * @author  : 1552980358

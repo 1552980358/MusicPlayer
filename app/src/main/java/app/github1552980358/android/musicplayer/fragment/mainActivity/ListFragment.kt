@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.fragment_list.recyclerView
 import kotlinx.android.synthetic.main.fragment_list.sideCharView
 import kotlinx.android.synthetic.main.fragment_list.swipeRefreshLayout
 import kotlinx.android.synthetic.main.fragment_list.textViewChar
-import lib.github1552980358.ktExtension.jvm.javaClass.readObjectAs
+import lib.github1552980358.ktExtension.jvm.io.readObjectAs
 import java.io.File
 
 /**

@@ -53,7 +53,8 @@ import kotlinx.android.synthetic.main.activity_audio.textViewPassed
 import kotlinx.android.synthetic.main.activity_audio.textViewSubtitle1
 import kotlinx.android.synthetic.main.activity_audio.textViewSubtitle2
 import kotlinx.android.synthetic.main.activity_audio.textViewTitle
-import lib.github1552980358.ktExtension.jvm.javaClass.readObjectAs
+import lib.github1552980358.ktExtension.android.java.readAsBitmap
+import lib.github1552980358.ktExtension.jvm.io.readObjectAs
 import lib.github1552980358.labourforce.LabourForce
 import lib.github1552980358.labourforce.labours.work.LabourWorkBuilder
 import java.io.File
@@ -263,10 +264,13 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
                 imageView.setImageResource(R.drawable.ic_launcher_foreground)
                 return@apply
             }
-            
-            inputStream().use { `is` ->
-                imageView.setImageBitmap(BitmapFactory.decodeStream(`is`))
-            }
+    
+            imageView.setImageBitmap(readAsBitmap())
+            /**
+             * inputStream().use { `is` ->
+             *     imageView.setImageBitmap(BitmapFactory.decodeStream(`is`))
+             * }
+             **/
         }
     
         @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "DuplicatedCode")

@@ -20,7 +20,6 @@ import kotlinx.android.synthetic.main.fragment_main.relativeLayoutSettings
 import kotlinx.android.synthetic.main.fragment_main.swipeRefreshLayout
 import kotlinx.android.synthetic.main.fragment_main.textViewNewList
 
-
 /**
  * [MainFragment]
  * @author  : 1552980328
@@ -99,6 +98,11 @@ class MainFragment : Fragment() {
         (recyclerView.adapter as SongListRecyclerViewAdapter).updateList(songListInfoList)
     }
     
+    /**
+     * [onResume]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onResume() {
         super.onResume()
         if (!onCreated) {
@@ -107,6 +111,5 @@ class MainFragment : Fragment() {
         }
         (recyclerView.adapter as SongListRecyclerViewAdapter).updateList(songListInfoList)
     }
-    
     
 }

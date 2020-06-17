@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.adapter.SongListContentRecyclerViewAdapter
 import app.github1552980358.android.musicplayer.base.BaseAppCompatActivity
+import app.github1552980358.android.musicplayer.base.Constant
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumRoundDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.DEFAULT_VALUE_INT
 import app.github1552980358.android.musicplayer.base.Constant.Companion.DEFAULT_VALUE_STR
@@ -35,9 +36,11 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_S
 import app.github1552980358.android.musicplayer.base.Constant.Companion.INTENT_SONG_LIST_POS
 import app.github1552980358.android.musicplayer.base.Constant.Companion.SongListCoverDir
 import app.github1552980358.android.musicplayer.base.Constant.Companion.SongListDir
+import app.github1552980358.android.musicplayer.base.Constant.Companion.SongListFile
 import app.github1552980358.android.musicplayer.base.SongList
 import app.github1552980358.android.musicplayer.base.SongListCover
 import app.github1552980358.android.musicplayer.base.SongListInfo
+import app.github1552980358.android.musicplayer.base.SongListInfo.Companion.songListInfoList
 import app.github1552980358.android.musicplayer.base.TimeExchange
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.activity_main_bottomsheet.cardView
@@ -54,9 +57,9 @@ import kotlinx.android.synthetic.main.activity_song_list_bottomsheet.imageView
 import kotlinx.android.synthetic.main.activity_song_list_bottomsheet.linearLayoutBottom
 import kotlinx.android.synthetic.main.activity_song_list_bottomsheet.textViewSubtitle_bottom_sheet
 import kotlinx.android.synthetic.main.activity_song_list_bottomsheet.textViewTitle_bottom_sheet
-import lib.github1552980358.ktExtension.jvm.javaClass.readObjectAs
+import lib.github1552980358.ktExtension.jvm.io.readObjectAs
+import lib.github1552980358.ktExtension.jvm.io.writeObject
 import java.io.File
-import java.io.ObjectInputStream
 
 /**
  * [SongListActivity]
@@ -68,6 +71,11 @@ import java.io.ObjectInputStream
 
 class SongListActivity: BaseAppCompatActivity(), TimeExchange {
     
+    /**
+     * [songListInfo]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private lateinit var songListInfo: SongListInfo
     
     /**
@@ -91,8 +99,18 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
      **/
     private lateinit var songList: SongList
     
+    /**
+     * [position]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private var position = DEFAULT_VALUE_INT
     
+    /**
+     * [listTitle]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private var listTitle = DEFAULT_VALUE_STR
     
     /**
@@ -180,9 +198,7 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
         
         toolbar.navigationIcon?.setTint(if (songListCover != null) songListCover!!.primaryTextColour else Color.BLACK)
         
-        toolbar.setNavigationOnClickListener {
-            onBackPressed()
-        }
+        toolbar.setNavigationOnClickListener { onBackPressed() }
         
         @Suppress("UNCHECKED_CAST")
         bottomSheetBehavior = BottomSheetBehavior.from(cardView) as BottomSheetBehavior<View>
@@ -192,7 +208,11 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
         readSongList()
         
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = SongListContentRecyclerViewAdapter(this, songList.listName, songList.audioList)
+        recyclerView.adapter = SongListContentRecyclerViewAdapter(
+            this,
+            songListInfo.listTitle,
+            if (songListInfo.customSort) songList.audioListCustom else songList.audioList
+        )
         
         checkBoxPlay.setOnClickListener {
             mediaControllerCompat.transportControls.apply {
@@ -258,13 +278,17 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
                 finish()
                 return
             }
-            
-            inputStream().use { `is` ->
-                ObjectInputStream(`is`).use { ois ->
-                    songList = ois.readObject() as SongList
-                }
-                
-            }
+    
+            songList = readObjectAs()!!
+    
+            /**
+             * inputStream().use { `is` ->
+             *    ObjectInputStream(`is`).use { ois ->
+             *        songList = ois.readObject() as SongList
+             *    }
+             *
+             * }
+             **/
         }
     }
     
@@ -333,13 +357,37 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
         return super.onCreateOptionsMenu(menu)
     }
     
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu?.findItem(R.id.menu_song_list_sort)
+            ?.setTitle(
+                if (songListInfo.customSort) R.string.songListActivity_menu_change_sort_custom
+                else R.string.songListActivity_menu_change_sort_name
+            )
+        return super.onPrepareOptionsMenu(menu)
+    }
+    
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.menu_song_list_sort -> {
+                songListInfo.customSort = !songListInfo.customSort
+                File(getExternalFilesDir(Constant.AudioDataDir), SongListFile).writeObject(songListInfoList)
+                (recyclerView.adapter as SongListContentRecyclerViewAdapter).updateSongList(
+                    if (songListInfo.customSort) songList.audioListCustom else songList.audioList
+                )
+            }
             R.id.menu_song_list_edit_info -> {
                 startActivityForResult(
                     Intent(this, SongListEditingActivity::class.java)
                         .putExtra(INTENT_SONG_LIST_INFO, songListInfo)
                         .putExtra(INTENT_SONG_LIST_POS, position), 0
+                )
+            }
+            R.id.menu_song_list_edit_sequence -> {
+                startActivityForResult(
+                    Intent(this, SongListListEditingActivity::class.java)
+                        .putExtra(INTENT_SONG_LIST_INFO, songListInfo)
+                        .putExtra(INTENT_SONG_LIST_POS, position),
+                    1
                 )
             }
         }
@@ -348,23 +396,29 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
     
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        //readSongList()
-        //(recyclerView.adapter as SongListContentRecyclerViewAdapter).notifyDataSetChanged()
+        when (resultCode) {
+            0 -> {
+                songListCover = (data?.getSerializableExtra(INTENT_SONG_LIST_COVER) as SongListCover?)?.apply {
+                    imageViewCover.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.size))
+                    appBarLayout.setBackgroundColor(backgroundColour)
+                    textViewTitle.setTextColor(primaryTextColour)
+                    textViewSubtitle.setTextColor(secondaryTextColour)
+                    textViewDescription.setTextColor(secondaryTextColour)
+                    collapsingToolbarLayout.setCollapsedTitleTextColor(primaryTextColour)
+                    collapsingToolbarLayout.setExpandedTitleColor(primaryTextColour)
+                    toolbar.overflowIcon?.setTint(primaryTextColour)
+                }
         
-        
-        songListCover = (data?.getSerializableExtra(INTENT_SONG_LIST_COVER) as SongListCover?)?.apply {
-            imageViewCover.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.size))
-            appBarLayout.setBackgroundColor(backgroundColour)
-            textViewTitle.setTextColor(primaryTextColour)
-            textViewSubtitle.setTextColor(secondaryTextColour)
-            textViewDescription.setTextColor(secondaryTextColour)
-            collapsingToolbarLayout.setCollapsedTitleTextColor(primaryTextColour)
-            collapsingToolbarLayout.setExpandedTitleColor(primaryTextColour)
-            toolbar.overflowIcon?.setTint(primaryTextColour)
-        }
-        
-        songListInfo = (data?.getSerializableExtra(INTENT_SONG_LIST_INFO) as SongListInfo).apply {
-            textViewTitle_bottom_sheet.text = listTitle
+                songListInfo = (data?.getSerializableExtra(INTENT_SONG_LIST_INFO) as SongListInfo).apply {
+                    textViewTitle_bottom_sheet.text = listTitle
+                }
+            }
+            1 -> {
+                readSongList()
+                (recyclerView.adapter as SongListContentRecyclerViewAdapter).updateSongList(
+                    if (songListInfo.customSort) songList.audioListCustom else songList.audioList
+                )
+            }
         }
         
     }
@@ -377,11 +431,11 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
      **/
     override fun onConnected(mediaControllerCompat: MediaControllerCompat) {
         when (mediaControllerCompat.playbackState.state) {
-            
+    
             PlaybackStateCompat.STATE_PLAYING, PlaybackStateCompat.STATE_BUFFERING -> {
                 checkBoxPlay.isChecked = true
             }
-            
+    
             PlaybackStateCompat.STATE_PAUSED -> {
                 checkBoxPlay.isChecked = false
             }

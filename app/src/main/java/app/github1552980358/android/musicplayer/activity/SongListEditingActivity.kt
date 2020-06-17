@@ -31,8 +31,8 @@ import kotlinx.android.synthetic.main.activity_song_list_editing.toolbar
 import kotlinx.android.synthetic.main.activity_song_list_editing.view_backgroundColour
 import kotlinx.android.synthetic.main.activity_song_list_editing.view_subtitleColour
 import kotlinx.android.synthetic.main.activity_song_list_editing.view_titleColour
-import lib.github1552980358.ktExtension.jvm.javaClass.readObjectAs
-import lib.github1552980358.ktExtension.jvm.javaClass.writeObject
+import lib.github1552980358.ktExtension.jvm.io.readObjectAs
+import lib.github1552980358.ktExtension.jvm.io.writeObject
 import mkaflowski.mediastylepalette.MediaNotificationProcessor
 import java.io.ByteArrayOutputStream
 import java.io.File

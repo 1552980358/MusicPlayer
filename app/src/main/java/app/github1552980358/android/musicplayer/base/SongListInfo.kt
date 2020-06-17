@@ -1,6 +1,7 @@
 package app.github1552980358.android.musicplayer.base
 
 import java.io.Serializable
+import java.util.ArrayList
 
 /**
  * [SongListInfo]
@@ -10,7 +11,7 @@ import java.io.Serializable
  * @time    : 22:14
  **/
 
-class SongListInfo : Serializable {
+class SongListInfo: Serializable {
     
     companion object {
         
@@ -19,8 +20,8 @@ class SongListInfo : Serializable {
          * @author 1552980358
          * @since 0.1
          **/
-        var songListInfoList = arrayListOf<SongListInfo>()
-    
+        var songListInfoList = ArrayList<SongListInfo>()
+        
         /**
          * [copy]
          * @param songListInfo [SongListInfo]
@@ -29,17 +30,23 @@ class SongListInfo : Serializable {
          * @since 0.1
          **/
         @JvmStatic
-        fun copy(songListInfo: SongListInfo): SongListInfo {
-            return SongListInfo().apply {
-                listTitle = songListInfo.listTitle
-                listSize = songListInfo.listSize
-                hasCoverImage = songListInfo.hasCoverImage
-                description = songListInfo.description
-                createDate = songListInfo.createDate
-            }
+        fun copy(songListInfo: SongListInfo) = SongListInfo().apply {
+            listTitle = songListInfo.listTitle
+            listSize = songListInfo.listSize
+            hasCoverImage = songListInfo.hasCoverImage
+            description = songListInfo.description
+            createDate = songListInfo.createDate
+            customSort = songListInfo.customSort
         }
         
     }
+    
+    /**
+     * [customSort]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    var customSort = false
     
     /**
      * [listTitle]

@@ -34,9 +34,9 @@ import app.github1552980358.android.musicplayer.base.Constant.Companion.SongList
 import app.github1552980358.android.musicplayer.base.SongListCover
 import app.github1552980358.android.musicplayer.base.SongListInfo
 import app.github1552980358.android.musicplayer.base.SongListInfo.Companion.songListInfoList
-import lib.github1552980358.ktExtension.android.java.toBitmap
-import lib.github1552980358.ktExtension.jvm.javaClass.readObjectAs
-import lib.github1552980358.ktExtension.jvm.javaClass.writeObject
+import lib.github1552980358.ktExtension.android.kotlin.toBitmap
+import lib.github1552980358.ktExtension.jvm.io.readObjectAs
+import lib.github1552980358.ktExtension.jvm.io.writeObject
 import java.io.File
 
 /**

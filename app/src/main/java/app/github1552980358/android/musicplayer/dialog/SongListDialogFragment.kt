@@ -1,7 +1,6 @@
 package app.github1552980358.android.musicplayer.dialog
 
 import android.app.Dialog
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
@@ -14,7 +13,12 @@ import app.github1552980358.android.musicplayer.activity.AudioActivity
 import app.github1552980358.android.musicplayer.adapter.SongListDialogRecyclerViewAdapter
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumNormalDir
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import kotlinx.android.synthetic.main.dialog_play_history.*
+import kotlinx.android.synthetic.main.dialog_play_history.imageView
+import kotlinx.android.synthetic.main.dialog_play_history.linearLayoutRoot
+import kotlinx.android.synthetic.main.dialog_play_history.recyclerView
+import kotlinx.android.synthetic.main.dialog_play_history.textViewSubtitle
+import kotlinx.android.synthetic.main.dialog_play_history.textViewTitle
+import lib.github1552980358.ktExtension.android.java.readAsBitmap
 import java.io.File
 
 /**
@@ -69,9 +73,12 @@ class SongListDialogFragment: BottomSheetDialogFragment() {
                     imageView.setImageResource(R.drawable.ic_launcher_foreground)
                     return@apply
                 }
-                inputStream().use { `is` ->
-                    imageView.setImageBitmap(BitmapFactory.decodeStream(`is`))
-                }
+                imageView.setImageBitmap(readAsBitmap())
+                /**
+                 * inputStream().use { `is` ->
+                 *     imageView.setImageBitmap(BitmapFactory.decodeStream(`is`))
+                 * }
+                 **/
             }
         }
     }

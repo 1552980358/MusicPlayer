@@ -44,23 +44,27 @@
             android:name=".activity.AudioActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:launchMode="singleTask" />
-        
+    
         <activity
             android:name=".activity.AudioImportActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        
+    
         <activity
             android:name=".activity.SongListActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        
+    
+        <activity
+            android:name=".activity.SongListListEditingActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+    
         <activity
             android:name=".activity.SongListEditingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        
+    
         <activity
             android:name=".activity.AboutActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        
+    
         <service
             android:name=".service.PlayService"
             android:foregroundServiceType="mediaPlayback"

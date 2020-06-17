@@ -22,8 +22,8 @@ import app.github1552980358.android.musicplayer.base.SongListCover
 import app.github1552980358.android.musicplayer.base.SongListInfo
 import app.github1552980358.android.musicplayer.dialog.AddToSongListDialogFragment
 import app.github1552980358.android.musicplayer.dialog.CreateSongListDialogFragment
-import lib.github1552980358.ktExtension.jvm.javaClass.readObjectAs
-import lib.github1552980358.ktExtension.jvm.javaClass.writeObject
+import lib.github1552980358.ktExtension.jvm.io.readObjectAs
+import lib.github1552980358.ktExtension.jvm.io.writeObject
 import java.io.File
 
 /**

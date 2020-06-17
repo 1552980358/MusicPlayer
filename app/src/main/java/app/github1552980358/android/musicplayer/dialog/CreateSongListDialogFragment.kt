@@ -17,7 +17,7 @@ import app.github1552980358.android.musicplayer.base.SongListInfo.Companion.song
 import app.github1552980358.android.musicplayer.fragment.mainActivity.MainFragment
 import kotlinx.android.synthetic.main.dialog_create_song_list.editTextTitle
 import kotlinx.android.synthetic.main.dialog_create_song_list.textViewCount
-import lib.github1552980358.ktExtension.jvm.javaClass.writeObject
+import lib.github1552980358.ktExtension.jvm.io.writeObject
 import java.io.File
 
 /**

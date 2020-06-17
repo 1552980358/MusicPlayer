@@ -35,7 +35,7 @@ import kotlinx.android.synthetic.main.activity_audio_import.textView
 import kotlinx.android.synthetic.main.activity_audio_import.toolbar
 import lib.github1552980358.ktExtension.android.graphics.cutCircle
 import lib.github1552980358.ktExtension.android.graphics.writePNGToFile
-import lib.github1552980358.ktExtension.jvm.javaClass.writeObject
+import lib.github1552980358.ktExtension.jvm.io.writeObject
 import lib.github1552980358.labourforce.LabourForce
 import lib.github1552980358.labourforce.labours.work.LabourWorkBuilder
 import mkaflowski.mediastylepalette.MediaNotificationProcessor

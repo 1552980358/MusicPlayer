@@ -107,14 +107,14 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'androidx.preference:preference-ktx:1.1.1'
-    implementation 'androidx.media:media:1.2.0-alpha02'
+    implementation 'androidx.media:media:1.2.0-alpha03'
 
     implementation 'com.google.android.material:material:1.1.0'
 
     //noinspection GradleDependency
     implementation 'com.github.1552980358:labourforce:ae4aed364a'
-    implementation 'com.github.1552980358:KtExtensionAndroid:ed1668e21e'
-    implementation "com.github.1552980358:KtExtension:ae3da9f8a5"
+    implementation 'com.github.1552980358:KtExtensionAndroid:dcbebae23f'
+    implementation "com.github.1552980358:KtExtension:c2843e97db"
 
     implementation 'com.github.mkaflowski:Media-Style-Palette:1.3'
 
