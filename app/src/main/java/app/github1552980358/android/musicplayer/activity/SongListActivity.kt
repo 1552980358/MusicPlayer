@@ -261,26 +261,36 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
             textViewSubtitle_bottom_sheet.visibility = View.GONE
             return
         }
-        
+    
         textViewTitle_bottom_sheet.text = intent.getStringExtra(INTENT_AUDIO_TITLE)
         textViewSubtitle_bottom_sheet.text = intent.getStringExtra(INTENT_AUDIO_ARTIST)
-        
+    
     }
     
+    /**
+     * [onResume]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onResume() {
         super.onResume()
         Log.e("SongListActivity", "onResume")
     }
     
+    /**
+     * [readSongList]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private fun readSongList() {
         File(getExternalFilesDir(SongListDir), listTitle).apply {
             if (!exists()) {
                 finish()
                 return
             }
-    
+            
             songList = readObjectAs()!!
-    
+            
             /**
              * inputStream().use { `is` ->
              *    ObjectInputStream(`is`).use { ois ->
@@ -352,11 +362,25 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
         //
     }
     
+    /**
+     * [onCreateOptionsMenu]
+     * @param menu [Menu]?
+     * @return [Boolean]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_song_list_activity, menu)
         return super.onCreateOptionsMenu(menu)
     }
     
+    /**
+     * [onPrepareOptionsMenu]
+     * @param menu [Menu]?
+     * @return [Boolean]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         menu?.findItem(R.id.menu_song_list_sort)
             ?.setTitle(
@@ -366,6 +390,13 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
         return super.onPrepareOptionsMenu(menu)
     }
     
+    /**
+     * [onOptionsItemSelected]
+     * @param item [MenuItem]
+     * @return [Boolean]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_song_list_sort -> {
@@ -394,6 +425,14 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
         return super.onOptionsItemSelected(item)
     }
     
+    /**
+     * [onActivityResult]
+     * @param requestCode [Int]
+     * @param resultCode [Int]
+     * @param data [Intent]?
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {

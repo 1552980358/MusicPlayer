@@ -36,8 +36,18 @@ import java.io.File
 class ListFragment:
     Fragment() {
     
+    /**
+     * [audioDataList]
+     * @author  : 1552980358
+     * @since 0.1
+     **/
     private lateinit var audioDataList: ArrayList<AudioData>
     
+    /**
+     * [charTable]
+     * @author  : 1552980358
+     * @since 0.1
+     **/
     private val charTable = arrayListOf<Int>()
     
     /**

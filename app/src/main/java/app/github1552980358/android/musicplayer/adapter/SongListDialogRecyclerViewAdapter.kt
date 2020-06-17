@@ -22,8 +22,7 @@ import app.github1552980358.android.musicplayer.activity.AudioActivity
 
 class SongListDialogRecyclerViewAdapter(
     private val parentActivity: AudioActivity
-):
-    Adapter<SongListDialogRecyclerViewAdapter.ViewHolder>() {
+): Adapter<SongListDialogRecyclerViewAdapter.ViewHolder>() {
     
     /**
      * [onCreateViewHolder]
@@ -31,8 +30,10 @@ class SongListDialogRecyclerViewAdapter(
      * @since 0.1
      **/
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder((parent.context.getSystemService(Service.LAYOUT_INFLATER_SERVICE)as LayoutInflater)
-            .inflate(R.layout.view_song_list_dialog_content, parent, false) )
+        return ViewHolder(
+            (parent.context.getSystemService(Service.LAYOUT_INFLATER_SERVICE) as LayoutInflater)
+                .inflate(R.layout.view_song_list_dialog_content, parent, false)
+        )
     }
     
     /**

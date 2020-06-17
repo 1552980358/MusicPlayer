@@ -43,6 +43,11 @@ class ListFragmentRecyclerViewAdapter(
 ) :
     Adapter<ListFragmentRecyclerViewAdapter.ViewHolder>() {
     
+    /**
+     * [audioDataList]
+     * @author  : 1552980358
+     * @since 0.1
+     **/
     private var audioDataList = list
     
     /**

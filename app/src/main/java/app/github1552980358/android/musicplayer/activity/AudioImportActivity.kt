@@ -13,7 +13,6 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import app.github1552980358.android.musicplayer.R
-import app.github1552980358.android.musicplayer.base.ArrayListUtil
 import app.github1552980358.android.musicplayer.base.AudioData
 import app.github1552980358.android.musicplayer.base.Colour
 import app.github1552980358.android.musicplayer.base.Constant.Companion.AlbumColourDir
@@ -35,6 +34,7 @@ import kotlinx.android.synthetic.main.activity_audio_import.textView
 import kotlinx.android.synthetic.main.activity_audio_import.toolbar
 import lib.github1552980358.ktExtension.android.graphics.cutCircle
 import lib.github1552980358.ktExtension.android.graphics.writePNGToFile
+import lib.github1552980358.ktExtension.android.java.copyAndShuffle
 import lib.github1552980358.ktExtension.jvm.io.writeObject
 import lib.github1552980358.labourforce.LabourForce
 import lib.github1552980358.labourforce.labours.work.LabourWorkBuilder
@@ -50,7 +50,7 @@ import java.io.Serializable
  * @time    : 9:18
  **/
 
-class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
+class AudioImportActivity: AppCompatActivity() {
     
     /**
      * [searching]
@@ -228,7 +228,7 @@ class AudioImportActivity: AppCompatActivity(), ArrayListUtil {
                          *    }
                          * }
                          **/
-                        writeObject(copyAndShuffle(audioDataList))
+                        writeObject(audioDataList.copyAndShuffle())
                     }
     
                     val mediaMetadataRetriever = MediaMetadataRetriever()

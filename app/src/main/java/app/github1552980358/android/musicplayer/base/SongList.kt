@@ -1,5 +1,6 @@
 package app.github1552980358.android.musicplayer.base
 
+import lib.github1552980358.ktExtension.android.java.copyAndShuffle
 import java.io.Serializable
 
 /**
@@ -10,8 +11,8 @@ import java.io.Serializable
  * @time    : 11:40
  **/
 
-class SongList: Serializable, ArrayListUtil {
-
+class SongList: Serializable {
+    
     /**
      * [listName]
      * @author 1552980358
@@ -51,7 +52,7 @@ class SongList: Serializable, ArrayListUtil {
         audioListCustom.add(audioData)
         audioList.add(audioData)
         audioList.sortBy { it.titlePinYin }
-        audioListRandom = copyAndShuffle(audioList)
+        audioListRandom = audioList.copyAndShuffle()
     }
     
     /**
@@ -66,7 +67,7 @@ class SongList: Serializable, ArrayListUtil {
             audioList.add(audioData)
         }
         audioList.sortBy { it.titlePinYin }
-        audioListRandom = copyAndShuffle(audioList)
+        audioListRandom = audioList.copyAndShuffle()
     }
     
 }

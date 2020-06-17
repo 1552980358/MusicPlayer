@@ -101,11 +101,23 @@ class SongListContentRecyclerViewAdapter(
     
     }
     
+    /**
+     * [updateSongList]
+     * @param list [ArrayList]<[AudioData]>
+     * @author  : 1552980358
+     * @since 0.1
+     **/
     fun updateSongList(list: ArrayList<AudioData>) {
         songList = list
         notifyDataSetChanged()
     }
     
+    /**
+     * [ViewHolder]
+     * @param view [View]
+     * @author  : 1552980358
+     * @since 0.1
+     **/
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
         /**
          * [relativeLayoutRoot]

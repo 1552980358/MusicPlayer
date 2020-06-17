@@ -27,10 +27,26 @@ import java.io.File
 
 class SongListListEditingActivity: AppCompatActivity() {
     
+    /**
+     * [listInfo]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private lateinit var listInfo: SongListInfo
     
+    /*
+     * [songList]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private var songList = null as SongList?
     
+    /**
+     * [onCreate]
+     * @param savedInstanceState [Bundle]?
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_song_list_list_editing)
