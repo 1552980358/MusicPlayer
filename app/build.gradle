@@ -113,7 +113,7 @@ dependencies {
 
     //noinspection GradleDependency
     implementation 'com.github.1552980358:labourforce:ae4aed364a'
-    implementation 'com.github.1552980358:KtExtensionAndroid:dcbebae23f'
+    implementation 'com.github.1552980358:KtExtensionAndroid:49e44744d7'
     implementation "com.github.1552980358:KtExtension:c2843e97db"
 
     implementation 'com.github.mkaflowski:Media-Style-Palette:1.3'
