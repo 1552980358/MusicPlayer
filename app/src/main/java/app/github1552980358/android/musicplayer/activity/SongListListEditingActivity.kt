@@ -34,7 +34,7 @@ class SongListListEditingActivity: AppCompatActivity() {
      **/
     private lateinit var listInfo: SongListInfo
     
-    /*
+    /**
      * [songList]
      * @author 1552980358
      * @since 0.1

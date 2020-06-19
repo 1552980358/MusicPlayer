@@ -239,6 +239,11 @@ class SongListEditingActivity: AppCompatActivity(), TimeExchange {
         }
         
         if (!::bitmap.isInitialized) {
+            setResult(
+                Activity.RESULT_OK,
+                Intent().putExtra(INTENT_SONG_LIST_INFO, songListInfo)
+                    .putExtra(INTENT_SONG_LIST_COVER, songListCover)
+            )
             super.finish()
             return
         }
