@@ -441,6 +441,7 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
                 if (resultCode == Activity.RESULT_CANCELED) {
                     return
                 }
+        
                 songListCover = (data?.getSerializableExtra(INTENT_SONG_LIST_COVER) as SongListCover?)?.apply {
                     imageViewCover.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.size))
                     appBarLayout.setBackgroundColor(backgroundColour)
@@ -453,7 +454,7 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
                 }
         
                 songListInfo = (data?.getSerializableExtra(INTENT_SONG_LIST_INFO) as SongListInfo).apply {
-                    textViewTitle_bottom_sheet.text = listTitle
+                    textViewTitle.text = listTitle
                 }
             }
             1 -> {
