@@ -30,8 +30,13 @@ import kotlinx.android.synthetic.main.fragment_main.textViewNewList
 
 class MainFragment : Fragment() {
     
+    /**
+     * [onCreated]
+     * @param 1552980358
+     * @since 0.1
+     **/
     private var onCreated = false
-
+    
     /**
      * [onCreateView]
      * @param inflater [LayoutInflater]
@@ -105,11 +110,11 @@ class MainFragment : Fragment() {
      **/
     override fun onResume() {
         super.onResume()
-        if (!onCreated) {
-            onCreated = true
+        if (onCreated) {
             return
         }
         (recyclerView.adapter as SongListRecyclerViewAdapter).updateList(songListInfoList)
+        onCreated = true
     }
     
 }

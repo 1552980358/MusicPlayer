@@ -218,6 +218,7 @@ class SongListEditingActivity: AppCompatActivity(), TimeExchange {
      **/
     override fun finish() {
         if (pos == DEFAULT_VALUE_INT) {
+            setResult(Activity.RESULT_CANCELED)
             super.finish()
             return
         }

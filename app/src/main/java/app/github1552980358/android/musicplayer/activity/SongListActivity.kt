@@ -1,6 +1,7 @@
 package app.github1552980358.android.musicplayer.activity
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -435,8 +436,11 @@ class SongListActivity: BaseAppCompatActivity(), TimeExchange {
      **/
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when (resultCode) {
+        when (requestCode) {
             0 -> {
+                if (resultCode == Activity.RESULT_CANCELED) {
+                    return
+                }
                 songListCover = (data?.getSerializableExtra(INTENT_SONG_LIST_COVER) as SongListCover?)?.apply {
                     imageViewCover.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.size))
                     appBarLayout.setBackgroundColor(backgroundColour)
