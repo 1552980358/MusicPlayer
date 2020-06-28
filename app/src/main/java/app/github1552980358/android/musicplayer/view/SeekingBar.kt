@@ -42,11 +42,21 @@ class SeekingBar: View, TimeExchange {
     constructor(context: Context, attributeSet: AttributeSet?, defStyleAttr: Int, defStyleRes: Int):
         super(context, attributeSet, defStyleAttr, defStyleRes)
     
+    /**
+     * [paint]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private val paint = Paint().apply {
         isAntiAlias = true
     }
     
-    var proc = 0
+    /**
+     * [process]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    var process = 0
         set(value) {
             if (value < 0) {
                 throw Exception()
@@ -55,7 +65,12 @@ class SeekingBar: View, TimeExchange {
             postInvalidate()
         }
     
-    var max = 0
+    /**
+     * [maximum]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    var maximum = 0
         set(value) {
             if (value < 0) {
                 throw Exception()
@@ -64,6 +79,11 @@ class SeekingBar: View, TimeExchange {
             postInvalidate()
         }
     
+    /**
+     * [drawText]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private var drawText = true
         set(value) {
             field = value
@@ -76,41 +96,87 @@ class SeekingBar: View, TimeExchange {
     //    postInvalidate()
     //}
     
+    /**
+     * [textColor]
+     * @author 1552980358
+     * @since 0.1
+     **/
     var textColor = Color.WHITE //ContextCompat.getColor(context, R.color.colorPrimaryDark)
         set(value) {
             field = value
             postInvalidate()
         }
     
-    var textPadding = resources.getDimension(R.dimen.seekingBar_text_padding)
+    /**
+     * [textPadding]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    private var textPadding = resources.getDimension(R.dimen.seekingBar_text_padding)
     
-    var leftColor = ContextCompat.getColor(context, R.color.colorPrimaryDark)
+    /**
+     * [progressColor]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    var progressColor = ContextCompat.getColor(context, R.color.colorPrimaryDark)
         set(value) {
             field = value
             postInvalidate()
         }
     
-    var rightColor = ContextCompat.getColor(context, R.color.colorPrimary)
+    /**
+     * [indeterminateColor]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    var indeterminateColor = ContextCompat.getColor(context, R.color.colorPrimary)
         set(value) {
             field = value
             postInvalidate()
         }
     
-    var cursorColor = Color.WHITE
+    /**
+     * [thumbColor]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    var thumbColor = Color.WHITE
         set(value) {
             field = value
             postInvalidate()
         }
     
-    var cursorThickness = resources.getDimension(R.dimen.seekingBar_cursor_thickness)
+    /**
+     * [thumbThickness]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    var thumbThickness = resources.getDimension(R.dimen.seekingBar_cursor_thickness)
         set(value) {
             field = value
             postInvalidate()
         }
     
-    var cursorProc = 0F
+    /**
+     * [thumbProc]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    var thumbProc = 0F
     
+    /**
+     * [baseline]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private var baseline = 0F
+    
+    /**
+     * [widthText]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private var widthText = 0F
     
     init {
@@ -120,25 +186,31 @@ class SeekingBar: View, TimeExchange {
         widthText = rect.width().toFloat()
     }
     
+    /**
+     * [onDraw]
+     * @param canvas [Canvas]
+     * @author 1552980358
+     * @since 0.1
+     **/
     override fun onDraw(canvas: Canvas?) {
         canvas ?: return
         
         paint.style = Paint.Style.FILL_AND_STROKE
         
-        cursorProc = proc.toFloat() * width.toFloat() / max.toFloat()
+        thumbProc = process.toFloat() * width.toFloat() / maximum.toFloat()
         
-        if ((proc == 0 && max == 0) || cursorProc < cursorThickness / 2) {
+        if ((process == 0 && maximum == 0) || thumbProc < thumbThickness / 2) {
             
-            paint.color = rightColor
+            paint.color = indeterminateColor
             canvas.drawRect(0F, 0F, width.toFloat(), height.toFloat(), paint)
             
-            paint.color = cursorColor
-            canvas.drawRect(0F, 0F, cursorThickness, height.toFloat(), paint)
+            paint.color = thumbColor
+            canvas.drawRect(0F, 0F, thumbThickness, height.toFloat(), paint)
             
             paint.color = textColor
-            canvas.drawText(getTimeText(proc), textPadding, (height + baseline) / 2, paint)
+            canvas.drawText(getTimeText(process), textPadding, (height + baseline) / 2, paint)
             canvas.drawText(
-                getTimeText(max),
+                getTimeText(maximum),
                 width - textPadding - widthText,
                 (height + baseline) / 2,
                 paint
@@ -148,31 +220,31 @@ class SeekingBar: View, TimeExchange {
         
         // Draw left side
         // 绘制左方
-        paint.color = leftColor
-        canvas.drawRect(0F, 0F, cursorProc, height.toFloat(), paint)
-    
+        paint.color = progressColor
+        canvas.drawRect(0F, 0F, thumbProc, height.toFloat(), paint)
+        
         // Draw right side
         // 绘制右方
-        paint.color = rightColor
-        canvas.drawRect(cursorProc, 0F, width.toFloat(), height.toFloat(), paint)
-    
+        paint.color = indeterminateColor
+        canvas.drawRect(thumbProc, 0F, width.toFloat(), height.toFloat(), paint)
+        
         // Draw cursor
         // 绘制位置
-        paint.color = cursorColor
-        canvas.drawRect(cursorProc - cursorThickness / 2, 0F, cursorProc + cursorThickness / 2, height.toFloat(), paint)
-    
+        paint.color = thumbColor
+        canvas.drawRect(thumbProc - thumbThickness / 2, 0F, thumbProc + thumbThickness / 2, height.toFloat(), paint)
+        
         // Not to draw text
         // 不绘制文字
         if (drawText) {
             return
         }
-    
+        
         // Draw text
         // 绘制文字
         paint.color = textColor
-        canvas.drawText(getTimeText(proc), textPadding, (height + baseline) / 2, paint)
+        canvas.drawText(getTimeText(process), textPadding, (height + baseline) / 2, paint)
         canvas.drawText(
-            getTimeText(max),
+            getTimeText(maximum),
             width - textPadding - widthText,
             (height + baseline) / 2,
             paint

@@ -128,8 +128,7 @@
                 <SeekBar
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/seekBar"
-                    android:visibility="gone" />
+                    android:id="@+id/seekBar" />
     
                 <!--app.github1552980358.android.musicplayer.view.SeekingBar
                     android:layout_width="match_parent"
