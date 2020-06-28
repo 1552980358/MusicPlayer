@@ -2,4 +2,8 @@
 <resources>
     <dimen name="sideLetterView_textSize">15sp</dimen>
     <dimen name="sideLetterView_radius">7.5dp</dimen>
+    
+    <dimen name="seekingBar_cursor_thickness">5dp</dimen>
+    <dimen name="seekingBar_text_padding">5dp</dimen>
+    <dimen name="seekingBar_text_textSize">12sp</dimen>
 </resources>
