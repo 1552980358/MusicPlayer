@@ -37,7 +37,7 @@ class SeekingBar: View, TimeExchange {
         this(context, attributeSet, 0)
     
     constructor(context: Context, attributeSet: AttributeSet?, defStyleAttr: Int):
-        this(context, attributeSet, 0, 0)
+        this(context, attributeSet, defStyleAttr, 0)
     
     constructor(context: Context, attributeSet: AttributeSet?, defStyleAttr: Int, defStyleRes: Int):
         super(context, attributeSet, defStyleAttr, defStyleRes)
@@ -150,17 +150,23 @@ class SeekingBar: View, TimeExchange {
         // 绘制左方
         paint.color = leftColor
         canvas.drawRect(0F, 0F, cursorProc, height.toFloat(), paint)
-        
+    
         // Draw right side
         // 绘制右方
         paint.color = rightColor
         canvas.drawRect(cursorProc, 0F, width.toFloat(), height.toFloat(), paint)
-        
+    
         // Draw cursor
         // 绘制位置
         paint.color = cursorColor
         canvas.drawRect(cursorProc - cursorThickness / 2, 0F, cursorProc + cursorThickness / 2, height.toFloat(), paint)
-        
+    
+        // Not to draw text
+        // 不绘制文字
+        if (drawText) {
+            return
+        }
+    
         // Draw text
         // 绘制文字
         paint.color = textColor
