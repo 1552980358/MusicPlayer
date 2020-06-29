@@ -24,10 +24,10 @@ import kotlin.math.abs
 class SeekingBar: View, TimeExchange {
     
     companion object {
-        
-        // const val DrawFull = 0
-        // const val DrawRemain = 1
-        
+    
+        const val DrawFull = 0
+        const val DrawRemain = 1
+    
         const val TEXT_ZERO = "00:00"
     }
     
@@ -90,11 +90,11 @@ class SeekingBar: View, TimeExchange {
             postInvalidate()
         }
     
-    //var textDrawMethod = DrawFull
-    //set(value) {
-    //    field = value
-    //    postInvalidate()
-    //}
+    var textDrawMethod = DrawFull
+        set(value) {
+            field = value
+            postInvalidate()
+        }
     
     /**
      * [textColor]
@@ -215,6 +215,7 @@ class SeekingBar: View, TimeExchange {
                 (height + baseline) / 2,
                 paint
             )
+    
             return
         }
         
@@ -227,29 +228,43 @@ class SeekingBar: View, TimeExchange {
         // 绘制右方
         paint.color = indeterminateColor
         canvas.drawRect(thumbProc, 0F, width.toFloat(), height.toFloat(), paint)
-        
+    
         // Draw cursor
         // 绘制位置
         paint.color = thumbColor
         canvas.drawRect(thumbProc - thumbThickness / 2, 0F, thumbProc + thumbThickness / 2, height.toFloat(), paint)
-        
+    
         // Not to draw text
         // 不绘制文字
         if (!drawText) {
             return
         }
-        
-        // Draw text
-        // 绘制文字
+    
         paint.color = textColor
         canvas.drawText(getTimeText(process), textPadding, (height + baseline) / 2, paint)
-        canvas.drawText(
-            getTimeText(maximum),
-            width - textPadding - widthText,
-            (height + baseline) / 2,
-            paint
-        )
-        
+        when (textDrawMethod) {
+            DrawFull -> {
+                canvas.drawText(
+                    getTimeText(maximum),
+                    width - textPadding - widthText,
+                    (height + baseline) / 2,
+                    paint
+                )
+            }
+            DrawRemain -> {
+                canvas.drawText(
+                    getTimeText(maximum - process),
+                    width - textPadding - widthText,
+                    (height + baseline) / 2,
+                    paint
+                )
+            }
+        }
+    
+        // Draw text
+        // 绘制文字
+    
+    
     }
     
 }
