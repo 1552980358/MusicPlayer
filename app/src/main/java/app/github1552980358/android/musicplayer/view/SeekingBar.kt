@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
 import app.github1552980358.android.musicplayer.R
@@ -29,18 +30,92 @@ class SeekingBar: View, TimeExchange {
         const val DrawRemain = 1
     
         const val TEXT_ZERO = "00:00"
+    
+        interface OnTouchListener {
+            /**
+             * [onDown]
+             * @param currentProcess
+             * @return [Boolean]
+             * @author 1552980358
+             * @since 0.1
+             **/
+            fun onDown(currentProcess: Int): Boolean
+        
+            /**
+             * [onMove]
+             * @param currentProcess
+             * @return [Boolean]
+             * @author 1552980358
+             * @since 0.1
+             **/
+            fun onMove(currentProcess: Int): Boolean
+        
+            /**
+             * [onCancel]
+             * @param currentProcess
+             * @return [Boolean]
+             * @author 1552980358
+             * @since 0.1
+             **/
+            fun onCancel(currentProcess: Int): Boolean
+        }
+    
+        fun interface OnProcessChangeListener {
+            /**
+             * [onChange]
+             * @param new [Int]
+             * @param isUser [Boolean]
+             * @author 1552980358
+             * @since 0.1
+             **/
+            fun onChange(new: Int, isUser: Boolean)
+        }
+    
     }
     
+    /** constructors **/
+    /**
+     * @param context [Context]
+     **/
     constructor(context: Context): this(context, null)
     
+    /**
+     * @param context [Context]
+     * @param attributeSet [AttributeSet]
+     **/
     constructor(context: Context, attributeSet: AttributeSet?):
         this(context, attributeSet, 0)
     
+    /**
+     * @param context [Context]
+     * @param attributeSet [AttributeSet]
+     * @param defStyleAttr [Int]
+     **/
     constructor(context: Context, attributeSet: AttributeSet?, defStyleAttr: Int):
         this(context, attributeSet, defStyleAttr, 0)
     
+    /**
+     * @param context [Context]
+     * @param attributeSet [AttributeSet]
+     * @param defStyleAttr [Int]
+     * @param defStyleRes [Int]
+     **/
     constructor(context: Context, attributeSet: AttributeSet?, defStyleAttr: Int, defStyleRes: Int):
         super(context, attributeSet, defStyleAttr, defStyleRes)
+    
+    /**
+     * [isUserTouching]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    var isUserTouching = false
+    
+    /**
+     * [listener]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    var listener: OnProcessChangeListener? = null
     
     /**
      * [paint]
@@ -63,6 +138,7 @@ class SeekingBar: View, TimeExchange {
             }
             field = value
             postInvalidate()
+            listener?.onChange(field, isUserTouching)
         }
     
     /**
@@ -90,6 +166,11 @@ class SeekingBar: View, TimeExchange {
             postInvalidate()
         }
     
+    /**
+     * [textDrawMethod]
+     * @author 1552980358
+     * @since 0.1
+     **/
     var textDrawMethod = DrawFull
         set(value) {
             field = value
@@ -180,10 +261,11 @@ class SeekingBar: View, TimeExchange {
     private var widthText = 0F
     
     init {
-        val rect = Rect()
-        paint.getTextBounds(TEXT_ZERO, 0, 5, rect)
+        Rect().apply {
+            paint.getTextBounds(TEXT_ZERO, 0, 5, this)
+            widthText = width().toFloat()
+        }
         baseline = abs(paint.fontMetrics.ascent)
-        widthText = rect.width().toFloat()
     }
     
     /**
@@ -240,6 +322,8 @@ class SeekingBar: View, TimeExchange {
             return
         }
     
+        // Draw text
+        // 绘制文字
         paint.color = textColor
         canvas.drawText(getTimeText(process), textPadding, (height + baseline) / 2, paint)
         when (textDrawMethod) {
@@ -260,11 +344,33 @@ class SeekingBar: View, TimeExchange {
                 )
             }
         }
+    }
     
-        // Draw text
-        // 绘制文字
-    
-    
+    /**
+     * [setOnTouchListener]
+     * @param l [OnTouchListener]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    fun setOnTouchListener(l: OnTouchListener?) {
+        super.setOnTouchListener { _, motion ->
+            return@setOnTouchListener when (motion.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    isUserTouching = true
+                    process = (motion.x / width * maximum).toInt()
+                    l?.onDown(process) ?: false
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    process = (motion.x / width * maximum).toInt()
+                    l?.onMove(process) ?: false
+                }
+                MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
+                    process = (motion.x / width * maximum).toInt()
+                    l?.onCancel(process) ?: false
+                }
+                else -> false
+            }
+        }
     }
     
 }
