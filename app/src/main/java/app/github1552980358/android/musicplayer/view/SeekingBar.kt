@@ -235,7 +235,7 @@ class SeekingBar: View, TimeExchange {
         
         // Not to draw text
         // 不绘制文字
-        if (drawText) {
+        if (!drawText) {
             return
         }
         
