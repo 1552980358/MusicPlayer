@@ -34,33 +34,33 @@ class SeekingBar: View, TimeExchange {
         interface OnTouchListener {
             /**
              * [onDown]
-             * @param currentProcess
+             * @param currentProgress
              * @return [Boolean]
              * @author 1552980358
              * @since 0.1
              **/
-            fun onDown(currentProcess: Int): Boolean
-        
+            fun onDown(currentProgress: Int): Boolean
+    
             /**
              * [onMove]
-             * @param currentProcess
+             * @param currentProgress
              * @return [Boolean]
              * @author 1552980358
              * @since 0.1
              **/
-            fun onMove(currentProcess: Int): Boolean
-        
+            fun onMove(currentProgress: Int): Boolean
+    
             /**
              * [onCancel]
-             * @param currentProcess
+             * @param currentProgress
              * @return [Boolean]
              * @author 1552980358
              * @since 0.1
              **/
-            fun onCancel(currentProcess: Int): Boolean
+            fun onCancel(currentProgress: Int): Boolean
         }
     
-        fun interface OnProcessChangeListener {
+        fun interface OnProgressChangeListener {
             /**
              * [onChange]
              * @param new [Int]
@@ -115,7 +115,7 @@ class SeekingBar: View, TimeExchange {
      * @author 1552980358
      * @since 0.1
      **/
-    var listener: OnProcessChangeListener? = null
+    var listener: OnProgressChangeListener? = null
     
     /**
      * [paint]
@@ -124,14 +124,15 @@ class SeekingBar: View, TimeExchange {
      **/
     private val paint = Paint().apply {
         isAntiAlias = true
+        strokeWidth = resources.getDimension(R.dimen.seekingBar_paint_width)
     }
     
     /**
-     * [process]
+     * [progress]
      * @author 1552980358
      * @since 0.1
      **/
-    var process = 0
+    var progress = 0
         set(value) {
             if (value < 0) {
                 throw Exception()
@@ -218,33 +219,11 @@ class SeekingBar: View, TimeExchange {
         }
     
     /**
-     * [thumbColor]
+     * [thumbProgress]
      * @author 1552980358
      * @since 0.1
      **/
-    var thumbColor = Color.WHITE
-        set(value) {
-            field = value
-            postInvalidate()
-        }
-    
-    /**
-     * [thumbThickness]
-     * @author 1552980358
-     * @since 0.1
-     **/
-    var thumbThickness = resources.getDimension(R.dimen.seekingBar_cursor_thickness)
-        set(value) {
-            field = value
-            postInvalidate()
-        }
-    
-    /**
-     * [thumbProc]
-     * @author 1552980358
-     * @since 0.1
-     **/
-    var thumbProc = 0F
+    var thumbProgress = 0F
     
     /**
      * [baseline]
@@ -276,56 +255,53 @@ class SeekingBar: View, TimeExchange {
      **/
     override fun onDraw(canvas: Canvas?) {
         canvas ?: return
+    
+        paint.style = Paint.Style.STROKE
+    
+        thumbProgress = progress.toFloat() * width.toFloat() / maximum.toFloat()
+    
+        if ((progress == 0 && maximum == 0) || (thumbProgress < paint.strokeWidth * 2)) {
         
-        paint.style = Paint.Style.FILL_AND_STROKE
-        
-        thumbProc = process.toFloat() * width.toFloat() / maximum.toFloat()
-        
-        if ((process == 0 && maximum == 0) || thumbProc < thumbThickness / 2) {
-            
             paint.color = indeterminateColor
             canvas.drawRect(0F, 0F, width.toFloat(), height.toFloat(), paint)
-            
-            paint.color = thumbColor
-            canvas.drawRect(0F, 0F, thumbThickness, height.toFloat(), paint)
-            
-            paint.color = textColor
-            canvas.drawText(getTimeText(process), textPadding, (height + baseline) / 2, paint)
-            canvas.drawText(
-                getTimeText(maximum),
-                width - textPadding - widthText,
-                (height + baseline) / 2,
-                paint
-            )
-    
+        
+            drawText(canvas)
             return
         }
-        
+    
+        if ((progress == maximum) || (width - thumbProgress < paint.strokeWidth * 2)) {
+            paint.color = progressColor
+            canvas.drawRect(0F, 0F, width.toFloat(), height.toFloat(), paint)
+            drawText(canvas)
+            return
+        }
+    
         // Draw left side
         // 绘制左方
         paint.color = progressColor
-        canvas.drawRect(0F, 0F, thumbProc, height.toFloat(), paint)
-        
+        canvas.drawRect(0F, 0F, thumbProgress - paint.strokeWidth / 2, height.toFloat(), paint)
+    
         // Draw right side
         // 绘制右方
         paint.color = indeterminateColor
-        canvas.drawRect(thumbProc, 0F, width.toFloat(), height.toFloat(), paint)
+        canvas.drawRect(thumbProgress + paint.strokeWidth / 2, 0F, width.toFloat(), height.toFloat(), paint)
     
-        // Draw cursor
-        // 绘制位置
-        paint.color = thumbColor
-        canvas.drawRect(thumbProc - thumbThickness / 2, 0F, thumbProc + thumbThickness / 2, height.toFloat(), paint)
+        drawText(canvas)
     
+    }
+    
+    private fun drawText(canvas: Canvas) {
         // Not to draw text
         // 不绘制文字
         if (!drawText) {
             return
         }
-    
+        
         // Draw text
         // 绘制文字
-        paint.color = textColor
-        canvas.drawText(getTimeText(process), textPadding, (height + baseline) / 2, paint)
+        paint.color = progressColor
+        canvas.drawText(getTimeText(progress), textPadding, (height + baseline) / 2, paint)
+        paint.color = indeterminateColor
         when (textDrawMethod) {
             DrawFull -> {
                 canvas.drawText(
@@ -337,7 +313,7 @@ class SeekingBar: View, TimeExchange {
             }
             DrawRemain -> {
                 canvas.drawText(
-                    getTimeText(maximum - process),
+                    getTimeText(maximum - progress),
                     width - textPadding - widthText,
                     (height + baseline) / 2,
                     paint
@@ -357,16 +333,16 @@ class SeekingBar: View, TimeExchange {
             return@setOnTouchListener when (motion.action) {
                 MotionEvent.ACTION_DOWN -> {
                     isUserTouching = true
-                    process = (motion.x / width * maximum).toInt()
-                    l?.onDown(process) ?: false
+                    progress = (motion.x / width * maximum).toInt()
+                    l?.onDown(progress) ?: false
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    process = (motion.x / width * maximum).toInt()
-                    l?.onMove(process) ?: false
+                    progress = (motion.x / width * maximum).toInt()
+                    l?.onMove(progress) ?: false
                 }
                 MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
-                    process = (motion.x / width * maximum).toInt()
-                    l?.onCancel(process) ?: false
+                    progress = (motion.x / width * maximum).toInt()
+                    l?.onCancel(progress) ?: false
                 }
                 else -> false
             }
