@@ -19,7 +19,6 @@ import android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
 import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
-import android.widget.SeekBar
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.base.BaseAppCompatActivity
 import app.github1552980358.android.musicplayer.base.Colour
@@ -47,9 +46,9 @@ import kotlinx.android.synthetic.main.activity_audio.imageButtonNext
 import kotlinx.android.synthetic.main.activity_audio.imageView
 import kotlinx.android.synthetic.main.activity_audio.linearLayoutRoot
 import kotlinx.android.synthetic.main.activity_audio.seekBar
-import kotlinx.android.synthetic.main.activity_audio.textViewDivider
-import kotlinx.android.synthetic.main.activity_audio.textViewFull
-import kotlinx.android.synthetic.main.activity_audio.textViewPassed
+//import kotlinx.android.synthetic.main.activity_audio.textViewDivider
+//import kotlinx.android.synthetic.main.activity_audio.textViewFull
+//import kotlinx.android.synthetic.main.activity_audio.textViewPassed
 import kotlinx.android.synthetic.main.activity_audio.textViewSubtitle1
 import kotlinx.android.synthetic.main.activity_audio.textViewSubtitle2
 import kotlinx.android.synthetic.main.activity_audio.textViewTitle
@@ -75,13 +74,6 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
      * @since 0.1
      */
     var songList = mutableListOf<MediaBrowserCompat.MediaItem>()
-    
-    /**
-     * [seekBarTouched]
-     * @author 1552980358
-     * @since 0.1
-     **/
-    private var seekBarTouched = false
     
     /**
      * [exit]
@@ -131,13 +123,13 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
             isSingleLine = true
             ellipsize = TextUtils.TruncateAt.END
         }
-        
+    
         textViewTitle.text = intent.getStringExtra(INTENT_AUDIO_TITLE)
         textViewSubtitle1.text = intent.getStringExtra(INTENT_AUDIO_ALBUM)
         textViewSubtitle2.text = intent.getStringExtra(INTENT_AUDIO_ARTIST)
-        textViewFull.text = getTimeText(intent.getLongExtra(INTENT_AUDIO_DURATION, 0L))
-        seekBar.max = intent.getLongExtra(INTENT_AUDIO_DURATION, 0L).toInt() / 1000
-        
+        //textViewFull.text = getTimeText(intent.getLongExtra(INTENT_AUDIO_DURATION, 0L))
+        seekBar.maximum = intent.getLongExtra(INTENT_AUDIO_DURATION, 0L).toInt() / 1000
+    
         imageButtonLast.setOnClickListener { mediaControllerCompat.transportControls.skipToPrevious() }
         imageButtonNext.setOnClickListener { mediaControllerCompat.transportControls.skipToNext() }
         imageButtonCycle.setOnClickListener {
@@ -188,13 +180,14 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
              **/
     
         }
-        
+    
         checkBoxPlayPause.setOnClickListener {
             mediaControllerCompat.transportControls.apply {
                 if (checkBoxPlayPause.isChecked) play() else pause()
             }
         }
-        
+    
+        /*
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             /**
              * [onProgressChanged]
@@ -230,6 +223,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
             }
     
         })
+        */
         
     }
     /**
@@ -252,14 +246,14 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
         textViewTitle.text = metadata?.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
         textViewSubtitle1.text = metadata?.getString(MediaMetadataCompat.METADATA_KEY_ALBUM)
         textViewSubtitle2.text = metadata?.getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
-        textViewFull.text = getTimeText(metadata?.getLong(MediaMetadataCompat.METADATA_KEY_DURATION))
-        seekBar.max = metadata?.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)!!.toInt() / 1000
-        
+        //textViewFull.text = getTimeText(metadata?.getLong(MediaMetadataCompat.METADATA_KEY_DURATION))
+        seekBar.maximum = metadata?.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)!!.toInt() / 1000
+    
         File(
             getExternalFilesDir(AlbumNormalDir),
             metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
         ).apply {
-    
+        
             if (!exists()) {
                 imageView.setImageResource(R.drawable.ic_launcher_foreground)
                 return@apply
@@ -312,7 +306,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
                 .setWorkContent { _, _ ->
                     Log.e("setUpSeekbar", "workContent")
                     do {
-                        if (!seekBarTouched) {
+                        if (!seekBar.isUserTouching) {
                             runOnUiThread {
                                 runOnUiThread {
                                     seekBar.progress = mediaControllerCompat.playbackState.position.toInt() / 1000
@@ -447,21 +441,23 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
         isLight: Boolean = true
     ) {
         linearLayoutRoot.background.setTint(background)
-        
+    
         imageButtonLast.background.setTint(primary)
         imageButtonNext.background.setTint(primary)
         imageButtonList.background.setTint(primary)
         imageButtonCycle.background.setTint(primary)
         checkBoxPlayPause.background.setTint(primary)
         imageButtonCycleColour = primary
-        
-        seekBar.thumb.setTint(primary)
-        seekBar.progressDrawable.setTint(primary)
-        seekBar.indeterminateDrawable.setTint(secondary)
-        
-        textViewPassed.setTextColor(primary)
-        textViewFull.setTextColor(primary)
-        textViewDivider.setTextColor(primary)
+    
+        //seekBar.thumb.setTint(primary)
+        //seekBar.progressDrawable.setTint(primary)
+        //seekBar.indeterminateDrawable.setTint(secondary)
+    
+        //textViewPassed.setTextColor(primary)
+        //textViewFull.setTextColor(primary)
+        //textViewDivider.setTextColor(primary)
+        seekBar.progressColor = primary
+        seekBar.indeterminateColor = secondary
         textViewTitle.setTextColor(primary)
         textViewSubtitle1.setTextColor(secondary)
         textViewSubtitle2.setTextColor(secondary)

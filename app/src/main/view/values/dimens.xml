@@ -6,4 +6,5 @@
     <dimen name="seekingBar_cursor_thickness">5dp</dimen>
     <dimen name="seekingBar_text_padding">5dp</dimen>
     <dimen name="seekingBar_text_textSize">12sp</dimen>
+    <dimen name="seekingBar_paint_width">5dp</dimen>
 </resources>
