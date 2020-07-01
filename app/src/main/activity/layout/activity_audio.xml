@@ -15,6 +15,11 @@
         tools:ignore="ContentDescription"
         android:transitionName="imageView" />
     
+    <app.github1552980358.android.musicplayer.view.SeekingBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+    
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -118,7 +123,7 @@
             
             <!-- Time -->
             <!-- 时间 -->
-            <LinearLayout
+            <!--LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -129,10 +134,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/seekBar" />
-    
-                <!--app.github1552980358.android.musicplayer.view.SeekingBar
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp" /-->
+   
     
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -167,7 +169,7 @@
                 
                 </RelativeLayout>
             
-            </LinearLayout>
+            </LinearLayout-->
         
         </RelativeLayout>
     

@@ -187,6 +187,12 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
             }
         }
     
+        seekBar.setOnProgressChangeListener { new, isUser ->
+            if (isUser) {
+                mediaControllerCompat.transportControls.seekTo(new * 1000L)
+            }
+        }
+    
         /*
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             /**

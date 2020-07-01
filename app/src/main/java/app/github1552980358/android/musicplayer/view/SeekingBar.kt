@@ -245,6 +245,9 @@ class SeekingBar: View, TimeExchange {
             widthText = width().toFloat()
         }
         baseline = abs(paint.fontMetrics.ascent)
+        // Applied for the parameter `isUser` of `OnProgressChangeListener`
+        // 为了让`OnProgressChangeListener`的参数 `isUser` 能正确获取
+        setOnTouchListener(null as OnTouchListener?)
     }
     
     /**
@@ -290,6 +293,12 @@ class SeekingBar: View, TimeExchange {
     
     }
     
+    /**
+     * [drawText]
+     * @param canvas [Canvas]
+     * @author 1552980358
+     * @since 0.1
+     **/
     private fun drawText(canvas: Canvas) {
         // Not to draw text
         // 不绘制文字
@@ -323,13 +332,25 @@ class SeekingBar: View, TimeExchange {
     }
     
     /**
+     * [setOnProgressChangeListener]
+     * @param l [OnProgressChangeListener]
+     * @author 1552980358
+     * @since 0.1
+     **/
+    fun setOnProgressChangeListener(l: OnProgressChangeListener?) {
+        this.listener = l
+    }
+    
+    /**
      * [setOnTouchListener]
      * @param l [OnTouchListener]
      * @author 1552980358
      * @since 0.1
      **/
     fun setOnTouchListener(l: OnTouchListener?) {
+        isUserTouching = false
         super.setOnTouchListener { _, motion ->
+            @Suppress("LABEL_NAME_CLASH")
             return@setOnTouchListener when (motion.action) {
                 MotionEvent.ACTION_DOWN -> {
                     isUserTouching = true
@@ -342,6 +363,7 @@ class SeekingBar: View, TimeExchange {
                 }
                 MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
                     progress = (motion.x / width * maximum).toInt()
+                    isUserTouching = false
                     l?.onCancel(progress) ?: false
                 }
                 else -> false
