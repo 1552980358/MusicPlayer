@@ -11,7 +11,6 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.base.TimeExchange
-import kotlin.math.abs
 
 /**
  * [SeekingBar]
@@ -125,6 +124,8 @@ class SeekingBar: View, TimeExchange {
     private val paint = Paint().apply {
         isAntiAlias = true
         strokeWidth = resources.getDimension(R.dimen.seekingBar_paint_width)
+        textSize = resources.getDimension(R.dimen.seekingBar_text_textSize)
+        // textAlign = Paint.Align.CENTER
     }
     
     /**
@@ -243,8 +244,9 @@ class SeekingBar: View, TimeExchange {
         Rect().apply {
             paint.getTextBounds(TEXT_ZERO, 0, 5, this)
             widthText = width().toFloat()
+            baseline = height().toFloat()
         }
-        baseline = abs(paint.fontMetrics.ascent)
+    
         // Applied for the parameter `isUser` of `OnProgressChangeListener`
         // 为了让`OnProgressChangeListener`的参数 `isUser` 能正确获取
         setOnTouchListener(null as OnTouchListener?)
@@ -261,8 +263,9 @@ class SeekingBar: View, TimeExchange {
     
         paint.style = Paint.Style.STROKE
     
-        thumbProgress = progress.toFloat() * width.toFloat() / maximum.toFloat()
+        thumbProgress = (progress * (width - ((widthText + textPadding) * 2))) / maximum + (widthText + textPadding)
     
+        /*
         if ((progress == 0 && maximum == 0) || (thumbProgress < paint.strokeWidth * 2)) {
         
             paint.color = indeterminateColor
@@ -271,7 +274,7 @@ class SeekingBar: View, TimeExchange {
             drawText(canvas)
             return
         }
-    
+        
         if ((progress == maximum) || (width - thumbProgress < paint.strokeWidth * 2)) {
             paint.color = progressColor
             canvas.drawRect(0F, 0F, width.toFloat(), height.toFloat(), paint)
@@ -288,6 +291,13 @@ class SeekingBar: View, TimeExchange {
         // 绘制右方
         paint.color = indeterminateColor
         canvas.drawRect(thumbProgress + paint.strokeWidth / 2, 0F, width.toFloat(), height.toFloat(), paint)
+        */
+    
+        paint.color = indeterminateColor
+        canvas.drawRect(thumbProgress, 0F, width.toFloat(), height.toFloat(), paint)
+    
+        paint.color = progressColor
+        canvas.drawRect(0F, 0F, thumbProgress, height.toFloat(), paint)
     
         drawText(canvas)
     
@@ -305,11 +315,13 @@ class SeekingBar: View, TimeExchange {
         if (!drawText) {
             return
         }
-        
+    
+        paint.style = Paint.Style.FILL
         // Draw text
         // 绘制文字
         paint.color = progressColor
         canvas.drawText(getTimeText(progress), textPadding, (height + baseline) / 2, paint)
+    
         paint.color = indeterminateColor
         when (textDrawMethod) {
             DrawFull -> {
@@ -354,15 +366,21 @@ class SeekingBar: View, TimeExchange {
             return@setOnTouchListener when (motion.action) {
                 MotionEvent.ACTION_DOWN -> {
                     isUserTouching = true
-                    progress = (motion.x / width * maximum).toInt()
+                    // progress = (motion.x / width * maximum).toInt().
+                    progress =
+                        ((motion.x - (textPadding + widthText)) / (width - 2 * (textPadding + widthText)) * maximum).toInt()
                     l?.onDown(progress) ?: false
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    progress = (motion.x / width * maximum).toInt()
+                    // progress = (motion.x / width * maximum).toInt()
+                    progress =
+                        ((motion.x - (textPadding + widthText)) / (width - 2 * (textPadding + widthText)) * maximum).toInt()
                     l?.onMove(progress) ?: false
                 }
                 MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
-                    progress = (motion.x / width * maximum).toInt()
+                    // progress = (motion.x / width * maximum).toInt()
+                    progress =
+                        ((motion.x - (textPadding + widthText)) / (width - 2 * (textPadding + widthText)) * maximum).toInt()
                     isUserTouching = false
                     l?.onCancel(progress) ?: false
                 }

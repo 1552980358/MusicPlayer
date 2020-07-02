@@ -66,7 +66,7 @@ import java.io.File
  * @time    : 16:32
  **/
 
-class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
+class AudioActivity: BaseAppCompatActivity(), TimeExchange, SystemUtil {
     
     /**
      * [songList]
@@ -232,6 +232,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
         */
         
     }
+    
     /**
      * [onResume]
      * @author 1552980358
@@ -264,7 +265,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
                 imageView.setImageResource(R.drawable.ic_launcher_foreground)
                 return@apply
             }
-    
+        
             imageView.setImageBitmap(readAsBitmap())
             /**
              * inputStream().use { `is` ->
@@ -313,18 +314,14 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
                     Log.e("setUpSeekbar", "workContent")
                     do {
                         if (!seekBar.isUserTouching) {
-                            runOnUiThread {
-                                runOnUiThread {
-                                    seekBar.progress = mediaControllerCompat.playbackState.position.toInt() / 1000
-                                }
-                            }
+                            seekBar.progress = mediaControllerCompat.playbackState.position.toInt() / 1000
                         }
                         try {
                             Thread.sleep(500)
                         } catch (e: Exception) {
                             //e.printStackTrace()
                         }
-                    } while (mediaControllerCompat.playbackState.state == PlaybackStateCompat.STATE_PLAYING && !exit)
+                    } while (!exit)
                 }
                 .build()
         )
@@ -338,7 +335,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
      **/
     @Suppress("DuplicatedCode")
     override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
-        state?:return
+        state ?: return
         when (state.state) {
             PlaybackStateCompat.STATE_BUFFERING -> {
                 Log.e("onPlaybackStateChanged", "STATE_BUFFERING")
@@ -356,7 +353,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
                 checkBoxPlayPause.isChecked = false
             }
         }
-
+    
         when (mediaControllerCompat.playbackState.customActions.first().action) {
             LIST_CYCLE.name -> {
                 imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_cycle)
@@ -368,7 +365,7 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
                 imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_single)
             }
         }
-
+    
         imageButtonCycle.background.setTint(imageButtonCycleColour)
     }
     
@@ -414,20 +411,20 @@ class AudioActivity : BaseAppCompatActivity(), TimeExchange, SystemUtil {
                 seekBar.progress = mediaControllerCompat.playbackState.position.toInt() / 1000
             }
         }
-
+    
         when (mediaControllerCompat.playbackState.customActions.first().action) {
             LIST_CYCLE.name -> {
                 imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_cycle)
             }
             RANDOM_ACCESS.name -> {
                 imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_random)
-
+        
             }
             SINGLE_CYCLE.name -> {
                 imageButtonCycle.setBackgroundResource(R.drawable.ic_audio_single)
             }
         }
-
+    
         imageButtonCycle.background.setTint(imageButtonCycleColour)
     
     }
