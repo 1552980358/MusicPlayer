@@ -35,6 +35,7 @@
     
     <dimen name="audioActivity_container_marginTop">10dp</dimen>
     <dimen name="audioActivity_container_marginSide">25dp</dimen>
+    <dimen name="audioActivity_seekbar_margins">10dp</dimen>
     <dimen name="audioActivity_textViewTitle_textSize">28sp</dimen>
     <dimen name="audioActivity_textViewTitle_marginBottom">5dp</dimen>
     <dimen name="audioActivity_textViewSubtitle1_textSize">20sp</dimen>

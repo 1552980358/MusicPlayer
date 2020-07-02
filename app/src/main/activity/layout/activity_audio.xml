@@ -18,7 +18,9 @@
     <app.github1552980358.android.musicplayer.view.SeekingBar
         android:id="@+id/seekBar"
         android:layout_width="match_parent"
-        android:layout_height="20dp" />
+        android:layout_height="20dp"
+        android:layout_marginStart="@dimen/audioActivity_seekbar_margins"
+        android:layout_marginEnd="@dimen/audioActivity_seekbar_margins" />
     
     <LinearLayout
         android:layout_width="match_parent"
