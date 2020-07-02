@@ -264,7 +264,8 @@ class SeekingBar: View, TimeExchange {
     
         paint.style = Paint.Style.STROKE
     
-        thumbProgress = (progress * (width - ((widthText + textPadding) * 2))) / maximum + (widthText + textPadding)
+        thumbProgress =
+            (progress * (width - ((widthText + textPadding + textPadding) * 2))) / maximum + (widthText + textPadding + textPadding)
     
         /*
         if ((progress == 0 && maximum == 0) || (thumbProgress < paint.strokeWidth * 2)) {
@@ -370,21 +371,21 @@ class SeekingBar: View, TimeExchange {
                     isUserTouching = true
                     // progress = (motion.x / width * maximum).toInt().
                     progress =
-                        ((motion.x - (textPadding + widthText)) / (width - 2 * (textPadding + widthText)) * maximum).toInt()
+                        ((motion.x - (textPadding + widthText)) / (width - 2 * (textPadding + widthText + textPadding)) * maximum).toInt()
                     l?.onDown(progress) ?: true
                 }
                 MotionEvent.ACTION_MOVE -> {
                     logE("setOnTouchListener", "ACTION_MOVE")
                     // progress = (motion.x / width * maximum).toInt()
                     progress =
-                        ((motion.x - (textPadding + widthText)) / (width - 2 * (textPadding + widthText)) * maximum).toInt()
+                        ((motion.x - (textPadding + widthText)) / (width - 2 * (textPadding + widthText + textPadding)) * maximum).toInt()
                     l?.onMove(progress) ?: true
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     logE("setOnTouchListener", "ACTION_UP")
                     // progress = (motion.x / width * maximum).toInt()
                     progress =
-                        ((motion.x - (textPadding + widthText)) / (width - 2 * (textPadding + widthText)) * maximum).toInt()
+                        ((motion.x - (textPadding + widthText)) / (width - 2 * (textPadding + widthText + textPadding)) * maximum).toInt()
                     isUserTouching = false
                     l?.onCancel(progress) ?: true
                 }
