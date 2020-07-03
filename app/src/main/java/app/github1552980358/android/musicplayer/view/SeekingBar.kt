@@ -11,7 +11,6 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import app.github1552980358.android.musicplayer.R
 import app.github1552980358.android.musicplayer.base.TimeExchange
-import lib.github1552980358.ktExtension.android.util.logE
 
 /**
  * [SeekingBar]
@@ -367,25 +366,37 @@ class SeekingBar: View, TimeExchange {
             @Suppress("LABEL_NAME_CLASH")
             return@setOnTouchListener when (motion.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    logE("setOnTouchListener", "ACTION_DOWN")
+                    // logE("setOnTouchListener", "ACTION_DOWN")
                     isUserTouching = true
-                    // progress = (motion.x / width * maximum).toInt().
-                    progress =
-                        ((motion.x - (textPadding + widthText)) / (width - 2 * (textPadding + widthText + textPadding)) * maximum).toInt()
+                    // progress = (motion.x / width * maximum).toInt()
+                    progress = when {
+                        motion.x < widthText + textPadding -> 0
+                        motion.x > (width - textPadding - widthText) -> maximum
+                        else -> ((motion.x - (textPadding + widthText)) /
+                            (width - 2 * (textPadding + widthText + textPadding)) * maximum).toInt()
+                    }
                     l?.onDown(progress) ?: true
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    logE("setOnTouchListener", "ACTION_MOVE")
+                    // logE("setOnTouchListener", "ACTION_MOVE")
                     // progress = (motion.x / width * maximum).toInt()
-                    progress =
-                        ((motion.x - (textPadding + widthText)) / (width - 2 * (textPadding + widthText + textPadding)) * maximum).toInt()
+                    progress = when {
+                        motion.x < widthText + textPadding -> 0
+                        motion.x > (width - textPadding - widthText) -> maximum
+                        else -> ((motion.x - (textPadding + widthText)) /
+                            (width - 2 * (textPadding + widthText + textPadding)) * maximum).toInt()
+                    }
                     l?.onMove(progress) ?: true
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    logE("setOnTouchListener", "ACTION_UP")
+                    // logE("setOnTouchListener", "ACTION_UP")
                     // progress = (motion.x / width * maximum).toInt()
-                    progress =
-                        ((motion.x - (textPadding + widthText)) / (width - 2 * (textPadding + widthText + textPadding)) * maximum).toInt()
+                    progress = when {
+                        motion.x < widthText + textPadding -> 0
+                        motion.x > (width - textPadding - widthText) -> maximum
+                        else -> ((motion.x - (textPadding + widthText)) /
+                            (width - 2 * (textPadding + widthText + textPadding)) * maximum).toInt()
+                    }
                     isUserTouching = false
                     l?.onCancel(progress) ?: true
                 }
