@@ -19,9 +19,7 @@
         android:id="@+id/seekBar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/audioActivity_seekbar_height"
-        android:layout_marginStart="@dimen/audioActivity_seekbar_margin_start_end"
-        android:layout_marginTop="@dimen/audioActivity_seekbar_margin_top"
-        android:layout_marginEnd="@dimen/audioActivity_seekbar_margin_start_end" />
+        android:layout_marginTop="@dimen/audioActivity_seekbar_margin_top" />
     
     <LinearLayout
         android:layout_width="match_parent"

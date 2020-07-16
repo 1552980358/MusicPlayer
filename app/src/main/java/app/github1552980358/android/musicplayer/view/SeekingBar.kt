@@ -294,11 +294,23 @@ class SeekingBar: View, TimeExchange {
         canvas.drawRect(thumbProgress + paint.strokeWidth / 2, 0F, width.toFloat(), height.toFloat(), paint)
         */
     
+        // Draw right
+        // 绘制右方
         paint.color = indeterminateColor
-        canvas.drawRect(thumbProgress, 0F, width.toFloat(), height.toFloat(), paint)
+        // canvas.drawRect(thumbProgress, 0F, width.toFloat(), height.toFloat(), paint)
+        canvas.drawLine(thumbProgress, 0F, width.toFloat(), 0F, paint)
+        canvas.drawLine(thumbProgress, height.toFloat(), width.toFloat(), height.toFloat(), paint)
     
+        // Draw left
+        // 绘制左方
         paint.color = progressColor
-        canvas.drawRect(0F, 0F, thumbProgress, height.toFloat(), paint)
+        // canvas.drawRect(0F, 0F, thumbProgress, height.toFloat(), paint)
+        canvas.drawLine(0F, 0F, thumbProgress, 0F, paint)
+        canvas.drawLine(0F, height.toFloat(), thumbProgress, height.toFloat(), paint)
+    
+        // Draw Indicator
+        // 绘制指示器
+        canvas.drawLine(thumbProgress, 0F, thumbProgress, height.toFloat(), paint)
     
         drawText(canvas)
     
