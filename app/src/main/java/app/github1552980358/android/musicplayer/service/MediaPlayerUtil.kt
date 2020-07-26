@@ -5,6 +5,9 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.provider.MediaStore
 import android.support.v4.media.session.MediaSessionCompat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
 
 /**
@@ -31,8 +34,22 @@ interface MediaPlayerUtil {
      * @author 1552980358
      * @since 0.1
      **/
-    fun onPlay(mediaPlayer: MediaPlayer) {
+    fun onPlay(mediaPlayer: MediaPlayer, gradual: Boolean = false) {
+        if (gradual) {
+            mediaPlayer.setVolume(0F, 0F)
+        }
         mediaPlayer.start()
+        GlobalScope.launch(Dispatchers.IO) {
+            if (gradual) {
+                mediaPlayer.setVolume(0.25F, 0.25F)
+                Thread.sleep(250)
+                mediaPlayer.setVolume(0.5F, 0.5F)
+                Thread.sleep(250)
+                mediaPlayer.setVolume(0.75F, 0.75F)
+                Thread.sleep(250)
+            }
+            mediaPlayer.setVolume(1F, 1F)
+        }
     }
     
     /**
@@ -41,6 +58,12 @@ interface MediaPlayerUtil {
      * @since 0.1
      **/
     fun onPause(mediaPlayer: MediaPlayer) {
+        mediaPlayer.setVolume(0.75F, 0.75F)
+        Thread.sleep(250)
+        mediaPlayer.setVolume(0.5F, 0.5F)
+        Thread.sleep(250)
+        mediaPlayer.setVolume(0.25F, 0.25F)
+        Thread.sleep(250)
         mediaPlayer.pause()
     }
     
@@ -58,7 +81,12 @@ interface MediaPlayerUtil {
      * @author 1552980358
      * @since 0.1
      **/
-    fun onPlayFromMediaId(context: Context, mediaPlayer: MediaPlayer, callback: MediaSessionCompat.Callback, mediaId: String) {
+    fun onPlayFromMediaId(
+        context: Context,
+        mediaPlayer: MediaPlayer,
+        callback: MediaSessionCompat.Callback,
+        mediaId: String
+    ) {
         // Reset
         // 重置
         mediaPlayer.stop()

@@ -284,7 +284,7 @@ class PlayService: MediaBrowserServiceCompat(),
                         .build()
                     @Suppress("DuplicatedCode")
                     startTime = System.currentTimeMillis()
-                    onPlay(mediaPlayer)
+                    onPlay(mediaPlayer, true)
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
                     
                     if (isForegroundService) {
