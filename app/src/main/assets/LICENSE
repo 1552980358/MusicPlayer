@@ -25,6 +25,30 @@ Gradle Dependency :
 Repo Link : https://github.com/1552980358/labourforce
 
 -------------------------
+KtExtension
+-------------------------
+Author : 1552980358
+Package Name : lib.github1552980358.ktExtension.jvm
+Copyright : Copyright© 2020, 1552980358
+Open-source License : Apache License 2.0
+Gradle Dependency :
+    com.github.1552980358:KtExtension:75e94ce484
+Repo Link : https://github.com/1552980358/KtExtension
+
+-------------------------
+KtExtensionAndroid
+-------------------------
+Author : 1552980358
+Package Name :
+    lib.github1552980358.ktExtension.android
+    lib.github1552980358.ktExtension.androidx
+Copyright : Copyright© 2020, 1552980358
+Open-source License : Apache License 2.0
+Gradle Dependency :
+    com.github.1552980358:KtExtensionAndroid:ba8f8d947d
+Repo Link : https://github.com/1552980358/KtExtensionAndroid
+
+-------------------------
 Android Open Source Project
 -------------------------
 Author : Google
@@ -39,12 +63,24 @@ Author : JetBrains
 Copyright : Copyright© Kotlin Foundation
 Open-source License : Apache License 2.0
 Gradle Dependency :
-    org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4-M1
+    org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4-M3
 Repo Link : https://github.com/JetBrains/kotlin
 Official Website : https://kotlinlang.org/
 
 -------------------------
-Androidx Jetpack
+Kotlin Coroutines
+-------------------------
+Author : JetBrains
+Copyright : Copyright© Kotlin Foundation
+Open-source License : Apache License 2.0
+Gradle Dependency :
+    org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7-1.4-M2
+    org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.7-1.4-M2
+Repo Link : https://github.com/Kotlin/kotlinx.coroutines
+Official Website : https://kotlinlang.org/
+
+-------------------------
+Androidx Jetpacks
 -------------------------
 Author: Google
 Package Name: androidx.*
@@ -52,11 +88,11 @@ Copyright: Copyright© Google
 Open-source License : Apache License 2.0
 Gradle Dependencies :
     androidx.appcompat:appcompat:1.1.0
-    androidx.core:core-ktx:1.2.0
+    androidx.core:core-ktx:1.3.1
     androidx.constraintlayout:constraintlayout:1.1.3
     androidx.legacy:legacy-support-v4:1.0.0
     androidx.preference:preference:1.1.1
-    androidx.media:media:1.2.0-alpha02
+    androidx.media:media:1.2.0-alpha04
     androidx.preference:preference-ktx:1.1.1
 Official Website : https://developer.android.com/jetpack
 
@@ -92,3 +128,35 @@ Gradle Dependencies :
     com.github.promeg:tinypinyin:2.0.3
     com.github.promeg:tinypinyin-lexicons-android-cncity:2.0.3
 Repo Link : https://github.com/promeG/TinyPinyin
+
+-------------------------
+-------Build Tools-------
+-------------------------
+
+-------------------------
+Android Build Gradle
+-------------------------
+Author : Google
+Copyright : Copyright© Google
+Open-source License : Apache License 2.0
+Gradle Dependencies :
+    com.android.tools.build:gradle:3.6.4
+
+-------------------------
+Kotlin Gradle Plugin
+-------------------------
+Author : JetBrains
+Copyright : Copyright© JetBrains
+Open-source License : Apache License 2.0
+Gradle Dependencies :
+    org.jetbrains.kotlin:kotlin-gradle-plugin:1.4-M3
+
+-------------------------
+AndResGuard
+-------------------------
+Author : Tencent WeChat Team
+Copyright : Copyright© Tencent
+Open-source License : Apache License 2.0
+Gradle Dependencies :
+    com.tencent.mm:AndResGuard-gradle-plugin:1.2.17
+Repo Link : https://github.com/shwenzhang/AndResGuard/
