@@ -192,8 +192,7 @@ class MainActivity : BaseAppCompatActivity(), SystemUtil {
                  *     imageView.setImageBitmap(BitmapFactory.decodeStream(`is`))
                  * }
                  **/
-    
-    
+                
             }
         }
         

@@ -190,7 +190,7 @@ class SplashActivity : AppCompatActivity() {
                      *
                      *    AudioData.ignoredData = (readLines().toMutableList() as ArrayList<String>)
                      * }
-                    */
+                     **/
                 }
                 
                 /**
