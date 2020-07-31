@@ -21,7 +21,7 @@ Package Name : lib.github1552980358.labourforce
 Copyright : Copyright© 2020, 1552980358
 Open-source License : Apache License 2.0
 Gradle Dependency :
-    com.github.1552980358:labourforce:ae4aed364a
+    com.github.1552980358:labourforce:4cf29780db
 Repo Link : https://github.com/1552980358/labourforce
 
 -------------------------
@@ -32,7 +32,7 @@ Package Name : lib.github1552980358.ktExtension.jvm
 Copyright : Copyright© 2020, 1552980358
 Open-source License : Apache License 2.0
 Gradle Dependency :
-    com.github.1552980358:KtExtension:75e94ce484
+    com.github.1552980358:KtExtension:97da1a6e00
 Repo Link : https://github.com/1552980358/KtExtension
 
 -------------------------
@@ -45,7 +45,7 @@ Package Name :
 Copyright : Copyright© 2020, 1552980358
 Open-source License : Apache License 2.0
 Gradle Dependency :
-    com.github.1552980358:KtExtensionAndroid:ba8f8d947d
+    com.github.1552980358:KtExtensionAndroid:d7d31916f2
 Repo Link : https://github.com/1552980358/KtExtensionAndroid
 
 -------------------------

@@ -23,6 +23,7 @@ import app.github1552980358.android.musicplayer.service.PlayService.Companion.ST
 import lib.github1552980358.ktExtension.jvm.io.readObjectAs
 import lib.github1552980358.labourforce.LabourForce
 import lib.github1552980358.labourforce.commands.LabourLv
+import lib.github1552980358.labourforce.labours.message.WorkMessage
 import lib.github1552980358.labourforce.labours.work.LabourWork
 import java.io.File
 
@@ -113,6 +114,14 @@ class SplashActivity : AppCompatActivity() {
                         startActivity(Intent(this@SplashActivity, MainActivity::class.java))
                         finish()
                     }
+                }
+    
+                override fun messageReceived(
+                    workMessage: WorkMessage?,
+                    workProduct: MutableMap<String, Any?>?,
+                    handler: Handler?
+                ) {
+                
                 }
     
                 /**

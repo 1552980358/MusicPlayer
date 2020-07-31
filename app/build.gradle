@@ -81,7 +81,8 @@ andResGuard {
             "*.gif",
     ]
     sevenzip {
-        artifact = 'com.tencent.mm:SevenZip:1.2.17'
+        artifact = 'com.tencent.mm:SevenZip:1.2.18'
+        //path = "/usr/local/bin/7za"
     }
 
     /**
@@ -100,8 +101,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7-1.4-M2'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.7-1.4-M2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8-1.4.0-rc'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.8-1.4.0-rc'
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.3.1'
@@ -114,9 +115,9 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
 
     //noinspection GradleDependency
-    implementation 'com.github.1552980358:labourforce:ae4aed364a'
-    implementation 'com.github.1552980358:KtExtensionAndroid:ba8f8d947d'
-    implementation "com.github.1552980358:KtExtension:75e94ce484"
+    implementation 'com.github.1552980358:labourforce:4cf29780db'
+    implementation 'com.github.1552980358:KtExtensionAndroid:d7d31916f2'
+    implementation "com.github.1552980358:KtExtension:97da1a6e00"
 
     implementation 'com.github.mkaflowski:Media-Style-Palette:1.3'
 
