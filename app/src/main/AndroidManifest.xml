@@ -12,7 +12,9 @@
         android:theme="@style/Theme.MusicPlayer"
         tools:ignore="AllowBackup">
         
-        <service android:name=".service.PlayService" >
+        <service
+            android:name=".service.PlayService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
