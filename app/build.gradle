@@ -1,131 +1,57 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'AndResGuard'
-
-def gitCommits = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+}
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    //noinspection GroovyAssignabilityCheck
+    compileSdkVersion 31
 
     defaultConfig {
-        applicationId "app.github1552980358.android.musicplayer"
+        applicationId "sakuraba.saki.player.music"
         minSdkVersion 21
-        targetSdkVersion 29
-        versionCode gitCommits
-        versionName "0.1-${gitCommits}"
+        targetSdkVersion 31
+        versionCode 1
+        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
-        //noinspection GrUnresolvedAccess
-        compileOptions {
-            //noinspection GrUnresolvedAccess
-            sourceCompatibility JavaVersion.VERSION_1_8
-            //noinspection GrUnresolvedAccess
-            targetCompatibility JavaVersion.VERSION_1_8
-        }
-
-        //noinspection GrUnresolvedAccess
-        kotlinOptions {
-            jvmTarget = '1.8'
-        }
     }
 
     buildTypes {
         release {
-            minifyEnabled true
-            //noinspection GrUnresolvedAccess
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        debug {
             minifyEnabled false
-            //noinspection GrUnresolvedAccess
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
-    sourceSets {
-        main {
-            res.srcDirs =
-                    [
-                            'src/main/dialog',
-                            'src/main/application',
-                            'src/main/activity',
-                            'src/main/fragment',
-                            'src/main/player',
-                            'src/main/view',
-                    ]
-        }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
-
-}
-
-andResGuard {
-    // mappingFile = file("./resource_mapping.txt")
-    mappingFile = null
-    use7zip = true
-    useSign = true
-    // 打开这个开关，会keep住所有资源的原始路径，只混淆资源的名字
-    keepRoot = false
-    // 设置这个值，会把arsc name列混淆成相同的名字，减少string常量池的大小
-    fixedResName = "arg"
-    // 打开这个开关会合并所有哈希值相同的资源，但请不要过度依赖这个功能去除去冗余资源
-    mergeDuplicatedRes = true
-    whiteList = [
-    ]
-    compressFilePattern = [
-            "*.png",
-            "*.jpg",
-            "*.jpeg",
-            "*.gif",
-    ]
-    sevenzip {
-        artifact = 'com.tencent.mm:SevenZip:1.2.18'
-        //path = "/usr/local/bin/7za"
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
-
-    /**
-     * 可选： 如果不设置则会默认覆盖assemble输出的apk
-     **/
-    // finalApkBackupPath = "${project.rootDir}/final.apk"
-
-    /**
-     * 可选: 指定v1签名时生成jar文件的摘要算法
-     * 默认值为“SHA-1”
-     **/
-    // digestalg = "SHA-256"
+    buildFeatures.viewBinding = true
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8-1.4.0-rc'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.8-1.4.0-rc'
-
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.3.1'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.preference:preference:1.1.1'
-    implementation 'androidx.preference:preference-ktx:1.1.1'
-    implementation 'androidx.media:media:1.2.0-alpha04'
-
-    implementation 'com.google.android.material:material:1.1.0'
-
-    //noinspection GradleDependency
-    implementation 'com.github.1552980358:labourforce:4cf29780db'
-    implementation 'com.github.1552980358:KtExtensionAndroid:d7d31916f2'
-    implementation "com.github.1552980358:KtExtension:97da1a6e00"
-
-    implementation 'com.github.mkaflowski:Media-Style-Palette:1.3'
-
-    def tinyPinYin = '2.0.3'
-    implementation "com.github.promeg:tinypinyin:${tinyPinYin}"
-    implementation "com.github.promeg:tinypinyin-lexicons-android-cncity:${tinyPinYin}"
-
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
+    kapt "androidx.databinding:databinding-compiler-common:$gradle_version"
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 }

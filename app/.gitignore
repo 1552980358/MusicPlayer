@@ -1,4 +1,3 @@
 /build
-/.project
-/.settings
-/.classpath
+/src/androidTest
+/src/test
