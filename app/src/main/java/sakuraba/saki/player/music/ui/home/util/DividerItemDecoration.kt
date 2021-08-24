@@ -23,7 +23,7 @@ class DividerItemDecoration: RecyclerView.ItemDecoration() {
             return
         }
         paint.strokeWidth = parent.resources.getDimension(R.dimen.home_recycler_view_divider)
-        paint.color = ContextCompat.getColor(parent.context, R.color.gray)
+        paint.color = ContextCompat.getColor(parent.context, R.color.divider_color)
         val startX = parent.resources.getDimension(R.dimen.home_recycler_view_height)
         repeat(parent.childCount - 1) { count ->
             parent.getChildAt(count).bottom.toFloat().also { bottom ->
