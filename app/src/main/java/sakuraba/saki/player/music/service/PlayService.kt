@@ -1,7 +1,6 @@
 package sakuraba.saki.player.music.service
 
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -16,12 +15,11 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
 import androidx.media.MediaBrowserServiceCompat
 import sakuraba.saki.player.music.BuildConfig
 
-
 class PlayService: MediaBrowserServiceCompat() {
     
     companion object {
         private const val TAG = "BackgroundPlayService"
-        
+        const val ROOT_ID = TAG
         private const val PlaybackStateActions =
             ACTION_PLAY_PAUSE or ACTION_SEEK_TO or ACTION_PLAY_FROM_MEDIA_ID or ACTION_SKIP_TO_NEXT or ACTION_SKIP_TO_PREVIOUS or ACTION_SKIP_TO_QUEUE_ITEM
     }
@@ -56,7 +54,7 @@ class PlayService: MediaBrowserServiceCompat() {
             .setState(STATE_NONE, 0, 1F)
             .build()
         
-        mediaSession = MediaSessionCompat(this, TAG).apply {
+        mediaSession = MediaSessionCompat(this, ROOT_ID).apply {
             setCallback(mediaSessionCallback)
             setPlaybackState(playbackStateCompat)
             isActive = true
