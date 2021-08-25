@@ -12,7 +12,7 @@
                 android:pivotY="12">
                 <path
                     android:name="v"
-                    android:fillColor="#fff"
+                    android:fillColor="#000"
                     android:pathData="M2,22 L2,12 L22,12 L22,12Z M2,2 L22,12 L22,12 L2,12Z"/>
             </group>
         </vector>
