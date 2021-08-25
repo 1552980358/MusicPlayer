@@ -59,6 +59,7 @@ class PlayService: MediaBrowserServiceCompat() {
             setPlaybackState(playbackStateCompat)
             isActive = true
         }
+        sessionToken = mediaSession.sessionToken
     }
     
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?) = when (clientPackageName) {
