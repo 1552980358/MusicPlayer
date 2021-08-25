@@ -1,6 +1,11 @@
 package sakuraba.saki.player.music
 
+import android.content.ComponentName
 import android.os.Bundle
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.view.Menu
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -9,6 +14,8 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.appcompat.app.AppCompatActivity
 import sakuraba.saki.player.music.databinding.ActivityMainBinding
+import sakuraba.saki.player.music.service.PlayService
+import sakuraba.saki.player.music.service.PlayService.Companion.ROOT_ID
 
 class MainActivity: AppCompatActivity() {
     
@@ -16,6 +23,13 @@ class MainActivity: AppCompatActivity() {
     
     private var _activityMainMainBinding: ActivityMainBinding? = null
     private val activityMain get() = _activityMainMainBinding!!
+    
+    private lateinit var mediaBrowserCompat: MediaBrowserCompat
+    private lateinit var connectionCallback: MediaBrowserCompat.ConnectionCallback
+    private lateinit var subscriptionCallback: MediaBrowserCompat.SubscriptionCallback
+    
+    private lateinit var mediaControllerCompat: MediaControllerCompat
+    private lateinit var mediaControllerCallback: MediaControllerCompat.Callback
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +43,33 @@ class MainActivity: AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_home), activityMain.drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         activityMain.navView.setupWithNavController(navController)
+        
+        mediaControllerCallback = object : MediaControllerCompat.Callback() {
+            override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
+            }
+            override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
+            }
+        }
+        
+        connectionCallback = object : MediaBrowserCompat.ConnectionCallback() {
+            override fun onConnected() {
+                if (mediaBrowserCompat.isConnected) {
+                    mediaBrowserCompat.unsubscribe(ROOT_ID)
+                    mediaBrowserCompat.subscribe(ROOT_ID, subscriptionCallback)
+                    
+                    mediaControllerCompat = MediaControllerCompat(this@MainActivity, mediaBrowserCompat.sessionToken)
+                    MediaControllerCompat.setMediaController(this@MainActivity, mediaControllerCompat)
+                    mediaControllerCompat.registerCallback(mediaControllerCallback)
+                }
+            }
+            override fun onConnectionSuspended() {
+            }
+            override fun onConnectionFailed() {
+            }
+        }
+        
+        subscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() { }
+        mediaBrowserCompat = MediaBrowserCompat(this, ComponentName(this, PlayService::class.java), connectionCallback, null)
     }
     
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
