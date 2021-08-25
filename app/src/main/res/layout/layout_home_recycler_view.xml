@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/home_recycler_view_height"
+    android:id="@+id/relative_layout_root"
+    android:background="?attr/selectableItemBackground"
     android:padding="@dimen/home_recycler_view_padding">
     
     <ImageView
