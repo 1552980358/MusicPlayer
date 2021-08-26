@@ -1,5 +1,6 @@
 package sakuraba.saki.player.music.ui.home.util
 
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,9 +21,15 @@ class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
 class RecyclerViewAdapter(private val selection: (pos: Int) -> Unit): RecyclerView.Adapter<ViewHolder>() {
     
     private var audioInfoList: List<AudioInfo>? = null
+    private var bitmaps: Map<Long, Bitmap?>? = null
     
     fun setAudioInfoList(audioInfoList: List<AudioInfo>) {
         this.audioInfoList = audioInfoList
+        notifyDataSetChanged()
+    }
+    
+    fun setBitmaps(bitmapList: Map<Long, Bitmap?>) {
+        this.bitmaps = bitmapList
         notifyDataSetChanged()
     }
     
@@ -30,18 +37,24 @@ class RecyclerViewAdapter(private val selection: (pos: Int) -> Unit): RecyclerVi
         ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_home_recycler_view, parent, false))
     
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val audioInfoList = audioInfoList
+        val bitmaps = bitmaps
         if (audioInfoList != null) {
-            val audioInfoList = audioInfoList!!
             val audioInfo = audioInfoList[position]
             audioInfo.apply {
                 holder.title.text = audioTitle
                 @Suppress("SetTextI18n")
                 holder.summary.text = "$audioArtist - $audioAlbum"
-                holder.image.setImageBitmap(getBitmap(holder.image.context))
+                // holder.image.setImageBitmap(getBitmap(holder.image.context))
+                if (bitmaps != null) {
+                    val bitmap = bitmaps[audioAlbumId]
+                    if (bitmap != null) {
+                        holder.image.setImageBitmap(bitmap)
+                    }
+                }
             }
-            holder.background.setOnClickListener { selection(position) }
         }
-        
+        holder.background.setOnClickListener { selection(position) }
     }
     
     override fun getItemCount() = audioInfoList?.size ?: 0
