@@ -12,5 +12,6 @@
     <dimen name="home_recycler_view_image_view_margin_end">10dp</dimen>
     <dimen name="home_recycler_view_divider">1dp</dimen>
     <dimen name="home_recycler_view_text_size">15sp</dimen>
+    <dimen name="home_bottom_sheet_height">60dp</dimen>
     
 </resources>
