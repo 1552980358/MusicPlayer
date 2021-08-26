@@ -27,23 +27,4 @@ class AudioInfo(
             audioDuration
         )
     
-    companion object {
-        private val URI = Uri.parse("content://media/external/audio/albumart")
-    }
-    
-    private var isFetched = false
-    private var bitmap: Bitmap? = null
-    
-    fun loadBitmap(context: Context) {
-        if (!isFetched) {
-            isFetched = !isFetched
-            tryOnly { bitmap = BitmapFactory.decodeFileDescriptor(context.contentResolver.openFileDescriptor(ContentUris.withAppendedId(URI, audioAlbumId), "r")?.fileDescriptor) }
-        }
-    }
-    
-    fun getBitmap(context: Context): Bitmap? {
-        loadBitmap(context)
-        return bitmap
-    }
-    
 }
