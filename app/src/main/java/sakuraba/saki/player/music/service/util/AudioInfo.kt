@@ -1,12 +1,7 @@
 package sakuraba.saki.player.music.service.util
 
-import android.content.ContentUris
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import com.github.promeg.pinyinhelper.Pinyin
-import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
+import java.io.Serializable
 
 class AudioInfo(
     val audioId: String,
@@ -18,7 +13,7 @@ class AudioInfo(
     val audioAlbumPinyin: String,
     val audioAlbumId: Long,
     val audioDuration: Long
-    ) {
+    ): Serializable {
     constructor(audioId: String, audioTitle: String, audioArtist: String, audioAlbum: String, audioAlbumId: Long, audioDuration: Long):
         this(
             audioId,
