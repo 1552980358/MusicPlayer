@@ -107,6 +107,7 @@ class MainActivity: AppCompatActivity() {
         
         connectionCallback = object : MediaBrowserCompat.ConnectionCallback() {
             override fun onConnected() {
+                Log.e(TAG, "MediaBrowserCompat.ConnectionCallback.onConnected")
                 if (mediaBrowserCompat.isConnected) {
                     mediaBrowserCompat.unsubscribe(ROOT_ID)
                     mediaBrowserCompat.subscribe(ROOT_ID, subscriptionCallback)
@@ -117,8 +118,10 @@ class MainActivity: AppCompatActivity() {
                 }
             }
             override fun onConnectionSuspended() {
+                Log.e(TAG, "MediaBrowserCompat.ConnectionCallback.onConnectionSuspended")
             }
             override fun onConnectionFailed() {
+                Log.e(TAG, "MediaBrowserCompat.ConnectionCallback.onConnectionFailed")
             }
         }
         
@@ -176,6 +179,7 @@ class MainActivity: AppCompatActivity() {
     }
     
     override fun onDestroy() {
+        Log.e(TAG, "onDestroy")
         super.onDestroy()
         _activityMainMainBinding = null
     }
