@@ -1,7 +1,7 @@
 package sakuraba.saki.player.music.service
 
 import android.content.Intent
-import android.net.Uri
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -25,6 +25,8 @@ class PlayService: MediaBrowserServiceCompat() {
         private const val PlaybackStateActions =
             ACTION_PLAY_PAUSE or ACTION_SEEK_TO or ACTION_PLAY_FROM_MEDIA_ID or ACTION_SKIP_TO_NEXT or ACTION_SKIP_TO_PREVIOUS or ACTION_SKIP_TO_QUEUE_ITEM
     }
+    
+    private lateinit var mediaPlayer: MediaPlayer
     
     private lateinit var mediaSession: MediaSessionCompat
     private var mediaSessionCallback = object : MediaSessionCompat.Callback() {
@@ -71,6 +73,8 @@ class PlayService: MediaBrowserServiceCompat() {
             isActive = true
         }
         sessionToken = mediaSession.sessionToken
+        
+        mediaPlayer = MediaPlayer()
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
