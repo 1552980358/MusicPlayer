@@ -13,6 +13,18 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import lib.github1552980358.ktExtension.android.os.bundle
+import lib.github1552980358.ktExtension.android.view.getDimensionPixelSize
+import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import sakuraba.saki.player.music.databinding.ActivityMainBinding
 import sakuraba.saki.player.music.service.PlayService
 import sakuraba.saki.player.music.service.PlayService.Companion.ROOT_ID
@@ -116,6 +128,38 @@ class MainActivity: AppCompatActivity() {
     
     override fun onSupportNavigateUp(): Boolean =
         findNavController(R.id.nav_host_fragment).navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    
+    override fun onResume() {
+        Log.e(TAG, "onResume")
+        super.onResume()
+        if (!mediaBrowserCompat.isConnected) {
+            try { mediaBrowserCompat.connect() }
+            catch (e: Exception) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    delay(2000)
+                    if (!mediaBrowserCompat.isConnected) {
+                        tryOnly { mediaBrowserCompat.connect() }
+                    }
+                }
+            }
+        }
+    }
+    
+    override fun onPause() {
+        Log.e(TAG, "onPause")
+        super.onPause()
+        if (mediaBrowserCompat.isConnected) {
+            try { mediaBrowserCompat.disconnect() }
+            catch (e: Exception) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    delay(2000)
+                    if (mediaBrowserCompat.isConnected) {
+                        tryOnly { mediaBrowserCompat.disconnect() }
+                    }
+                }
+            }
+        }
+    }
     
     override fun onDestroy() {
         super.onDestroy()
