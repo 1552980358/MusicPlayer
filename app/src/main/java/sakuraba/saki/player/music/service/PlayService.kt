@@ -29,7 +29,7 @@ class PlayService: MediaBrowserServiceCompat() {
     private lateinit var mediaPlayer: MediaPlayer
     
     private lateinit var mediaSession: MediaSessionCompat
-    private var mediaSessionCallback = object : MediaSessionCompat.Callback() {
+    private val mediaSessionCallback = object : MediaSessionCompat.Callback() {
         override fun onPlay() {
             Log.e(TAG, "onPlay")
         }
