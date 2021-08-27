@@ -19,6 +19,10 @@ import sakuraba.saki.player.music.service.PlayService.Companion.ROOT_ID
 
 class MainActivity: AppCompatActivity() {
     
+    companion object {
+        private const val TAG = "MainActivity"
+    }
+    
     private lateinit var appBarConfiguration: AppBarConfiguration
     
     private var _activityMainMainBinding: ActivityMainBinding? = null
