@@ -16,6 +16,11 @@ import androidx.appcompat.app.AppCompatActivity
 import sakuraba.saki.player.music.databinding.ActivityMainBinding
 import sakuraba.saki.player.music.service.PlayService
 import sakuraba.saki.player.music.service.PlayService.Companion.ROOT_ID
+import sakuraba.saki.player.music.ui.home.HomeFragment.Companion.INTENT_ACTIVITY_FRAGMENT_INTERFACE
+import sakuraba.saki.player.music.util.ActivityFragmentInterface
+import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO
+import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
+import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_POS
 
 class MainActivity: AppCompatActivity() {
     
@@ -35,8 +40,21 @@ class MainActivity: AppCompatActivity() {
     private lateinit var mediaControllerCompat: MediaControllerCompat
     private lateinit var mediaControllerCallback: MediaControllerCompat.Callback
     
+    private lateinit var activityFragmentInterface: ActivityFragmentInterface
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        activityFragmentInterface = ActivityFragmentInterface { pos, audioInfo, audioInfoList ->
+            mediaControllerCompat.transportControls.playFromMediaId(audioInfo?.audioId, bundle {
+                putInt(EXTRAS_AUDIO_INFO_POS, pos)
+                putSerializable(EXTRAS_AUDIO_INFO, audioInfo)
+                putSerializable(EXTRAS_AUDIO_INFO_LIST, audioInfoList)
+            })
+        }
+    
+        intent?.putExtra(INTENT_ACTIVITY_FRAGMENT_INTERFACE, activityFragmentInterface)
+        
         _activityMainMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMain.root)
         setSupportActionBar(findViewById(R.id.toolbar))
