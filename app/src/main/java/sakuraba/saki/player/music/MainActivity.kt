@@ -6,7 +6,13 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
+import android.util.Log
 import android.view.Menu
+import android.view.View
+import android.widget.ImageButton
+import android.widget.RelativeLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -118,6 +124,14 @@ class MainActivity: AppCompatActivity() {
         
         subscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() { }
         mediaBrowserCompat = MediaBrowserCompat(this, ComponentName(this, PlayService::class.java), connectionCallback, null)
+        
+        findViewById<ImageButton>(R.id.image_button).setOnClickListener {
+            when (mediaControllerCompat.playbackState.state) {
+                STATE_PLAYING -> mediaControllerCompat.transportControls.pause()
+                STATE_PAUSED -> mediaControllerCompat.transportControls.play()
+                else -> Unit
+            }
+        }
     }
     
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
