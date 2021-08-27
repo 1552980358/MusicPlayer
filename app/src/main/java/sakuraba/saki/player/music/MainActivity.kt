@@ -1,11 +1,13 @@
 package sakuraba.saki.player.music
 
 import android.content.ComponentName
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.util.Log
@@ -100,6 +102,31 @@ class MainActivity: AppCompatActivity() {
         
         mediaControllerCallback = object : MediaControllerCompat.Callback() {
             override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
+                when (state?.state) {
+                    STATE_BUFFERING -> Unit
+                    STATE_PLAYING -> {
+                        if (behavior.state == STATE_HIDDEN) {
+                            behavior.state = STATE_EXPANDED
+                            behavior.isHideable = false
+                            findViewById<ConstraintLayout>(R.id.constraint_layout).apply {
+                                layoutParams = (layoutParams as CoordinatorLayout.LayoutParams).apply {
+                                    setMargins(0, 0, 0, getDimensionPixelSize(R.dimen.home_bottom_sheet_height))
+                                }
+                            }
+                        }
+                        findViewById<ImageButton>(R.id.image_button).apply {
+                            setImageResource(R.drawable.ani_play_to_pause)
+                            (drawable as AnimatedVectorDrawable).start()
+                        }
+                    }
+                    STATE_PAUSED -> {
+                        findViewById<ImageButton>(R.id.image_button).apply {
+                            setImageResource(R.drawable.ani_pause_to_play)
+                            (drawable as AnimatedVectorDrawable).start()
+                        }
+                    }
+                    else -> Unit
+                }
             }
             override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
             }
