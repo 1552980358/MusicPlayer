@@ -56,6 +56,7 @@ class PlayService: MediaBrowserServiceCompat() {
         }
     }
     
+    @Volatile
     private lateinit var playbackStateCompat: PlaybackStateCompat
     
     override fun onCreate() {
