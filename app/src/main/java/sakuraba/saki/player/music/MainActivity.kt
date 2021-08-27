@@ -33,6 +33,8 @@ class MainActivity: AppCompatActivity() {
     private var _activityMainMainBinding: ActivityMainBinding? = null
     private val activityMain get() = _activityMainMainBinding!!
     
+    private lateinit var behavior: BottomSheetBehavior<RelativeLayout>
+    
     private lateinit var mediaBrowserCompat: MediaBrowserCompat
     private lateinit var connectionCallback: MediaBrowserCompat.ConnectionCallback
     private lateinit var subscriptionCallback: MediaBrowserCompat.SubscriptionCallback
@@ -65,6 +67,18 @@ class MainActivity: AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_home), activityMain.drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         activityMain.navView.setupWithNavController(navController)
+        
+        behavior = BottomSheetBehavior.from(findViewById(R.id.relative_layout_root))
+        behavior.isHideable = true
+        behavior.state = STATE_HIDDEN
+        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                Log.e(TAG, "BottomSheetBehavior.BottomSheetCallback.onStateChanged $newState")
+            }
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                Log.e(TAG, "BottomSheetBehavior.BottomSheetCallback.onSlide $slideOffset")
+            }
+        })
         
         mediaControllerCallback = object : MediaControllerCompat.Callback() {
             override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
