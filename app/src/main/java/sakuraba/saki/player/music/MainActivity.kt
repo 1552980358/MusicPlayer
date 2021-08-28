@@ -151,6 +151,12 @@ class MainActivity: AppCompatActivity() {
                 when (state?.state) {
                     STATE_BUFFERING -> Unit
                     STATE_PLAYING -> {
+                        isPlaying = false
+                        job?.cancel()
+                        isPlaying = true
+                        val progress = state.position.toInt()
+                        viewModel.updateProgress(progress)
+                        job = getProgressSyncJob(progress)
                         if (behavior.state == STATE_HIDDEN) {
                             behavior.state = STATE_EXPANDED
                             behavior.isHideable = false
@@ -170,6 +176,8 @@ class MainActivity: AppCompatActivity() {
                             setImageResource(R.drawable.ani_pause_to_play)
                             (drawable as AnimatedVectorDrawable).start()
                         }
+                        isPlaying = false
+                        job?.cancel()
                     }
                     else -> Unit
                 }
@@ -287,9 +295,27 @@ class MainActivity: AppCompatActivity() {
         }
     }
     
+    private fun getProgressSyncJob(progress: Int) = CoroutineScope(Dispatchers.IO).launch {
+        var currentProgress = delayForCorrection(progress)
+        while (isPlaying) {
+            launch(Dispatchers.Main) { viewModel.updateProgress(currentProgress) }
+            delay1second()
+            currentProgress += ms_1000_int
+        }
+    }
+    
+    private suspend fun delayForCorrection(progress: Int): Int {
+        val diff = progress % 1000L
+        if (diff != 0L) {
+            delay(diff)
+        }
+        return progress + diff.toInt()
+    }
+    
     override fun onPause() {
         Log.e(TAG, "onPause")
         super.onPause()
+        isOnPaused = true
         if (mediaBrowserCompat.isConnected) {
             try { mediaBrowserCompat.disconnect() }
             catch (e: Exception) {
