@@ -16,12 +16,26 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.util.Log
+import androidx.core.app.NotificationManagerCompat
 import androidx.media.MediaBrowserServiceCompat
+import lib.github1552980358.ktExtension.android.os.bundle
 import sakuraba.saki.player.music.BuildConfig
+import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.service.util.AudioInfo
+import sakuraba.saki.player.music.service.util.MediaMetadataUtil.setMediaMetadata
+import sakuraba.saki.player.music.service.util.createNotificationManager
+import sakuraba.saki.player.music.service.util.getNotification
+import sakuraba.saki.player.music.service.util.startForeground
+import sakuraba.saki.player.music.service.util.startService
 import sakuraba.saki.player.music.service.util.syncPlayAndPrepareMediaId
+import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
+import sakuraba.saki.player.music.util.Constants.ACTION_START
+import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_POS
+import sakuraba.saki.player.music.util.Constants.START_EXTRAS_PLAY
+import sakuraba.saki.player.music.util.Constants.EXTRAS_PROGRESS
+import sakuraba.saki.player.music.util.Constants.EXTRAS_STATUS
 
 class PlayService: MediaBrowserServiceCompat() {
     
@@ -98,6 +112,10 @@ class PlayService: MediaBrowserServiceCompat() {
                 .setState(STATE_BUFFERING, 0, 1F)
                 .build()
             mediaSession.setPlaybackState(playbackStateCompat)
+            mediaMetadataCompat = MediaMetadataCompat.Builder()
+                .setMediaMetadata(audioInfoList[listPos])
+                .build()
+            mediaSession.setMetadata(mediaMetadataCompat)
             
             mediaPlayer.syncPlayAndPrepareMediaId(this@PlayService, mediaId) {
                 playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
@@ -123,6 +141,8 @@ class PlayService: MediaBrowserServiceCompat() {
     
     @Volatile
     private lateinit var playbackStateCompat: PlaybackStateCompat
+    
+    private lateinit var mediaMetadataCompat: MediaMetadataCompat
     
     override fun onCreate() {
         Log.e(TAG, "onCreate")
