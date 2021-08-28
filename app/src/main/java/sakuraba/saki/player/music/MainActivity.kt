@@ -160,13 +160,13 @@ class MainActivity: AppCompatActivity() {
                                 }
                             }
                         }
-                        findViewById<ImageButton>(R.id.image_button).apply {
+                        imageButton.apply {
                             setImageResource(R.drawable.ani_play_to_pause)
                             (drawable as AnimatedVectorDrawable).start()
                         }
                     }
                     STATE_PAUSED -> {
-                        findViewById<ImageButton>(R.id.image_button).apply {
+                        imageButton.apply {
                             setImageResource(R.drawable.ani_pause_to_play)
                             (drawable as AnimatedVectorDrawable).start()
                         }
