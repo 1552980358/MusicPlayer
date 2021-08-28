@@ -65,6 +65,24 @@ class MainActivity: AppCompatActivity() {
     
     private lateinit var activityFragmentInterface: ActivityFragmentInterface
     
+    private var isOnPaused = false
+    
+    private var _imageView: ImageView? = null
+    private val imageView get() = _imageView!!
+    private var _imageButton: ImageButton? = null
+    private val imageButton get() = _imageButton!!
+    private var _textView: TextView? = null
+    private val textView get() = _textView!!
+    private var _progressBar: ProgressBar? = null
+    private val progressBar get() = _progressBar!!
+    
+    private lateinit var navController: NavController
+    
+    private var job: Job? = null
+    private var isPlaying = false
+    
+    private var playBackState = STATE_NONE
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
