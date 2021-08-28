@@ -37,6 +37,7 @@ class PlayService: MediaBrowserServiceCompat() {
     private lateinit var audioInfoList: List<AudioInfo>
     private var listPos = 0
     
+    private lateinit var notificationManager: NotificationManagerCompat
     
     private lateinit var mediaSession: MediaSessionCompat
     private val mediaSessionCallback = object : MediaSessionCompat.Callback() {
@@ -128,6 +129,8 @@ class PlayService: MediaBrowserServiceCompat() {
         sessionToken = mediaSession.sessionToken
         
         mediaPlayer = MediaPlayer()
+        
+        notificationManager = createNotificationManager
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
