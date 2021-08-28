@@ -117,6 +117,7 @@ class PlayService: MediaBrowserServiceCompat() {
         playbackStateCompat = PlaybackStateCompat.Builder()
             .setActions(PlaybackStateActions)
             .setState(STATE_NONE, 0, 1F)
+            .addCustomAction(ACTION_REQUEST_STATUS, ACTION_REQUEST_STATUS, R.drawable.ic_launcher_foreground)
             .build()
         
         mediaSession = MediaSessionCompat(this, ROOT_ID).apply {
