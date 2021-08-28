@@ -236,12 +236,30 @@ class MainActivity: AppCompatActivity() {
         subscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() { }
         mediaBrowserCompat = MediaBrowserCompat(this, ComponentName(this, PlayService::class.java), connectionCallback, null)
         
-        findViewById<ImageButton>(R.id.image_button).setOnClickListener {
-            when (mediaControllerCompat.playbackState.state) {
-                STATE_PLAYING -> mediaControllerCompat.transportControls.pause()
-                STATE_PAUSED -> mediaControllerCompat.transportControls.play()
-                else -> Unit
+        _textView = findViewById(R.id.text_view)
+        
+        _imageView = findViewById(R.id.image_view)
+        
+        _imageButton = findViewById<ImageButton>(R.id.image_button).apply {
+            setOnClickListener {
+                when (mediaControllerCompat.playbackState.state) {
+                    STATE_PLAYING -> mediaControllerCompat.transportControls.pause()
+                    STATE_PAUSED -> mediaControllerCompat.transportControls.play()
+                    STATE_NONE -> {
+                        when (playBackState) {
+                            STATE_PLAYING -> mediaControllerCompat.transportControls.pause()
+                            STATE_PAUSED -> mediaControllerCompat.transportControls.play()
+                            else -> Unit
+                        }
+                    }
+                    else -> Unit
+                }
             }
+        }
+        
+        _progressBar = findViewById(R.id.progress_bar)
+        viewModel.progress.observe(this) { progress ->
+            progressBar.progress = progress
         }
     }
     
