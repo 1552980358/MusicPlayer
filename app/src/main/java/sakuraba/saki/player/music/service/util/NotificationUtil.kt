@@ -17,12 +17,12 @@ private const val ChannelId = "${BuildConfig.APPLICATION_ID}.PlayServiceNotifica
 
 private const val NotificationId = 23333
 
-val Context.createNotificationManager get(): NotificationManagerCompat {
+val Context.createNotificationManager get(): NotificationManagerCompat = NotificationManagerCompat.from(this).createChannel
+
+val NotificationManagerCompat.createChannel get(): NotificationManagerCompat = apply {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        (getSystemService(NOTIFICATION_SERVICE) as NotificationManager)
-            .createNotificationChannel(NotificationChannel(ChannelId, ChannelName, IMPORTANCE_HIGH))
+        createNotificationChannel(NotificationChannel(ChannelId, ChannelName, IMPORTANCE_HIGH))
     }
-    return NotificationManagerCompat.from(this)
 }
 
 fun Service.startForeground(notification: Notification) = startForeground(NotificationId, notification)
