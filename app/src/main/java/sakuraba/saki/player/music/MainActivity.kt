@@ -108,6 +108,16 @@ class MainActivity: AppCompatActivity() {
                 putSerializable(EXTRAS_AUDIO_INFO, audioInfo)
                 putSerializable(EXTRAS_AUDIO_INFO_LIST, audioInfoList)
             })
+            if (audioInfo != null) {
+                progressBar.max = audioInfo.audioDuration.toInt()
+                textView.text = audioInfo.audioTitle
+                CoroutineScope(Dispatchers.IO).launch {
+                    val bitmap: Bitmap? = tryRun { loadAlbumArt(audioInfo.audioAlbumId) }
+                    if (bitmap != null) {
+                        launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
+                    }
+                }
+            }
         }
     
         intent?.putExtra(INTENT_ACTIVITY_FRAGMENT_INTERFACE, activityFragmentInterface)
