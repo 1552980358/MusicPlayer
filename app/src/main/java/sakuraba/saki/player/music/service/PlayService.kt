@@ -1,9 +1,11 @@
 package sakuraba.saki.player.music.service
 
+import android.app.Notification
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID
@@ -176,6 +178,26 @@ class PlayService: MediaBrowserServiceCompat() {
             }
         }
         return super.onStartCommand(intent, flags, startId)
+    }
+    
+    override fun onCustomAction(action: String, extras: Bundle?, result: Result<Bundle>) {
+        when (action) {
+            ACTION_REQUEST_STATUS -> {
+                Log.e(TAG, "${playbackStateCompat.state}")
+                if (playbackStateCompat.state == STATE_NONE) {
+                    result.sendResult(null)
+                    return
+                }
+                result.sendResult(bundle {
+                    putInt(EXTRAS_STATUS, playbackStateCompat.state)
+                    putInt(EXTRAS_PROGRESS, mediaPlayer.currentPosition)
+                    if (listPos != -1 && ::audioInfoList.isInitialized) {
+                        putSerializable(EXTRAS_AUDIO_INFO, audioInfoList[listPos])
+                    }
+                })
+            }
+            else -> super.onCustomAction(action, extras, result)
+        }
     }
     
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?) = when (clientPackageName) {
