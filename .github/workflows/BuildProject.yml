@@ -2,10 +2,10 @@ name: BuildProject
 on:
   push:
     branches:
-      - master
+      - dev
   pull_request:
     branches:
-      - master
+      - dev
 jobs:
   latest_windows_build:
     name: Build on latest Windows
