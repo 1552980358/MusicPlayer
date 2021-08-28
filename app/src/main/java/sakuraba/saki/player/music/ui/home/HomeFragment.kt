@@ -36,13 +36,13 @@ import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.ui.home.util.DividerItemDecoration
 import sakuraba.saki.player.music.ui.home.util.RecyclerViewAdapter
 import sakuraba.saki.player.music.util.ActivityFragmentInterface
+import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 
 class HomeFragment: Fragment() {
     
     companion object {
         private const val TAG = "HomeFragment"
         const val INTENT_ACTIVITY_FRAGMENT_INTERFACE = "ActivityFragmentInterface"
-        private val URI = Uri.parse("content://media/external/audio/albumart")
     }
     
     private lateinit var viewModel: HomeViewModel
@@ -165,12 +165,7 @@ class HomeFragment: Fragment() {
         
         audioInfoList.forEach { audioInfo ->
             tryOnly {
-                bitmaps[audioInfo.audioAlbumId] =
-                    BitmapFactory.decodeFileDescriptor(
-                        requireContext().contentResolver
-                            .openFileDescriptor(ContentUris.withAppendedId(URI, audioInfo.audioAlbumId), "r")
-                            ?.fileDescriptor
-                    )
+                bitmaps[audioInfo.audioAlbumId] = loadAlbumArt(audioInfo.audioAlbumId)
             }
         }
         
