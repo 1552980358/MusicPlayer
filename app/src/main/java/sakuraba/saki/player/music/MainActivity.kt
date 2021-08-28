@@ -127,7 +127,7 @@ class MainActivity: AppCompatActivity() {
         setContentView(activityMain.root)
         setSupportActionBar(findViewById(R.id.toolbar))
         
-        val navController = findNavController(R.id.nav_host_fragment)
+        navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_home), activityMain.drawerLayout)
@@ -216,8 +216,7 @@ class MainActivity: AppCompatActivity() {
         return true
     }
     
-    override fun onSupportNavigateUp(): Boolean =
-        findNavController(R.id.nav_host_fragment).navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    override fun onSupportNavigateUp(): Boolean = navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     
     override fun onResume() {
         Log.e(TAG, "onResume")
