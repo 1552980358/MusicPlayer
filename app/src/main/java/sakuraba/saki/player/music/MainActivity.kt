@@ -188,6 +188,41 @@ class MainActivity: AppCompatActivity() {
                     mediaControllerCompat = MediaControllerCompat(this@MainActivity, mediaBrowserCompat.sessionToken)
                     MediaControllerCompat.setMediaController(this@MainActivity, mediaControllerCompat)
                     mediaControllerCompat.registerCallback(mediaControllerCallback)
+    
+                    if (isOnPaused) {
+                        Log.e(TAG, "isOnPaused $isOnPaused")
+                        isOnPaused = false
+                        if (mediaBrowserCompat.isConnected) {
+                            if (behavior.state == STATE_EXPANDED) {
+                                mediaBrowserCompat.sendCustomAction(ACTION_REQUEST_STATUS, null, object : MediaBrowserCompat.CustomActionCallback() {
+                                    override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
+                                        Log.e(TAG, "onResult ${resultData == null}")
+                                        resultData ?: return
+                                        val audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
+                                        progressBar.max = audioInfo.audioDuration.toInt()
+                                        viewModel.updateProgress(resultData.getInt(EXTRAS_PROGRESS))
+                                        playBackState = resultData.getInt(EXTRAS_STATUS)
+                                        when (playBackState) {
+                                            STATE_PLAYING -> {
+                                                isPlaying = true
+                                                job = getProgressSyncJob(progressBar.progress)
+                                                imageButton.setImageResource(R.drawable.ic_pause)
+                                            }
+                                            STATE_PAUSED -> imageButton.setImageResource(R.drawable.ic_play)
+                                        }
+                                        textView.text = audioInfo.audioTitle
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            var bitmap: Bitmap? = null
+                                            tryOnly { bitmap = loadAlbumArt(audioInfo.audioAlbumId) }
+                                            if (bitmap != null) {
+                                                launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
+                                            }
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    }
                 }
             }
             override fun onConnectionSuspended() {
