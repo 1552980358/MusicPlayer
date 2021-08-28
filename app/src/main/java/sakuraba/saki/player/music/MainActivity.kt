@@ -52,6 +52,7 @@ class MainActivity: AppCompatActivity() {
     
     private var _activityMainMainBinding: ActivityMainBinding? = null
     private val activityMain get() = _activityMainMainBinding!!
+    private lateinit var viewModel: MainViewModel
     
     private lateinit var behavior: BottomSheetBehavior<RelativeLayout>
     
@@ -77,6 +78,7 @@ class MainActivity: AppCompatActivity() {
     
         intent?.putExtra(INTENT_ACTIVITY_FRAGMENT_INTERFACE, activityFragmentInterface)
         
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         _activityMainMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMain.root)
         setSupportActionBar(findViewById(R.id.toolbar))
