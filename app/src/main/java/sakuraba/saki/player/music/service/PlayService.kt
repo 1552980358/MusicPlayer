@@ -37,7 +37,10 @@ class PlayService: MediaBrowserServiceCompat() {
     private lateinit var audioInfoList: List<AudioInfo>
     private var listPos = 0
     
+    private var isForegroundService = false
+    
     private lateinit var notificationManager: NotificationManagerCompat
+    private var notification: Notification? = null
     
     private lateinit var mediaSession: MediaSessionCompat
     private val mediaSessionCallback = object : MediaSessionCompat.Callback() {
@@ -45,6 +48,11 @@ class PlayService: MediaBrowserServiceCompat() {
             Log.e(TAG, "onPlay")
             if (playbackStateCompat.state != STATE_PAUSED) {
                 return
+            }
+            if (!isForegroundService) {
+                startService(PlayService::class.java) {
+                    putExtra(ACTION_START, START_EXTRAS_PLAY)
+                }
             }
             playbackStateCompat = PlaybackStateCompat.Builder()
                 .setState(STATE_PLAYING, playbackStateCompat.position, 1F)
@@ -97,6 +105,11 @@ class PlayService: MediaBrowserServiceCompat() {
                     .build()
                 mediaSession.setPlaybackState(playbackStateCompat)
             }
+            if (!isForegroundService) {
+                startService(PlayService::class.java) {
+                    putExtra(ACTION_START, START_EXTRAS_PLAY)
+                }
+            }
         }
         override fun onSeekTo(pos: Long) {
             Log.e(TAG, "onSeekTo $pos")
@@ -135,6 +148,13 @@ class PlayService: MediaBrowserServiceCompat() {
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.e(TAG, "onStartCommand $flags $startId")
+        notification = notification.getNotification(this, mediaSession.sessionToken, audioInfoList[listPos])
+        when (intent?.getStringExtra(ACTION_START)) {
+            START_EXTRAS_PLAY -> {
+                Log.e(TAG, "START_EXTRA_PLAY")
+                startForeground(notification!!)
+            }
+        }
         return super.onStartCommand(intent, flags, startId)
     }
     
