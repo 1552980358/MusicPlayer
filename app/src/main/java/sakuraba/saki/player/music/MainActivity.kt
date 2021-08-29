@@ -1,12 +1,10 @@
 package sakuraba.saki.player.music
 
-import android.content.ComponentName
 import android.graphics.Bitmap
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
@@ -25,7 +23,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.ViewModelProvider
@@ -42,9 +39,8 @@ import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.android.view.getDimensionPixelSize
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
+import sakuraba.saki.player.music.base.BaseMediaControlActivity
 import sakuraba.saki.player.music.databinding.ActivityMainBinding
-import sakuraba.saki.player.music.service.PlayService
-import sakuraba.saki.player.music.service.PlayService.Companion.ROOT_ID
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.ui.home.HomeFragment.Companion.INTENT_ACTIVITY_FRAGMENT_INTERFACE
 import sakuraba.saki.player.music.util.ActivityFragmentInterface
@@ -58,7 +54,7 @@ import sakuraba.saki.player.music.util.Constants.EXTRAS_STATUS
 import sakuraba.saki.player.music.util.Coroutine.delay1second
 import sakuraba.saki.player.music.util.Coroutine.ms_1000_int
 
-class MainActivity: AppCompatActivity() {
+class MainActivity: BaseMediaControlActivity() {
     
     companion object {
         private const val TAG = "MainActivity"
@@ -71,13 +67,6 @@ class MainActivity: AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
     
     private lateinit var behavior: BottomSheetBehavior<RelativeLayout>
-    
-    private lateinit var mediaBrowserCompat: MediaBrowserCompat
-    private lateinit var connectionCallback: MediaBrowserCompat.ConnectionCallback
-    private lateinit var subscriptionCallback: MediaBrowserCompat.SubscriptionCallback
-    
-    private lateinit var mediaControllerCompat: MediaControllerCompat
-    private lateinit var mediaControllerCallback: MediaControllerCompat.Callback
     
     private lateinit var activityFragmentInterface: ActivityFragmentInterface
     
@@ -146,104 +135,6 @@ class MainActivity: AppCompatActivity() {
             }
         })
         
-        mediaControllerCallback = object : MediaControllerCompat.Callback() {
-            override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
-                when (state?.state) {
-                    STATE_BUFFERING -> Unit
-                    STATE_PLAYING -> {
-                        isPlaying = false
-                        job?.cancel()
-                        isPlaying = true
-                        val progress = state.position.toInt()
-                        viewModel.updateProgress(progress)
-                        job = getProgressSyncJob(progress)
-                        if (behavior.state == STATE_HIDDEN) {
-                            behavior.state = STATE_EXPANDED
-                            behavior.isHideable = false
-                            findViewById<ConstraintLayout>(R.id.constraint_layout).apply {
-                                layoutParams = (layoutParams as CoordinatorLayout.LayoutParams).apply {
-                                    setMargins(0, 0, 0, getDimensionPixelSize(R.dimen.home_bottom_sheet_height))
-                                }
-                            }
-                        }
-                        imageButton.apply {
-                            setImageResource(R.drawable.ani_play_to_pause)
-                            (drawable as AnimatedVectorDrawable).start()
-                        }
-                    }
-                    STATE_PAUSED -> {
-                        imageButton.apply {
-                            setImageResource(R.drawable.ani_pause_to_play)
-                            (drawable as AnimatedVectorDrawable).start()
-                        }
-                        isPlaying = false
-                        job?.cancel()
-                    }
-                    else -> Unit
-                }
-            }
-            override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
-            }
-        }
-        
-        connectionCallback = object : MediaBrowserCompat.ConnectionCallback() {
-            override fun onConnected() {
-                Log.e(TAG, "MediaBrowserCompat.ConnectionCallback.onConnected")
-                if (mediaBrowserCompat.isConnected) {
-                    mediaBrowserCompat.unsubscribe(ROOT_ID)
-                    mediaBrowserCompat.subscribe(ROOT_ID, subscriptionCallback)
-                    
-                    mediaControllerCompat = MediaControllerCompat(this@MainActivity, mediaBrowserCompat.sessionToken)
-                    MediaControllerCompat.setMediaController(this@MainActivity, mediaControllerCompat)
-                    mediaControllerCompat.registerCallback(mediaControllerCallback)
-    
-                    if (isOnPaused) {
-                        Log.e(TAG, "isOnPaused $isOnPaused")
-                        isOnPaused = false
-                        if (mediaBrowserCompat.isConnected) {
-                            if (behavior.state == STATE_EXPANDED) {
-                                mediaBrowserCompat.sendCustomAction(ACTION_REQUEST_STATUS, null, object : MediaBrowserCompat.CustomActionCallback() {
-                                    override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
-                                        Log.e(TAG, "onResult ${resultData == null}")
-                                        resultData ?: return
-                                        val audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
-                                        progressBar.max = audioInfo.audioDuration.toInt()
-                                        viewModel.updateProgress(resultData.getInt(EXTRAS_PROGRESS))
-                                        playBackState = resultData.getInt(EXTRAS_STATUS)
-                                        when (playBackState) {
-                                            STATE_PLAYING -> {
-                                                isPlaying = true
-                                                job = getProgressSyncJob(progressBar.progress)
-                                                imageButton.setImageResource(R.drawable.ic_pause)
-                                            }
-                                            STATE_PAUSED -> imageButton.setImageResource(R.drawable.ic_play)
-                                        }
-                                        textView.text = audioInfo.audioTitle
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            var bitmap: Bitmap? = null
-                                            tryOnly { bitmap = loadAlbumArt(audioInfo.audioAlbumId) }
-                                            if (bitmap != null) {
-                                                launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
-                                            }
-                                        }
-                                    }
-                                })
-                            }
-                        }
-                    }
-                }
-            }
-            override fun onConnectionSuspended() {
-                Log.e(TAG, "MediaBrowserCompat.ConnectionCallback.onConnectionSuspended")
-            }
-            override fun onConnectionFailed() {
-                Log.e(TAG, "MediaBrowserCompat.ConnectionCallback.onConnectionFailed")
-            }
-        }
-        
-        subscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() { }
-        mediaBrowserCompat = MediaBrowserCompat(this, ComponentName(this, PlayService::class.java), connectionCallback, null)
-        
         _textView = findViewById(R.id.text_view)
         
         _imageView = findViewById(R.id.image_view)
@@ -269,6 +160,97 @@ class MainActivity: AppCompatActivity() {
         viewModel.progress.observe(this) { progress ->
             progressBar.progress = progress
         }
+    }
+    
+    override fun onMediaBrowserConnected() {
+        Log.e(TAG, "MediaBrowserCompat.ConnectionCallback.onConnected")
+        if (mediaBrowserCompat.isConnected) {
+            registerMediaController()
+            
+            if (isOnPaused) {
+                Log.e(TAG, "isOnPaused $isOnPaused")
+                isOnPaused = false
+                if (mediaBrowserCompat.isConnected) {
+                    if (behavior.state == STATE_EXPANDED) {
+                        mediaBrowserCompat.sendCustomAction(ACTION_REQUEST_STATUS, null, object : MediaBrowserCompat.CustomActionCallback() {
+                            override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
+                                Log.e(TAG, "onResult ${resultData == null}")
+                                resultData ?: return
+                                val audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
+                                progressBar.max = audioInfo.audioDuration.toInt()
+                                viewModel.updateProgress(resultData.getInt(EXTRAS_PROGRESS))
+                                playBackState = resultData.getInt(EXTRAS_STATUS)
+                                when (playBackState) {
+                                    STATE_PLAYING -> {
+                                        isPlaying = true
+                                        job = getProgressSyncJob(progressBar.progress)
+                                        imageButton.setImageResource(R.drawable.ic_pause)
+                                    }
+                                    STATE_PAUSED -> imageButton.setImageResource(R.drawable.ic_play)
+                                }
+                                textView.text = audioInfo.audioTitle
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    var bitmap: Bitmap? = null
+                                    tryOnly { bitmap = loadAlbumArt(audioInfo.audioAlbumId) }
+                                    if (bitmap != null) {
+                                        launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
+                                    }
+                                }
+                            }
+                        })
+                    }
+                }
+            }
+        }
+    }
+    
+    override fun onMediaBrowserConnectionSuspended() {
+        Log.e(TAG, "MediaBrowserCompat.ConnectionCallback.onConnectionSuspended")
+    }
+    
+    override fun onMediaBrowserConnectionFailed() {
+        Log.e(TAG, "MediaBrowserCompat.ConnectionCallback.onConnectionFailed")
+    }
+    
+    override fun onMediaControllerPlaybackStateChanged(state: PlaybackStateCompat?) {
+        Log.e(TAG, "MediaControllerCompat.Callback.onPlaybackStateChanged ${state?.state}")
+        when (state?.state) {
+            STATE_BUFFERING -> Unit
+            STATE_PLAYING -> {
+                isPlaying = false
+                job?.cancel()
+                isPlaying = true
+                val progress = state.position.toInt()
+                viewModel.updateProgress(progress)
+                job = getProgressSyncJob(progress)
+                if (behavior.state == STATE_HIDDEN) {
+                    behavior.state = STATE_EXPANDED
+                    behavior.isHideable = false
+                    findViewById<ConstraintLayout>(R.id.constraint_layout).apply {
+                        layoutParams = (layoutParams as CoordinatorLayout.LayoutParams).apply {
+                            setMargins(0, 0, 0, getDimensionPixelSize(R.dimen.home_bottom_sheet_height))
+                        }
+                    }
+                }
+                imageButton.apply {
+                    setImageResource(R.drawable.ani_play_to_pause)
+                    (drawable as AnimatedVectorDrawable).start()
+                }
+            }
+            STATE_PAUSED -> {
+                imageButton.apply {
+                    setImageResource(R.drawable.ani_pause_to_play)
+                    (drawable as AnimatedVectorDrawable).start()
+                }
+                isPlaying = false
+                job?.cancel()
+            }
+            else -> Unit
+        }
+    }
+    
+    override fun onMediaControllerMetadataChanged(metadata: MediaMetadataCompat?) {
+    
     }
     
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
