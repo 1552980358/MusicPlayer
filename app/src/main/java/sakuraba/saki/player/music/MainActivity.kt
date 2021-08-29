@@ -168,7 +168,6 @@ class MainActivity: BaseMediaControlActivity() {
             registerMediaController()
             
             if (isOnPaused) {
-                Log.e(TAG, "isOnPaused $isOnPaused")
                 isOnPaused = false
                 if (mediaBrowserCompat.isConnected) {
                     if (behavior.state == STATE_EXPANDED) {
@@ -264,17 +263,6 @@ class MainActivity: BaseMediaControlActivity() {
     override fun onResume() {
         Log.e(TAG, "onResume")
         super.onResume()
-        if (!mediaBrowserCompat.isConnected) {
-            try { mediaBrowserCompat.connect() }
-            catch (e: Exception) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    delay(2000)
-                    if (!mediaBrowserCompat.isConnected) {
-                        tryOnly { mediaBrowserCompat.connect() }
-                    }
-                }
-            }
-        }
     }
     
     private fun getProgressSyncJob(progress: Int) = CoroutineScope(Dispatchers.IO).launch {
@@ -296,19 +284,8 @@ class MainActivity: BaseMediaControlActivity() {
     
     override fun onPause() {
         Log.e(TAG, "onPause")
-        super.onPause()
         isOnPaused = true
-        if (mediaBrowserCompat.isConnected) {
-            try { mediaBrowserCompat.disconnect() }
-            catch (e: Exception) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    delay(2000)
-                    if (mediaBrowserCompat.isConnected) {
-                        tryOnly { mediaBrowserCompat.disconnect() }
-                    }
-                }
-            }
-        }
+        super.onPause()
     }
     
     override fun onDestroy() {

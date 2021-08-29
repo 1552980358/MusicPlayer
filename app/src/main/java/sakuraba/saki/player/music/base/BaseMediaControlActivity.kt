@@ -7,6 +7,11 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import sakuraba.saki.player.music.service.PlayService
 import sakuraba.saki.player.music.service.PlayService.Companion.ROOT_ID
 
@@ -40,6 +45,36 @@ abstract class BaseMediaControlActivity: AppCompatActivity() {
         mediaControllerCompat = MediaControllerCompat(this, mediaBrowserCompat.sessionToken)
         MediaControllerCompat.setMediaController(this, mediaControllerCompat)
         mediaControllerCompat.registerCallback(mediaControllerCallback)
+    }
+    
+    override fun onPause() {
+        super.onPause()
+        if (mediaBrowserCompat.isConnected) {
+            try { mediaBrowserCompat.disconnect() }
+            catch (e: Exception) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    delay(2000)
+                    if (mediaBrowserCompat.isConnected) {
+                        tryOnly { mediaBrowserCompat.disconnect() }
+                    }
+                }
+            }
+        }
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        if (!mediaBrowserCompat.isConnected) {
+            try { mediaBrowserCompat.connect() }
+            catch (e: Exception) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    delay(2000)
+                    if (!mediaBrowserCompat.isConnected) {
+                        tryOnly { mediaBrowserCompat.connect() }
+                    }
+                }
+            }
+        }
     }
     
     abstract fun onMediaBrowserConnected()
