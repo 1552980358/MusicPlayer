@@ -12,4 +12,13 @@ class MainViewModel: ViewModel() {
     }
     val progress get() = _progress as LiveData<Int>
     
+    private val _state = MutableLiveData<Int>()
+    fun updateNewState(newState: Int) {
+        if (_state.value != newState) {
+            _state.value = newState
+        }
+    }
+    val state get() = _state as LiveData<Int>
+    val stateValue get() = _state.value
+    
 }

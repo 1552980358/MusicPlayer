@@ -160,6 +160,23 @@ class MainActivity: BaseMediaControlActivity() {
         viewModel.progress.observe(this) { progress ->
             progressBar.progress = progress
         }
+        
+        viewModel.state.observe(this) { newState ->
+            when (newState) {
+                STATE_PLAYING -> imageButton.apply {
+                    setImageResource(R.drawable.ani_play_to_pause)
+                    (drawable as AnimatedVectorDrawable).start()
+                    // }
+                    viewModel.updateNewState(STATE_PLAYING)
+                }
+                STATE_PAUSED -> {
+                    imageButton.apply {
+                        setImageResource(R.drawable.ani_pause_to_play)
+                        (drawable as AnimatedVectorDrawable).start()
+                    }
+                }
+            }
+        }
     }
     
     override fun onMediaBrowserConnected() {
@@ -178,8 +195,9 @@ class MainActivity: BaseMediaControlActivity() {
                                 val audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
                                 progressBar.max = audioInfo.audioDuration.toInt()
                                 viewModel.updateProgress(resultData.getInt(EXTRAS_PROGRESS))
-                                playBackState = resultData.getInt(EXTRAS_STATUS)
-                                when (playBackState) {
+                                // playBackState = resultData.getInt(EXTRAS_STATUS)
+                                viewModel.updateNewState(resultData.getInt(EXTRAS_STATUS))
+                                when (viewModel.stateValue) {
                                     STATE_PLAYING -> {
                                         isPlaying = true
                                         job = getProgressSyncJob(progressBar.progress)
@@ -231,16 +249,18 @@ class MainActivity: BaseMediaControlActivity() {
                         }
                     }
                 }
-                imageButton.apply {
-                    setImageResource(R.drawable.ani_play_to_pause)
-                    (drawable as AnimatedVectorDrawable).start()
-                }
+                // imageButton.apply {
+                //     setImageResource(R.drawable.ani_play_to_pause)
+                //     (drawable as AnimatedVectorDrawable).start()
+                // }
+                viewModel.updateNewState(STATE_PLAYING)
             }
             STATE_PAUSED -> {
-                imageButton.apply {
-                    setImageResource(R.drawable.ani_pause_to_play)
-                    (drawable as AnimatedVectorDrawable).start()
-                }
+                // imageButton.apply {
+                //     setImageResource(R.drawable.ani_pause_to_play)
+                //     (drawable as AnimatedVectorDrawable).start()
+                // }
+                viewModel.updateNewState(STATE_PAUSED)
                 isPlaying = false
                 job?.cancel()
             }
