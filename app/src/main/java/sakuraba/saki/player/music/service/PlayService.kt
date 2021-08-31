@@ -3,6 +3,7 @@ package sakuraba.saki.player.music.service
 import android.app.Notification
 import android.content.Intent
 import android.media.MediaPlayer
+import android.media.MediaPlayer.OnCompletionListener
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -13,10 +14,12 @@ import android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY_PAUSE
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SEEK_TO
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_NEXT
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_STOP
 import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
+import android.support.v4.media.session.PlaybackStateCompat.STATE_STOPPED
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import androidx.media.MediaBrowserServiceCompat
@@ -32,14 +35,20 @@ import sakuraba.saki.player.music.service.util.startService
 import sakuraba.saki.player.music.service.util.syncPlayAndPrepareMediaId
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
 import sakuraba.saki.player.music.util.Constants.ACTION_START
+import sakuraba.saki.player.music.util.Constants.ACTION_UPDATE_PLAY_MODE
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_POS
+import sakuraba.saki.player.music.util.Constants.EXTRAS_PLAY_MODE
 import sakuraba.saki.player.music.util.Constants.START_EXTRAS_PLAY
 import sakuraba.saki.player.music.util.Constants.EXTRAS_PROGRESS
 import sakuraba.saki.player.music.util.Constants.EXTRAS_STATUS
+import sakuraba.saki.player.music.util.Constants.PLAY_MODE_LIST
+import sakuraba.saki.player.music.util.Constants.PLAY_MODE_RANDOM
+import sakuraba.saki.player.music.util.Constants.PLAY_MODE_SINGLE
+import sakuraba.saki.player.music.util.Constants.PLAY_MODE_SINGLE_CYCLE
 
-class PlayService: MediaBrowserServiceCompat() {
+class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
     
     companion object {
         private const val TAG = "BackgroundPlayService"
@@ -104,14 +113,14 @@ class PlayService: MediaBrowserServiceCompat() {
             if (!::audioInfoList.isInitialized || listPos == -1) {
                 return
             }
-            onPlayFromMediaId(audioInfoList[++listPos].audioId, null)
+            onPlayFromMediaId(audioInfoList[--listPos].audioId, null)
         }
         override fun onSkipToNext() {
             Log.e(TAG, "onSkipToNext")
             if (!::audioInfoList.isInitialized || listPos == -1) {
                 return
             }
-            onPlayFromMediaId(audioInfoList[--listPos].audioId, null)
+            onPlayFromMediaId(audioInfoList[++listPos].audioId, null)
         }
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
             Log.e(TAG, "onPlayFromMediaId $mediaId")
@@ -166,6 +175,8 @@ class PlayService: MediaBrowserServiceCompat() {
             .setActions(PlaybackStateActions)
             .setState(STATE_NONE, 0, 1F)
             .addCustomAction(ACTION_REQUEST_STATUS, ACTION_REQUEST_STATUS, R.drawable.ic_launcher_foreground)
+            .addCustomAction(ACTION_UPDATE_PLAY_MODE, ACTION_UPDATE_PLAY_MODE, R.drawable.ic_launcher_foreground)
+            .setExtras(bundle { putInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST) })
             .build()
         
         mediaSession = MediaSessionCompat(this, ROOT_ID).apply {
@@ -195,7 +206,6 @@ class PlayService: MediaBrowserServiceCompat() {
     override fun onCustomAction(action: String, extras: Bundle?, result: Result<Bundle>) {
         when (action) {
             ACTION_REQUEST_STATUS -> {
-                Log.e(TAG, "${playbackStateCompat.state}")
                 if (playbackStateCompat.state == STATE_NONE) {
                     result.sendResult(null)
                     return
@@ -203,10 +213,19 @@ class PlayService: MediaBrowserServiceCompat() {
                 result.sendResult(bundle {
                     putInt(EXTRAS_STATUS, playbackStateCompat.state)
                     putInt(EXTRAS_PROGRESS, mediaPlayer.currentPosition)
+                    playbackStateCompat.extras?.let { extras ->
+                        putInt(EXTRAS_PLAY_MODE, extras.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST))
+                    }
                     if (listPos != -1 && ::audioInfoList.isInitialized) {
                         putSerializable(EXTRAS_AUDIO_INFO, audioInfoList[listPos])
                     }
                 })
+            }
+            ACTION_UPDATE_PLAY_MODE -> {
+                extras?:return
+                playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                    .setExtras(bundle { putInt(EXTRAS_PLAY_MODE, extras.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST)) })
+                    .build()
             }
             else -> super.onCustomAction(action, extras, result)
         }
@@ -220,6 +239,28 @@ class PlayService: MediaBrowserServiceCompat() {
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         Log.e(TAG, "onLoadChildren $parentId")
         result.sendResult(null)
+    }
+    
+    override fun onCompletion(mediaPlayer: MediaPlayer?) {
+        val playMode = playbackStateCompat.extras?.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST)
+        if (playMode == null) {
+            mediaSession.controller.transportControls.skipToNext()
+            return
+        }
+        when (playMode) {
+            PLAY_MODE_RANDOM, PLAY_MODE_LIST -> {
+                mediaSession.controller.transportControls.skipToNext()
+            }
+            PLAY_MODE_SINGLE_CYCLE -> {
+                mediaSession.controller.transportControls.play()
+            }
+            PLAY_MODE_SINGLE -> {
+                mediaSession.controller.transportControls.stop()
+            }
+            else -> {
+                mediaSession.controller.transportControls.skipToNext()
+            }
+        }
     }
     
 }
