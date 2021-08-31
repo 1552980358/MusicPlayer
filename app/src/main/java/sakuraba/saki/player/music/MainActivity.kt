@@ -309,6 +309,8 @@ class MainActivity: BaseMediaControlActivity() {
     override fun onPause() {
         Log.e(TAG, "onPause")
         isOnPaused = true
+        isPlaying = false
+        job?.cancel()
         super.onPause()
     }
     
