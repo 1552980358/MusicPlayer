@@ -50,12 +50,17 @@ abstract class BaseMediaControlActivity: AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         if (mediaBrowserCompat.isConnected) {
-            try { mediaBrowserCompat.disconnect() }
-            catch (e: Exception) {
+            try {
+                mediaControllerCompat.unregisterCallback(mediaControllerCallback)
+                mediaBrowserCompat.disconnect()
+            } catch (e: Exception) {
                 CoroutineScope(Dispatchers.IO).launch {
                     delay(2000)
                     if (mediaBrowserCompat.isConnected) {
-                        tryOnly { mediaBrowserCompat.disconnect() }
+                        tryOnly {
+                            mediaControllerCompat.unregisterCallback(mediaControllerCallback)
+                            mediaBrowserCompat.disconnect()
+                        }
                     }
                 }
             }
