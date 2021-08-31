@@ -34,13 +34,13 @@ import sakuraba.saki.player.music.service.util.startForeground
 import sakuraba.saki.player.music.service.util.startService
 import sakuraba.saki.player.music.service.util.syncPlayAndPrepareMediaId
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
-import sakuraba.saki.player.music.util.Constants.ACTION_START
+import sakuraba.saki.player.music.util.Constants.ACTION_EXTRA
 import sakuraba.saki.player.music.util.Constants.ACTION_UPDATE_PLAY_MODE
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_POS
 import sakuraba.saki.player.music.util.Constants.EXTRAS_PLAY_MODE
-import sakuraba.saki.player.music.util.Constants.START_EXTRAS_PLAY
+import sakuraba.saki.player.music.util.Constants.EXTRAS_PLAY
 import sakuraba.saki.player.music.util.Constants.EXTRAS_PROGRESS
 import sakuraba.saki.player.music.util.Constants.EXTRAS_STATUS
 import sakuraba.saki.player.music.util.Constants.PLAY_MODE_LIST
@@ -76,7 +76,7 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
             }
             if (!isForegroundService) {
                 startService(PlayService::class.java) {
-                    putExtra(ACTION_START, START_EXTRAS_PLAY)
+                    putExtra(ACTION_EXTRA, EXTRAS_PLAY)
                 }
             }
             playbackStateCompat = PlaybackStateCompat.Builder()
@@ -193,10 +193,10 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.e(TAG, "onStartCommand $flags $startId")
-        notification = notification.getNotification(this, mediaSession.sessionToken, audioInfoList[listPos])
-        when (intent?.getStringExtra(ACTION_START)) {
-            START_EXTRAS_PLAY -> {
-                Log.e(TAG, "START_EXTRA_PLAY")
+        notification = getNotification(audioInfoList[listPos], playbackStateCompat.state == STATE_PAUSED)
+        when (intent?.getStringExtra(ACTION_EXTRA)) {
+            EXTRAS_PLAY -> {
+                Log.e(TAG, "EXTRAS_PLAY")
                 startForeground(notification!!)
             }
         }
