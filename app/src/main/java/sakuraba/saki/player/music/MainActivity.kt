@@ -209,7 +209,7 @@ class MainActivity: BaseMediaControlActivity() {
                         override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
                             Log.e(TAG, "onResult ${resultData == null}")
                             resultData ?: return
-                            val audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
+                            audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
                             val progress = resultData.getInt(EXTRAS_PROGRESS)
                             playProgressBar.max = audioInfo.audioDuration
                             viewModel.updateProgress(progress)
