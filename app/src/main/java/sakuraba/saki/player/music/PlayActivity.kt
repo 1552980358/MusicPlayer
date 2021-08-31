@@ -1,7 +1,9 @@
 package sakuraba.saki.player.music
 
 import android.animation.ValueAnimator
-import android.graphics.Color
+import android.graphics.Color.BLACK
+import android.graphics.Color.TRANSPARENT
+import android.graphics.Color.WHITE
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
@@ -61,11 +63,13 @@ class PlayActivity: BaseMediaControlActivity() {
     private var isPlaying = false
     private var job: Job? = null
     
+    private var activityBackgroundColor = TRANSPARENT
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.e(TAG, "onCreate")
         
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        window.statusBarColor = Color.TRANSPARENT
+        window.statusBarColor = TRANSPARENT
         
         super.onCreate(savedInstanceState)
         
@@ -90,21 +94,7 @@ class PlayActivity: BaseMediaControlActivity() {
                 @Suppress("SetTextI18n")
                 textViewSummary.text = "${audioInfo.audioArtist} - ${audioInfo.audioAlbum}"
             }
-            MediaNotificationProcessor(this@PlayActivity, bitmap).apply {
-                launch(Dispatchers.Main) {
-                    ValueAnimator.ofArgb(Color.TRANSPARENT, backgroundColor).apply {
-                        duration = 500
-                        addUpdateListener {
-                            activityPlay.root.setBackgroundColor(animatedValue as Int)
-                        }
-                        start()
-                    }
-                }
-                if (isLight) {
-                    activityPlay.imageButtonNext.drawable.setTint(Color.BLACK)
-                    activityPlay.imageButtonPrev.drawable.setTint(Color.BLACK)
-                }
-            }
+            MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated()
         }
     
         findViewById<LinearLayout>(R.id.linear_layout).apply {
@@ -123,6 +113,10 @@ class PlayActivity: BaseMediaControlActivity() {
             if (!activityPlay.playSeekBar.isUserTouched) {
                 activityPlay.playSeekBar.progress = newProgress
             }
+        }
+        viewModel.duration.observe(this) { newDuration ->
+            activityPlay.playSeekBar.max = newDuration
+            activityPlay.durationViewDuration.duration = newDuration
         }
         viewModel.state.observe(this) { newState ->
             activityPlay.floatingActionButton.apply {
@@ -167,8 +161,7 @@ class PlayActivity: BaseMediaControlActivity() {
                     isPlaying = false
                     job?.cancel()
                     val audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
-                    activityPlay.playSeekBar.max = audioInfo.audioDuration
-                    activityPlay.durationViewDuration.duration = audioInfo.audioDuration
+                    viewModel.updateDuration(audioInfo.audioDuration)
                     viewModel.updateProgress(resultData.getInt(Constants.EXTRAS_PROGRESS).toLong())
                     viewModel.updateState(resultData.getInt(EXTRAS_STATUS))
                     when (viewModel.stateValue) {
@@ -231,10 +224,31 @@ class PlayActivity: BaseMediaControlActivity() {
                 bitmap = resources.getDrawable(R.drawable.ic_music, null).toBitmap()
             }
             launch(Dispatchers.Main) { activityPlay.imageView.setImageBitmap(bitmap) }
+            MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated()
         }
-        activityPlay.playSeekBar.max = metadata.getLong(METADATA_KEY_DURATION)
+        viewModel.updateDuration(metadata.getLong(METADATA_KEY_DURATION))
         textViewTitle.text = metadata.getString(METADATA_KEY_TITLE)
         textViewSummary.text = metadata.getString(METADATA_KEY_ARTIST)
+    }
+    
+    private fun MediaNotificationProcessor.getColorUpdated() = CoroutineScope(Dispatchers.Main).launch {
+        if (activityBackgroundColor != backgroundColor) {
+            ValueAnimator.ofArgb(activityBackgroundColor, backgroundColor).apply {
+                duration = 500
+                addUpdateListener {
+                    activityPlay.root.setBackgroundColor(animatedValue as Int)
+                }
+                start()
+            }
+            activityBackgroundColor = backgroundColor
+        }
+        if (isLight) {
+            activityPlay.imageButtonNext.drawable.setTint(BLACK)
+            activityPlay.imageButtonPrev.drawable.setTint(BLACK)
+        } else {
+            activityPlay.imageButtonNext.drawable.setTint(WHITE)
+            activityPlay.imageButtonPrev.drawable.setTint(WHITE)
+        }
     }
     
     override fun onPause() {

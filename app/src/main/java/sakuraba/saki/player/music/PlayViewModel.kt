@@ -13,6 +13,12 @@ class PlayViewModel: ViewModel() {
     val progress get() = _progress as LiveData<Long>
     val progressValue get() = progress.value!!
     
+    private val _duration = MutableLiveData<Long>()
+    fun updateDuration(newDuration: Long) {
+        _duration.value = newDuration
+    }
+    val duration get() = _duration as LiveData<Long>
+    
     private val _state = MutableLiveData<Int>()
     fun updateState(newState: Int) {
         if (_state.value != newState) {
