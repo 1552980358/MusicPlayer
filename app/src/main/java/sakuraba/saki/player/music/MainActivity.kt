@@ -252,6 +252,10 @@ class MainActivity: BaseMediaControlActivity() {
         viewModel.updateNewState(STATE_PLAYING)
         when (state.state) {
             STATE_PLAYING -> {
+                job?.cancel()
+                if (!isPlaying) {
+                    isPlaying = true
+                }
                 isPlaying = true
                 job = getProgressSyncJob(state.position.toInt())
                 if (behavior.state == STATE_HIDDEN) {

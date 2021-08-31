@@ -201,7 +201,10 @@ class PlayActivity: BaseMediaControlActivity() {
         viewModel.updateState(state.state)
         when (state.state) {
             STATE_PLAYING -> {
-                isPlaying = true
+                job?.cancel()
+                if (!isPlaying) {
+                    isPlaying = true
+                }
                 job = getProgressSyncJob(state.position)
             }
             STATE_PAUSED -> {
