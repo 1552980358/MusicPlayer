@@ -37,6 +37,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.android.content.intent
+import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.android.view.getDimensionPixelSize
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
@@ -109,10 +110,11 @@ class MainActivity: BaseMediaControlActivity() {
                 playProgressBar.max = audioInfo.audioDuration
                 textView.text = audioInfo.audioTitle
                 CoroutineScope(Dispatchers.IO).launch {
-                    val bitmap: Bitmap? = tryRun { loadAlbumArt(audioInfo.audioAlbumId) }
-                    if (bitmap != null) {
-                        launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
+                    var bitmap: Bitmap? = tryRun { loadAlbumArt(audioInfo.audioAlbumId) }
+                    if (bitmap == null) {
+                        bitmap = resources.getDrawable(R.drawable.ic_music, null).toBitmap()
                     }
+                    launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
                 }
             }
         }
