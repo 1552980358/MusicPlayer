@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/linear_layout"
+    android:background="@color/white"
+    android:orientation="vertical"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp">
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:padding="10dp"
+        tools:ignore="UselessParent">
+        
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/image_view_speaker"
+            android:padding="8dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_speaker"
+            tools:ignore="ContentDescription" />
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_toEndOf="@id/image_view_speaker"
+            android:layout_centerVertical="true">
+            
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/text_view_title"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:transitionName="text_view"/>
+    
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/text_view_summary"
+                android:maxLines="1" />
+            
+        </LinearLayout>
+        
+    </RelativeLayout>
+    
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recycler_view" />
+
+</LinearLayout>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinator_layout"
+    tools:context=".PlayActivity">
+    
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical">
+        
+        <RelativeLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+    
+            <ImageView
+                android:layout_height="wrap_content"
+                android:id="@+id/image_view"
+                android:layout_width="match_parent"
+                android:transitionName="image_view"
+                tools:ignore="ContentDescription" />
+    
+            <RelativeLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:fitsSystemWindows="true"
+                android:background="@drawable/activity_play_filter">
+        
+                <androidx.appcompat.widget.Toolbar
+                    android:layout_height="?attr/actionBarSize"
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent" />
+            </RelativeLayout>
+        </RelativeLayout>
+    
+        <RelativeLayout
+            android:layout_height="@dimen/play_controller_seekbar_height"
+            android:layout_width="match_parent"
+            android:background="@color/play_seek_bar_background">
+            
+            <sakuraba.saki.player.music.view.DurationView
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:id="@+id/durationView" />
+        
+            <sakuraba.saki.player.music.widget.PlaySeekbar
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:id="@+id/play_seek_bar"
+                android:layout_toEndOf="@id/durationView" />
+    
+        </RelativeLayout>
+        
+        <LinearLayout
+            android:layout_height="@dimen/play_controller_height"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+            
+            <RelativeLayout
+                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="2">
+                
+                <ImageButton
+                    android:layout_height="wrap_content"
+                    android:id="@+id/image_button_play_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    tools:ignore="ContentDescription" />
+
+            </RelativeLayout>
+            
+            <RelativeLayout
+                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="3">
+                
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/floating_action_button"
+                    android:backgroundTint="@color/white"
+                    app:borderWidth="0dp"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="15dp"
+                    tools:ignore="ContentDescription" />
+                
+                <ImageButton
+                    android:layout_height="24dp"
+                    android:id="@+id/image_button_prev"
+                    android:layout_width="24dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:layout_toStartOf="@id/floating_action_button"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_prev"
+                    tools:ignore="ContentDescription" />
+    
+                <ImageButton
+                    android:layout_height="24dp"
+                    android:id="@+id/image_button_next"
+                    android:layout_width="24dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:layout_toEndOf="@id/floating_action_button"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_next"
+                    tools:ignore="ContentDescription" />
+            </RelativeLayout>
+    
+            <RelativeLayout
+                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="2">
+                
+                <ImageButton
+                    android:layout_height="wrap_content"
+                    android:id="@+id/image_button_list"
+                    android:layout_width="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    tools:ignore="ContentDescription" />
+    
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+    
+    <include layout="@layout/content_play_bottom_sheet" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
