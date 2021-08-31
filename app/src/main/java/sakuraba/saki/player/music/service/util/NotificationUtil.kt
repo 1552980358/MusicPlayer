@@ -2,20 +2,25 @@ package sakuraba.saki.player.music.service.util
 
 import android.app.Notification
 import android.app.NotificationChannel
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.content.Intent
 import android.os.Build
-import android.support.v4.media.session.MediaSessionCompat.Token
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.NotificationManagerCompat.IMPORTANCE_HIGH
+import androidx.media.MediaBrowserServiceCompat
 import androidx.media.app.NotificationCompat.MediaStyle
-import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
+import lib.github1552980358.ktExtension.android.graphics.toBitmap
+import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import sakuraba.saki.player.music.BuildConfig
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
+import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_NEXT
+import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PAUSE
+import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PLAY
+import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PREV
 
 private const val ChannelName = "PlayServiceNotification"
 
@@ -33,23 +38,43 @@ val NotificationManagerCompat.createChannel get(): NotificationManagerCompat = a
 
 fun Service.startForeground(notification: Notification) = startForeground(NotificationId, notification)
 
-fun Notification?.getNotification(context: Context, token: Token, audioInfo: AudioInfo) = if (this == null) {
-    NotificationCompat.Builder(context, ChannelId)
-        .setSmallIcon(R.mipmap.ic_launcher_round)
-        .setOngoing(false)
-        .setPriority(NotificationCompat.PRIORITY_MAX)
-        .setStyle(MediaStyle().setMediaSession(token))
-} else {
-    NotificationCompat.Builder(context, this)
-}.apply {
-    setWhen(System.currentTimeMillis())
-    setContentTitle(audioInfo.audioTitle)
-    setContentText("${audioInfo.audioArtist} - ${audioInfo.audioAlbum}")
-    var bitmap: Bitmap? = null
-    tryOnly { bitmap = context.loadAlbumArt(audioInfo.audioAlbumId) }
-    if (bitmap != null) {
+fun Context.getNotification(audioInfo: AudioInfo, isPaused: Boolean = false) =
+    NotificationCompat.Builder(this, ChannelId).apply {
+        setSmallIcon(R.mipmap.ic_launcher_round)
+        setOngoing(false)
+        priority = NotificationCompat.PRIORITY_MAX
+        setStyle(MediaStyle().setMediaSession((this@getNotification as MediaBrowserServiceCompat).sessionToken))
+        setContentTitle(audioInfo.audioTitle)
+        setContentText("${audioInfo.audioArtist} - ${audioInfo.audioAlbum}")
+        var bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) }
+        if (bitmap == null) {
+            bitmap = resources.getDrawable(R.drawable.ic_music, null).toBitmap()
+        }
         setLargeIcon(bitmap)
-    } else {
-        setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher))
-    }
-}.build()
+        addAction(
+            R.drawable.ic_prev,
+            null,
+            PendingIntent.getBroadcast(this@getNotification, 0, Intent(FILTER_NOTIFICATION_PREV), 0)
+        )
+        
+        if (isPaused) {
+            addAction(
+                R.drawable.ic_play,
+                null,
+                PendingIntent.getBroadcast(this@getNotification, 0, Intent(FILTER_NOTIFICATION_PLAY) , 0)
+            )
+        } else {
+            addAction(
+                R.drawable.ic_pause,
+                null,
+                PendingIntent.getBroadcast(this@getNotification, 0, Intent(FILTER_NOTIFICATION_PAUSE), 0)
+            )
+        }
+    
+        addAction(
+            R.drawable.ic_next,
+            null,
+            PendingIntent.getBroadcast(this@getNotification, 0, Intent(FILTER_NOTIFICATION_NEXT), 0)
+        )
+        
+    }.build()

@@ -23,6 +23,8 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_STOPPED
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import androidx.media.MediaBrowserServiceCompat
+import lib.github1552980358.ktExtension.android.content.broadcastReceiver
+import lib.github1552980358.ktExtension.android.content.register
 import lib.github1552980358.ktExtension.android.os.bundle
 import sakuraba.saki.player.music.BuildConfig
 import sakuraba.saki.player.music.R
@@ -47,6 +49,11 @@ import sakuraba.saki.player.music.util.Constants.PLAY_MODE_LIST
 import sakuraba.saki.player.music.util.Constants.PLAY_MODE_RANDOM
 import sakuraba.saki.player.music.util.Constants.PLAY_MODE_SINGLE
 import sakuraba.saki.player.music.util.Constants.PLAY_MODE_SINGLE_CYCLE
+import sakuraba.saki.player.music.util.Constants.EXTRAS_PAUSE
+import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_NEXT
+import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PAUSE
+import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PLAY
+import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PREV
 
 class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
     
@@ -95,6 +102,11 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
                 .build()
             mediaSession.setPlaybackState(playbackStateCompat)
             mediaPlayer.pause()
+            if (isForegroundService) {
+                startService(PlayService::class.java) {
+                    putExtra(ACTION_EXTRA, EXTRAS_PAUSE)
+                }
+            }
         }
         override fun onStop() {
             Log.e(TAG, "onStop")
@@ -148,7 +160,7 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
             }
             if (!isForegroundService) {
                 startService(PlayService::class.java) {
-                    putExtra(ACTION_START, START_EXTRAS_PLAY)
+                    putExtra(ACTION_EXTRA, EXTRAS_PLAY)
                 }
             }
         }
@@ -166,6 +178,15 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
     private lateinit var playbackStateCompat: PlaybackStateCompat
     
     private lateinit var mediaMetadataCompat: MediaMetadataCompat
+    
+    private val broadcastReceiver = broadcastReceiver { _, intent, _ ->
+        when (intent?.action) {
+            FILTER_NOTIFICATION_PREV -> mediaSession.controller.transportControls.skipToPrevious()
+            FILTER_NOTIFICATION_PLAY -> mediaSession.controller.transportControls.play()
+            FILTER_NOTIFICATION_PAUSE -> mediaSession.controller.transportControls.pause()
+            FILTER_NOTIFICATION_NEXT -> mediaSession.controller.transportControls.skipToNext()
+        }
+    }
     
     override fun onCreate() {
         Log.e(TAG, "onCreate")
@@ -189,6 +210,8 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
         mediaPlayer = MediaPlayer()
         
         notificationManager = createNotificationManager
+        
+        broadcastReceiver.register(this, arrayOf(FILTER_NOTIFICATION_PREV, FILTER_NOTIFICATION_PLAY, FILTER_NOTIFICATION_PAUSE, FILTER_NOTIFICATION_NEXT))
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -198,6 +221,13 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
             EXTRAS_PLAY -> {
                 Log.e(TAG, "EXTRAS_PLAY")
                 startForeground(notification!!)
+                isForegroundService = true
+            }
+            EXTRAS_PAUSE -> {
+                Log.e(TAG, "EXTRAS_PAUSE")
+                startForeground(notification!!)
+                stopForeground(false)
+                isForegroundService = false
             }
         }
         return super.onStartCommand(intent, flags, startId)
