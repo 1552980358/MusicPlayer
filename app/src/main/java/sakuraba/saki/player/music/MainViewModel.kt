@@ -11,6 +11,7 @@ class MainViewModel: ViewModel() {
         _progress.value = newProgress
     }
     val progress get() = _progress as LiveData<Int>
+    val progressValue get() = _progress.value!!
     
     private val _state = MutableLiveData<Int>()
     fun updateNewState(newState: Int) {

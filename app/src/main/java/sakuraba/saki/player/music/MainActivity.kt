@@ -15,7 +15,6 @@ import android.view.Menu
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.navigation.findNavController
@@ -53,6 +52,7 @@ import sakuraba.saki.player.music.util.Constants.EXTRAS_PROGRESS
 import sakuraba.saki.player.music.util.Constants.EXTRAS_STATUS
 import sakuraba.saki.player.music.util.Coroutine.delay1second
 import sakuraba.saki.player.music.util.Coroutine.ms_1000_int
+import sakuraba.saki.player.music.widget.PlayProgressBar
 
 class MainActivity: BaseMediaControlActivity() {
     
@@ -78,15 +78,17 @@ class MainActivity: BaseMediaControlActivity() {
     private val imageButton get() = _imageButton!!
     private var _textView: TextView? = null
     private val textView get() = _textView!!
-    private var _progressBar: ProgressBar? = null
-    private val progressBar get() = _progressBar!!
+    private var _playProgressBar: PlayProgressBar? = null
+    private val playProgressBar get() = _playProgressBar!!
     
     private lateinit var navController: NavController
     
     private var job: Job? = null
     private var isPlaying = false
     
-    private var playBackState = STATE_NONE
+    // private var playBackState = STATE_NONE
+    
+    private lateinit var audioInfo: AudioInfo
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,7 +100,8 @@ class MainActivity: BaseMediaControlActivity() {
                 putSerializable(EXTRAS_AUDIO_INFO_LIST, audioInfoList)
             })
             if (audioInfo != null) {
-                progressBar.max = audioInfo.audioDuration.toInt()
+                this.audioInfo = audioInfo
+                playProgressBar.max = audioInfo.audioDuration
                 textView.text = audioInfo.audioTitle
                 CoroutineScope(Dispatchers.IO).launch {
                     val bitmap: Bitmap? = tryRun { loadAlbumArt(audioInfo.audioAlbumId) }
@@ -145,7 +148,7 @@ class MainActivity: BaseMediaControlActivity() {
                     STATE_PLAYING -> mediaControllerCompat.transportControls.pause()
                     STATE_PAUSED -> mediaControllerCompat.transportControls.play()
                     STATE_NONE -> {
-                        when (playBackState) {
+                        when (viewModel.stateValue) {
                             STATE_PLAYING -> mediaControllerCompat.transportControls.pause()
                             STATE_PAUSED -> mediaControllerCompat.transportControls.play()
                             else -> Unit
@@ -155,10 +158,10 @@ class MainActivity: BaseMediaControlActivity() {
                 }
             }
         }
-        
-        _progressBar = findViewById(R.id.progress_bar)
+    
+        _playProgressBar = findViewById(R.id.play_progress_bar)
         viewModel.progress.observe(this) { progress ->
-            progressBar.progress = progress
+            playProgressBar.progress = progress
         }
         
         viewModel.state.observe(this) { newState ->
@@ -192,14 +195,15 @@ class MainActivity: BaseMediaControlActivity() {
                             Log.e(TAG, "onResult ${resultData == null}")
                             resultData ?: return
                             val audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
-                            progressBar.max = audioInfo.audioDuration.toInt()
-                            viewModel.updateProgress(resultData.getInt(EXTRAS_PROGRESS))
+                            val progress = resultData.getInt(EXTRAS_PROGRESS)
+                            playProgressBar.max = audioInfo.audioDuration
+                            viewModel.updateProgress(progress)
                             // playBackState = resultData.getInt(EXTRAS_STATUS)
                             viewModel.updateNewState(resultData.getInt(EXTRAS_STATUS))
                             when (viewModel.stateValue) {
                                 STATE_PLAYING -> {
                                     isPlaying = true
-                                    job = getProgressSyncJob(progressBar.progress)
+                                    job = getProgressSyncJob(progress)
                                     imageButton.setImageResource(R.drawable.ic_pause)
                                 }
                                 STATE_PAUSED -> imageButton.setImageResource(R.drawable.ic_play)
@@ -229,15 +233,12 @@ class MainActivity: BaseMediaControlActivity() {
     
     override fun onMediaControllerPlaybackStateChanged(state: PlaybackStateCompat?) {
         Log.e(TAG, "MediaControllerCompat.Callback.onPlaybackStateChanged ${state?.state}")
-        when (state?.state) {
-            STATE_BUFFERING -> Unit
+        state ?: return
+        viewModel.updateNewState(STATE_PLAYING)
+        when (state.state) {
             STATE_PLAYING -> {
-                isPlaying = false
-                job?.cancel()
                 isPlaying = true
-                val progress = state.position.toInt()
-                viewModel.updateProgress(progress)
-                job = getProgressSyncJob(progress)
+                job = getProgressSyncJob(state.position.toInt())
                 if (behavior.state == STATE_HIDDEN) {
                     behavior.state = STATE_EXPANDED
                     behavior.isHideable = false
@@ -259,6 +260,10 @@ class MainActivity: BaseMediaControlActivity() {
                 //     (drawable as AnimatedVectorDrawable).start()
                 // }
                 viewModel.updateNewState(STATE_PAUSED)
+                isPlaying = false
+                job?.cancel()
+            }
+            STATE_BUFFERING -> {
                 isPlaying = false
                 job?.cancel()
             }
@@ -284,11 +289,11 @@ class MainActivity: BaseMediaControlActivity() {
     }
     
     private fun getProgressSyncJob(progress: Int) = CoroutineScope(Dispatchers.IO).launch {
-        var currentProgress = delayForCorrection(progress)
+        val currentProgress = delayForCorrection(progress)
+        launch(Dispatchers.Main) { viewModel.updateProgress(currentProgress) }
         while (isPlaying) {
-            launch(Dispatchers.Main) { viewModel.updateProgress(currentProgress) }
             delay1second()
-            currentProgress += ms_1000_int
+            launch(Dispatchers.Main) { viewModel.updateProgress(viewModel.progressValue + ms_1000_int) }
         }
     }
     
