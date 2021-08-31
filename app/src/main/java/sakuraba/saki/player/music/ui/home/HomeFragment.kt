@@ -1,12 +1,9 @@
 package sakuraba.saki.player.music.ui.home
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.content.ContentUris
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.net.Uri.fromParts
 import android.os.Bundle
 import android.provider.MediaStore
@@ -169,7 +166,9 @@ class HomeFragment: Fragment() {
             }
         }
         
-        CoroutineScope(Dispatchers.Main).launch { (fragmentHome.recyclerView.adapter as RecyclerViewAdapter).setBitmaps(bitmaps) }
+        CoroutineScope(Dispatchers.Main).launch {
+            (fragmentHome.recyclerView.adapter as RecyclerViewAdapter).setBitmaps(bitmaps)
+        }
     }
     
     override fun onDestroyView() {
