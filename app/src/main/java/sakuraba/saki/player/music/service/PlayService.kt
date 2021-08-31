@@ -45,7 +45,7 @@ class PlayService: MediaBrowserServiceCompat() {
         private const val TAG = "BackgroundPlayService"
         const val ROOT_ID = TAG
         private const val PlaybackStateActions =
-            ACTION_PLAY_PAUSE or ACTION_SEEK_TO or ACTION_PLAY_FROM_MEDIA_ID or ACTION_SKIP_TO_NEXT or ACTION_SKIP_TO_PREVIOUS
+            ACTION_PLAY_PAUSE or ACTION_STOP or ACTION_SEEK_TO or ACTION_PLAY_FROM_MEDIA_ID or ACTION_SKIP_TO_NEXT or ACTION_SKIP_TO_PREVIOUS
     }
     
     private lateinit var mediaPlayer: MediaPlayer
@@ -62,7 +62,7 @@ class PlayService: MediaBrowserServiceCompat() {
     private val mediaSessionCallback = object : MediaSessionCompat.Callback() {
         override fun onPlay() {
             Log.e(TAG, "onPlay")
-            if (playbackStateCompat.state != STATE_PAUSED) {
+            if (playbackStateCompat.state != STATE_PAUSED && playbackStateCompat.state != STATE_PLAYING) {
                 return
             }
             if (!isForegroundService) {
@@ -86,6 +86,18 @@ class PlayService: MediaBrowserServiceCompat() {
                 .build()
             mediaSession.setPlaybackState(playbackStateCompat)
             mediaPlayer.pause()
+        }
+        override fun onStop() {
+            Log.e(TAG, "onStop")
+            if (playbackStateCompat.state != STATE_PAUSED && playbackStateCompat.state != STATE_PLAYING) {
+                return
+            }
+            playbackStateCompat = PlaybackStateCompat.Builder()
+                .setState(STATE_STOPPED, 0, 1F)
+                .build()
+            mediaSession.setPlaybackState(playbackStateCompat)
+            mediaPlayer.pause()
+            mediaPlayer.seekTo(0)
         }
         override fun onSkipToPrevious() {
             Log.e(TAG, "onSkipToPrevious")
