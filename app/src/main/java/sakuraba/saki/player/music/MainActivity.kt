@@ -24,6 +24,8 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.util.Pair
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -34,6 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import lib.github1552980358.ktExtension.android.content.intent
 import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.android.view.getDimensionPixelSize
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
@@ -50,6 +53,8 @@ import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_POS
 import sakuraba.saki.player.music.util.Constants.EXTRAS_PROGRESS
 import sakuraba.saki.player.music.util.Constants.EXTRAS_STATUS
+import sakuraba.saki.player.music.util.Constants.TRANSITION_IMAGE_VIEW
+import sakuraba.saki.player.music.util.Constants.TRANSITION_TEXT_VIEW
 import sakuraba.saki.player.music.util.Coroutine.delay1second
 import sakuraba.saki.player.music.util.Coroutine.ms_1000_int
 import sakuraba.saki.player.music.widget.PlayProgressBar
@@ -164,13 +169,18 @@ class MainActivity: BaseMediaControlActivity() {
             playProgressBar.progress = progress
         }
         
+        findViewById<RelativeLayout>(R.id.relative_layout).setOnClickListener {
+            startActivity(
+                intent(this, PlayActivity::class.java) { putExtra(EXTRAS_AUDIO_INFO, audioInfo) },
+                ActivityOptionsCompat.makeSceneTransitionAnimation(this, Pair(imageView, TRANSITION_IMAGE_VIEW), Pair(textView, TRANSITION_TEXT_VIEW)).toBundle()
+            )
+        }
+        
         viewModel.state.observe(this) { newState ->
             when (newState) {
                 STATE_PLAYING -> imageButton.apply {
                     setImageResource(R.drawable.ani_play_to_pause)
                     (drawable as AnimatedVectorDrawable).start()
-                    // }
-                    viewModel.updateNewState(STATE_PLAYING)
                 }
                 STATE_PAUSED -> {
                     imageButton.apply {
@@ -248,18 +258,8 @@ class MainActivity: BaseMediaControlActivity() {
                         }
                     }
                 }
-                // imageButton.apply {
-                //     setImageResource(R.drawable.ani_play_to_pause)
-                //     (drawable as AnimatedVectorDrawable).start()
-                // }
-                viewModel.updateNewState(STATE_PLAYING)
             }
             STATE_PAUSED -> {
-                // imageButton.apply {
-                //     setImageResource(R.drawable.ani_pause_to_play)
-                //     (drawable as AnimatedVectorDrawable).start()
-                // }
-                viewModel.updateNewState(STATE_PAUSED)
                 isPlaying = false
                 job?.cancel()
             }
@@ -288,6 +288,7 @@ class MainActivity: BaseMediaControlActivity() {
         super.onResume()
     }
     
+    @Suppress("DuplicatedCode")
     private fun getProgressSyncJob(progress: Int) = CoroutineScope(Dispatchers.IO).launch {
         val currentProgress = delayForCorrection(progress)
         launch(Dispatchers.Main) { viewModel.updateProgress(currentProgress) }
