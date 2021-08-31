@@ -130,7 +130,7 @@ class PlayActivity: BaseMediaControlActivity() {
         }
         
         activityPlay.playSeekBar.setOnSeekChangeListener { progress, isUser, isReleased ->
-            activityPlay.durationView.duration = progress
+            activityPlay.durationViewProgress.duration = progress
             if (isUser && isReleased) {
                 mediaControllerCompat.transportControls.seekTo(progress)
             }
@@ -158,6 +158,7 @@ class PlayActivity: BaseMediaControlActivity() {
                     job?.cancel()
                     val audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
                     activityPlay.playSeekBar.max = audioInfo.audioDuration
+                    activityPlay.durationViewDuration.duration = audioInfo.audioDuration
                     viewModel.updateProgress(resultData.getInt(Constants.EXTRAS_PROGRESS).toLong())
                     viewModel.updateState(resultData.getInt(EXTRAS_STATUS))
                     when (viewModel.stateValue) {

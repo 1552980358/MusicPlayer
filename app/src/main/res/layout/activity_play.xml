@@ -45,13 +45,21 @@
             <sakuraba.saki.player.music.view.DurationView
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
-                android:id="@+id/durationView" />
+                android:id="@+id/durationView_progress" />
+    
+            <sakuraba.saki.player.music.view.DurationView
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:id="@+id/durationView_duration"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true" />
         
             <sakuraba.saki.player.music.widget.PlaySeekbar
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:id="@+id/play_seek_bar"
-                android:layout_toEndOf="@id/durationView" />
+                android:layout_toEndOf="@id/durationView_progress"
+                android:layout_toStartOf="@+id/durationView_duration"/>
     
         </RelativeLayout>
         
