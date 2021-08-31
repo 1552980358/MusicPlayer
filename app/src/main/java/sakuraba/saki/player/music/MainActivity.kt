@@ -5,6 +5,9 @@ import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
@@ -274,7 +277,16 @@ class MainActivity: BaseMediaControlActivity() {
     }
     
     override fun onMediaControllerMetadataChanged(metadata: MediaMetadataCompat?) {
-    
+        metadata ?: return
+        CoroutineScope(Dispatchers.IO).launch {
+            var bitmap = tryRun { loadAlbumArt(metadata.getString(METADATA_KEY_ALBUM_ART_URI)) }
+            if (bitmap == null) {
+                bitmap = resources.getDrawable(R.drawable.ic_music, null).toBitmap()
+            }
+            launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
+        }
+        textView.text = metadata.getString(METADATA_KEY_TITLE)
+        playProgressBar.max = metadata.getLong(METADATA_KEY_DURATION)
     }
     
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
