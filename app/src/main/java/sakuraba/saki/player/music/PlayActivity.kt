@@ -94,7 +94,7 @@ class PlayActivity: BaseMediaControlActivity() {
                 @Suppress("SetTextI18n")
                 textViewSummary.text = "${audioInfo.audioArtist} - ${audioInfo.audioAlbum}"
             }
-            MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated()
+            MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated(true)
         }
     
         findViewById<LinearLayout>(R.id.linear_layout).apply {
@@ -224,14 +224,14 @@ class PlayActivity: BaseMediaControlActivity() {
                 bitmap = resources.getDrawable(R.drawable.ic_music, null).toBitmap()
             }
             launch(Dispatchers.Main) { activityPlay.imageView.setImageBitmap(bitmap) }
-            MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated()
+            MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated(false)
         }
         viewModel.updateDuration(metadata.getLong(METADATA_KEY_DURATION))
         textViewTitle.text = metadata.getString(METADATA_KEY_TITLE)
         textViewSummary.text = metadata.getString(METADATA_KEY_ARTIST)
     }
     
-    private fun MediaNotificationProcessor.getColorUpdated() = CoroutineScope(Dispatchers.Main).launch {
+    private fun MediaNotificationProcessor.getColorUpdated(isInit: Boolean) = CoroutineScope(Dispatchers.Main).launch {
         if (activityBackgroundColor != backgroundColor) {
             ValueAnimator.ofArgb(activityBackgroundColor, backgroundColor).apply {
                 duration = 500
@@ -242,12 +242,36 @@ class PlayActivity: BaseMediaControlActivity() {
             }
             activityBackgroundColor = backgroundColor
         }
-        if (isLight) {
-            activityPlay.imageButtonNext.drawable.setTint(BLACK)
-            activityPlay.imageButtonPrev.drawable.setTint(BLACK)
-        } else {
-            activityPlay.imageButtonNext.drawable.setTint(WHITE)
-            activityPlay.imageButtonPrev.drawable.setTint(WHITE)
+        viewModel.setIsLightBackground(isLight)
+        if (isInit) {
+            if (isLight) {
+                activityPlay.imageButtonNext.drawable.setTint(BLACK)
+                activityPlay.imageButtonPrev.drawable.setTint(BLACK)
+            } else {
+                activityPlay.imageButtonNext.drawable.setTint(WHITE)
+                activityPlay.imageButtonPrev.drawable.setTint(WHITE)
+            }
+            viewModel.isLightBackground.observe(this@PlayActivity) { isLight ->
+                if (isLight) {
+                    ValueAnimator.ofArgb(WHITE, BLACK).apply {
+                        duration = 500
+                        addUpdateListener {
+                            activityPlay.imageButtonNext.drawable.setTint(animatedValue as Int)
+                            activityPlay.imageButtonPrev.drawable.setTint(animatedValue as Int)
+                        }
+                        start()
+                    }
+                } else {
+                    ValueAnimator.ofArgb(BLACK, WHITE).apply {
+                        duration = 500
+                        addUpdateListener {
+                            activityPlay.imageButtonNext.drawable.setTint(animatedValue as Int)
+                            activityPlay.imageButtonPrev.drawable.setTint(animatedValue as Int)
+                        }
+                        start()
+                    }
+                }
+            }
         }
     }
     

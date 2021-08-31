@@ -29,4 +29,12 @@ class PlayViewModel: ViewModel() {
     val state get() = _state as LiveData<Int>
     val stateValue get() = _state.value
     
+    private val _isLightBackground = MutableLiveData<Boolean>()
+    fun setIsLightBackground(newBoolean: Boolean) {
+        if (_isLightBackground.value != newBoolean) {
+            _isLightBackground.value = newBoolean
+        }
+    }
+    val isLightBackground get() = _isLightBackground as LiveData<Boolean>
+    
 }
