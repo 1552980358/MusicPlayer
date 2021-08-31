@@ -211,6 +211,7 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
         sessionToken = mediaSession.sessionToken
         
         mediaPlayer = MediaPlayer()
+        mediaPlayer.setOnCompletionListener(this)
         
         notificationManager = createNotificationManager
         
