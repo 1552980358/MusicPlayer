@@ -10,4 +10,5 @@
     
     <color name="divider_color">#EAEAEA</color>
     <color name="play_seek_bar_background">#80000000</color>
+    <color name="gray">#FFE1E1E1</color>
 </resources>
