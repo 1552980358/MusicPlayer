@@ -35,6 +35,7 @@ import sakuraba.saki.player.music.service.util.getNotification
 import sakuraba.saki.player.music.service.util.startForeground
 import sakuraba.saki.player.music.service.util.startService
 import sakuraba.saki.player.music.service.util.syncPlayAndPrepareMediaId
+import sakuraba.saki.player.music.service.util.update
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
 import sakuraba.saki.player.music.util.Constants.ACTION_EXTRA
 import sakuraba.saki.player.music.util.Constants.ACTION_UPDATE_PLAY_MODE
@@ -81,16 +82,14 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
             if (playbackStateCompat.state != STATE_PAUSED && playbackStateCompat.state != STATE_PLAYING) {
                 return
             }
-            if (!isForegroundService) {
-                startService(PlayService::class.java) {
-                    putExtra(ACTION_EXTRA, EXTRAS_PLAY)
-                }
-            }
             playbackStateCompat = PlaybackStateCompat.Builder()
                 .setState(STATE_PLAYING, playbackStateCompat.position, 1F)
                 .build()
             mediaSession.setPlaybackState(playbackStateCompat)
             mediaPlayer.start()
+            startService(PlayService::class.java) {
+                putExtra(ACTION_EXTRA, EXTRAS_PLAY)
+            }
         }
         override fun onPause() {
             Log.e(TAG, "onPause")
@@ -102,10 +101,8 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
                 .build()
             mediaSession.setPlaybackState(playbackStateCompat)
             mediaPlayer.pause()
-            if (isForegroundService) {
-                startService(PlayService::class.java) {
-                    putExtra(ACTION_EXTRA, EXTRAS_PAUSE)
-                }
+            startService(PlayService::class.java) {
+                putExtra(ACTION_EXTRA, EXTRAS_PAUSE)
             }
         }
         override fun onStop() {
@@ -158,10 +155,8 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
                     .build()
                 mediaSession.setPlaybackState(playbackStateCompat)
             }
-            if (!isForegroundService) {
-                startService(PlayService::class.java) {
-                    putExtra(ACTION_EXTRA, EXTRAS_PLAY)
-                }
+            startService(PlayService::class.java) {
+                putExtra(ACTION_EXTRA, EXTRAS_PLAY)
             }
         }
         override fun onSeekTo(pos: Long) {
@@ -220,8 +215,12 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
         when (intent?.getStringExtra(ACTION_EXTRA)) {
             EXTRAS_PLAY -> {
                 Log.e(TAG, "EXTRAS_PLAY")
-                startForeground(notification!!)
-                isForegroundService = true
+                if (!isForegroundService) {
+                    startForeground(notification!!)
+                    isForegroundService = true
+                } else {
+                    notificationManager.update(notification!!)
+                }
             }
             EXTRAS_PAUSE -> {
                 Log.e(TAG, "EXTRAS_PAUSE")

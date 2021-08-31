@@ -38,6 +38,8 @@ val NotificationManagerCompat.createChannel get(): NotificationManagerCompat = a
 
 fun Service.startForeground(notification: Notification) = startForeground(NotificationId, notification)
 
+fun NotificationManagerCompat.update(notification: Notification) = notify(NotificationId, notification)
+
 fun Context.getNotification(audioInfo: AudioInfo, isPaused: Boolean = false) =
     NotificationCompat.Builder(this, ChannelId).apply {
         setSmallIcon(R.mipmap.ic_launcher_round)
