@@ -41,7 +41,7 @@ class DurationView: View {
         val drawY = heightF - paint.fontMetrics.bottom
         // Draw colon first
         canvas.drawText(COLON, (widthF - length) / 2, drawY, paint)
-        var text = (duration / 60000).toString()
+        var text = (duration / 60000).addZero
         canvas.drawText(text, (widthF - length) / 2 - paint.measureText(text), drawY, paint)
         text = (duration / 1000 % 60).addZero
         canvas.drawText(text, (widthF + length) / 2, drawY, paint)
