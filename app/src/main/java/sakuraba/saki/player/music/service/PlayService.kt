@@ -122,14 +122,22 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
             if (!::audioInfoList.isInitialized || listPos == -1) {
                 return
             }
-            onPlayFromMediaId(audioInfoList[--listPos].audioId, null)
+            when (listPos) {
+                0 -> listPos = audioInfoList.lastIndex
+                else -> listPos--
+            }
+            onPlayFromMediaId(audioInfoList[listPos].audioId, null)
         }
         override fun onSkipToNext() {
             Log.e(TAG, "onSkipToNext")
             if (!::audioInfoList.isInitialized || listPos == -1) {
                 return
             }
-            onPlayFromMediaId(audioInfoList[++listPos].audioId, null)
+            when (listPos) {
+                audioInfoList.lastIndex -> listPos = 0
+                else -> listPos++
+            }
+            onPlayFromMediaId(audioInfoList[listPos].audioId, null)
         }
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
             Log.e(TAG, "onPlayFromMediaId $mediaId")
