@@ -22,6 +22,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.android.content.getStatusBarHeight
+import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import mkaflowski.mediastylepalette.MediaNotificationProcessor
 import sakuraba.saki.player.music.base.BaseMediaControlActivity
@@ -76,9 +77,10 @@ class PlayActivity: BaseMediaControlActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             val audioInfo = intent?.getSerializableExtra(EXTRAS_AUDIO_INFO) as AudioInfo? ?: return@launch
             var bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) }
-            if (bitmap != null) {
-                launch(Dispatchers.Main) { activityPlay.imageView.setImageBitmap(bitmap) }
+            if (bitmap == null) {
+                bitmap = resources.getDrawable(R.drawable.ic_music, null).toBitmap()
             }
+            launch(Dispatchers.Main) { activityPlay.imageView.setImageBitmap(bitmap) }
             launch(Dispatchers.Main) {
                 textViewTitle.text = audioInfo.audioTitle
                 @Suppress("SetTextI18n")
@@ -93,6 +95,10 @@ class PlayActivity: BaseMediaControlActivity() {
                         }
                         start()
                     }
+                }
+                if (isLight) {
+                    activityPlay.imageButtonNext.drawable.setTint(Color.BLACK)
+                    activityPlay.imageButtonPrev.drawable.setTint(Color.BLACK)
                 }
             }
         }
