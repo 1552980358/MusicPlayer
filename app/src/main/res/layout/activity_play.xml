@@ -28,6 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:fitsSystemWindows="true"
+                android:id="@+id/relative_layout_toolbar_root"
                 android:background="@drawable/activity_play_filter">
         
                 <androidx.appcompat.widget.Toolbar

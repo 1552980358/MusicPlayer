@@ -1,5 +1,7 @@
 package sakuraba.saki.player.music
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.graphics.Color.BLACK
 import android.graphics.Color.TRANSPARENT
@@ -17,6 +19,9 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.util.Log
+import android.view.View.GONE
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.WindowCompat
@@ -149,6 +154,37 @@ class PlayActivity: BaseMediaControlActivity() {
         
         activityPlay.imageButtonNext.setOnClickListener { mediaControllerCompat.transportControls.skipToNext() }
         activityPlay.imageButtonPrev.setOnClickListener { mediaControllerCompat.transportControls.skipToPrevious() }
+        
+        activityPlay.imageView.setOnClickListener {
+            when (activityPlay.relativeLayoutToolbarRoot.visibility) {
+                GONE -> {
+                    activityPlay.relativeLayoutToolbarRoot.apply {
+                        animate()
+                            .alpha(1F)
+                            .setDuration(500)
+                            .setListener(object : AnimatorListenerAdapter() {
+                                override fun onAnimationStart(p0: Animator?) {
+                                    alpha = 0F
+                                    visibility = VISIBLE
+                                }
+                            })
+                            .start()
+                    }
+                }
+                VISIBLE -> {
+                    activityPlay.relativeLayoutToolbarRoot.animate()
+                        .alpha(0F)
+                        .setDuration(500)
+                        .setListener(object : AnimatorListenerAdapter() {
+                            override fun onAnimationEnd(animation: Animator?) {
+                                activityPlay.relativeLayoutToolbarRoot.visibility = GONE
+                            }
+                        })
+                        .start()
+                }
+                INVISIBLE -> activityPlay.relativeLayoutToolbarRoot.visibility = GONE
+            }
+        }
     }
     
     override fun onMediaBrowserConnected() {
