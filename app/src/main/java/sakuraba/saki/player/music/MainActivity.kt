@@ -249,7 +249,6 @@ class MainActivity: BaseMediaControlActivity() {
     override fun onMediaControllerPlaybackStateChanged(state: PlaybackStateCompat?) {
         Log.e(TAG, "MediaControllerCompat.Callback.onPlaybackStateChanged ${state?.state}")
         state ?: return
-        viewModel.updateNewState(STATE_PLAYING)
         when (state.state) {
             STATE_PLAYING -> {
                 job?.cancel()
@@ -278,6 +277,7 @@ class MainActivity: BaseMediaControlActivity() {
             }
             else -> Unit
         }
+        viewModel.updateNewState(state.state)
     }
     
     override fun onMediaControllerMetadataChanged(metadata: MediaMetadataCompat?) {
