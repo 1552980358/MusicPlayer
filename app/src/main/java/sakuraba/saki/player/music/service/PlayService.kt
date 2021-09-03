@@ -64,7 +64,7 @@ import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PREV
 class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
     
     companion object {
-        private const val TAG = "BackgroundPlayService"
+        private const val TAG = "PlayService"
         private const val WAKE_LOCK_tAG = "$TAG::PlayWakeLock"
         const val ROOT_ID = TAG
         private const val PlaybackStateActions =
