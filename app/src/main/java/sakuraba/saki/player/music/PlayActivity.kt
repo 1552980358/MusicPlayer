@@ -82,6 +82,12 @@ class PlayActivity: BaseMediaControlActivity() {
         _activityPlayBinding = ActivityPlayBinding.inflate(layoutInflater)
         setContentView(activityPlay.root)
         
+        setSupportActionBar(activityPlay.toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        activityPlay.toolbar.navigationIcon?.setTint(WHITE)
+        activityPlay.toolbar.setNavigationOnClickListener { onBackPressed() }
+        
         activityPlay.imageView.layoutParams = activityPlay.imageView.layoutParams.apply { height = resources.displayMetrics.widthPixels }
         
         _textViewTitle = findViewById(R.id.text_view_title)

@@ -32,9 +32,9 @@
                 android:background="@drawable/activity_play_filter">
         
                 <androidx.appcompat.widget.Toolbar
+                    android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent" />
+                    android:id="@+id/toolbar"/>
             </RelativeLayout>
         </RelativeLayout>
     
