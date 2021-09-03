@@ -32,7 +32,13 @@ val Context.createNotificationManager get(): NotificationManagerCompat = Notific
 
 val NotificationManagerCompat.createChannel get(): NotificationManagerCompat = apply {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        createNotificationChannel(NotificationChannel(ChannelId, ChannelName, IMPORTANCE_HIGH))
+        createNotificationChannel(
+            NotificationChannel(ChannelId, ChannelName, IMPORTANCE_HIGH).apply {
+                // Remove vibration with SDK >= 26
+                enableVibration(false)
+                vibrationPattern = longArrayOf(0)
+            }
+        )
     }
 }
 
@@ -46,6 +52,8 @@ fun Context.getNotification(audioInfo: AudioInfo, isPaused: Boolean = false) =
         setOngoing(false)
         priority = NotificationCompat.PRIORITY_MAX
         setStyle(MediaStyle().setMediaSession((this@getNotification as MediaBrowserServiceCompat).sessionToken))
+        // Remove vibration under SDK 26
+        setVibrate(longArrayOf(0))
         setContentTitle(audioInfo.audioTitle)
         setContentText("${audioInfo.audioArtist} - ${audioInfo.audioAlbum}")
         var bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) }
