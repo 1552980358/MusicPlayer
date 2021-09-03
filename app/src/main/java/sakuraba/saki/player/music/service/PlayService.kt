@@ -1,10 +1,15 @@
 package sakuraba.saki.player.music.service
 
+import android.annotation.SuppressLint
 import android.app.Notification
+import android.app.Service.POWER_SERVICE
 import android.content.Intent
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
 import android.os.Bundle
+import android.os.PowerManager
+import android.os.PowerManager.PARTIAL_WAKE_LOCK
+import android.os.PowerManager.WakeLock
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -60,6 +65,7 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
     
     companion object {
         private const val TAG = "BackgroundPlayService"
+        private const val WAKE_LOCK_tAG = "$TAG::PlayWakeLock"
         const val ROOT_ID = TAG
         private const val PlaybackStateActions =
             ACTION_PLAY_PAUSE or ACTION_STOP or ACTION_SEEK_TO or ACTION_PLAY_FROM_MEDIA_ID or ACTION_SKIP_TO_NEXT or ACTION_SKIP_TO_PREVIOUS
@@ -191,6 +197,8 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
         }
     }
     
+    private lateinit var wakeLock: WakeLock
+    
     override fun onCreate() {
         Log.e(TAG, "onCreate")
         super.onCreate()
@@ -216,6 +224,9 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
         notificationManager = createNotificationManager
         
         broadcastReceiver.register(this, arrayOf(FILTER_NOTIFICATION_PREV, FILTER_NOTIFICATION_PLAY, FILTER_NOTIFICATION_PAUSE, FILTER_NOTIFICATION_NEXT))
+        
+        
+        wakeLock = (getSystemService(POWER_SERVICE) as PowerManager).newWakeLock(PARTIAL_WAKE_LOCK, WAKE_LOCK_tAG)
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -227,6 +238,10 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
                 if (!isForegroundService) {
                     startForeground(notification!!)
                     isForegroundService = true
+                    if (!wakeLock.isHeld) {
+                        @Suppress("WakelockTimeout")
+                        wakeLock.acquire()
+                    }
                 } else {
                     notificationManager.update(notification!!)
                 }
@@ -236,6 +251,9 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
                 startForeground(notification!!)
                 stopForeground(false)
                 isForegroundService = false
+                if (wakeLock.isHeld) {
+                    wakeLock.release()
+                }
             }
         }
         return super.onStartCommand(intent, flags, startId)
