@@ -311,6 +311,9 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
                 mediaSession.controller.transportControls.skipToNext()
             }
             PLAY_MODE_SINGLE_CYCLE -> {
+                playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                    .setState(STATE_PLAYING, 0, 1F)
+                    .build()
                 mediaSession.controller.transportControls.play()
             }
             PLAY_MODE_SINGLE -> {
