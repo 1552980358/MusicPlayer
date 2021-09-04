@@ -7,6 +7,7 @@ import android.graphics.Color.BLACK
 import android.graphics.Color.TRANSPARENT
 import android.graphics.Color.WHITE
 import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -34,6 +35,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.android.content.getStatusBarHeight
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
+import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import mkaflowski.mediastylepalette.MediaNotificationProcessor
 import sakuraba.saki.player.music.base.BaseMediaControlActivity
@@ -41,8 +43,14 @@ import sakuraba.saki.player.music.databinding.ActivityPlayBinding
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.Constants
+import sakuraba.saki.player.music.util.Constants.ACTION_UPDATE_PLAY_MODE
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO
+import sakuraba.saki.player.music.util.Constants.EXTRAS_PLAY_MODE
 import sakuraba.saki.player.music.util.Constants.EXTRAS_STATUS
+import sakuraba.saki.player.music.util.Constants.PLAY_MODE_LIST
+import sakuraba.saki.player.music.util.Constants.PLAY_MODE_RANDOM
+import sakuraba.saki.player.music.util.Constants.PLAY_MODE_SINGLE
+import sakuraba.saki.player.music.util.Constants.PLAY_MODE_SINGLE_CYCLE
 import sakuraba.saki.player.music.util.Coroutine.delay1second
 import sakuraba.saki.player.music.util.Coroutine.ms_1000_int
 import sakuraba.saki.player.music.util.SystemUtil.pixelHeight
@@ -70,6 +78,11 @@ class PlayActivity: BaseMediaControlActivity() {
     
     private var activityBackgroundColor = TRANSPARENT
     
+    private lateinit var playModeListCycle: Drawable
+    private val playModeSingleCycle by lazy { resources.getDrawable(R.drawable.ic_single_cycle, null) }
+    private val playModeRandom by lazy { resources.getDrawable(R.drawable.ic_random, null) }
+    private val playModeSingle by lazy { resources.getDrawable(R.drawable.ic_single, null) }
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.e(TAG, "onCreate")
         
@@ -92,6 +105,9 @@ class PlayActivity: BaseMediaControlActivity() {
         
         _textViewTitle = findViewById(R.id.text_view_title)
         _textViewSummary = findViewById(R.id.text_view_summary)
+    
+        playModeListCycle = activityPlay.imageButtonPlayMode.drawable
+        viewModel.updatePlayMode(PLAY_MODE_LIST)
         
         CoroutineScope(Dispatchers.IO).launch {
             val audioInfo = intent?.getSerializableExtra(EXTRAS_AUDIO_INFO) as AudioInfo? ?: return@launch
@@ -191,6 +207,37 @@ class PlayActivity: BaseMediaControlActivity() {
                 INVISIBLE -> activityPlay.relativeLayoutToolbarRoot.visibility = GONE
             }
         }
+        
+        activityPlay.imageButtonPlayMode.setOnClickListener {
+            mediaBrowserCompat.sendCustomAction(
+                ACTION_UPDATE_PLAY_MODE,
+                bundle {
+                    putInt(EXTRAS_PLAY_MODE,
+                        when (viewModel.playModeValue) {
+                            PLAY_MODE_LIST -> PLAY_MODE_SINGLE_CYCLE
+                            PLAY_MODE_SINGLE_CYCLE -> PLAY_MODE_RANDOM
+                            PLAY_MODE_RANDOM -> PLAY_MODE_SINGLE
+                            PLAY_MODE_SINGLE -> PLAY_MODE_LIST
+                            else -> PLAY_MODE_LIST
+                        }
+                    ) },
+                null
+            )
+        }
+        
+        viewModel.playMode.observe(this) { newPlayMode ->
+            activityPlay.imageButtonPlayMode.setImageDrawable(
+                when (newPlayMode) {
+                    PLAY_MODE_LIST -> playModeListCycle
+                    PLAY_MODE_SINGLE_CYCLE -> playModeSingleCycle
+                    PLAY_MODE_RANDOM -> playModeRandom
+                    PLAY_MODE_SINGLE -> playModeSingle
+                    else -> playModeListCycle
+                }
+            )
+            activityPlay.imageButtonPlayMode.drawable.setTint(if (viewModel.isLightBackground.value == true) BLACK else WHITE)
+        }
+        
     }
     
     override fun onMediaBrowserConnected() {
@@ -259,6 +306,7 @@ class PlayActivity: BaseMediaControlActivity() {
             }
             else -> Unit
         }
+        viewModel.updatePlayMode(state.extras?.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST) ?: PLAY_MODE_LIST)
     }
     
     override fun onMediaControllerMetadataChanged(metadata: MediaMetadataCompat?) {
@@ -292,9 +340,11 @@ class PlayActivity: BaseMediaControlActivity() {
             if (isLight) {
                 activityPlay.imageButtonNext.drawable.setTint(BLACK)
                 activityPlay.imageButtonPrev.drawable.setTint(BLACK)
+                activityPlay.imageButtonPlayMode.drawable.setTint(BLACK)
             } else {
                 activityPlay.imageButtonNext.drawable.setTint(WHITE)
                 activityPlay.imageButtonPrev.drawable.setTint(WHITE)
+                activityPlay.imageButtonPlayMode.drawable.setTint(WHITE)
             }
             viewModel.isLightBackground.observe(this@PlayActivity) { isLight ->
                 if (isLight) {
@@ -303,6 +353,7 @@ class PlayActivity: BaseMediaControlActivity() {
                         addUpdateListener {
                             activityPlay.imageButtonNext.drawable.setTint(animatedValue as Int)
                             activityPlay.imageButtonPrev.drawable.setTint(animatedValue as Int)
+                            activityPlay.imageButtonPlayMode.drawable.setTint(animatedValue as Int)
                         }
                         start()
                     }
@@ -312,6 +363,7 @@ class PlayActivity: BaseMediaControlActivity() {
                         addUpdateListener {
                             activityPlay.imageButtonNext.drawable.setTint(animatedValue as Int)
                             activityPlay.imageButtonPrev.drawable.setTint(animatedValue as Int)
+                            activityPlay.imageButtonPlayMode.drawable.setTint(animatedValue as Int)
                         }
                         start()
                     }
