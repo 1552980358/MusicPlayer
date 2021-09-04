@@ -258,6 +258,7 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
     }
     
     override fun onCustomAction(action: String, extras: Bundle?, result: Result<Bundle>) {
+        Log.e(TAG, "onCustomAction $action")
         when (action) {
             ACTION_REQUEST_STATUS -> {
                 if (playbackStateCompat.state == STATE_NONE) {
