@@ -267,6 +267,7 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
                 result.sendResult(bundle {
                     putInt(EXTRAS_STATUS, playbackStateCompat.state)
                     putInt(EXTRAS_PROGRESS, mediaPlayer.currentPosition)
+                    putInt(EXTRAS_PLAY_MODE, playbackStateCompat.extras?.getInt(EXTRAS_PLAY_MODE) ?: PLAY_MODE_LIST)
                     playbackStateCompat.extras?.let { extras ->
                         putInt(EXTRAS_PLAY_MODE, extras.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST))
                     }
