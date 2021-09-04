@@ -1,8 +1,6 @@
 package sakuraba.saki.player.music.service
 
-import android.annotation.SuppressLint
 import android.app.Notification
-import android.app.Service.POWER_SERVICE
 import android.content.Intent
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnCompletionListener
