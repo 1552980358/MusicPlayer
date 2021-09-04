@@ -86,7 +86,7 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
             if (playbackStateCompat.state != STATE_PAUSED && playbackStateCompat.state != STATE_PLAYING) {
                 return
             }
-            playbackStateCompat = PlaybackStateCompat.Builder()
+            playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
                 .setState(STATE_PLAYING, playbackStateCompat.position, 1F)
                 .build()
             mediaSession.setPlaybackState(playbackStateCompat)
@@ -114,7 +114,7 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
             if (playbackStateCompat.state != STATE_PAUSED && playbackStateCompat.state != STATE_PLAYING) {
                 return
             }
-            playbackStateCompat = PlaybackStateCompat.Builder()
+            playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
                 .setState(STATE_STOPPED, 0, 1F)
                 .build()
             mediaSession.setPlaybackState(playbackStateCompat)
