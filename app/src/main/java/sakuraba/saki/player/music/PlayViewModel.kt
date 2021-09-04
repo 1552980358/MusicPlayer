@@ -37,4 +37,13 @@ class PlayViewModel: ViewModel() {
     }
     val isLightBackground get() = _isLightBackground as LiveData<Boolean>
     
+    private val _playMode = MutableLiveData<Int>()
+    fun updatePlayMode(newPlayMode: Int) {
+        if (_playMode.value != newPlayMode) {
+            _playMode.value = newPlayMode
+        }
+    }
+    val playMode get() = _playMode as LiveData<Int>
+    val playModeValue get() = _playMode.value
+    
 }
