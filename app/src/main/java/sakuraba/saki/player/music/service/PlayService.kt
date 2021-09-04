@@ -280,6 +280,7 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
                 playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
                     .setExtras(bundle { putInt(EXTRAS_PLAY_MODE, extras.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST)) })
                     .build()
+                result.sendResult(null)
             }
             else -> super.onCustomAction(action, extras, result)
         }
