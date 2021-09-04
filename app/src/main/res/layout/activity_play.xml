@@ -81,6 +81,7 @@
                     android:layout_width="wrap_content"
                     android:layout_centerInParent="true"
                     android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_list_cycle"
                     tools:ignore="ContentDescription" />
 
             </RelativeLayout>
