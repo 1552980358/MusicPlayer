@@ -96,6 +96,7 @@ class HomeFragment: Fragment() {
                         if (viewModel.audioInfoList.isNotEmpty()) {
                             loadBitmaps(viewModel.audioInfoList, viewModel.bitmaps)
                         }
+                        launch(Dispatchers.Main) { fragmentHome.root.isRefreshing = false }
                     }
                 } else {
                     viewModel.initSnackBar(requireActivity()) {
@@ -111,6 +112,7 @@ class HomeFragment: Fragment() {
                 if (viewModel.audioInfoList.isNotEmpty()) {
                     loadBitmaps(viewModel.audioInfoList, viewModel.bitmaps)
                 }
+                launch(Dispatchers.Main) { fragmentHome.root.isRefreshing = false }
             }
         }
         
