@@ -24,6 +24,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import sakuraba.saki.player.music.BuildConfig.APPLICATION_ID
@@ -60,6 +61,8 @@ class HomeFragment: Fragment() {
     
     private lateinit var mediaStoreObserver: ContentObserver
     
+    private var updatingJob: Job? = null
+    
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Log.e(TAG, "onCreateView")
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
@@ -88,7 +91,7 @@ class HomeFragment: Fragment() {
             registerRequestReadPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGained ->
                 if (isGained) {
                     //viewModel.snackbar.dismiss()
-                    CoroutineScope(Dispatchers.IO).launch {
+                    updatingJob = CoroutineScope(Dispatchers.IO).launch {
                         readAudioSystemDatabase(viewModel.audioInfoList)
                         if (viewModel.audioInfoList.isNotEmpty()) {
                             loadBitmaps(viewModel.audioInfoList, viewModel.bitmaps)
@@ -103,7 +106,7 @@ class HomeFragment: Fragment() {
             }
             registerRequestReadPermission.launch(READ_EXTERNAL_STORAGE)
         } else {
-            CoroutineScope(Dispatchers.IO).launch {
+            updatingJob = CoroutineScope(Dispatchers.IO).launch {
                 readDatabase(viewModel.audioInfoList)
                 if (viewModel.audioInfoList.isNotEmpty()) {
                     loadBitmaps(viewModel.audioInfoList, viewModel.bitmaps)
@@ -116,7 +119,8 @@ class HomeFragment: Fragment() {
                 viewModel.audioInfoList.clear()
                 fragmentHome.recyclerView.adapter?.notifyDataSetChanged()
                 fragmentHome.root.isRefreshing = true
-                CoroutineScope(Dispatchers.IO).launch {
+                updatingJob?.cancel()
+                updatingJob = CoroutineScope(Dispatchers.IO).launch {
                     readAudioSystemDatabase(viewModel.audioInfoList)
                     if (viewModel.audioInfoList.isNotEmpty()) {
                         loadBitmaps(viewModel.audioInfoList, viewModel.bitmaps)
