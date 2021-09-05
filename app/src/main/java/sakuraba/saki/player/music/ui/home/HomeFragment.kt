@@ -5,8 +5,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.ContentObserver
 import android.graphics.Bitmap
+import android.media.MediaScannerConnection
 import android.net.Uri.fromParts
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.util.Log
@@ -15,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.database.getLongOrNull
 import androidx.core.database.getStringOrNull
@@ -26,8 +29,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.makeShortSnack
+import lib.github1552980358.ktExtension.androidx.fragment.app.findActivityViewById
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import sakuraba.saki.player.music.BuildConfig.APPLICATION_ID
+import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.database.AudioDatabaseHelper
 import sakuraba.saki.player.music.database.AudioDatabaseHelper.Companion.TABLE_AUDIO
 import sakuraba.saki.player.music.databinding.FragmentHomeBinding
@@ -79,7 +85,26 @@ class HomeFragment: Fragment() {
         fragmentHome.recyclerView.addItemDecoration(DividerItemDecoration())
         
         fragmentHome.root.isRefreshing = true
-        fragmentHome.root.setOnRefreshListener {  }
+        fragmentHome.root.setOnRefreshListener {
+            findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)?.makeShortSnack(R.string.home_snack_waiting_for_media_scanner)?.show()
+            
+            @Suppress("DEPRECATION")
+            MediaScannerConnection.scanFile(requireContext(), arrayOf(Environment.getExternalStorageDirectory().absolutePath), arrayOf("audio/*")) { _, _ ->
+                updatingJob?.cancel()
+                updatingJob = CoroutineScope(Dispatchers.IO).launch {
+                    viewModel.audioInfoList.clear()
+                    launch(Dispatchers.Main) {
+                        findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)?.makeShortSnack(R.string.home_snack_scanning)?.show()
+                        fragmentHome.recyclerView.adapter?.notifyDataSetChanged()
+                    }
+                    readAudioSystemDatabase(viewModel.audioInfoList)
+                    if (viewModel.audioInfoList.isNotEmpty()) {
+                        loadBitmaps(viewModel.audioInfoList, viewModel.bitmaps)
+                    }
+                    launch(Dispatchers.Main) { fragmentHome.root.isRefreshing = false }
+                }
+            }
+        }
         
         audioDatabaseHelper = AudioDatabaseHelper(requireContext())
         return fragmentHome.root
