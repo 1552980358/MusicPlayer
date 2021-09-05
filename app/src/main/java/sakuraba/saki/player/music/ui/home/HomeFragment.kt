@@ -3,6 +3,7 @@ package sakuraba.saki.player.music.ui.home
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.ContentObserver
 import android.graphics.Bitmap
 import android.net.Uri.fromParts
 import android.os.Bundle
@@ -57,6 +58,8 @@ class HomeFragment: Fragment() {
     private var _activityFragmentInterface: ActivityFragmentInterface? = null
     private val activityFragmentInterface get() = _activityFragmentInterface!!
     
+    private lateinit var mediaStoreObserver: ContentObserver
+    
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Log.e(TAG, "onCreateView")
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
@@ -106,6 +109,29 @@ class HomeFragment: Fragment() {
                     loadBitmaps(viewModel.audioInfoList, viewModel.bitmaps)
                 }
             }
+        }
+        
+        mediaStoreObserver = object : ContentObserver(null) {
+            override fun onChange(selfChange: Boolean) {
+                viewModel.audioInfoList.clear()
+                fragmentHome.recyclerView.adapter?.notifyDataSetChanged()
+                fragmentHome.root.isRefreshing = true
+                CoroutineScope(Dispatchers.IO).launch {
+                    readAudioSystemDatabase(viewModel.audioInfoList)
+                    if (viewModel.audioInfoList.isNotEmpty()) {
+                        loadBitmaps(viewModel.audioInfoList, viewModel.bitmaps)
+                    }
+                }
+            }
+        }
+    
+        // Register content observer
+        requireContext().contentResolver.apply {
+            registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mediaStoreObserver)
+            registerContentObserver(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, true, mediaStoreObserver)
+            registerContentObserver(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, true, mediaStoreObserver)
+            registerContentObserver(MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI, true, mediaStoreObserver)
+            // registerContentObserver(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, true, observer)
         }
     }
     
@@ -169,6 +195,11 @@ class HomeFragment: Fragment() {
         CoroutineScope(Dispatchers.Main).launch {
             (fragmentHome.recyclerView.adapter as RecyclerViewAdapter).setBitmaps(bitmaps)
         }
+    }
+    
+    override fun onDestroy() {
+        requireContext().contentResolver.unregisterContentObserver(mediaStoreObserver)
+        super.onDestroy()
     }
     
     override fun onDestroyView() {
