@@ -61,6 +61,10 @@ import sakuraba.saki.player.music.util.Constants.TRANSITION_IMAGE_VIEW
 import sakuraba.saki.player.music.util.Constants.TRANSITION_TEXT_VIEW
 import sakuraba.saki.player.music.util.Coroutine.delay1second
 import sakuraba.saki.player.music.util.Coroutine.ms_1000_int
+import sakuraba.saki.player.music.util.LifeStateConstant.ON_CREATE
+import sakuraba.saki.player.music.util.LifeStateConstant.ON_DESTROY
+import sakuraba.saki.player.music.util.LifeStateConstant.ON_PAUSE
+import sakuraba.saki.player.music.util.LifeStateConstant.ON_RESUME
 import sakuraba.saki.player.music.widget.PlayProgressBar
 
 class MainActivity: BaseMediaControlActivity() {
@@ -100,6 +104,8 @@ class MainActivity: BaseMediaControlActivity() {
     private lateinit var audioInfo: AudioInfo
     
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.e(TAG, ON_CREATE)
+        
         super.onCreate(savedInstanceState)
         
         activityFragmentInterface = ActivityFragmentInterface { pos, audioInfo, audioInfoList ->
@@ -302,7 +308,7 @@ class MainActivity: BaseMediaControlActivity() {
     override fun onSupportNavigateUp(): Boolean = navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     
     override fun onResume() {
-        Log.e(TAG, "onResume")
+        Log.e(TAG, ON_RESUME)
         super.onResume()
     }
     
@@ -325,7 +331,7 @@ class MainActivity: BaseMediaControlActivity() {
     }
     
     override fun onPause() {
-        Log.e(TAG, "onPause")
+        Log.e(TAG, ON_PAUSE)
         isOnPaused = true
         isPlaying = false
         job?.cancel()
@@ -333,7 +339,7 @@ class MainActivity: BaseMediaControlActivity() {
     }
     
     override fun onDestroy() {
-        Log.e(TAG, "onDestroy")
+        Log.e(TAG, ON_DESTROY)
         super.onDestroy()
         _activityMainMainBinding = null
     }

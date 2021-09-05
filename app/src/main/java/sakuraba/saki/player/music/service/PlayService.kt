@@ -58,6 +58,8 @@ import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_NEXT
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PAUSE
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PLAY
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PREV
+import sakuraba.saki.player.music.util.LifeStateConstant.ON_CREATE
+import sakuraba.saki.player.music.util.LifeStateConstant.ON_START_COMMAND
 
 class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
     
@@ -198,7 +200,7 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
     private lateinit var wakeLock: WakeLock
     
     override fun onCreate() {
-        Log.e(TAG, "onCreate")
+        Log.e(TAG, ON_CREATE)
         super.onCreate()
     
         playbackStateCompat = PlaybackStateCompat.Builder()
@@ -228,7 +230,7 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.e(TAG, "onStartCommand $flags $startId")
+        Log.e(TAG, "$ON_START_COMMAND $flags $startId")
         notification = getNotification(audioInfoList[listPos], playbackStateCompat.state == STATE_PAUSED)
         when (intent?.getStringExtra(ACTION_EXTRA)) {
             EXTRAS_PLAY -> {
