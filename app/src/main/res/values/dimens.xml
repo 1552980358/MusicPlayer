@@ -22,4 +22,5 @@
     
     <dimen name="popup_window_volume_width">35dp</dimen>
     <dimen name="popup_window_seekbar_height">100dp</dimen>
+    <dimen name="popup_window_seekbar_margins">5dp</dimen>
 </resources>
