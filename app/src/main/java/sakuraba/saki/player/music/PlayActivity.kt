@@ -59,6 +59,7 @@ import sakuraba.saki.player.music.util.LifeStateConstant.ON_DESTROY
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_PAUSE
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_RESUME
 import sakuraba.saki.player.music.util.SystemUtil.pixelHeight
+import sakuraba.saki.player.music.widget.VolumePopupWindow
 
 class PlayActivity: BaseMediaControlActivity() {
     
@@ -87,6 +88,8 @@ class PlayActivity: BaseMediaControlActivity() {
     private val playModeSingleCycle by lazy { resources.getDrawable(R.drawable.ic_single_cycle, null) }
     private val playModeRandom by lazy { resources.getDrawable(R.drawable.ic_random, null) }
     private val playModeSingle by lazy { resources.getDrawable(R.drawable.ic_single, null) }
+    
+    private var volumePopupWindow: VolumePopupWindow? = null
     
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.e(TAG, ON_CREATE)
@@ -243,6 +246,11 @@ class PlayActivity: BaseMediaControlActivity() {
             activityPlay.imageButtonPlayMode.drawable.setTint(if (viewModel.isLightBackground.value == true) BLACK else WHITE)
         }
         
+        activityPlay.imageButtonVolume.setOnClickListener {
+            volumePopupWindow = VolumePopupWindow(this, activityPlay.imageButtonVolume, viewModel.isLightBackground.value == true, activityBackgroundColor)
+            volumePopupWindow?.show()
+        }
+        
     }
     
     override fun onMediaBrowserConnected() {
@@ -335,6 +343,7 @@ class PlayActivity: BaseMediaControlActivity() {
                 duration = 500
                 addUpdateListener {
                     activityPlay.root.setBackgroundColor(animatedValue as Int)
+                    volumePopupWindow?.updateBackground(animatedValue as Int)
                 }
                 start()
             }
@@ -356,6 +365,7 @@ class PlayActivity: BaseMediaControlActivity() {
                     duration = 500
                     addUpdateListener {
                         updateControlButtonColor(animatedValue as Int)
+                        volumePopupWindow?.updateIsLight(animatedValue as Int, isLight)
                     }
                     start()
                 }
@@ -367,6 +377,7 @@ class PlayActivity: BaseMediaControlActivity() {
         activityPlay.imageButtonNext.drawable.setTint(newColor)
         activityPlay.imageButtonPrev.drawable.setTint(newColor)
         activityPlay.imageButtonPlayMode.drawable.setTint(newColor)
+        activityPlay.imageButtonVolume.drawable.setTint(newColor)
     }
     
     override fun onPause() {
