@@ -352,25 +352,17 @@ class PlayActivity: BaseMediaControlActivity() {
             }
             viewModel.isLightBackground.observe(this@PlayActivity) { isLight ->
                 if (isLight) {
-                    ValueAnimator.ofArgb(WHITE, BLACK).apply {
-                        duration = 500
-                        addUpdateListener {
-                            activityPlay.imageButtonNext.drawable.setTint(animatedValue as Int)
-                            activityPlay.imageButtonPrev.drawable.setTint(animatedValue as Int)
-                            activityPlay.imageButtonPlayMode.drawable.setTint(animatedValue as Int)
-                        }
-                        start()
-                    }
+                    ValueAnimator.ofArgb(WHITE, BLACK)
                 } else {
-                    ValueAnimator.ofArgb(BLACK, WHITE).apply {
-                        duration = 500
-                        addUpdateListener {
-                            activityPlay.imageButtonNext.drawable.setTint(animatedValue as Int)
-                            activityPlay.imageButtonPrev.drawable.setTint(animatedValue as Int)
-                            activityPlay.imageButtonPlayMode.drawable.setTint(animatedValue as Int)
-                        }
-                        start()
+                    ValueAnimator.ofArgb(BLACK, WHITE)
+                }.apply {
+                    duration = 500
+                    addUpdateListener {
+                        activityPlay.imageButtonNext.drawable.setTint(animatedValue as Int)
+                        activityPlay.imageButtonPrev.drawable.setTint(animatedValue as Int)
+                        activityPlay.imageButtonPlayMode.drawable.setTint(animatedValue as Int)
                     }
+                    start()
                 }
             }
         }
