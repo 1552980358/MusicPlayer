@@ -25,6 +25,7 @@ import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -342,13 +343,9 @@ class PlayActivity: BaseMediaControlActivity() {
         viewModel.setIsLightBackground(isLight)
         if (isInit) {
             if (isLight) {
-                activityPlay.imageButtonNext.drawable.setTint(BLACK)
-                activityPlay.imageButtonPrev.drawable.setTint(BLACK)
-                activityPlay.imageButtonPlayMode.drawable.setTint(BLACK)
+                updateControlButtonColor(BLACK)
             } else {
-                activityPlay.imageButtonNext.drawable.setTint(WHITE)
-                activityPlay.imageButtonPrev.drawable.setTint(WHITE)
-                activityPlay.imageButtonPlayMode.drawable.setTint(WHITE)
+                updateControlButtonColor(WHITE)
             }
             viewModel.isLightBackground.observe(this@PlayActivity) { isLight ->
                 if (isLight) {
@@ -358,14 +355,18 @@ class PlayActivity: BaseMediaControlActivity() {
                 }.apply {
                     duration = 500
                     addUpdateListener {
-                        activityPlay.imageButtonNext.drawable.setTint(animatedValue as Int)
-                        activityPlay.imageButtonPrev.drawable.setTint(animatedValue as Int)
-                        activityPlay.imageButtonPlayMode.drawable.setTint(animatedValue as Int)
+                        updateControlButtonColor(animatedValue as Int)
                     }
                     start()
                 }
             }
         }
+    }
+    
+    private fun updateControlButtonColor(@ColorInt newColor: Int) {
+        activityPlay.imageButtonNext.drawable.setTint(newColor)
+        activityPlay.imageButtonPrev.drawable.setTint(newColor)
+        activityPlay.imageButtonPlayMode.drawable.setTint(newColor)
     }
     
     override fun onPause() {
