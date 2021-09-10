@@ -32,6 +32,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_DRAGGING
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HALF_EXPANDED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_SETTLING
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -66,6 +71,7 @@ import sakuraba.saki.player.music.util.LifeStateConstant.ON_PAUSE
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_RESUME
 import sakuraba.saki.player.music.util.SystemUtil.pixelHeight
 import sakuraba.saki.player.music.ui.play.VolumePopupWindow
+import sakuraba.saki.player.music.util.LifeStateConstant.ON_BACK_PRESSED
 import sakuraba.saki.player.music.util.SystemUtil.navigationBarHeight
 
 class PlayActivity: BaseMediaControlActivity() {
@@ -400,6 +406,14 @@ class PlayActivity: BaseMediaControlActivity() {
                     start()
                 }
             }
+        }
+    }
+    
+    override fun onBackPressed() {
+        Log.e(TAG, ON_BACK_PRESSED)
+        when (behavior.state) {
+            STATE_EXPANDED, STATE_HALF_EXPANDED, STATE_DRAGGING, STATE_SETTLING -> behavior.state = STATE_COLLAPSED
+            else -> super.onBackPressed()
         }
     }
     
