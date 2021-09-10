@@ -18,6 +18,7 @@ import android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY_PAUSE
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SEEK_TO
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_NEXT
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_STOP
 import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
@@ -43,6 +44,7 @@ import sakuraba.saki.player.music.service.util.syncPlayAndPrepareMediaId
 import sakuraba.saki.player.music.service.util.update
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
 import sakuraba.saki.player.music.util.Constants.ACTION_EXTRA
+import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_AUDIO_LIST
 import sakuraba.saki.player.music.util.Constants.ACTION_UPDATE_PLAY_MODE
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
@@ -71,13 +73,13 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
         private const val WAKE_LOCK_tAG = "$TAG::PlayWakeLock"
         private const val ROOT_ID = TAG
         private const val PlaybackStateActions =
-            ACTION_PLAY_PAUSE or ACTION_STOP or ACTION_SEEK_TO or ACTION_PLAY_FROM_MEDIA_ID or ACTION_SKIP_TO_NEXT or ACTION_SKIP_TO_PREVIOUS
+            ACTION_PLAY_PAUSE or ACTION_STOP or ACTION_SEEK_TO or ACTION_PLAY_FROM_MEDIA_ID or ACTION_SKIP_TO_NEXT or ACTION_SKIP_TO_PREVIOUS or ACTION_SKIP_TO_QUEUE_ITEM
     }
     
     private lateinit var mediaPlayer: MediaPlayer
     
     private lateinit var audioInfoList: List<AudioInfo>
-    private var listPos = 0
+    private var listPos = -1
     
     private var isForegroundService = false
     
@@ -125,6 +127,15 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
             mediaSession.setPlaybackState(playbackStateCompat)
             mediaPlayer.pause()
             mediaPlayer.seekTo(0)
+        }
+    
+        override fun onSkipToQueueItem(id: Long) {
+            val intId = id.toInt()
+            when {
+                intId < audioInfoList.lastIndex - listPos -> listPos += (intId + 1)
+                intId > audioInfoList.lastIndex - listPos -> listPos = intId - listPos
+            }
+            onPlayFromMediaId(audioInfoList[listPos].audioId, null)
         }
         override fun onSkipToPrevious() {
             Log.e(TAG, "onSkipToPrevious")
@@ -215,6 +226,7 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
             .setState(STATE_NONE, 0, 1F)
             .addCustomAction(ACTION_REQUEST_STATUS, ACTION_REQUEST_STATUS, R.drawable.ic_launcher_foreground)
             .addCustomAction(ACTION_UPDATE_PLAY_MODE, ACTION_UPDATE_PLAY_MODE, R.drawable.ic_launcher_foreground)
+            .addCustomAction(ACTION_REQUEST_AUDIO_LIST, ACTION_REQUEST_AUDIO_LIST, R.drawable.ic_launcher_foreground)
             .setExtras(bundle { putInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST) })
             .build()
         
@@ -295,6 +307,7 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
                 mediaSession.setPlaybackState(playbackStateCompat)
                 result.sendResult(null)
             }
+            ACTION_REQUEST_AUDIO_LIST -> result.sendResult(bundle { putSerializable(ACTION_EXTRA, getAudioList() as Serializable) })
             else -> super.onCustomAction(action, extras, result)
         }
     }
