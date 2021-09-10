@@ -35,7 +35,7 @@
                     android:duration="200"
                     android:propertyName="pathData"
                     android:valueFrom="M2,22 L2,2 L9,2 L9,22Z M15,22 L15,2 L22,2 L22,22Z"
-                    android:valueTo="M2,22 L12,2 L12,2 L12,22Z M12,22 L12,2 L12,2 L22,22Z"
+                    android:valueTo="M2,17.7735 L12,0.453 L12,0.453 L12,17.7735Z M12,17.7735 L12,0.453 L12,0.453 L22,17.7735Z"
                     android:valueType="pathType"/>
             </set>
         </aapt:attr>

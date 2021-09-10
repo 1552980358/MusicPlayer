@@ -13,7 +13,7 @@
                 <path
                     android:name="v"
                     android:fillColor="#000"
-                    android:pathData="M2,22 L2,12 L22,12 L22,12Z M2,2 L22,12 L22,12 L2,12Z"/>
+                    android:pathData="M6.2265,2 L23.5470,12 L23.5470,12 L6.2265,12Z M6.2265,22 L23.5470,12 L23.5470,12 L6.2265,12Z"/>
             </group>
         </vector>
     </aapt:attr>
@@ -24,7 +24,7 @@
                 android:duration="400"
                 android:propertyName="rotation"
                 android:valueFrom="0"
-                android:valueTo="90"/>
+                android:valueTo="-90"/>
         </aapt:attr>
     </target>
     
@@ -34,7 +34,7 @@
                 <objectAnimator
                     android:duration="200"
                     android:propertyName="pathData"
-                    android:valueFrom="M2,22 L2,12 L22,12 L22,12Z M2,2 L22,12 L22,12 L2,12Z"
+                    android:valueFrom="M6.2265,2 L23.5470,12 L23.5470,12 L6.2265,12Z M6.2265,22 L23.5470,12 L23.5470,12 L6.2265,12Z"
                     android:valueTo="M2,9 L2,2 L22,2 L22,9Z M2,15 L22,15 L22,22 L2,22Z"
                     android:valueType="pathType"/>
             </set>
