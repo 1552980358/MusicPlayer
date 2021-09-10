@@ -28,6 +28,9 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,8 +45,11 @@ import mkaflowski.mediastylepalette.MediaNotificationProcessor
 import sakuraba.saki.player.music.base.BaseMediaControlActivity
 import sakuraba.saki.player.music.databinding.ActivityPlayBinding
 import sakuraba.saki.player.music.service.util.AudioInfo
+import sakuraba.saki.player.music.ui.play.util.RecyclerViewAdapter
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.Constants
+import sakuraba.saki.player.music.util.Constants.ACTION_EXTRA
+import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_AUDIO_LIST
 import sakuraba.saki.player.music.util.Constants.ACTION_UPDATE_PLAY_MODE
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO
 import sakuraba.saki.player.music.util.Constants.EXTRAS_PLAY_MODE
@@ -88,6 +94,9 @@ class PlayActivity: BaseMediaControlActivity() {
     private val playModeSingleCycle by lazy { resources.getDrawable(R.drawable.ic_single_cycle, null) }
     private val playModeRandom by lazy { resources.getDrawable(R.drawable.ic_random, null) }
     private val playModeSingle by lazy { resources.getDrawable(R.drawable.ic_single, null) }
+    
+    private var _recyclerView: RecyclerView? = null
+    private val recyclerView get() = _recyclerView!!
     
     private var volumePopupWindow: VolumePopupWindow? = null
     
@@ -251,6 +260,11 @@ class PlayActivity: BaseMediaControlActivity() {
             volumePopupWindow?.show()
         }
         
+        _recyclerView = findViewById(R.id.recycler_view)
+        recyclerView.layoutManager = LinearLayoutManager(this, VERTICAL, false)
+        recyclerView.adapter = RecyclerViewAdapter { pos ->
+            mediaControllerCompat.transportControls.skipToQueueItem(pos.toLong())
+        }
     }
     
     override fun onMediaBrowserConnected() {
@@ -335,6 +349,18 @@ class PlayActivity: BaseMediaControlActivity() {
         viewModel.updateDuration(metadata.getLong(METADATA_KEY_DURATION))
         textViewTitle.text = metadata.getString(METADATA_KEY_TITLE)
         textViewSummary.text = metadata.getString(METADATA_KEY_ARTIST)
+        mediaBrowserCompat.sendCustomAction(ACTION_REQUEST_AUDIO_LIST, null, object : MediaBrowserCompat.CustomActionCallback() {
+            override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
+                resultData ?: return
+                @Suppress("UNCHECKED_CAST")
+                val list = resultData.getSerializable(ACTION_EXTRA) as MutableList<AudioInfo>? ?: return
+                (recyclerView.adapter as RecyclerViewAdapter).updateAudioInfoList(list)
+            }
+        })
+    }
+    
+    override fun onSubscriptionChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
+        (recyclerView.adapter as RecyclerViewAdapter).updateMediaItemList(children)
     }
     
     private fun MediaNotificationProcessor.getColorUpdated(isInit: Boolean) = CoroutineScope(Dispatchers.Main).launch {
