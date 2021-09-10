@@ -149,9 +149,13 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
             Log.e(TAG, "onPlayFromMediaId $mediaId")
             mediaId?:return
             if (extras != null) {
-                @Suppress("UNCHECKED_CAST")
-                audioInfoList = (extras.getSerializable(EXTRAS_AUDIO_INFO_LIST) as ArrayList<AudioInfo>?) ?: return
-                listPos = extras.getInt(EXTRAS_AUDIO_INFO_POS)
+                if (extras.containsKey(EXTRAS_AUDIO_INFO_LIST)) {
+                    @Suppress("UNCHECKED_CAST")
+                    audioInfoList = (extras.getSerializable(EXTRAS_AUDIO_INFO_LIST) as ArrayList<AudioInfo>?) ?: return
+                }
+                if (extras.containsKey(EXTRAS_AUDIO_INFO_POS)) {
+                    listPos = extras.getInt(EXTRAS_AUDIO_INFO_POS)
+                }
             }
             
             playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
