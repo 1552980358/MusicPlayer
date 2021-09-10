@@ -74,6 +74,6 @@ class VolumePopupWindow(context: Context, private val view: View, isLight: Boole
         layoutVolumePopupWindow.verticalSeekbar.updateColor(newColor, isLight)
     }
     
-    fun show() = showAsDropDown(view)
+    fun show() = showAsDropDown(view, (width - view.width) / 2, 0)
     
 }
