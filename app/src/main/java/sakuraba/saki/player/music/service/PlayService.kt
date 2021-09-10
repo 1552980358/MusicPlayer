@@ -8,7 +8,8 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.os.PowerManager.PARTIAL_WAKE_LOCK
 import android.os.PowerManager.WakeLock
-import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaBrowserCompat.MediaItem
+import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -30,6 +31,7 @@ import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.register
 import lib.github1552980358.ktExtension.android.os.bundle
 import sakuraba.saki.player.music.BuildConfig
+import sakuraba.saki.player.music.MainActivity
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.service.util.MediaMetadataUtil.setMediaMetadata
@@ -60,6 +62,7 @@ import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PLAY
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PREV
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_CREATE
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_START_COMMAND
+import java.io.Serializable
 
 class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
     
@@ -296,15 +299,58 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
         }
     }
     
+    private fun getAudioList(): List<AudioInfo> {
+        if (listPos == audioInfoList.lastIndex) {
+            return audioInfoList
+        }
+        return mutableListOf<AudioInfo>().apply {
+            for (i in listPos + 1 .. audioInfoList.lastIndex) {
+                add(audioInfoList[i])
+            }
+            for (i in 0 .. listPos) {
+                add(audioInfoList[i])
+            }
+        }
+    }
+    
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?) = when (clientPackageName) {
         BuildConfig.APPLICATION_ID -> BrowserRoot(TAG, null)
         else -> null
     }
     
-    override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
+    override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaItem>>) {
         Log.e(TAG, "onLoadChildren $parentId")
-        result.sendResult(null)
+        if (parentId == MainActivity.TAG) {
+            result.sendResult(null)
+            return
+        }
+        if (!::audioInfoList.isInitialized || audioInfoList.isEmpty() || listPos == -1) {
+            result.sendResult(null)
+            return
+        }
+        result.detach()
+        result.sendResult(
+            mutableListOf<MediaItem>().apply {
+                for (i in listPos + 1 .. audioInfoList.lastIndex) {
+                    add(getMediaItem(audioInfoList[i]))
+                }
+                for (i in 0 .. listPos) {
+                    add(getMediaItem(audioInfoList[i]))
+                }
+            }
+        )
     }
+    
+    private fun getMediaItem(audioInfo: AudioInfo): MediaItem =
+        MediaItem(
+            MediaDescriptionCompat.Builder()
+                .setTitle(audioInfo.audioTitle)
+                .setSubtitle(audioInfo.audioArtist)
+                .setMediaId(audioInfo.audioId)
+                .setExtras(bundle { putSerializable(EXTRAS_AUDIO_INFO, audioInfo) })
+                .build(),
+            MediaItem.FLAG_PLAYABLE
+        )
     
     override fun onCompletion(mediaPlayer: MediaPlayer?) {
         val playMode = playbackStateCompat.extras?.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST)
