@@ -2,6 +2,7 @@ package sakuraba.saki.player.music.util
 
 import android.app.Activity
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Point
 import android.graphics.Rect
 import android.os.Build.VERSION.SDK_INT
@@ -30,5 +31,15 @@ object SystemUtil {
             else -> windowManager.defaultDisplay.getRealSize(this)
         }
     }.y
+    
+    val Resources.navigationBarHeight get(): Int {
+        val resId = getIdentifier("navigation_bar_height", "dimen", "android")
+        if (resId > 0) {
+            return getDimensionPixelSize(resId)
+        }
+        return 0
+    }
+    
+    val Activity.navigationBarHeight get() = resources.navigationBarHeight
     
 }
