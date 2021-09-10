@@ -66,7 +66,7 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
     companion object {
         private const val TAG = "PlayService"
         private const val WAKE_LOCK_tAG = "$TAG::PlayWakeLock"
-        const val ROOT_ID = TAG
+        private const val ROOT_ID = TAG
         private const val PlaybackStateActions =
             ACTION_PLAY_PAUSE or ACTION_STOP or ACTION_SEEK_TO or ACTION_PLAY_FROM_MEDIA_ID or ACTION_SKIP_TO_NEXT or ACTION_SKIP_TO_PREVIOUS
     }

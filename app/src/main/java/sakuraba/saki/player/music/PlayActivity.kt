@@ -380,6 +380,8 @@ class PlayActivity: BaseMediaControlActivity() {
         activityPlay.imageButtonVolume.drawable.setTint(newColor)
     }
     
+    override fun getParentID() = TAG
+    
     override fun onPause() {
         isPlaying = false
         job?.cancel()

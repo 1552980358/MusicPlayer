@@ -70,7 +70,7 @@ import sakuraba.saki.player.music.widget.PlayProgressBar
 class MainActivity: BaseMediaControlActivity() {
     
     companion object {
-        private const val TAG = "MainActivity"
+        const val TAG = "MainActivity"
     }
     
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -306,6 +306,8 @@ class MainActivity: BaseMediaControlActivity() {
     }
     
     override fun onSupportNavigateUp(): Boolean = navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    
+    override fun getParentID() = TAG
     
     override fun onResume() {
         Log.e(TAG, ON_RESUME)

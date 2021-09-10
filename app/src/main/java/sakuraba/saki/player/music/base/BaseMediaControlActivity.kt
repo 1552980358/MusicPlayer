@@ -13,13 +13,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import sakuraba.saki.player.music.service.PlayService
-import sakuraba.saki.player.music.service.PlayService.Companion.ROOT_ID
 
 abstract class BaseMediaControlActivity: AppCompatActivity() {
     
     protected lateinit var mediaBrowserCompat: MediaBrowserCompat
     private lateinit var connectionCallback: MediaBrowserCompat.ConnectionCallback
-    private var subscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() { }
+    private var subscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
+        override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) =
+            onSubscriptionChildrenLoaded(parentId, children)
+    }
     
     protected lateinit var mediaControllerCompat: MediaControllerCompat
     private lateinit var mediaControllerCallback: MediaControllerCompat.Callback
@@ -39,8 +41,8 @@ abstract class BaseMediaControlActivity: AppCompatActivity() {
     }
     
     protected fun registerMediaController() {
-        mediaBrowserCompat.unsubscribe(ROOT_ID)
-        mediaBrowserCompat.subscribe(ROOT_ID, subscriptionCallback)
+        mediaBrowserCompat.unsubscribe(parentId)
+        mediaBrowserCompat.subscribe(parentId, subscriptionCallback)
     
         mediaControllerCompat = MediaControllerCompat(this, mediaBrowserCompat.sessionToken)
         MediaControllerCompat.setMediaController(this, mediaControllerCompat)
@@ -89,5 +91,11 @@ abstract class BaseMediaControlActivity: AppCompatActivity() {
     abstract fun onMediaControllerPlaybackStateChanged(state: PlaybackStateCompat?)
     
     abstract fun onMediaControllerMetadataChanged(metadata: MediaMetadataCompat?)
+    
+    open fun onSubscriptionChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) = Unit
+    
+    private val parentId get() = getParentID()
+    
+    abstract fun getParentID(): String
     
 }
