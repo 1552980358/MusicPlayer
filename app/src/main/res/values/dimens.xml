@@ -23,4 +23,11 @@
     <dimen name="popup_window_volume_width">35dp</dimen>
     <dimen name="popup_window_seekbar_height">100dp</dimen>
     <dimen name="popup_window_seekbar_margins">5dp</dimen>
+    
+    <dimen name="play_recycler_view_height">60dp</dimen>
+    <dimen name="play_recycler_view_padding">10dp</dimen>
+    <dimen name="play_recycler_view_text_view_num_size">40dp</dimen>
+    <dimen name="home_recycler_view_text_view_num_margin_end">10dp</dimen>
+    <dimen name="play_recycler_view_text_view_num_text_size">16sp</dimen>
+    <dimen name="play_recycler_view_text_view_title_size">15sp</dimen>
 </resources>
