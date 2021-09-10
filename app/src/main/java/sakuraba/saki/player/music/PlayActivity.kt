@@ -161,7 +161,7 @@ class PlayActivity: BaseMediaControlActivity() {
                 resources.getDimensionPixelSize(R.dimen.play_controller_height) -
                 resources.getDimensionPixelSize(R.dimen.play_controller_seekbar_height)
         behavior.isHideable = false
-        behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        behavior.state = STATE_COLLAPSED
         
         viewModel.progress.observe(this) { newProgress ->
             if (!activityPlay.playSeekBar.isUserTouched) {
