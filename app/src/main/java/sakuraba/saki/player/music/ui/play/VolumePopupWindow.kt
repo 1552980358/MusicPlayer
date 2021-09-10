@@ -10,6 +10,11 @@ import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.PopupWindow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.register
 import sakuraba.saki.player.music.databinding.LayoutVolumePopupWindowBinding
@@ -25,6 +30,9 @@ class VolumePopupWindow(context: Context, private val view: View, isLight: Boole
     private val layoutVolumePopupWindow get() = _layoutVolumePopupWindowBinding!!
     
     private lateinit var audioManager: AudioManager
+    
+    private lateinit var job: Job
+    private var isDismissible = false
     
     private val broadcastReceiver = broadcastReceiver { _, intent, _ ->
         if (intent?.action == VOLUME_CHANGED_ACTION && intent.getIntExtra(EXTRA_VOLUME_STREAM_TYPE, -1) == STREAM_MUSIC) {
@@ -47,6 +55,9 @@ class VolumePopupWindow(context: Context, private val view: View, isLight: Boole
             layoutVolumePopupWindow.textView.text = progress.toString()
             if (isUser) {
                 audioManager.setStreamVolume(STREAM_MUSIC, progress, FLAG_PLAY_SOUND)
+                if (isDismissible) {
+                    isDismissible = false
+                }
             }
         }
     
@@ -63,6 +74,11 @@ class VolumePopupWindow(context: Context, private val view: View, isLight: Boole
         broadcastReceiver.register(context, arrayOf(VOLUME_CHANGED_ACTION))
         updateBackground(backgroundColor)
         updateIsLight(isLight)
+        
+        setOnDismissListener {
+            isDismissible = true
+            job.cancel()
+        }
     }
     
     fun updateBackground(backgroundColor: Int) = layoutVolumePopupWindow.root.setBackgroundColor(backgroundColor)
@@ -74,6 +90,17 @@ class VolumePopupWindow(context: Context, private val view: View, isLight: Boole
         layoutVolumePopupWindow.verticalSeekbar.updateColor(newColor, isLight)
     }
     
-    fun show() = showAsDropDown(view, (width - view.width) / 2, 0)
+    fun show() {
+        showAsDropDown(view, (width - view.width) / 2, 0)
+        job = CoroutineScope(Dispatchers.IO).launch {
+            do {
+                isDismissible = true
+                delay(5000)
+                if (isDismissible) {
+                    launch(Dispatchers.Main) { dismiss() }
+                }
+            } while (!isDismissible)
+        }
+    }
     
 }
