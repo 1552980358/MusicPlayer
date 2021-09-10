@@ -66,6 +66,7 @@ import sakuraba.saki.player.music.util.LifeStateConstant.ON_PAUSE
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_RESUME
 import sakuraba.saki.player.music.util.SystemUtil.pixelHeight
 import sakuraba.saki.player.music.ui.play.VolumePopupWindow
+import sakuraba.saki.player.music.util.SystemUtil.navigationBarHeight
 
 class PlayActivity: BaseMediaControlActivity() {
     
@@ -142,7 +143,10 @@ class PlayActivity: BaseMediaControlActivity() {
         }
     
         findViewById<LinearLayout>(R.id.linear_layout).apply {
-            layoutParams = layoutParams.apply { height = pixelHeight - getStatusBarHeight() }
+            layoutParams = layoutParams.apply {
+                height = pixelHeight - getStatusBarHeight()
+                setPadding(0, 0, 0, navigationBarHeight)
+            }
         }
         
         behavior = BottomSheetBehavior.from(findViewById(R.id.linear_layout))
