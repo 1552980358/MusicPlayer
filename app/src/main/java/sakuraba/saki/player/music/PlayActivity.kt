@@ -59,7 +59,7 @@ import sakuraba.saki.player.music.util.LifeStateConstant.ON_DESTROY
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_PAUSE
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_RESUME
 import sakuraba.saki.player.music.util.SystemUtil.pixelHeight
-import sakuraba.saki.player.music.widget.VolumePopupWindow
+import sakuraba.saki.player.music.ui.play.VolumePopupWindow
 
 class PlayActivity: BaseMediaControlActivity() {
     

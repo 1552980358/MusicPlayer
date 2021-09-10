@@ -1,4 +1,4 @@
-package sakuraba.saki.player.music.widget
+package sakuraba.saki.player.music.ui.play
 
 import android.content.Context
 import android.content.Context.AUDIO_SERVICE
