@@ -46,6 +46,8 @@ class VolumePopupWindow(context: Context, private val view: View, isLight: Boole
     
     init {
         isOutsideTouchable = true
+        isTouchable = true
+        isFocusable = true
         _layoutVolumePopupWindowBinding = LayoutVolumePopupWindowBinding.inflate(LayoutInflater.from(context))
         contentView = layoutVolumePopupWindow.root
     
