@@ -188,17 +188,9 @@ class MainActivity: BaseMediaControlActivity() {
         }
         
         viewModel.state.observe(this) { newState ->
-            when (newState) {
-                STATE_PLAYING -> imageButton.apply {
-                    setImageResource(R.drawable.ani_play_to_pause)
-                    (drawable as AnimatedVectorDrawable).start()
-                }
-                STATE_PAUSED -> {
-                    imageButton.apply {
-                        setImageResource(R.drawable.ani_pause_to_play)
-                        (drawable as AnimatedVectorDrawable).start()
-                    }
-                }
+            imageButton.apply {
+                setImageResource(if (newState == STATE_PLAYING) R.drawable.ani_play_to_pause else R.drawable.ani_pause_to_play)
+                (drawable as AnimatedVectorDrawable).start()
             }
         }
     }
