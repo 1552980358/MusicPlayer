@@ -267,6 +267,11 @@ class PlayActivity: BaseMediaControlActivity() {
         }
         
         activityPlay.imageButtonVolume.setOnClickListener {
+            if (volumePopupWindow?.isShowing == true) {
+                volumePopupWindow?.dismiss()
+                volumePopupWindow = null
+                return@setOnClickListener
+            }
             volumePopupWindow = VolumePopupWindow(this, activityPlay.imageButtonVolume, viewModel.isLightBackground.value == true, activityBackgroundColor)
             volumePopupWindow?.show()
         }
