@@ -95,6 +95,7 @@ class PlayActivity: BaseMediaControlActivity() {
     private var isPlaying = false
     private var job: Job? = null
     
+    @Volatile
     private var activityBackgroundColor = TRANSPARENT
     
     private lateinit var playModeListCycle: Drawable
@@ -135,16 +136,16 @@ class PlayActivity: BaseMediaControlActivity() {
         
         CoroutineScope(Dispatchers.IO).launch {
             val audioInfo = intent?.getSerializableExtra(EXTRAS_AUDIO_INFO) as AudioInfo? ?: return@launch
-            var bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) }
-            if (bitmap == null) {
-                bitmap = resources.getDrawable(R.drawable.ic_music, null).toBitmap()
-            }
-            launch(Dispatchers.Main) { activityPlay.imageView.setImageBitmap(bitmap) }
             launch(Dispatchers.Main) {
                 textViewTitle.text = audioInfo.audioTitle
                 @Suppress("SetTextI18n")
                 textViewSummary.text = "${audioInfo.audioArtist} - ${audioInfo.audioAlbum}"
             }
+            var bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) }
+            if (bitmap == null) {
+                bitmap = resources.getDrawable(R.drawable.ic_music, null).toBitmap()
+            }
+            launch(Dispatchers.Main) { activityPlay.imageView.setImageBitmap(bitmap) }
             MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated(true)
         }
     
@@ -281,25 +282,27 @@ class PlayActivity: BaseMediaControlActivity() {
         if (mediaBrowserCompat.isConnected) {
             registerMediaController()
     
-            mediaBrowserCompat.sendCustomAction(Constants.ACTION_REQUEST_STATUS, null, object : MediaBrowserCompat.CustomActionCallback() {
-                override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
-                    resultData?:return
-                    isPlaying = false
-                    job?.cancel()
-                    val audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
-                    viewModel.updateDuration(audioInfo.audioDuration)
-                    viewModel.updateProgress(resultData.getInt(Constants.EXTRAS_PROGRESS).toLong())
-                    viewModel.updateState(resultData.getInt(EXTRAS_STATUS))
-                    when (viewModel.stateValue) {
-                        STATE_PLAYING -> {
-                            activityPlay.floatingActionButton.setImageResource(R.drawable.ic_pause)
-                            isPlaying = true
-                            job = getProgressSyncJob(activityPlay.playSeekBar.progress)
+            CoroutineScope(Dispatchers.IO).launch {
+                mediaBrowserCompat.sendCustomAction(Constants.ACTION_REQUEST_STATUS, null, object : MediaBrowserCompat.CustomActionCallback() {
+                    override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
+                        resultData?:return
+                        isPlaying = false
+                        job?.cancel()
+                        val audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
+                        viewModel.updateDuration(audioInfo.audioDuration)
+                        viewModel.updateProgress(resultData.getInt(Constants.EXTRAS_PROGRESS).toLong())
+                        viewModel.updateState(resultData.getInt(EXTRAS_STATUS))
+                        when (viewModel.stateValue) {
+                            STATE_PLAYING -> {
+                                activityPlay.floatingActionButton.setImageResource(R.drawable.ic_pause)
+                                isPlaying = true
+                                job = getProgressSyncJob(activityPlay.playSeekBar.progress)
+                            }
+                            STATE_PAUSED -> activityPlay.floatingActionButton.setImageResource(R.drawable.ic_play)
                         }
-                        STATE_PAUSED -> activityPlay.floatingActionButton.setImageResource(R.drawable.ic_play)
                     }
-                }
-            })
+                })
+            }
         }
     }
     
@@ -373,7 +376,7 @@ class PlayActivity: BaseMediaControlActivity() {
         (recyclerView.adapter as RecyclerViewAdapter).updateMediaItemList(children)
     }
     
-    private fun MediaNotificationProcessor.getColorUpdated(isInit: Boolean) = CoroutineScope(Dispatchers.Main).launch {
+    private fun MediaNotificationProcessor.getColorUpdated(isInit: Boolean) {
         if (activityBackgroundColor != backgroundColor) {
             ValueAnimator.ofArgb(activityBackgroundColor, backgroundColor).apply {
                 duration = 500
@@ -381,29 +384,27 @@ class PlayActivity: BaseMediaControlActivity() {
                     activityPlay.root.setBackgroundColor(animatedValue as Int)
                     volumePopupWindow?.updateBackground(animatedValue as Int)
                 }
-                start()
+                CoroutineScope(Dispatchers.Main).launch { start() }
             }
             activityBackgroundColor = backgroundColor
         }
-        viewModel.setIsLightBackground(isLight)
+        CoroutineScope(Dispatchers.Main).launch { viewModel.setIsLightBackground(isLight) }
         if (isInit) {
-            if (isLight) {
-                updateControlButtonColor(BLACK)
-            } else {
-                updateControlButtonColor(WHITE)
-            }
-            viewModel.isLightBackground.observe(this@PlayActivity) { isLight ->
-                if (isLight) {
-                    ValueAnimator.ofArgb(WHITE, BLACK)
-                } else {
-                    ValueAnimator.ofArgb(BLACK, WHITE)
-                }.apply {
-                    duration = 500
-                    addUpdateListener {
-                        updateControlButtonColor(animatedValue as Int)
-                        volumePopupWindow?.updateIsLight(animatedValue as Int, isLight)
+            CoroutineScope(Dispatchers.Main).launch {
+                updateControlButtonColor(if (isLight) BLACK else WHITE)
+                viewModel.isLightBackground.observe(this@PlayActivity) { isLight ->
+                    if (isLight) {
+                        ValueAnimator.ofArgb(WHITE, BLACK)
+                    } else {
+                        ValueAnimator.ofArgb(BLACK, WHITE)
+                    }.apply {
+                        duration = 500
+                        addUpdateListener {
+                            updateControlButtonColor(animatedValue as Int)
+                            volumePopupWindow?.updateIsLight(animatedValue as Int, isLight)
+                        }
+                        CoroutineScope(Dispatchers.Main).launch { start() }
                     }
-                    start()
                 }
             }
         }
