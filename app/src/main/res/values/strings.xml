@@ -14,4 +14,6 @@
     
     <string name="home_snack_waiting_for_media_scanner">Calling system refreshing… Wait for completion…</string>
     <string name="home_snack_scanning">Calling system refreshing… Wait for completion</string>
+    
+    <string name="play_bottom_sheet_queue">Queue</string>
 </resources>
