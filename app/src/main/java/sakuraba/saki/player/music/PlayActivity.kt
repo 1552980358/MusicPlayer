@@ -71,6 +71,7 @@ import sakuraba.saki.player.music.util.LifeStateConstant.ON_PAUSE
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_RESUME
 import sakuraba.saki.player.music.util.SystemUtil.pixelHeight
 import sakuraba.saki.player.music.ui.play.VolumePopupWindow
+import sakuraba.saki.player.music.ui.play.util.DividerItemDecoration
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_BACK_PRESSED
 import sakuraba.saki.player.music.util.SystemUtil.navigationBarHeight
 
@@ -281,6 +282,7 @@ class PlayActivity: BaseMediaControlActivity() {
         recyclerView.adapter = RecyclerViewAdapter { pos ->
             mediaControllerCompat.transportControls.skipToQueueItem(pos.toLong())
         }
+        recyclerView.addItemDecoration(DividerItemDecoration())
     }
     
     override fun onMediaBrowserConnected() {
