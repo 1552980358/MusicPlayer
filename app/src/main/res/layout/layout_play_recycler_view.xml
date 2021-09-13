@@ -12,7 +12,7 @@
         android:layout_height="@dimen/play_recycler_view_text_view_num_size"
         android:id="@+id/text_view_num"
         android:gravity="center"
-        android:layout_marginEnd="@dimen/home_recycler_view_text_view_num_margin_end"
+        android:layout_marginEnd="@dimen/play_recycler_view_text_view_num_margin_end"
         android:textColor="@color/black"
         android:textSize="@dimen/play_recycler_view_text_view_num_text_size" />
     
