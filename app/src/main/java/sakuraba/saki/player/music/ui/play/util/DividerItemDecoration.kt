@@ -1,4 +1,4 @@
-package sakuraba.saki.player.music.ui.home.util
+package sakuraba.saki.player.music.ui.play.util
 
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -17,12 +17,13 @@ class DividerItemDecoration: RecyclerView.ItemDecoration() {
         if (parent.childCount <= 0) {
             return
         }
-        paint.strokeWidth = parent.resources.getDimension(R.dimen.home_recycler_view_divider)
+        paint.strokeWidth = parent.resources.getDimension(R.dimen.play_recycler_view_divider)
         paint.color = ContextCompat.getColor(parent.context, R.color.divider_color)
-        val startX = parent.resources.getDimension(R.dimen.home_recycler_view_height)
+        val startX = parent.resources.getDimension(R.dimen.play_recycler_view_height)
+        val endX = parent.resources.displayMetrics.widthPixels.toFloat()
         repeat(parent.childCount - 1) { count ->
             parent.getChildAt(count).bottom.toFloat().also { bottom ->
-                c.drawLine(startX, bottom, parent.resources.displayMetrics.widthPixels.toFloat(), bottom, paint)
+                c.drawLine(startX, bottom, endX, bottom, paint)
             }
         }
     }
