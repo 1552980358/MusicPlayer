@@ -30,4 +30,5 @@
     <dimen name="play_recycler_view_text_view_num_margin_end">10dp</dimen>
     <dimen name="play_recycler_view_text_view_num_text_size">16sp</dimen>
     <dimen name="play_recycler_view_text_view_title_size">15sp</dimen>
+    <dimen name="play_recycler_view_divider">1dp</dimen>
 </resources>
