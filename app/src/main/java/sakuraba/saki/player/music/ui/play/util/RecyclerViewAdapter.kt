@@ -76,6 +76,9 @@ class RecyclerViewAdapter(private val listener: (pos: Int) -> Unit): RecyclerVie
         when {
             audioInfoList == null && mediaItemList == null -> notifyDataSetChanged()
             audioInfoList == null && mediaItemList != null -> {
+                if (mediaItemList.last().mediaId == newList.last().audioId) {
+                    return
+                }
                 @Suppress("DuplicatedCode")
                 if (mediaItemList.first().mediaId == newList.last().audioId) {
                     notifyItemRemoved(0)
@@ -86,6 +89,9 @@ class RecyclerViewAdapter(private val listener: (pos: Int) -> Unit): RecyclerVie
                 notifyItemRangeChanged(0, newList.size)
             }
             audioInfoList != null && mediaItemList == null -> {
+                if (audioInfoList.last().audioId == newList.last().audioId) {
+                    return
+                }
                 if (audioInfoList.first().audioId == newList.last().audioId) {
                     notifyItemRemoved(0)
                     notifyItemRangeChanged(0, newList.size)
