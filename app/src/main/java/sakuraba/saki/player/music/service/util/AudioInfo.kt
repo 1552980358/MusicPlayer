@@ -26,5 +26,5 @@ class AudioInfo(
             audioAlbumId,
             audioDuration
         )
-    
+    var index = -1
 }
