@@ -131,11 +131,7 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
         }
     
         override fun onSkipToQueueItem(id: Long) {
-            val intId = id.toInt()
-            when {
-                intId < audioInfoList.lastIndex - listPos -> listPos += (intId + 1)
-                intId > audioInfoList.lastIndex - listPos -> listPos = intId - listPos
-            }
+            listPos = id.toInt()
             onPlayFromMediaId(audioInfoList[listPos].audioId, null)
         }
         override fun onSkipToPrevious() {

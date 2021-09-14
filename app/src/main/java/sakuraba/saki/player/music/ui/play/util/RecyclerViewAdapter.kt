@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.service.util.AudioInfo
+import sakuraba.saki.player.music.util.Constants.EXTRAS_INDEX
 
 class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
     var root: RelativeLayout = view.findViewById(R.id.relative_layout_root)
@@ -26,7 +27,14 @@ class RecyclerViewAdapter(private val listener: (pos: Int) -> Unit): RecyclerVie
         ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_play_recycler_view, parent, false))
     
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.root.setOnClickListener { listener(position) }
+        holder.root.setOnClickListener {
+            val mediaItemList = mediaItemList
+            val audioInfoList = audioInfoList
+            when {
+                mediaItemList != null -> listener(mediaItemList[position].description.extras!!.getInt(EXTRAS_INDEX))
+                audioInfoList != null -> listener(audioInfoList[position].index)
+            }
+        }
         holder.num.text = position.plus(1).toString()
         val mediaItemList = mediaItemList
         val audioInfoList = audioInfoList
@@ -55,9 +63,38 @@ class RecyclerViewAdapter(private val listener: (pos: Int) -> Unit): RecyclerVie
     }
     
     fun updateAudioInfoList(newList: List<AudioInfo>) {
-        audioInfoList = newList
-        mediaItemList = null
-        notifyDataSetChanged()
+        //audioInfoList = newList
+        //mediaItemList = null
+        //notifyDataSetChanged()
+        
+        val audioInfoList = audioInfoList
+        val mediaItemList = mediaItemList
+    
+        this.audioInfoList = newList
+        this.mediaItemList = null
+        
+        when {
+            audioInfoList == null && mediaItemList == null -> notifyDataSetChanged()
+            audioInfoList == null && mediaItemList != null -> {
+                @Suppress("DuplicatedCode")
+                if (mediaItemList.first().mediaId == newList.last().audioId) {
+                    notifyItemRemoved(0)
+                    notifyItemRangeChanged(0, newList.size)
+                    return
+                }
+                notifyItemRangeRemoved(0, mediaItemList.indexOfFirst { mediaItem -> mediaItem.mediaId == newList.last().audioId })
+                notifyItemRangeChanged(0, newList.size)
+            }
+            audioInfoList != null && mediaItemList == null -> {
+                if (audioInfoList.first().audioId == newList.last().audioId) {
+                    notifyItemRemoved(0)
+                    notifyItemRangeChanged(0, newList.size)
+                    return
+                }
+                notifyItemRangeRemoved(0, audioInfoList.indexOfFirst { audioInfo -> audioInfo.audioId == newList.last().audioId })
+                notifyItemRangeChanged(0, newList.size)
+            }
+        }
     }
     
 }
