@@ -49,6 +49,7 @@ import sakuraba.saki.player.music.util.Constants.ACTION_UPDATE_PLAY_MODE
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_POS
+import sakuraba.saki.player.music.util.Constants.EXTRAS_INDEX
 import sakuraba.saki.player.music.util.Constants.EXTRAS_PLAY_MODE
 import sakuraba.saki.player.music.util.Constants.EXTRAS_PLAY
 import sakuraba.saki.player.music.util.Constants.EXTRAS_PROGRESS
@@ -345,22 +346,25 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
         result.sendResult(
             mutableListOf<MediaItem>().apply {
                 for (i in listPos + 1 .. audioInfoList.lastIndex) {
-                    add(getMediaItem(audioInfoList[i]))
+                    add(getMediaItem(audioInfoList[i], i))
                 }
                 for (i in 0 .. listPos) {
-                    add(getMediaItem(audioInfoList[i]))
+                    add(getMediaItem(audioInfoList[i], i))
                 }
             }
         )
     }
     
-    private fun getMediaItem(audioInfo: AudioInfo): MediaItem =
+    private fun getMediaItem(audioInfo: AudioInfo, index: Int): MediaItem =
         MediaItem(
             MediaDescriptionCompat.Builder()
                 .setTitle(audioInfo.audioTitle)
                 .setSubtitle(audioInfo.audioArtist)
                 .setMediaId(audioInfo.audioId)
-                .setExtras(bundle { putSerializable(EXTRAS_AUDIO_INFO, audioInfo) })
+                .setExtras(bundle {
+                    putSerializable(EXTRAS_AUDIO_INFO, audioInfo)
+                    putInt(EXTRAS_INDEX, index)
+                })
                 .build(),
             MediaItem.FLAG_PLAYABLE
         )
