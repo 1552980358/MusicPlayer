@@ -205,6 +205,7 @@ class HomeFragment: Fragment() {
         if (audioInfoList.isNotEmpty()) {
             // audioInfoList.removeAll { audioInfo -> audioInfo.audioDuration < 3000 }
             audioInfoList.sortBy { it.audioTitlePinyin }
+            audioInfoList.forEachIndexed { index, audioInfo -> audioInfo.index = index }
             audioDatabaseHelper.insertAudio(TABLE_AUDIO, audioInfoList)
             CoroutineScope(Dispatchers.Main).launch { (fragmentHome.recyclerView.adapter as RecyclerViewAdapter).setAudioInfoList(audioInfoList) }
         }
@@ -214,6 +215,7 @@ class HomeFragment: Fragment() {
         Log.e(TAG, "readDatabase")
         audioInfoList.clear()
         audioDatabaseHelper.queryAll(audioInfoList)
+        audioInfoList.forEachIndexed { index, audioInfo -> audioInfo.index = index}
         CoroutineScope(Dispatchers.Main).launch { (fragmentHome.recyclerView.adapter as RecyclerViewAdapter).setAudioInfoList(audioInfoList) }
     }
     
