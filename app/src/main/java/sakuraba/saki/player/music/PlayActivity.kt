@@ -412,11 +412,7 @@ class PlayActivity: BaseMediaControlActivity() {
             CoroutineScope(Dispatchers.Main).launch {
                 updateControlButtonColor(if (isLight) BLACK else WHITE)
                 viewModel.isLightBackground.observe(this@PlayActivity) { isLight ->
-                    if (isLight) {
-                        ValueAnimator.ofArgb(WHITE, BLACK)
-                    } else {
-                        ValueAnimator.ofArgb(BLACK, WHITE)
-                    }.apply {
+                    if (isLight) { ValueAnimator.ofArgb(WHITE, BLACK) } else { ValueAnimator.ofArgb(BLACK, WHITE) }.apply {
                         duration = 500
                         addUpdateListener {
                             updateControlButtonColor(animatedValue as Int)
