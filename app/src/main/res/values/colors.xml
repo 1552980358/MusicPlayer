@@ -9,9 +9,11 @@
     <color name="white">#FFFFFFFF</color>
     
     <color name="divider_color">#EAEAEA</color>
-    <color name="play_seek_bar_background">#80000000</color>
     <color name="gray">#FFE1E1E1</color>
     
     <color name="vertical_seekbar_remain_light">#FF2c2c2c</color>
     <color name="vertical_seekbar_remain_dark">#FFcccccc</color>
+    
+    <color name="play_play_seekbar_background_light">#80000000</color>
+    <color name="play_play_seekbar_background_dark">#80FFFFFF</color>
 </resources>
