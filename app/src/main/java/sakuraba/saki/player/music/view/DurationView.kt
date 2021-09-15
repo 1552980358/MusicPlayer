@@ -21,11 +21,13 @@ class DurationView: View {
     constructor(context: Context, attributeSet: AttributeSet?): super(context, attributeSet)
     
     private val paint = Paint()
+    private val length: Float
     
     init {
         paint.isAntiAlias = true
         paint.color = Color.WHITE
         paint.textSize = resources.getDimension(R.dimen.view_duration_text_size)
+        length = paint.measureText(COLON)
     }
     
     var duration = 0L
@@ -43,7 +45,6 @@ class DurationView: View {
         super.onDraw(canvas)
         canvas ?: return
         
-        val length = paint.measureText(COLON)
         val drawY = heightF - paint.fontMetrics.bottom
         // Draw colon first
         canvas.drawText(COLON, (widthF - length) / 2, drawY, paint)
