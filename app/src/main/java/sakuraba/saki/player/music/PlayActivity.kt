@@ -367,8 +367,20 @@ class PlayActivity: BaseMediaControlActivity() {
             MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated(false)
         }
         viewModel.updateDuration(metadata.getLong(METADATA_KEY_DURATION))
-        textViewTitle.text = metadata.getString(METADATA_KEY_TITLE)
-        textViewSummary.text = metadata.getString(METADATA_KEY_ARTIST)
+        // textViewTitle.text = metadata.getString(METADATA_KEY_TITLE)
+        // textViewSummary.text = metadata.getString(METADATA_KEY_ARTIST)
+        ValueAnimator.ofArgb(BLACK, WHITE, BLACK).apply {
+            duration = 800 // 500 may cause the text no change unpredictably
+            addUpdateListener {
+                textViewTitle.setTextColor(animatedValue as Int)
+                textViewSummary.setTextColor(animatedValue as Int)
+                if (animatedValue as Int == WHITE) {
+                    textViewTitle.text = metadata.getString(METADATA_KEY_TITLE)
+                    textViewSummary.text = metadata.getString(METADATA_KEY_ARTIST)
+                }
+            }
+            start()
+        }
         mediaBrowserCompat.sendCustomAction(ACTION_REQUEST_AUDIO_LIST, null, object : MediaBrowserCompat.CustomActionCallback() {
             override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
                 resultData ?: return
