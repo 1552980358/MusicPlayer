@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import androidx.annotation.ColorInt
 import lib.github1552980358.ktExtension.android.view.heightF
 import lib.github1552980358.ktExtension.android.view.widthF
 import sakuraba.saki.player.music.R
@@ -32,6 +33,11 @@ class DurationView: View {
             field = value
             invalidate()
         }
+    
+    fun updateTextColor(@ColorInt newColor: Int) {
+        paint.color = newColor
+        invalidate()
+    }
     
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
