@@ -11,6 +11,7 @@ import android.view.MotionEvent.ACTION_DOWN
 import android.view.MotionEvent.ACTION_MOVE
 import android.view.MotionEvent.ACTION_UP
 import android.view.View
+import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
 import lib.github1552980358.ktExtension.android.view.heightF
 import lib.github1552980358.ktExtension.android.view.widthF
@@ -71,6 +72,11 @@ class PlaySeekbar: View {
             field = value
             invalidate()
         }
+    
+    fun setCursorColor(@ColorInt colorInt: Int) {
+        paint.color = colorInt
+        invalidate()
+    }
     
     private fun updateProgress(motionEvent: MotionEvent) {
         progress = when {
