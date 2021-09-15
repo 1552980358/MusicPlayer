@@ -26,6 +26,7 @@ import android.view.View.VISIBLE
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -108,6 +109,9 @@ class PlayActivity: BaseMediaControlActivity() {
     private val recyclerView get() = _recyclerView!!
     
     private var volumePopupWindow: VolumePopupWindow? = null
+    
+    private val playSeekbarColorLight by lazy { ContextCompat.getColor(this, R.color.play_play_seekbar_background_light) }
+    private val playSeekbarColorDark by lazy { ContextCompat.getColor(this, R.color.play_play_seekbar_background_dark) }
     
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.e(TAG, ON_CREATE)
@@ -411,6 +415,7 @@ class PlayActivity: BaseMediaControlActivity() {
         if (isInit) {
             CoroutineScope(Dispatchers.Main).launch {
                 updateControlButtonColor(if (isLight) BLACK else WHITE)
+                activityPlay.relativeLayout.setBackgroundColor(if (isLight) playSeekbarColorLight else playSeekbarColorDark)
                 viewModel.isLightBackground.observe(this@PlayActivity) { isLight ->
                     if (isLight) { ValueAnimator.ofArgb(WHITE, BLACK) } else { ValueAnimator.ofArgb(BLACK, WHITE) }.apply {
                         duration = 500
@@ -418,8 +423,25 @@ class PlayActivity: BaseMediaControlActivity() {
                             updateControlButtonColor(animatedValue as Int)
                             volumePopupWindow?.updateIsLight(animatedValue as Int, isLight)
                         }
-                        CoroutineScope(Dispatchers.Main).launch { start() }
-                    }
+                    }.start()
+                    if (isLight) {
+                        ValueAnimator.ofArgb(playSeekbarColorDark, playSeekbarColorLight)
+                    } else {
+                        ValueAnimator.ofArgb(playSeekbarColorLight, playSeekbarColorDark)
+                    }.apply {
+                        duration = 500
+                        addUpdateListener {
+                            activityPlay.relativeLayout.setBackgroundColor(animatedValue as Int)
+                        }
+                    }.start()
+                    if (isLight) { ValueAnimator.ofArgb(BLACK, WHITE) } else { ValueAnimator.ofArgb(WHITE, BLACK) }.apply {
+                        duration = 500
+                        addUpdateListener {
+                            activityPlay.durationViewProgress.updateTextColor(animatedValue as Int)
+                            activityPlay.durationViewDuration.updateTextColor(animatedValue as Int)
+                            activityPlay.playSeekBar.setCursorColor(animatedValue as Int)
+                        }
+                    }.start()
                 }
             }
         }
