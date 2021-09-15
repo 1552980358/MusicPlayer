@@ -41,7 +41,8 @@
         <RelativeLayout
             android:layout_height="@dimen/play_controller_seekbar_height"
             android:layout_width="match_parent"
-            android:background="@color/play_seek_bar_background">
+            android:id="@+id/relative_layout"
+            android:background="@color/play_play_seekbar_background_light">
             
             <sakuraba.saki.player.music.view.DurationView
                 android:layout_width="40dp"
