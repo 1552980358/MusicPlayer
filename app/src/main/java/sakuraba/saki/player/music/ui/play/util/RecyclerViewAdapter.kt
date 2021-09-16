@@ -18,7 +18,7 @@ class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
     val summary: TextView = view.findViewById(R.id.text_view_summary)
 }
 
-class RecyclerViewAdapter(private val listener: (pos: Int) -> Unit): RecyclerView.Adapter<ViewHolder>() {
+class RecyclerViewAdapter(private val recyclerView: RecyclerView, private val listener: (pos: Int) -> Unit): RecyclerView.Adapter<ViewHolder>() {
     
     private var mediaItemList: List<MediaItem>? = null
     private var audioInfoList: List<AudioInfo>? = null
@@ -85,6 +85,13 @@ class RecyclerViewAdapter(private val listener: (pos: Int) -> Unit): RecyclerVie
                     notifyItemRangeChanged(0, newList.size)
                     return
                 }
+                @Suppress("DuplicatedCode")
+                if (mediaItemList[mediaItemList.lastIndex - 1].mediaId == newList.last().audioId) {
+                    notifyItemInserted(0)
+                    notifyItemRangeChanged(0, newList.size)
+                    recyclerView.scrollToPosition(0)
+                    return
+                }
                 notifyItemRangeRemoved(0, mediaItemList.indexOfFirst { mediaItem -> mediaItem.mediaId == newList.last().audioId })
                 notifyItemRangeChanged(0, newList.size)
             }
@@ -95,6 +102,12 @@ class RecyclerViewAdapter(private val listener: (pos: Int) -> Unit): RecyclerVie
                 if (audioInfoList.first().audioId == newList.last().audioId) {
                     notifyItemRemoved(0)
                     notifyItemRangeChanged(0, newList.size)
+                    return
+                }
+                if (audioInfoList[audioInfoList.lastIndex - 1].audioId == newList.last().audioId) {
+                    notifyItemInserted(0)
+                    notifyItemRangeChanged(0, newList.size)
+                    recyclerView.scrollToPosition(0)
                     return
                 }
                 notifyItemRangeRemoved(0, audioInfoList.indexOfFirst { audioInfo -> audioInfo.audioId == newList.last().audioId })

@@ -29,6 +29,7 @@ import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
@@ -282,8 +283,9 @@ class PlayActivity: BaseMediaControlActivity() {
         }
         
         _recyclerView = findViewById(R.id.recycler_view)
+        recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.layoutManager = LinearLayoutManager(this, VERTICAL, false)
-        recyclerView.adapter = RecyclerViewAdapter { pos ->
+        recyclerView.adapter = RecyclerViewAdapter(recyclerView) { pos ->
             mediaControllerCompat.transportControls.skipToQueueItem(pos.toLong())
         }
         recyclerView.addItemDecoration(DividerItemDecoration())
