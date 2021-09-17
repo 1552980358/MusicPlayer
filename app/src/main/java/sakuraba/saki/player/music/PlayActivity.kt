@@ -26,6 +26,7 @@ import android.view.View.VISIBLE
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
@@ -155,14 +156,14 @@ class PlayActivity: BaseMediaControlActivity() {
             MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated(true)
         }
     
-        findViewById<LinearLayout>(R.id.linear_layout).apply {
+        findViewById<CardView>(R.id.card_view).apply {
             layoutParams = layoutParams.apply {
                 height = pixelHeight - getStatusBarHeight()
-                setPadding(0, 0, 0, navigationBarHeight)
             }
+            setContentPadding(0, 0, 0, navigationBarHeight)
         }
         
-        behavior = BottomSheetBehavior.from(findViewById(R.id.linear_layout))
+        behavior = BottomSheetBehavior.from(findViewById(R.id.card_view))
         behavior.peekHeight =
             pixelHeight - resources.displayMetrics.widthPixels -
                 resources.getDimensionPixelSize(R.dimen.play_controller_height) -
