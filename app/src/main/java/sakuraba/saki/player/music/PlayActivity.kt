@@ -24,6 +24,7 @@ import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.cardview.widget.CardView
@@ -290,6 +291,12 @@ class PlayActivity: BaseMediaControlActivity() {
             mediaControllerCompat.transportControls.skipToQueueItem(pos.toLong())
         }
         recyclerView.addItemDecoration(DividerItemDecoration())
+        
+        findViewById<RelativeLayout>(R.id.relative_layout_audio_info).setOnClickListener {
+            if (behavior.state != STATE_EXPANDED) {
+                behavior.state = STATE_EXPANDED
+            }
+        }
     }
     
     override fun onMediaBrowserConnected() {
