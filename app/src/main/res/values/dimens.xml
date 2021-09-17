@@ -31,4 +31,17 @@
     <dimen name="play_recycler_view_text_view_num_text_size">16sp</dimen>
     <dimen name="play_recycler_view_text_view_title_size">15sp</dimen>
     <dimen name="play_recycler_view_divider">1dp</dimen>
+    <dimen name="play_bottom_sheet_root_margins">20dp</dimen>
+    <dimen name="play_bottom_sheet_root_elevation">5dp</dimen>
+    <dimen name="play_bottom_sheet_root_corner_radius">5dp</dimen>
+    <dimen name="play_bottom_sheet_relative_layout_height">60dp</dimen>
+    <dimen name="play_bottom_sheet_relative_layout_padding">10dp</dimen>
+    <dimen name="play_bottom_sheet_image_view_size">40dp</dimen>
+    <dimen name="play_bottom_sheet_image_view_padding">8dp</dimen>
+    <dimen name="play_bottom_sheet_image_view_margin_end">10dp</dimen>
+    <dimen name="play_bottom_sheet_text_view_title_text_size">15sp</dimen>
+    <dimen name="play_bottom_sheet_view_height">1dp</dimen>
+    <dimen name="play_bottom_sheet_text_view_queue_margin_start_end">8dp</dimen>
+    <dimen name="play_bottom_sheet_text_view_queue_margin_top_bottom">5dp</dimen>
+
 </resources>
