@@ -8,6 +8,9 @@ import android.graphics.Color.TRANSPARENT
 import android.graphics.Color.WHITE
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
+import android.media.AudioManager
+import android.media.AudioManager.STREAM_MUSIC
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -46,7 +49,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.getStatusBarHeight
+import lib.github1552980358.ktExtension.android.content.register
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
@@ -83,6 +88,8 @@ class PlayActivity: BaseMediaControlActivity() {
     
     companion object {
         private const val TAG = "PlayActivity"
+        private const val VOLUME_CHANGED_ACTION = "android.media.VOLUME_CHANGED_ACTION"
+        private const val EXTRA_VOLUME_STREAM_TYPE = "android.media.EXTRA_VOLUME_STREAM_TYPE"
     }
     
     private var _activityPlayBinding: ActivityPlayBinding? = null
@@ -116,6 +123,15 @@ class PlayActivity: BaseMediaControlActivity() {
     private val playSeekbarColorLight by lazy { ContextCompat.getColor(this, R.color.play_play_seekbar_background_light) }
     private val playSeekbarColorDark by lazy { ContextCompat.getColor(this, R.color.play_play_seekbar_background_dark) }
     
+    private lateinit var audioManager: AudioManager
+    
+    private val broadcastReceiver = broadcastReceiver { _, intent, _ ->
+        if (intent?.action == VOLUME_CHANGED_ACTION && intent.getIntExtra(EXTRA_VOLUME_STREAM_TYPE, -1) == STREAM_MUSIC) {
+            updateVolumeIcon()
+            volumePopupWindow?.updateVolume(audioManager.getStreamVolume(STREAM_MUSIC))
+        }
+    }
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.e(TAG, ON_CREATE)
         
@@ -141,6 +157,8 @@ class PlayActivity: BaseMediaControlActivity() {
     
         playModeListCycle = activityPlay.imageButtonPlayMode.drawable
         viewModel.updatePlayMode(PLAY_MODE_LIST)
+        
+        audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
         
         CoroutineScope(Dispatchers.IO).launch {
             val audioInfo = intent?.getSerializableExtra(EXTRAS_AUDIO_INFO) as AudioInfo? ?: return@launch
@@ -280,7 +298,7 @@ class PlayActivity: BaseMediaControlActivity() {
                 volumePopupWindow = null
                 return@setOnClickListener
             }
-            volumePopupWindow = VolumePopupWindow(this, activityPlay.imageButtonVolume, viewModel.isLightBackground.value == true, activityBackgroundColor)
+            volumePopupWindow = VolumePopupWindow(this, activityPlay.imageButtonVolume, viewModel.isLightBackground.value == true, activityBackgroundColor, audioManager)
             volumePopupWindow?.show()
         }
         
@@ -297,6 +315,10 @@ class PlayActivity: BaseMediaControlActivity() {
                 behavior.state = STATE_EXPANDED
             }
         }
+        
+        broadcastReceiver.register(this, arrayOf(VOLUME_CHANGED_ACTION))
+        
+        updateVolumeIcon()
     }
     
     override fun onMediaBrowserConnected() {
@@ -457,6 +479,21 @@ class PlayActivity: BaseMediaControlActivity() {
         }
     }
     
+    private fun updateVolumeIcon() {
+        val max = audioManager.getStreamMaxVolume(STREAM_MUSIC)
+        val min = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) audioManager.getStreamMinVolume(STREAM_MUSIC) else 0).toFloat()
+        val diff = (max - min) / 3F
+        activityPlay.imageButtonVolume.setImageResource(
+            when (audioManager.getStreamVolume(STREAM_MUSIC).toFloat()) {
+                0F -> R.drawable.ic_volume_mute
+                in (min .. diff) -> R.drawable.ic_volume_low
+                in (diff .. diff * 2) -> R.drawable.ic_volume_mid
+                else -> R.drawable.ic_volume_high
+            }
+        )
+        activityPlay.imageButtonVolume.drawable.setTint(if (viewModel.isLightBackground.value == true) BLACK else WHITE)
+    }
+    
     override fun onBackPressed() {
         Log.e(TAG, ON_BACK_PRESSED)
         when (behavior.state) {
@@ -488,6 +525,7 @@ class PlayActivity: BaseMediaControlActivity() {
     
     override fun onDestroy() {
         Log.e(TAG, ON_DESTROY)
+        unregisterReceiver(broadcastReceiver)
         super.onDestroy()
         _activityPlayBinding = null
     }
