@@ -521,6 +521,29 @@ class PlayActivity: BaseMediaControlActivity() {
     override fun onResume() {
         Log.e(TAG, ON_RESUME)
         super.onResume()
+    
+        if (mediaBrowserCompat.isConnected) {
+            mediaBrowserCompat.sendCustomAction(Constants.ACTION_REQUEST_STATUS, null, object : MediaBrowserCompat.CustomActionCallback() {
+                override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
+                    Log.e(TAG, "onResult ${resultData == null}")
+                    resultData?:return
+                    isPlaying = false
+                    job?.cancel()
+                    val audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
+                    viewModel.updateDuration(audioInfo.audioDuration)
+                    viewModel.updateProgress(resultData.getInt(Constants.EXTRAS_PROGRESS).toLong())
+                    viewModel.updateState(resultData.getInt(EXTRAS_STATUS))
+                    when (viewModel.stateValue) {
+                        STATE_PLAYING -> {
+                            activityPlay.floatingActionButton.setImageResource(R.drawable.ic_pause)
+                            isPlaying = true
+                            job = getProgressSyncJob(activityPlay.playSeekBar.progress)
+                        }
+                        STATE_PAUSED -> activityPlay.floatingActionButton.setImageResource(R.drawable.ic_play)
+                    }
+                }
+            })
+        }
     }
     
     override fun onDestroy() {

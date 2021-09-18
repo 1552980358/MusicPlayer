@@ -199,39 +199,37 @@ class MainActivity: BaseMediaControlActivity() {
         Log.e(TAG, "MediaBrowserCompat.ConnectionCallback.onConnected")
         if (mediaBrowserCompat.isConnected) {
             registerMediaController()
-            
-            if (isOnPaused) {
-                isOnPaused = false
-                if (behavior.state == STATE_EXPANDED) {
-                    mediaBrowserCompat.sendCustomAction(ACTION_REQUEST_STATUS, null, object : MediaBrowserCompat.CustomActionCallback() {
-                        override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
-                            Log.e(TAG, "onResult ${resultData == null}")
-                            resultData ?: return
-                            audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
-                            val progress = resultData.getInt(EXTRAS_PROGRESS)
-                            playProgressBar.max = audioInfo.audioDuration
-                            viewModel.updateProgress(progress)
-                            // playBackState = resultData.getInt(EXTRAS_STATUS)
-                            viewModel.updateNewState(resultData.getInt(EXTRAS_STATUS))
-                            when (viewModel.stateValue) {
-                                STATE_PLAYING -> {
-                                    isPlaying = true
-                                    job = getProgressSyncJob(progress)
-                                    imageButton.setImageResource(R.drawable.ic_pause)
-                                }
-                                STATE_PAUSED -> imageButton.setImageResource(R.drawable.ic_play)
+    
+            if (behavior.state == STATE_EXPANDED) {
+                @Suppress("DuplicatedCode")
+                mediaBrowserCompat.sendCustomAction(ACTION_REQUEST_STATUS, null, object : MediaBrowserCompat.CustomActionCallback() {
+                    override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
+                        Log.e(TAG, "onResult ${resultData == null}")
+                        resultData ?: return
+                        audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
+                        val progress = resultData.getInt(EXTRAS_PROGRESS)
+                        playProgressBar.max = audioInfo.audioDuration
+                        viewModel.updateProgress(progress)
+                        // playBackState = resultData.getInt(EXTRAS_STATUS)
+                        viewModel.updateNewState(resultData.getInt(EXTRAS_STATUS))
+                        when (viewModel.stateValue) {
+                            STATE_PLAYING -> {
+                                isPlaying = true
+                                job = getProgressSyncJob(progress)
+                                imageButton.setImageResource(R.drawable.ic_pause)
                             }
-                            textView.text = audioInfo.audioTitle
-                            CoroutineScope(Dispatchers.IO).launch {
-                                var bitmap: Bitmap? = null
-                                tryOnly { bitmap = loadAlbumArt(audioInfo.audioAlbumId) }
-                                if (bitmap != null) {
-                                    launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
-                                }
+                            STATE_PAUSED -> imageButton.setImageResource(R.drawable.ic_play)
+                        }
+                        textView.text = audioInfo.audioTitle
+                        CoroutineScope(Dispatchers.IO).launch {
+                            var bitmap: Bitmap? = null
+                            tryOnly { bitmap = loadAlbumArt(audioInfo.audioAlbumId) }
+                            if (bitmap != null) {
+                                launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
                             }
                         }
-                    })
-                }
+                    }
+                })
             }
         }
     }
@@ -304,6 +302,38 @@ class MainActivity: BaseMediaControlActivity() {
     override fun onResume() {
         Log.e(TAG, ON_RESUME)
         super.onResume()
+    
+        if (behavior.state == STATE_EXPANDED && mediaBrowserCompat.isConnected) {
+            @Suppress("DuplicatedCode")
+            mediaBrowserCompat.sendCustomAction(ACTION_REQUEST_STATUS, null, object : MediaBrowserCompat.CustomActionCallback() {
+                override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
+                    Log.e(TAG, "onResult ${resultData == null}")
+                    resultData ?: return
+                    audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
+                    val progress = resultData.getInt(EXTRAS_PROGRESS)
+                    playProgressBar.max = audioInfo.audioDuration
+                    viewModel.updateProgress(progress)
+                    // playBackState = resultData.getInt(EXTRAS_STATUS)
+                    viewModel.updateNewState(resultData.getInt(EXTRAS_STATUS))
+                    when (viewModel.stateValue) {
+                        STATE_PLAYING -> {
+                            isPlaying = true
+                            job = getProgressSyncJob(progress)
+                            imageButton.setImageResource(R.drawable.ic_pause)
+                        }
+                        STATE_PAUSED -> imageButton.setImageResource(R.drawable.ic_play)
+                    }
+                    textView.text = audioInfo.audioTitle
+                    CoroutineScope(Dispatchers.IO).launch {
+                        var bitmap: Bitmap? = null
+                        tryOnly { bitmap = loadAlbumArt(audioInfo.audioAlbumId) }
+                        if (bitmap != null) {
+                            launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
+                        }
+                    }
+                }
+            })
+        }
     }
     
     @Suppress("DuplicatedCode")
