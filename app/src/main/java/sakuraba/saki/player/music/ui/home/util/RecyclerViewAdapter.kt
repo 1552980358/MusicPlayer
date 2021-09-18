@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.service.util.AudioInfo
 
@@ -47,10 +48,11 @@ class RecyclerViewAdapter(private val selection: (pos: Int) -> Unit): RecyclerVi
                 holder.summary.text = "$audioArtist - $audioAlbum"
                 // holder.image.setImageBitmap(getBitmap(holder.image.context))
                 if (bitmaps != null) {
-                    val bitmap = bitmaps[audioAlbumId]
-                    if (bitmap != null) {
-                        holder.image.setImageBitmap(bitmap)
+                    var bitmap = bitmaps[audioAlbumId]
+                    if (bitmap == null) {
+                        bitmap = holder.background.context.getDrawable(R.drawable.ic_music)?.toBitmap()
                     }
+                    holder.image.setImageBitmap(bitmap)
                 }
             }
         }
