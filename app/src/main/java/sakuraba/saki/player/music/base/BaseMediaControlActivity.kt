@@ -7,11 +7,6 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import sakuraba.saki.player.music.service.PlayService
 
 abstract class BaseMediaControlActivity: AppCompatActivity() {
@@ -49,39 +44,20 @@ abstract class BaseMediaControlActivity: AppCompatActivity() {
         mediaControllerCompat.registerCallback(mediaControllerCallback)
     }
     
-    override fun onPause() {
-        super.onPause()
-        if (mediaBrowserCompat.isConnected) {
-            try {
-                mediaControllerCompat.unregisterCallback(mediaControllerCallback)
-                mediaBrowserCompat.disconnect()
-            } catch (e: Exception) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    delay(2000)
-                    if (mediaBrowserCompat.isConnected) {
-                        tryOnly {
-                            mediaControllerCompat.unregisterCallback(mediaControllerCallback)
-                            mediaBrowserCompat.disconnect()
-                        }
-                    }
-                }
-            }
+    override fun onStart() {
+        super.onStart()
+        if (!mediaBrowserCompat.isConnected) {
+            mediaBrowserCompat.connect()
         }
     }
     
-    override fun onResume() {
-        super.onResume()
-        if (!mediaBrowserCompat.isConnected) {
-            try { mediaBrowserCompat.connect() }
-            catch (e: Exception) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    delay(2000)
-                    if (!mediaBrowserCompat.isConnected) {
-                        tryOnly { mediaBrowserCompat.connect() }
-                    }
-                }
-            }
+    override fun onDestroy() {
+        if (mediaBrowserCompat.isConnected) {
+            mediaControllerCompat.unregisterCallback(mediaControllerCallback)
+            mediaBrowserCompat.unsubscribe(parentId, subscriptionCallback)
+            mediaBrowserCompat.disconnect()
         }
+        super.onDestroy()
     }
     
     abstract fun onMediaBrowserConnected()
