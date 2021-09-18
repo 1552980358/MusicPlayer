@@ -74,10 +74,6 @@ import sakuraba.saki.player.music.util.Constants.PLAY_MODE_SINGLE
 import sakuraba.saki.player.music.util.Constants.PLAY_MODE_SINGLE_CYCLE
 import sakuraba.saki.player.music.util.Coroutine.delay1second
 import sakuraba.saki.player.music.util.Coroutine.ms_1000_int
-import sakuraba.saki.player.music.util.LifeStateConstant.ON_CREATE
-import sakuraba.saki.player.music.util.LifeStateConstant.ON_DESTROY
-import sakuraba.saki.player.music.util.LifeStateConstant.ON_PAUSE
-import sakuraba.saki.player.music.util.LifeStateConstant.ON_RESUME
 import sakuraba.saki.player.music.util.SystemUtil.pixelHeight
 import sakuraba.saki.player.music.ui.play.VolumePopupWindow
 import sakuraba.saki.player.music.ui.play.util.DividerItemDecoration
@@ -133,8 +129,6 @@ class PlayActivity: BaseMediaControlActivity() {
     }
     
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.e(TAG, ON_CREATE)
-        
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = TRANSPARENT
         
@@ -514,12 +508,10 @@ class PlayActivity: BaseMediaControlActivity() {
     override fun onPause() {
         isPlaying = false
         job?.cancel()
-        Log.e(TAG, ON_PAUSE)
         super.onPause()
     }
     
     override fun onResume() {
-        Log.e(TAG, ON_RESUME)
         super.onResume()
     
         if (mediaBrowserCompat.isConnected) {
@@ -547,7 +539,6 @@ class PlayActivity: BaseMediaControlActivity() {
     }
     
     override fun onDestroy() {
-        Log.e(TAG, ON_DESTROY)
         unregisterReceiver(broadcastReceiver)
         super.onDestroy()
         _activityPlayBinding = null
