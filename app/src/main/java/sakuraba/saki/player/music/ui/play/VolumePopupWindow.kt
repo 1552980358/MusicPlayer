@@ -15,34 +15,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import lib.github1552980358.ktExtension.android.content.broadcastReceiver
-import lib.github1552980358.ktExtension.android.content.register
 import sakuraba.saki.player.music.databinding.LayoutVolumePopupWindowBinding
 
-class VolumePopupWindow(context: Context, private val view: View, isLight: Boolean, backgroundColor: Int): PopupWindow(context) {
-    
-    private companion object {
-        const val VOLUME_CHANGED_ACTION = "android.media.VOLUME_CHANGED_ACTION"
-        const val EXTRA_VOLUME_STREAM_TYPE = "android.media.EXTRA_VOLUME_STREAM_TYPE"
-    }
+class VolumePopupWindow(context: Context, private val view: View, isLight: Boolean, backgroundColor: Int, private val audioManager: AudioManager): PopupWindow(context) {
     
     private var _layoutVolumePopupWindowBinding: LayoutVolumePopupWindowBinding? = null
     private val layoutVolumePopupWindow get() = _layoutVolumePopupWindowBinding!!
     
-    private lateinit var audioManager: AudioManager
-    
     private lateinit var job: Job
     private var isDismissible = false
-    
-    private val broadcastReceiver = broadcastReceiver { _, intent, _ ->
-        if (intent?.action == VOLUME_CHANGED_ACTION && intent.getIntExtra(EXTRA_VOLUME_STREAM_TYPE, -1) == STREAM_MUSIC) {
-            layoutVolumePopupWindow.verticalSeekbar.apply {
-                if (!isUser) {
-                    layoutVolumePopupWindow.verticalSeekbar.progress = audioManager.getStreamVolume(STREAM_MUSIC)
-                }
-            }
-        }
-    }
     
     init {
         isOutsideTouchable = true
@@ -50,8 +31,6 @@ class VolumePopupWindow(context: Context, private val view: View, isLight: Boole
         isFocusable = true
         _layoutVolumePopupWindowBinding = LayoutVolumePopupWindowBinding.inflate(LayoutInflater.from(context))
         contentView = layoutVolumePopupWindow.root
-    
-        audioManager = context.getSystemService(AUDIO_SERVICE) as AudioManager
     
         layoutVolumePopupWindow.verticalSeekbar.setOnSeekChangeListener { progress, isUser ->
             layoutVolumePopupWindow.textView.text = progress.toString()
@@ -73,7 +52,6 @@ class VolumePopupWindow(context: Context, private val view: View, isLight: Boole
                 audioManager.getStreamMaxVolume(STREAM_MUSIC)
             )
     
-        broadcastReceiver.register(context, arrayOf(VOLUME_CHANGED_ACTION))
         updateBackground(backgroundColor)
         updateIsLight(isLight)
         
@@ -90,6 +68,14 @@ class VolumePopupWindow(context: Context, private val view: View, isLight: Boole
     fun updateIsLight(newColor: Int, isLight: Boolean) {
         layoutVolumePopupWindow.textView.setTextColor(newColor)
         layoutVolumePopupWindow.verticalSeekbar.updateColor(newColor, isLight)
+    }
+    
+    fun updateVolume(newVolume: Int) {
+        layoutVolumePopupWindow.verticalSeekbar.apply {
+            if (!isUser) {
+                layoutVolumePopupWindow.verticalSeekbar.progress = newVolume
+            }
+        }
     }
     
     fun show() {
