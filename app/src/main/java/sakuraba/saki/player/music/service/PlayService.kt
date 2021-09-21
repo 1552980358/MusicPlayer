@@ -79,7 +79,7 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
     
     private lateinit var mediaPlayer: MediaPlayer
     
-    private lateinit var audioInfoList: List<AudioInfo>
+    private lateinit var audioInfoList: ArrayList<AudioInfo>
     private var listPos = -1
     
     private var isForegroundService = false
@@ -297,23 +297,31 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
             }
             ACTION_UPDATE_PLAY_MODE -> {
                 extras?:return
+                val playMode = extras.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST)
                 playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
                     .setState(playbackStateCompat.state, mediaPlayer.currentPosition.toLong(), 1F)
-                    .setExtras(bundle { putInt(EXTRAS_PLAY_MODE, extras.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST)) })
+                    .setExtras(bundle { putInt(EXTRAS_PLAY_MODE, playMode) })
                     .build()
                 mediaSession.setPlaybackState(playbackStateCompat)
-                result.sendResult(null)
+                val current = audioInfoList[listPos]
+                when (playMode) {
+                    PLAY_MODE_RANDOM -> { audioInfoList = audioInfoList.shuffled() as ArrayList<AudioInfo> }
+                    else -> { audioInfoList.sortBy { audioInfo -> audioInfo.audioTitlePinyin } }
+                }
+                audioInfoList.forEachIndexed { index, audioInfo -> audioInfo.index = index }
+                listPos = audioInfoList.indexOf(current)
+                result.sendResult(bundle { putSerializable(EXTRAS_AUDIO_INFO_LIST, getAudioList()) })
             }
-            ACTION_REQUEST_AUDIO_LIST -> result.sendResult(bundle { putSerializable(ACTION_EXTRA, getAudioList() as Serializable) })
+            ACTION_REQUEST_AUDIO_LIST -> result.sendResult(bundle { putSerializable(ACTION_EXTRA, getAudioList()) })
             else -> super.onCustomAction(action, extras, result)
         }
     }
     
-    private fun getAudioList(): List<AudioInfo> {
+    private fun getAudioList(): ArrayList<AudioInfo> {
         if (listPos == audioInfoList.lastIndex) {
             return audioInfoList
         }
-        return mutableListOf<AudioInfo>().apply {
+        return arrayListOf<AudioInfo>().apply {
             for (i in listPos + 1 .. audioInfoList.lastIndex) {
                 add(audioInfoList[i])
             }

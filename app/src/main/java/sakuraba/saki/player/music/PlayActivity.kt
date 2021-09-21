@@ -77,6 +77,7 @@ import sakuraba.saki.player.music.util.Coroutine.ms_1000_int
 import sakuraba.saki.player.music.util.SystemUtil.pixelHeight
 import sakuraba.saki.player.music.ui.play.VolumePopupWindow
 import sakuraba.saki.player.music.ui.play.util.DividerItemDecoration
+import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_BACK_PRESSED
 import sakuraba.saki.player.music.util.SystemUtil.navigationBarHeight
 
@@ -269,7 +270,13 @@ class PlayActivity: BaseMediaControlActivity() {
                             else -> PLAY_MODE_LIST
                         }
                     ) },
-                null
+                object : MediaBrowserCompat.CustomActionCallback() {
+                    override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
+                        resultData ?: return
+                        @Suppress("UNCHECKED_CAST")
+                        (recyclerView.adapter as RecyclerViewAdapter).resetAudioAudioList(resultData.getSerializable(EXTRAS_AUDIO_INFO_LIST) as ArrayList<AudioInfo>)
+                    }
+                }
             )
         }
         

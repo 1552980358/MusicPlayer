@@ -116,4 +116,10 @@ class RecyclerViewAdapter(private val recyclerView: RecyclerView, private val li
         }
     }
     
+    fun resetAudioAudioList(newList: List<AudioInfo>) {
+        audioInfoList = newList
+        mediaItemList = null
+        notifyDataSetChanged()
+    }
+    
 }
