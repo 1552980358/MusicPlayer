@@ -21,7 +21,7 @@ object SettingUtil {
         if (!sharedPreferenceManager.contains(key)) {
             return null
         }
-        return sharedPreferenceManager.getInt(key, -1)
+        return sharedPreferenceManager.getString(key, null)?.toInt()
     }
     
     fun Activity.getIntSettingOrThrow(key: String): Int = getIntSetting(key) ?: throw Exception()
