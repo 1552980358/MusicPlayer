@@ -44,6 +44,17 @@ object SettingUtil {
     
     fun Fragment.getStringSetting(key: String) = requireActivity().getStringSetting(key)
     
-    fun Fragment.getStringSettingOrThrow(key: String) = getStringSetting(key) ?: throw Exception()
+    fun Fragment.getStringSettingOrThrow(key: String) = requireActivity().getStringSettingOrThrow(key)
+    
+    /**************************************************************************************/
+    fun Activity.getBooleanSetting(key: String): Boolean {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        if (!sharedPreferences.contains(key)) {
+            return false
+        }
+        return sharedPreferences.getBoolean(key, false)
+    }
+    
+    fun Fragment.getBooleanSetting(key: String) = requireActivity().getBooleanSetting(key)
     
 }
