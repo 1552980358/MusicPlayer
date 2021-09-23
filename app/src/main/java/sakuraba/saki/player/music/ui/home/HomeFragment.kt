@@ -49,6 +49,13 @@ import sakuraba.saki.player.music.util.LifeStateConstant.ON_CREATE_VIEW
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_DESTROY
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_DESTROY_VIEW
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_VIEW_CREATED
+import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO_FILTER_DURATION_ENABLE
+import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO_FILTER_DURATION_VALUE
+import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO_FILTER_SIZE_ENABLE
+import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO_FILTER_SIZE_VALUE
+import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
+import sakuraba.saki.player.music.util.SettingUtil.getIntSettingOrThrow
+import sakuraba.saki.player.music.util.SettingUtil.getStringSettingOrThrow
 
 class HomeFragment: Fragment() {
     
@@ -191,6 +198,7 @@ class HomeFragment: Fragment() {
                 var album: String?
                 var albumId: Long?
                 var duration: Long?
+                var size: Long?
                 while (moveToNext()) {
                     id = getStringOrNull(getColumnIndex(MediaStore.Audio.AudioColumns._ID))
                     title = getStringOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.TITLE))
@@ -201,8 +209,9 @@ class HomeFragment: Fragment() {
                     albumId = getLongOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM_ID))
                     @Suppress("InlinedApi")
                     duration = getLongOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.DURATION))
-                    if (id != null && title != null && artist != null && album != null && albumId != null && duration != null) {
-                        audioInfoList.add(AudioInfo(id, title, artist, album, albumId, duration))
+                    size = getLongOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.SIZE))
+                    if (id != null && title != null && artist != null && album != null && albumId != null && duration != null && size != null) {
+                        audioInfoList.add(AudioInfo(id, title, artist, album, albumId, duration, size))
                     }
                 }
                 close()
@@ -220,8 +229,15 @@ class HomeFragment: Fragment() {
     private fun readDatabase(audioInfoList: ArrayList<AudioInfo>) {
         Log.e(TAG, "readDatabase")
         audioInfoList.clear()
-        audioDatabaseHelper.queryAll(audioInfoList)
-        audioInfoList.forEachIndexed { index, audioInfo -> audioInfo.index = index}
+        audioDatabaseHelper.queryAll(audioInfoList) {
+            if (getBooleanSetting(KEY_AUDIO_FILTER_SIZE_ENABLE)) {
+                it[0] = (getIntSettingOrThrow(KEY_AUDIO_FILTER_SIZE_VALUE) * 1000).toString()
+            }
+            if (getBooleanSetting(KEY_AUDIO_FILTER_DURATION_ENABLE)) {
+                it[1] = getStringSettingOrThrow(KEY_AUDIO_FILTER_DURATION_VALUE)
+            }
+        }
+        audioInfoList.forEachIndexed { index, audioInfo -> audioInfo.index = index }
         CoroutineScope(Dispatchers.Main).launch { (fragmentHome.recyclerView.adapter as RecyclerViewAdapter).setAudioInfoList(audioInfoList) }
     }
     
