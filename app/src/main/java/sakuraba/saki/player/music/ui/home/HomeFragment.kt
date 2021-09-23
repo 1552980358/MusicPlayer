@@ -13,6 +13,9 @@ import android.provider.MediaStore
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
@@ -111,6 +114,9 @@ class HomeFragment: Fragment() {
         }
         
         audioDatabaseHelper = AudioDatabaseHelper(requireContext())
+        
+        setHasOptionsMenu(true)
+        
         return fragmentHome.root
     }
     
@@ -232,6 +238,16 @@ class HomeFragment: Fragment() {
         CoroutineScope(Dispatchers.Main).launch {
             (fragmentHome.recyclerView.adapter as RecyclerViewAdapter).setBitmaps(bitmaps)
         }
+    }
+    
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        inflater.inflate(R.menu.menu_home, menu)
+    }
+    
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        findNavController().navigate(R.id.nav_setting)
+        return super.onOptionsItemSelected(item)
     }
     
     override fun onDestroy() {
