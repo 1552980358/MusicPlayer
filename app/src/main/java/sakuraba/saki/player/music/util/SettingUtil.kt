@@ -28,7 +28,7 @@ object SettingUtil {
     
     fun Fragment.getIntSetting(key: String) = requireActivity().getIntSetting(key)
     
-    fun Fragment.getIntSettingOrThrow(key: String) = getIntSetting(key) ?: throw Exception()
+    fun Fragment.getIntSettingOrThrow(key: String) = requireActivity().getIntSettingOrThrow(key)
     
     /**************************************************************************************/
     
