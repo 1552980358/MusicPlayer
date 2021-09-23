@@ -45,10 +45,6 @@ import sakuraba.saki.player.music.ui.home.util.DividerItemDecoration
 import sakuraba.saki.player.music.ui.home.util.RecyclerViewAdapter
 import sakuraba.saki.player.music.util.ActivityFragmentInterface
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
-import sakuraba.saki.player.music.util.LifeStateConstant.ON_CREATE_VIEW
-import sakuraba.saki.player.music.util.LifeStateConstant.ON_DESTROY
-import sakuraba.saki.player.music.util.LifeStateConstant.ON_DESTROY_VIEW
-import sakuraba.saki.player.music.util.LifeStateConstant.ON_VIEW_CREATED
 import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO_FILTER_DURATION_ENABLE
 import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO_FILTER_DURATION_VALUE
 import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO_FILTER_SIZE_ENABLE
@@ -84,7 +80,6 @@ class HomeFragment: Fragment() {
     private var updatingJob: Job? = null
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        Log.e(TAG, ON_CREATE_VIEW)
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         
         _fragmentHomeBinding = FragmentHomeBinding.inflate(inflater)
@@ -128,7 +123,6 @@ class HomeFragment: Fragment() {
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.e(TAG, ON_VIEW_CREATED)
         if (!isReadExternalStoragePermissionGained) {
             registerRequestReadPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGained ->
                 if (isGained) {
@@ -267,13 +261,11 @@ class HomeFragment: Fragment() {
     }
     
     override fun onDestroy() {
-        Log.e(TAG, ON_DESTROY)
         requireContext().contentResolver.unregisterContentObserver(mediaStoreObserver)
         super.onDestroy()
     }
     
     override fun onDestroyView() {
-        Log.e(TAG, ON_DESTROY_VIEW)
         super.onDestroyView()
         _fragmentHomeBinding = null
     }

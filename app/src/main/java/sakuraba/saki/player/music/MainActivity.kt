@@ -1,5 +1,6 @@
 package sakuraba.saki.player.music
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
@@ -29,6 +30,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -90,6 +93,39 @@ class MainActivity: BaseMediaControlActivity() {
     private var _playProgressBar: PlayProgressBar? = null
     private val playProgressBar get() = _playProgressBar!!
     
+    private val fragmentLifecycleCallbacks =  object : FragmentManager.FragmentLifecycleCallbacks() {
+        override fun onFragmentAttached(fm: FragmentManager, f: Fragment, context: Context) {
+            Log.e(f::class.java.simpleName, "onFragmentAttached")
+        }
+        override fun onFragmentCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
+            Log.e(f::class.java.simpleName, "onFragmentCreated")
+        }
+        override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
+            Log.e(f::class.java.simpleName, "onFragmentViewCreated")
+        }
+        override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
+            Log.e(f::class.java.simpleName, "onFragmentStarted")
+        }
+        override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
+            Log.e(f::class.java.simpleName, "onFragmentResumed")
+        }
+        override fun onFragmentPaused(fm: FragmentManager, f: Fragment) {
+            Log.e(f::class.java.simpleName, "onFragmentPaused")
+        }
+        override fun onFragmentStopped(fm: FragmentManager, f: Fragment) {
+            Log.e(f::class.java.simpleName, "onFragmentStopped")
+        }
+        override fun onFragmentViewDestroyed(fm: FragmentManager, f: Fragment) {
+            Log.e(f::class.java.simpleName, "onFragmentViewDestroyed")
+        }
+        override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
+            Log.e(f::class.java.simpleName, "onFragmentDestroyed")
+        }
+        override fun onFragmentDetached(fm: FragmentManager, f: Fragment) {
+            Log.e(f::class.java.simpleName, "onFragmentDetached")
+        }
+    }
+    
     private lateinit var navController: NavController
     
     private var job: Job? = null
@@ -100,8 +136,9 @@ class MainActivity: BaseMediaControlActivity() {
     private lateinit var audioInfo: AudioInfo
     
     override fun onCreate(savedInstanceState: Bundle?) {
-        
         super.onCreate(savedInstanceState)
+        
+        supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
         
         activityFragmentInterface = ActivityFragmentInterface { pos, audioInfo, audioInfoList ->
             mediaControllerCompat.transportControls.playFromMediaId(audioInfo?.audioId, bundle {
@@ -355,6 +392,7 @@ class MainActivity: BaseMediaControlActivity() {
     }
     
     override fun onDestroy() {
+        supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks)
         super.onDestroy()
         _activityMainMainBinding = null
     }
