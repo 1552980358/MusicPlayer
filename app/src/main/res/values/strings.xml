@@ -35,7 +35,7 @@
     <string name="key_audio_filter_size_unit">Unit: KiloByte (KiB)</string>
     
     <string name="key_audio_filter_duration_enable">key_audio_filter_duration_enable</string>
-    <string name="key_audio_filter_duration_value">key_audio_filter_duration_duration</string>
+    <string name="key_audio_filter_duration_value">key_audio_filter_duration_value</string>
     <string name="key_audio_filter_duration_unit">Unit: Millisecond (ms)</string>
 
 
