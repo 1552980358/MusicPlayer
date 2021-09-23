@@ -24,6 +24,7 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
         private const val KEY_AUDIO_ALBUM_PINYIN = "audio_album_pinyin"
         private const val KEY_AUDIO_ALBUM_ID = "audio_album_id"
         private const val KEY_AUDIO_DURATION = "audio_duration"
+        private const val KEY_AUDIO_SIZE = "audio_size"
         
         private const val KEY_ARRANGEMENT = "arrangement"
         
@@ -42,6 +43,7 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
                 "$KEY_AUDIO_ALBUM_PINYIN text, " +
                 "$KEY_AUDIO_ALBUM_ID text, " +
                 "$KEY_AUDIO_DURATION long," +
+                "$KEY_AUDIO_SIZE long," +
                 "primary key ( $KEY_ARRANGEMENT, $KEY_AUDIO_ID )" +
                 ")"
         )
@@ -63,13 +65,15 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
                     put(KEY_AUDIO_ALBUM_PINYIN, audioInfo.audioAlbumPinyin)
                     put(KEY_AUDIO_ALBUM_ID, audioInfo.audioAlbumId)
                     put(KEY_AUDIO_DURATION, audioInfo.audioDuration)
+                    put(KEY_AUDIO_SIZE, audioInfo.audioSize)
                 })
             }
         }.close()
     
     fun clearTable(table: String) = writableDatabase.apply { delete(table, null, null) }.close()
     
-    fun queryAll(arrayList: ArrayList<AudioInfo>) = readableDatabase.rawQuery("select * from $TABLE_AUDIO", null)?.apply {
+    fun queryAll(arrayList: ArrayList<AudioInfo>, array: (Array<String>) -> Unit) =
+        readableDatabase.rawQuery("select * from $TABLE_AUDIO where $KEY_AUDIO_SIZE>? and $KEY_AUDIO_DURATION>?", arrayOf("0", "0").apply(array))?.apply {
         if (!moveToFirst()) {
             return@apply
         }
@@ -84,7 +88,8 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
                     getString(getColumnIndexOrThrow(KEY_AUDIO_ALBUM)),
                     getString(getColumnIndexOrThrow(KEY_AUDIO_ALBUM_PINYIN)),
                     getLong(getColumnIndexOrThrow(KEY_AUDIO_ALBUM_ID)),
-                    getLong(getColumnIndexOrThrow(KEY_AUDIO_DURATION))
+                    getLong(getColumnIndexOrThrow(KEY_AUDIO_DURATION)),
+                    getLong(getColumnIndexOrThrow(KEY_AUDIO_SIZE))
                 ))
             }
         } while (moveToNext())
