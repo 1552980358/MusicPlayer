@@ -407,16 +407,27 @@ class PlayActivity: BaseMediaControlActivity() {
         viewModel.updateDuration(metadata.getLong(METADATA_KEY_DURATION))
         // textViewTitle.text = metadata.getString(METADATA_KEY_TITLE)
         // textViewSummary.text = metadata.getString(METADATA_KEY_ARTIST)
-        ValueAnimator.ofArgb(BLACK, WHITE, BLACK).apply {
-            duration = 800 // 500 may cause the text no change unpredictably
+        ValueAnimator.ofArgb(BLACK, WHITE).apply {
+            duration = 400
             addUpdateListener {
                 textViewTitle.setTextColor(animatedValue as Int)
                 textViewSummary.setTextColor(animatedValue as Int)
-                if (animatedValue as Int == WHITE) {
+            }
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    super.onAnimationEnd(animation)
                     textViewTitle.text = metadata.getString(METADATA_KEY_TITLE)
                     textViewSummary.text = metadata.getString(METADATA_KEY_ARTIST)
+                    ValueAnimator.ofArgb(WHITE, BLACK).apply {
+                        duration = 400
+                        addUpdateListener {
+                            textViewTitle.setTextColor(animatedValue as Int)
+                            textViewSummary.setTextColor(animatedValue as Int)
+                        }
+                        start()
+                    }
                 }
-            }
+            })
             start()
         }
         mediaBrowserCompat.sendCustomAction(ACTION_REQUEST_AUDIO_LIST, null, object : MediaBrowserCompat.CustomActionCallback() {
