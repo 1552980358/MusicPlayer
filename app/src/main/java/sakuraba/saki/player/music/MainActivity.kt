@@ -175,8 +175,8 @@ class MainActivity: BaseMediaControlActivity() {
         activityMain.navView.setupWithNavController(navController)
         
         behavior = BottomSheetBehavior.from(findViewById(R.id.relative_layout_root))
-        behavior.isHideable = true
-        behavior.state = STATE_HIDDEN
+        behavior.peekHeight = 0
+        behavior.state = STATE_COLLAPSED
         behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 Log.e(TAG, "BottomSheetBehavior.BottomSheetCallback.onStateChanged $newState")
@@ -284,10 +284,10 @@ class MainActivity: BaseMediaControlActivity() {
                     isPlaying = true
                 }
                 isPlaying = true
-                job = getProgressSyncJob(state.position.toInt())
-                if (behavior.state == STATE_HIDDEN) {
+                job = getProgressSyncJob(state.position)
+                if (behavior.state == STATE_COLLAPSED) {
                     behavior.state = STATE_EXPANDED
-                    behavior.isHideable = false
+                    behavior.isDraggable = false
                     findViewById<ConstraintLayout>(R.id.constraint_layout).apply {
                         layoutParams = (layoutParams as CoordinatorLayout.LayoutParams).apply {
                             setMargins(0, 0, 0, getDimensionPixelSize(R.dimen.home_bottom_sheet_height))
