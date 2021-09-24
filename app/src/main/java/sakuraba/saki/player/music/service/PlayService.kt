@@ -307,9 +307,6 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
                     putInt(EXTRAS_STATUS, playbackStateCompat.state)
                     putLong(EXTRAS_PROGRESS, exoPlayer.currentPosition/**mediaPlayer.currentPosition*/)
                     putInt(EXTRAS_PLAY_MODE, playbackStateCompat.extras?.getInt(EXTRAS_PLAY_MODE) ?: PLAY_MODE_LIST)
-                    playbackStateCompat.extras?.let { extras ->
-                        putInt(EXTRAS_PLAY_MODE, extras.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST))
-                    }
                     if (listPos != -1 && ::audioInfoList.isInitialized) {
                         putSerializable(EXTRAS_AUDIO_INFO, audioInfoList[listPos])
                     }
@@ -421,12 +418,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
     
     override fun onPlaybackStateChanged(playbackState: Int) {
         if (playbackState == Player.STATE_ENDED) {
-            val playMode = playbackStateCompat.extras?.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST)
-            if (playMode == null) {
-                mediaSession.controller.transportControls.skipToNext()
-                return
-            }
-            when (playMode) {
+            when (playbackStateCompat.extras?.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST)) {
                 PLAY_MODE_RANDOM, PLAY_MODE_LIST -> {
                     mediaSession.controller.transportControls.skipToNext()
                 }
