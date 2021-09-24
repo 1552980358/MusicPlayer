@@ -336,6 +336,7 @@ class PlayActivity: BaseMediaControlActivity() {
                         viewModel.updateDuration(audioInfo.audioDuration)
                         viewModel.updateProgress(resultData.getLong(Constants.EXTRAS_PROGRESS))
                         viewModel.updateState(resultData.getInt(EXTRAS_STATUS))
+                        viewModel.updatePlayMode(resultData.getInt(EXTRAS_PLAY_MODE))
                         when (viewModel.stateValue) {
                             STATE_PLAYING -> {
                                 activityPlay.floatingActionButton.setImageResource(R.drawable.ic_pause)
