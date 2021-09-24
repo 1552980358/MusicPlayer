@@ -35,8 +35,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -239,7 +239,7 @@ class MainActivity: BaseMediaControlActivity() {
                         Log.e(TAG, "onResult ${resultData == null}")
                         resultData ?: return
                         audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
-                        val progress = resultData.getInt(EXTRAS_PROGRESS)
+                        val progress = resultData.getLong(EXTRAS_PROGRESS)
                         playProgressBar.max = audioInfo.audioDuration
                         viewModel.updateProgress(progress)
                         // playBackState = resultData.getInt(EXTRAS_STATUS)
@@ -340,7 +340,7 @@ class MainActivity: BaseMediaControlActivity() {
                     Log.e(TAG, "onResult ${resultData == null}")
                     resultData ?: return
                     audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
-                    val progress = resultData.getInt(EXTRAS_PROGRESS)
+                    val progress = resultData.getLong(EXTRAS_PROGRESS)
                     playProgressBar.max = audioInfo.audioDuration
                     viewModel.updateProgress(progress)
                     // playBackState = resultData.getInt(EXTRAS_STATUS)
@@ -367,7 +367,7 @@ class MainActivity: BaseMediaControlActivity() {
     }
     
     @Suppress("DuplicatedCode")
-    private fun getProgressSyncJob(progress: Int) = CoroutineScope(Dispatchers.IO).launch {
+    private fun getProgressSyncJob(progress: Long) = CoroutineScope(Dispatchers.IO).launch {
         val currentProgress = delayForCorrection(progress)
         launch(Dispatchers.Main) { viewModel.updateProgress(currentProgress) }
         while (isPlaying) {
@@ -376,12 +376,12 @@ class MainActivity: BaseMediaControlActivity() {
         }
     }
     
-    private suspend fun delayForCorrection(progress: Int): Int {
+    private suspend fun delayForCorrection(progress: Long): Long {
         val diff = progress % 1000L
         if (diff != 0L) {
             delay(diff)
         }
-        return progress + diff.toInt()
+        return progress + diff
     }
     
     override fun onPause() {

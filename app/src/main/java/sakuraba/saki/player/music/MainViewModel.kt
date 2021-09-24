@@ -7,11 +7,11 @@ import androidx.lifecycle.ViewModel
 
 class MainViewModel: ViewModel() {
     
-    private val _progress = MutableLiveData<Int>()
-    fun updateProgress(newProgress: Int) {
+    private val _progress = MutableLiveData<Long>()
+    fun updateProgress(newProgress: Long) {
         _progress.value = newProgress
     }
-    val progress get() = _progress as LiveData<Int>
+    val progress get() = _progress as LiveData<Long>
     val progressValue get() = _progress.value!!
     
     private val _state = MutableLiveData<Int>()

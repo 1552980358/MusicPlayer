@@ -334,7 +334,7 @@ class PlayActivity: BaseMediaControlActivity() {
                         job?.cancel()
                         val audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
                         viewModel.updateDuration(audioInfo.audioDuration)
-                        viewModel.updateProgress(resultData.getInt(Constants.EXTRAS_PROGRESS).toLong())
+                        viewModel.updateProgress(resultData.getLong(Constants.EXTRAS_PROGRESS))
                         viewModel.updateState(resultData.getInt(EXTRAS_STATUS))
                         when (viewModel.stateValue) {
                             STATE_PLAYING -> {
@@ -530,7 +530,7 @@ class PlayActivity: BaseMediaControlActivity() {
                     job?.cancel()
                     val audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
                     viewModel.updateDuration(audioInfo.audioDuration)
-                    viewModel.updateProgress(resultData.getInt(Constants.EXTRAS_PROGRESS).toLong())
+                    viewModel.updateProgress(resultData.getLong(Constants.EXTRAS_PROGRESS))
                     viewModel.updateState(resultData.getInt(EXTRAS_STATUS))
                     when (viewModel.stateValue) {
                         STATE_PLAYING -> {

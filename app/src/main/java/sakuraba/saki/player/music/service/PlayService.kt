@@ -2,8 +2,6 @@ package sakuraba.saki.player.music.service
 
 import android.app.Notification
 import android.content.Intent
-import android.media.MediaPlayer
-import android.media.MediaPlayer.OnCompletionListener
 import android.os.Bundle
 import android.os.PowerManager
 import android.os.PowerManager.PARTIAL_WAKE_LOCK
@@ -28,6 +26,8 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_STOPPED
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import androidx.media.MediaBrowserServiceCompat
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.register
 import lib.github1552980358.ktExtension.android.os.bundle
@@ -38,9 +38,10 @@ import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.service.util.MediaMetadataUtil.setMediaMetadata
 import sakuraba.saki.player.music.service.util.createNotificationManager
 import sakuraba.saki.player.music.service.util.getNotification
+import sakuraba.saki.player.music.service.util.mediaUriStr
+import sakuraba.saki.player.music.service.util.parseAsUri
 import sakuraba.saki.player.music.service.util.startForeground
 import sakuraba.saki.player.music.service.util.startService
-import sakuraba.saki.player.music.service.util.syncPlayAndPrepareMediaId
 import sakuraba.saki.player.music.service.util.update
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
 import sakuraba.saki.player.music.util.Constants.ACTION_EXTRA
@@ -65,9 +66,8 @@ import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PLAY
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PREV
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_CREATE
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_START_COMMAND
-import java.io.Serializable
 
-class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
+class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player.Listener {
     
     companion object {
         private const val TAG = "PlayService"
@@ -77,7 +77,7 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
             ACTION_PLAY_PAUSE or ACTION_STOP or ACTION_SEEK_TO or ACTION_PLAY_FROM_MEDIA_ID or ACTION_SKIP_TO_NEXT or ACTION_SKIP_TO_PREVIOUS or ACTION_SKIP_TO_QUEUE_ITEM
     }
     
-    private lateinit var mediaPlayer: MediaPlayer
+    // private lateinit var mediaPlayer: MediaPlayer
     
     private lateinit var audioInfoList: ArrayList<AudioInfo>
     private var listPos = -1
@@ -98,7 +98,8 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
                 .setState(STATE_PLAYING, playbackStateCompat.position, 1F)
                 .build()
             mediaSession.setPlaybackState(playbackStateCompat)
-            mediaPlayer.start()
+            // mediaPlayer.start()
+            exoPlayer.play()
             startService(PlayService::class.java) {
                 putExtra(ACTION_EXTRA, EXTRAS_PLAY)
             }
@@ -109,10 +110,11 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
                 return
             }
             playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
-                .setState(STATE_PAUSED, mediaPlayer.currentPosition.toLong(), 1F)
+                .setState(STATE_PAUSED, exoPlayer.currentPosition/*mediaPlayer.currentPosition.toLong()*/, 1F)
                 .build()
             mediaSession.setPlaybackState(playbackStateCompat)
-            mediaPlayer.pause()
+            // mediaPlayer.pause()
+            exoPlayer.pause()
             startService(PlayService::class.java) {
                 putExtra(ACTION_EXTRA, EXTRAS_PAUSE)
             }
@@ -126,8 +128,10 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
                 .setState(STATE_STOPPED, 0, 1F)
                 .build()
             mediaSession.setPlaybackState(playbackStateCompat)
-            mediaPlayer.pause()
-            mediaPlayer.seekTo(0)
+            // mediaPlayer.pause()
+            // mediaPlayer.seekTo(0)
+            exoPlayer.pause()
+            exoPlayer.seekTo(0)
         }
     
         override fun onSkipToQueueItem(id: Long) {
@@ -178,12 +182,23 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
                 .build()
             mediaSession.setMetadata(mediaMetadataCompat)
             
-            mediaPlayer.syncPlayAndPrepareMediaId(this@PlayService, mediaId) {
-                playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
-                    .setState(STATE_PLAYING, 0, 1F)
-                    .build()
-                mediaSession.setPlaybackState(playbackStateCompat)
-            }
+            // mediaPlayer.syncPlayAndPrepareMediaId(this@PlayService, mediaId) {
+            //    playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+            //        .setState(STATE_PLAYING, 0, 1F)
+            //        .build()
+            //    mediaSession.setPlaybackState(playbackStateCompat)
+            //}
+            exoPlayer.stop()
+            exoPlayer.setMediaItem(com.google.android.exoplayer2.MediaItem.fromUri(mediaId.mediaUriStr.parseAsUri))
+            exoPlayer.prepare()
+    
+            playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                .setState(STATE_PLAYING, 0, 1F)
+                .build()
+            mediaSession.setPlaybackState(playbackStateCompat)
+            
+            exoPlayer.play()
+            
             startService(PlayService::class.java) {
                 putExtra(ACTION_EXTRA, EXTRAS_PLAY)
             }
@@ -194,9 +209,12 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
                 .setState(playbackStateCompat.state, pos, 1F)
                 .build()
             mediaSession.setPlaybackState(playbackStateCompat)
-            mediaPlayer.seekTo(pos.toInt())
+            // mediaPlayer.seekTo(pos.toInt())
+            exoPlayer.seekTo(pos)
         }
     }
+    
+    private lateinit var exoPlayer: Player
     
     @Volatile
     private lateinit var playbackStateCompat: PlaybackStateCompat
@@ -234,13 +252,15 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
         }
         sessionToken = mediaSession.sessionToken
         
-        mediaPlayer = MediaPlayer()
-        mediaPlayer.setOnCompletionListener(this)
+        // mediaPlayer = MediaPlayer()
+        // mediaPlayer.setOnCompletionListener(this)
+        
+        exoPlayer = SimpleExoPlayer.Builder(this).build()
+        exoPlayer.addListener(this)
         
         notificationManager = createNotificationManager
         
         broadcastReceiver.register(this, arrayOf(FILTER_NOTIFICATION_PREV, FILTER_NOTIFICATION_PLAY, FILTER_NOTIFICATION_PAUSE, FILTER_NOTIFICATION_NEXT))
-        
         
         wakeLock = (getSystemService(POWER_SERVICE) as PowerManager).newWakeLock(PARTIAL_WAKE_LOCK, WAKE_LOCK_tAG)
     }
@@ -285,7 +305,7 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
                 }
                 result.sendResult(bundle {
                     putInt(EXTRAS_STATUS, playbackStateCompat.state)
-                    putInt(EXTRAS_PROGRESS, mediaPlayer.currentPosition)
+                    putLong(EXTRAS_PROGRESS, exoPlayer.currentPosition/**mediaPlayer.currentPosition*/)
                     putInt(EXTRAS_PLAY_MODE, playbackStateCompat.extras?.getInt(EXTRAS_PLAY_MODE) ?: PLAY_MODE_LIST)
                     playbackStateCompat.extras?.let { extras ->
                         putInt(EXTRAS_PLAY_MODE, extras.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST))
@@ -299,7 +319,7 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
                 extras?:return
                 val playMode = extras.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST)
                 playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
-                    .setState(playbackStateCompat.state, mediaPlayer.currentPosition.toLong(), 1F)
+                    .setState(playbackStateCompat.state, exoPlayer.currentPosition/*mediaPlayer.currentPosition.toLong()*/, 1F)
                     .setExtras(bundle { putInt(EXTRAS_PLAY_MODE, playMode) })
                     .build()
                 mediaSession.setPlaybackState(playbackStateCompat)
@@ -372,28 +392,58 @@ class PlayService: MediaBrowserServiceCompat(), OnCompletionListener {
                 .build(),
             MediaItem.FLAG_PLAYABLE
         )
+    /**
+     * override fun onCompletion(mediaPlayer: MediaPlayer?) {
+     *      val playMode = playbackStateCompat.extras?.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST)
+     *      if (playMode == null) {
+     *          mediaSession.controller.transportControls.skipToNext()
+     *          return
+     *      }
+     *      when (playMode) {
+     *          PLAY_MODE_RANDOM, PLAY_MODE_LIST -> {
+     *              mediaSession.controller.transportControls.skipToNext()
+     *          }
+     *          PLAY_MODE_SINGLE_CYCLE -> {
+     *              playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+     *                  .setState(STATE_PLAYING, 0, 1F)
+     *                  .build()
+     *              mediaSession.controller.transportControls.play()
+     *          }
+     *          PLAY_MODE_SINGLE -> {
+     *              mediaSession.controller.transportControls.stop()
+     *           }
+     *          else -> {
+     *              mediaSession.controller.transportControls.skipToNext()
+     *           }
+     *      }
+     * }
+     **/
     
-    override fun onCompletion(mediaPlayer: MediaPlayer?) {
-        val playMode = playbackStateCompat.extras?.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST)
-        if (playMode == null) {
-            mediaSession.controller.transportControls.skipToNext()
-            return
-        }
-        when (playMode) {
-            PLAY_MODE_RANDOM, PLAY_MODE_LIST -> {
+    override fun onPlaybackStateChanged(playbackState: Int) {
+        if (playbackState == Player.STATE_ENDED) {
+            val playMode = playbackStateCompat.extras?.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST)
+            if (playMode == null) {
                 mediaSession.controller.transportControls.skipToNext()
+                return
             }
-            PLAY_MODE_SINGLE_CYCLE -> {
-                playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
-                    .setState(STATE_PLAYING, 0, 1F)
-                    .build()
-                mediaSession.controller.transportControls.play()
-            }
-            PLAY_MODE_SINGLE -> {
-                mediaSession.controller.transportControls.stop()
-            }
-            else -> {
-                mediaSession.controller.transportControls.skipToNext()
+            when (playMode) {
+                PLAY_MODE_RANDOM, PLAY_MODE_LIST -> {
+                    mediaSession.controller.transportControls.skipToNext()
+                }
+                PLAY_MODE_SINGLE_CYCLE -> {
+                    playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                        .setState(STATE_PLAYING, 0, 1F)
+                        .build()
+                    exoPlayer.setMediaItem(com.google.android.exoplayer2.MediaItem.fromUri(audioInfoList[listPos].audioId.mediaUriStr.parseAsUri))
+                    exoPlayer.prepare()
+                    mediaSession.controller.transportControls.play()
+                }
+                PLAY_MODE_SINGLE -> {
+                    mediaSession.controller.transportControls.stop()
+                }
+                else -> {
+                    mediaSession.controller.transportControls.skipToNext()
+                }
             }
         }
     }

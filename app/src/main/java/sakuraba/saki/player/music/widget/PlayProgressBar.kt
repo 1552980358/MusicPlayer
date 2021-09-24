@@ -29,7 +29,7 @@ class PlayProgressBar: View {
         paint.style = FILL_AND_STROKE
     }
     
-    var progress = 0
+    var progress = 0L
         set(value) {
             field = value
             invalidate()

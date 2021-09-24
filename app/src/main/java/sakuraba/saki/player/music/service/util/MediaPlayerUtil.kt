@@ -9,10 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 
-private val String.mediaUriStr get() =
+val String.mediaUriStr get() =
     "${MediaStore.Audio.Media.EXTERNAL_CONTENT_URI}${File.separator}${this}"
 
-private val String.parseAsUri get() = Uri.parse(this)
+val String.parseAsUri get() = Uri.parse(this)
 
 fun MediaPlayer.syncPlayAndPrepareMediaId(context: Context, mediaId: String, block: () -> Unit) {
     stop()
