@@ -59,6 +59,8 @@ dependencies {
     kapt "androidx.databinding:databinding-compiler-common:$gradle_version"
 
     implementation 'com.google.android.material:material:1.4.0'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.15.1'
+    implementation 'com.google.android.exoplayer:exoplayer-hls:2.15.1'
 
     implementation 'com.github.promeg:tinypinyin:2.0.3'
 
