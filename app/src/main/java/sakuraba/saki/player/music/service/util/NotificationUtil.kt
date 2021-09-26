@@ -56,10 +56,7 @@ fun Context.getNotification(audioInfo: AudioInfo, isPaused: Boolean = false) =
         setVibrate(longArrayOf(0))
         setContentTitle(audioInfo.audioTitle)
         setContentText("${audioInfo.audioArtist} - ${audioInfo.audioAlbum}")
-        var bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) }
-        if (bitmap == null) {
-            bitmap = resources.getDrawable(R.drawable.ic_music, null).toBitmap()
-        }
+        val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: resources.getDrawable(R.drawable.ic_music, null).toBitmap()
         setLargeIcon(bitmap)
         addAction(
             R.drawable.ic_prev,

@@ -162,10 +162,7 @@ class PlayActivity: BaseMediaControlActivity() {
                 @Suppress("SetTextI18n")
                 textViewSummary.text = "${audioInfo.audioArtist} - ${audioInfo.audioAlbum}"
             }
-            var bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) }
-            if (bitmap == null) {
-                bitmap = resources.getDrawable(R.drawable.ic_music, null).toBitmap()
-            }
+            val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: resources.getDrawable(R.drawable.ic_music, null).toBitmap()
             launch(Dispatchers.Main) { activityPlay.imageView.setImageBitmap(bitmap) }
             MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated(true)
         }
@@ -397,10 +394,7 @@ class PlayActivity: BaseMediaControlActivity() {
     override fun onMediaControllerMetadataChanged(metadata: MediaMetadataCompat?) {
         metadata ?: return
         CoroutineScope(Dispatchers.IO).launch {
-            var bitmap = tryRun { loadAlbumArt(metadata.getString(METADATA_KEY_ALBUM_ART_URI)) }
-            if (bitmap == null) {
-                bitmap = resources.getDrawable(R.drawable.ic_music, null).toBitmap()
-            }
+            val bitmap = tryRun { loadAlbumArt(metadata.getString(METADATA_KEY_ALBUM_ART_URI)) } ?: resources.getDrawable(R.drawable.ic_music, null).toBitmap()
             launch(Dispatchers.Main) { activityPlay.imageView.setImageBitmap(bitmap) }
             MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated(false)
         }

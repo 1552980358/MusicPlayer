@@ -1,7 +1,6 @@
 package sakuraba.saki.player.music
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
@@ -46,7 +45,6 @@ import lib.github1552980358.ktExtension.android.content.intent
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.android.view.getDimensionPixelSize
-import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import sakuraba.saki.player.music.base.BaseMediaControlActivity
 import sakuraba.saki.player.music.databinding.ActivityMainBinding
@@ -151,10 +149,7 @@ class MainActivity: BaseMediaControlActivity() {
                 playProgressBar.max = audioInfo.audioDuration
                 textView.text = audioInfo.audioTitle
                 CoroutineScope(Dispatchers.IO).launch {
-                    var bitmap: Bitmap? = tryRun { loadAlbumArt(audioInfo.audioAlbumId) }
-                    if (bitmap == null) {
-                        bitmap = resources.getDrawable(R.drawable.ic_music, null).toBitmap()
-                    }
+                    val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: resources.getDrawable(R.drawable.ic_music, null).toBitmap()
                     launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
                 }
             }
@@ -254,11 +249,8 @@ class MainActivity: BaseMediaControlActivity() {
                         }
                         textView.text = audioInfo.audioTitle
                         CoroutineScope(Dispatchers.IO).launch {
-                            var bitmap: Bitmap? = null
-                            tryOnly { bitmap = loadAlbumArt(audioInfo.audioAlbumId) }
-                            if (bitmap != null) {
-                                launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
-                            }
+                            val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: resources.getDrawable(R.drawable.ic_music, null).toBitmap()
+                            launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
                         }
                     }
                 })
@@ -311,10 +303,7 @@ class MainActivity: BaseMediaControlActivity() {
     override fun onMediaControllerMetadataChanged(metadata: MediaMetadataCompat?) {
         metadata ?: return
         CoroutineScope(Dispatchers.IO).launch {
-            var bitmap = tryRun { loadAlbumArt(metadata.getString(METADATA_KEY_ALBUM_ART_URI)) }
-            if (bitmap == null) {
-                bitmap = resources.getDrawable(R.drawable.ic_music, null).toBitmap()
-            }
+            val bitmap = tryRun { loadAlbumArt(metadata.getString(METADATA_KEY_ALBUM_ART_URI)) } ?: resources.getDrawable(R.drawable.ic_music, null).toBitmap()
             launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
         }
         textView.text = metadata.getString(METADATA_KEY_TITLE)
@@ -355,11 +344,8 @@ class MainActivity: BaseMediaControlActivity() {
                     }
                     textView.text = audioInfo.audioTitle
                     CoroutineScope(Dispatchers.IO).launch {
-                        var bitmap: Bitmap? = null
-                        tryOnly { bitmap = loadAlbumArt(audioInfo.audioAlbumId) }
-                        if (bitmap != null) {
-                            launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
-                        }
+                        val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: resources.getDrawable(R.drawable.ic_music, null).toBitmap()
+                        launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
                     }
                 }
             })
