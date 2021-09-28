@@ -49,7 +49,6 @@ import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import sakuraba.saki.player.music.base.BaseMediaControlActivity
 import sakuraba.saki.player.music.databinding.ActivityMainBinding
 import sakuraba.saki.player.music.service.util.AudioInfo
-import sakuraba.saki.player.music.ui.home.HomeFragment.Companion.INTENT_ACTIVITY_FRAGMENT_INTERFACE
 import sakuraba.saki.player.music.util.ActivityFragmentInterface
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
@@ -68,6 +67,7 @@ class MainActivity: BaseMediaControlActivity() {
     
     companion object {
         const val TAG = "MainActivity"
+        const val INTENT_ACTIVITY_FRAGMENT_INTERFACE = "ActivityFragmentInterface"
     }
     
     private lateinit var appBarConfiguration: AppBarConfiguration

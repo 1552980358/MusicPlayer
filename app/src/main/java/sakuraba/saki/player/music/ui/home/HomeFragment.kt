@@ -36,6 +36,7 @@ import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.makeSh
 import lib.github1552980358.ktExtension.androidx.fragment.app.findActivityViewById
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import sakuraba.saki.player.music.BuildConfig.APPLICATION_ID
+import sakuraba.saki.player.music.MainActivity.Companion.INTENT_ACTIVITY_FRAGMENT_INTERFACE
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.database.AudioDatabaseHelper
 import sakuraba.saki.player.music.database.AudioDatabaseHelper.Companion.TABLE_AUDIO
