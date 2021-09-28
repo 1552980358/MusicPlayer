@@ -10,6 +10,7 @@ object Constants {
     const val EXTRAS_STATUS = "status"
     const val EXTRAS_PROGRESS = "progress"
     const val EXTRAS_INDEX = "index"
+    const val EXTRAS_DATA = "data"
     
     const val ACTION_REQUEST_STATUS = "request_status"
     const val ACTION_UPDATE_PLAY_MODE = "update_play_mode"
