@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import sakuraba.saki.player.music.service.util.AudioInfo
+import sakuraba.saki.player.music.util.MediaAlbum
 
 class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     
@@ -14,6 +15,7 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
         private const val DATABASE_VERSION = 1
         
         const val TABLE_AUDIO = "AudioTable"
+        const val TABLE_ALBUM = "AlbumTable"
         
         private const val KEY_AUDIO_ID = "audio_id"
         private const val KEY_AUDIO_TITLE = "audio_title"
@@ -26,15 +28,17 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
         private const val KEY_AUDIO_DURATION = "audio_duration"
         private const val KEY_AUDIO_SIZE = "audio_size"
         
-        private const val KEY_ARRANGEMENT = "arrangement"
+        private const val KEY_ALBUM_ID = "album_id"
+        private const val KEY_ALBUM_TITLE = "album_title"
+        private const val KEY_ALBUM_TITLE_PINYIN = "album_title_pinyin"
+        private const val KEY_ALBUM_NUMBER_OF_AUDIO = "album_number_of_audio"
         
     }
     
     override fun onCreate(sqLiteDatabase: SQLiteDatabase?) {
         sqLiteDatabase?.execSQL(
             "create table if not exists $TABLE_AUDIO(" +
-                "$KEY_ARRANGEMENT integer not null, " +
-                "$KEY_AUDIO_ID int not null, " +
+                "$KEY_AUDIO_ID text not null, " +
                 "$KEY_AUDIO_TITLE text, " +
                 "$KEY_AUDIO_TITLE_PINYIN text, " +
                 "$KEY_AUDIO_ARTIST text, " +
@@ -44,7 +48,16 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
                 "$KEY_AUDIO_ALBUM_ID text, " +
                 "$KEY_AUDIO_DURATION long," +
                 "$KEY_AUDIO_SIZE long," +
-                "primary key ( $KEY_ARRANGEMENT, $KEY_AUDIO_ID )" +
+                "primary key ( $KEY_AUDIO_ID )" +
+                ")"
+        )
+        sqLiteDatabase?.execSQL(
+            "create table if not exists $TABLE_ALBUM(" +
+                "$KEY_ALBUM_ID text not null, " +
+                "$KEY_ALBUM_TITLE text, " +
+                "$KEY_ALBUM_TITLE_PINYIN text, " +
+                "$KEY_ALBUM_NUMBER_OF_AUDIO int," +
+                "primary key ( $KEY_ALBUM_ID )" +
                 ")"
         )
     }
@@ -53,9 +66,8 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
     
     fun insertAudio(table: String, audioInfoList: ArrayList<AudioInfo>) =
         writableDatabase.apply {
-            audioInfoList.forEachIndexed { index, audioInfo ->
+            audioInfoList.forEach { audioInfo ->
                 insert(table, null, ContentValues().apply {
-                    put(KEY_ARRANGEMENT, index)
                     put(KEY_AUDIO_ID, audioInfo.audioId)
                     put(KEY_AUDIO_TITLE, audioInfo.audioTitle)
                     put(KEY_AUDIO_TITLE_PINYIN, audioInfo.audioTitlePinyin)
@@ -70,9 +82,21 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
             }
         }.close()
     
+    fun insertMediaAlbum(table: String, mediaAlbumList: ArrayList<MediaAlbum>) =
+        writableDatabase.apply {
+            mediaAlbumList.forEach { mediaAlbum ->
+                insert(table, null, ContentValues().apply {
+                    put(KEY_ALBUM_ID, mediaAlbum.albumId)
+                    put(KEY_ALBUM_TITLE, mediaAlbum.title)
+                    put(KEY_ALBUM_TITLE_PINYIN, mediaAlbum.titlePinyin)
+                    put(KEY_ALBUM_NUMBER_OF_AUDIO, mediaAlbum.numberOfAudio)
+                })
+            }
+        }.close()
+    
     fun clearTable(table: String) = writableDatabase.apply { delete(table, null, null) }.close()
     
-    fun queryAll(arrayList: ArrayList<AudioInfo>, array: (Array<String>) -> Unit) =
+    fun queryAllAudio(arrayList: ArrayList<AudioInfo>, array: (Array<String>) -> Unit) =
         readableDatabase.rawQuery("select * from $TABLE_AUDIO where $KEY_AUDIO_SIZE>? and $KEY_AUDIO_DURATION>?", arrayOf("0", "0").apply(array))?.apply {
         if (!moveToFirst()) {
             return@apply
@@ -94,5 +118,45 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
             }
         } while (moveToNext())
     }?.close()
+    
+    fun queryMediaAlbum(arrayList: ArrayList<MediaAlbum>) =
+        readableDatabase.rawQuery("select * from $TABLE_ALBUM", null).apply {
+            if (!moveToFirst()) {
+                return@apply
+            }
+            do {
+                tryOnly {
+                    arrayList.add(
+                        MediaAlbum(
+                            getLong(getColumnIndexOrThrow(KEY_ALBUM_ID)),
+                            getString(getColumnIndexOrThrow(KEY_ALBUM_TITLE)),
+                            getString(getColumnIndexOrThrow(KEY_ALBUM_TITLE_PINYIN)),
+                            getInt(getColumnIndexOrThrow(KEY_ALBUM_NUMBER_OF_AUDIO))
+                        )
+                    )
+                }
+            } while (moveToNext())
+        }.close()
+    
+    fun queryAudioForMediaAlbum(arrayList: ArrayList<AudioInfo>, albumId: Long) =
+        readableDatabase.rawQuery("select * from $TABLE_AUDIO where $KEY_AUDIO_ALBUM_ID=?", arrayOf(albumId.toString())).apply {
+            if (!moveToFirst()) {
+                return@apply
+            }
+            do {
+                arrayList.add(AudioInfo(
+                    getString(getColumnIndexOrThrow(KEY_AUDIO_ID)),
+                    getString(getColumnIndexOrThrow(KEY_AUDIO_TITLE)),
+                    getString(getColumnIndexOrThrow(KEY_AUDIO_TITLE_PINYIN)),
+                    getString(getColumnIndexOrThrow(KEY_AUDIO_ARTIST)),
+                    getString(getColumnIndexOrThrow(KEY_AUDIO_ARTIST_PINYIN)),
+                    getString(getColumnIndexOrThrow(KEY_AUDIO_ALBUM)),
+                    getString(getColumnIndexOrThrow(KEY_AUDIO_ALBUM_PINYIN)),
+                    getLong(getColumnIndexOrThrow(KEY_AUDIO_ALBUM_ID)),
+                    getLong(getColumnIndexOrThrow(KEY_AUDIO_DURATION)),
+                    getLong(getColumnIndexOrThrow(KEY_AUDIO_SIZE))
+                ))
+            } while (moveToNext())
+        }.close()
     
 }
