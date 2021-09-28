@@ -43,5 +43,20 @@
     <dimen name="play_bottom_sheet_view_height">1dp</dimen>
     <dimen name="play_bottom_sheet_text_view_queue_margin_start_end">8dp</dimen>
     <dimen name="play_bottom_sheet_text_view_queue_margin_top_bottom">5dp</dimen>
+    
+    <dimen name="album_margin_start_end">5dp</dimen>
+    <dimen name="album_margin_mid">2.5dp</dimen>
+    <dimen name="album_margin_top_bottom">2.5dp</dimen>
+    <dimen name="album_text_margin">2.5dp</dimen>
+    
+    <dimen name="album_list_header_height">180dp</dimen>
+    <dimen name="album_list_album_art_size">150dp</dimen>
+    <dimen name="album_list_album_art_margin">15dp</dimen>
+    <dimen name="album_list_album_text_size">16sp</dimen>
+    <dimen name="album_list_recycler_view_content_height">60dp</dimen>
+    
+    <dimen name="album_list_recycler_view_content_text_view_num_size">40dp</dimen>
+    <dimen name="album_list_recycler_view_content_text_view_num_margin">10dp</dimen>
+    <dimen name="album_list_recycler_view_content_text_view_title_text_size">15sp</dimen>
 
 </resources>
