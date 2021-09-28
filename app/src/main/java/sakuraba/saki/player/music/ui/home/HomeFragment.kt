@@ -39,6 +39,7 @@ import sakuraba.saki.player.music.BuildConfig.APPLICATION_ID
 import sakuraba.saki.player.music.MainActivity.Companion.INTENT_ACTIVITY_FRAGMENT_INTERFACE
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.database.AudioDatabaseHelper
+import sakuraba.saki.player.music.database.AudioDatabaseHelper.Companion.TABLE_ALBUM
 import sakuraba.saki.player.music.database.AudioDatabaseHelper.Companion.TABLE_AUDIO
 import sakuraba.saki.player.music.databinding.FragmentHomeBinding
 import sakuraba.saki.player.music.service.util.AudioInfo
@@ -46,6 +47,7 @@ import sakuraba.saki.player.music.ui.home.util.DividerItemDecoration
 import sakuraba.saki.player.music.ui.home.util.RecyclerViewAdapter
 import sakuraba.saki.player.music.util.ActivityFragmentInterface
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
+import sakuraba.saki.player.music.util.MediaAlbum
 import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO_FILTER_DURATION_ENABLE
 import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO_FILTER_DURATION_VALUE
 import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO_FILTER_SIZE_ENABLE
@@ -58,7 +60,6 @@ class HomeFragment: Fragment() {
     
     companion object {
         private const val TAG = "HomeFragment"
-        const val INTENT_ACTIVITY_FRAGMENT_INTERFACE = "ActivityFragmentInterface"
     }
     
     private lateinit var viewModel: HomeViewModel
@@ -214,17 +215,28 @@ class HomeFragment: Fragment() {
         // Re-arrange
         if (audioInfoList.isNotEmpty()) {
             // audioInfoList.removeAll { audioInfo -> audioInfo.audioDuration < 3000 }
+            audioInfoList.sortBy { it.audioId }
+            audioDatabaseHelper.insertAudio(TABLE_AUDIO, audioInfoList)
             audioInfoList.sortBy { it.audioTitlePinyin }
             audioInfoList.forEachIndexed { index, audioInfo -> audioInfo.index = index }
-            audioDatabaseHelper.insertAudio(TABLE_AUDIO, audioInfoList)
             CoroutineScope(Dispatchers.Main).launch { (fragmentHome.recyclerView.adapter as RecyclerViewAdapter).setAudioInfoList(audioInfoList) }
+            
+            val mediaAlbumList = arrayListOf<MediaAlbum>()
+            audioInfoList.forEach { audioInfo ->
+                when (val index = mediaAlbumList.indexOfFirst { mediaAlbum -> mediaAlbum.albumId == audioInfo.audioAlbumId }) {
+                    -1 -> mediaAlbumList.add(MediaAlbum(audioInfo.audioAlbumId, audioInfo.audioAlbum, audioInfo.audioAlbumPinyin))
+                    else -> mediaAlbumList[index].numberOfAudio++
+                }
+            }
+            mediaAlbumList.sortBy { mediaAlbum -> mediaAlbum.titlePinyin }
+            audioDatabaseHelper.insertMediaAlbum(TABLE_ALBUM, mediaAlbumList)
         }
     }
     
     private fun readDatabase(audioInfoList: ArrayList<AudioInfo>) {
         Log.e(TAG, "readDatabase")
         audioInfoList.clear()
-        audioDatabaseHelper.queryAll(audioInfoList) {
+        audioDatabaseHelper.queryAllAudio(audioInfoList) {
             if (getBooleanSetting(KEY_AUDIO_FILTER_SIZE_ENABLE)) {
                 it[0] = (getIntSettingOrThrow(KEY_AUDIO_FILTER_SIZE_VALUE) * 1000).toString()
             }
@@ -232,6 +244,7 @@ class HomeFragment: Fragment() {
                 it[1] = getStringSettingOrThrow(KEY_AUDIO_FILTER_DURATION_VALUE)
             }
         }
+        audioInfoList.sortBy { it.audioTitlePinyin }
         audioInfoList.forEachIndexed { index, audioInfo -> audioInfo.index = index }
         CoroutineScope(Dispatchers.Main).launch { (fragmentHome.recyclerView.adapter as RecyclerViewAdapter).setAudioInfoList(audioInfoList) }
     }
@@ -247,7 +260,7 @@ class HomeFragment: Fragment() {
         }
         
         CoroutineScope(Dispatchers.Main).launch {
-            (fragmentHome.recyclerView.adapter as RecyclerViewAdapter).setBitmaps(bitmaps)
+            tryOnly { (fragmentHome.recyclerView.adapter as RecyclerViewAdapter).setBitmaps(bitmaps) }
         }
     }
     
