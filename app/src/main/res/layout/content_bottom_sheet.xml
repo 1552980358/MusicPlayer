@@ -46,6 +46,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/text_view"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textSize="15sp"
             android:textColor="@color/black"
             android:layout_toEndOf="@id/image_view"

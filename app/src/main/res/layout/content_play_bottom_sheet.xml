@@ -45,6 +45,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/text_view_title"
+                    android:ellipsize="end"
                     android:maxLines="1"
                     android:textColor="@color/black"
                     android:textSize="@dimen/play_bottom_sheet_text_view_title_text_size"
@@ -54,6 +55,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/text_view_summary"
+                    android:ellipsize="end"
                     android:maxLines="1" />
         
             </LinearLayout>
