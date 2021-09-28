@@ -12,6 +12,7 @@
     <string name="dialog_default">Default</string>
     
     <string name="menu_home">Home</string>
+    <string name="menu_album">Album</string>
     
     <string name="home_snack_open_setting_text">Please give permission on reading external storage in system setting</string>
     <string name="home_snack_open_setting_button">Setting</string>
