@@ -12,8 +12,28 @@
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_nav_home_to_nav_setting"
-            app:destination="@id/nav_setting"
-            />
+            app:destination="@id/nav_setting" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_album3"
+            app:destination="@id/nav_album" />
+    </fragment>
+    
+    <fragment
+        android:id="@+id/nav_album"
+        android:name="sakuraba.saki.player.music.ui.album.AlbumFragment"
+        tools:layout="@layout/fragment_album" >
+        <action
+            android:id="@+id/action_nav_album_to_nav_album_list"
+            app:destination="@id/nav_album_list"/>
+    </fragment>
+    
+    <fragment
+        android:id="@+id/nav_album_list"
+        android:name="sakuraba.saki.player.music.ui.album.albumList.AlbumListFragment"
+        tools:layout="@layout/fragment_album_list">
+        <argument
+            android:name="data"
+            app:argType="sakuraba.saki.player.music.util.MediaAlbum" />
     </fragment>
     
     <fragment
@@ -21,14 +41,10 @@
         android:name="sakuraba.saki.player.music.ui.setting.SettingFragment" >
         <action
             android:id="@+id/action_nav_setting_to_nav_setting_audio_filter"
-            app:destination="@id/nav_setting_audio_filter"
-            />
+            app:destination="@id/nav_setting_audio_filter" />
     </fragment>
     
     <fragment
         android:id="@+id/nav_setting_audio_filter"
-        android:name="sakuraba.saki.player.music.ui.setting.fragment.AudioFilterFragment" >
-    </fragment>
-    
-
+        android:name="sakuraba.saki.player.music.ui.setting.fragment.AudioFilterFragment" />
 </navigation>
