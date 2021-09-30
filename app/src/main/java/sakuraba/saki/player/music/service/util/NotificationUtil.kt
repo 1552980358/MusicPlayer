@@ -3,6 +3,7 @@ package sakuraba.saki.player.music.service.util
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -46,6 +47,8 @@ fun Service.startForeground(notification: Notification) = startForeground(Notifi
 
 fun NotificationManagerCompat.update(notification: Notification) = notify(NotificationId, notification)
 
+private val pendingIntentFlag get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) FLAG_IMMUTABLE else 0
+
 fun Context.getNotification(audioInfo: AudioInfo, isPaused: Boolean = false) =
     NotificationCompat.Builder(this, ChannelId).apply {
         setSmallIcon(R.mipmap.ic_launcher_round)
@@ -61,27 +64,27 @@ fun Context.getNotification(audioInfo: AudioInfo, isPaused: Boolean = false) =
         addAction(
             R.drawable.ic_prev,
             null,
-            PendingIntent.getBroadcast(this@getNotification, 0, Intent(FILTER_NOTIFICATION_PREV), 0)
+            PendingIntent.getBroadcast(this@getNotification, 0, Intent(FILTER_NOTIFICATION_PREV), pendingIntentFlag)
         )
         
         if (isPaused) {
             addAction(
                 R.drawable.ic_play,
                 null,
-                PendingIntent.getBroadcast(this@getNotification, 0, Intent(FILTER_NOTIFICATION_PLAY) , 0)
+                PendingIntent.getBroadcast(this@getNotification, 0, Intent(FILTER_NOTIFICATION_PLAY) , pendingIntentFlag)
             )
         } else {
             addAction(
                 R.drawable.ic_pause,
                 null,
-                PendingIntent.getBroadcast(this@getNotification, 0, Intent(FILTER_NOTIFICATION_PAUSE), 0)
+                PendingIntent.getBroadcast(this@getNotification, 0, Intent(FILTER_NOTIFICATION_PAUSE), pendingIntentFlag)
             )
         }
     
         addAction(
             R.drawable.ic_next,
             null,
-            PendingIntent.getBroadcast(this@getNotification, 0, Intent(FILTER_NOTIFICATION_NEXT), 0)
+            PendingIntent.getBroadcast(this@getNotification, 0, Intent(FILTER_NOTIFICATION_NEXT), pendingIntentFlag)
         )
         
     }.build()
