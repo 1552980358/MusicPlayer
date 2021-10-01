@@ -44,7 +44,7 @@ import sakuraba.saki.player.music.database.AudioDatabaseHelper.Companion.TABLE_A
 import sakuraba.saki.player.music.databinding.FragmentHomeBinding
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.ui.home.util.DividerItemDecoration
-import sakuraba.saki.player.music.ui.home.util.RecyclerViewAdapter
+import sakuraba.saki.player.music.ui.home.util.RecyclerViewAdapterUtil
 import sakuraba.saki.player.music.util.ActivityFragmentInterface
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.MediaAlbum
@@ -81,6 +81,8 @@ class HomeFragment: Fragment() {
     
     private var updatingJob: Job? = null
     
+    private lateinit var recyclerViewAdapter: RecyclerViewAdapterUtil
+    
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         
@@ -89,9 +91,10 @@ class HomeFragment: Fragment() {
         _activityFragmentInterface = requireActivity().intent.getSerializableExtra(INTENT_ACTIVITY_FRAGMENT_INTERFACE) as ActivityFragmentInterface
         
         fragmentHome.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        fragmentHome.recyclerView.adapter = RecyclerViewAdapter { pos ->
-            activityFragmentInterface.onFragmentChanged(pos, viewModel.audioInfoList[pos], viewModel.audioInfoList)
+        recyclerViewAdapter = RecyclerViewAdapterUtil { pos ->
+            activityFragmentInterface.onFragmentChanged(pos, recyclerViewAdapter.audioInfoList[pos], recyclerViewAdapter.audioInfoList)
         }
+        recyclerViewAdapter.setAdapterToRecyclerView(fragmentHome.recyclerView)
         findNavController().currentDestination
         fragmentHome.recyclerView.addItemDecoration(DividerItemDecoration())
         
@@ -103,14 +106,14 @@ class HomeFragment: Fragment() {
             MediaScannerConnection.scanFile(requireContext(), arrayOf(Environment.getExternalStorageDirectory().absolutePath), arrayOf("audio/*")) { _, _ ->
                 updatingJob?.cancel()
                 updatingJob = CoroutineScope(Dispatchers.IO).launch {
-                    viewModel.audioInfoList.clear()
+                    recyclerViewAdapter.audioInfoList.clear()
                     launch(Dispatchers.Main) {
                         findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)?.makeShortSnack(R.string.home_snack_scanning)?.show()
                         fragmentHome.recyclerView.adapter?.notifyDataSetChanged()
                     }
-                    readAudioSystemDatabase(viewModel.audioInfoList)
-                    if (viewModel.audioInfoList.isNotEmpty()) {
-                        loadBitmaps(viewModel.audioInfoList, viewModel.bitmaps)
+                    readAudioSystemDatabase(recyclerViewAdapter.audioInfoList)
+                    if (recyclerViewAdapter.audioInfoList.isNotEmpty()) {
+                        loadBitmaps(recyclerViewAdapter.audioInfoList, recyclerViewAdapter.bitmapMap)
                     }
                     launch(Dispatchers.Main) { fragmentHome.root.isRefreshing = false }
                 }
@@ -130,9 +133,9 @@ class HomeFragment: Fragment() {
                 if (isGained) {
                     //viewModel.snackbar.dismiss()
                     updatingJob = CoroutineScope(Dispatchers.IO).launch {
-                        readAudioSystemDatabase(viewModel.audioInfoList)
-                        if (viewModel.audioInfoList.isNotEmpty()) {
-                            loadBitmaps(viewModel.audioInfoList, viewModel.bitmaps)
+                        readAudioSystemDatabase(recyclerViewAdapter.audioInfoList)
+                        if (recyclerViewAdapter.audioInfoList.isNotEmpty()) {
+                            loadBitmaps(recyclerViewAdapter.audioInfoList, recyclerViewAdapter.bitmapMap)
                         }
                         launch(Dispatchers.Main) { fragmentHome.root.isRefreshing = false }
                     }
@@ -146,9 +149,9 @@ class HomeFragment: Fragment() {
             registerRequestReadPermission.launch(READ_EXTERNAL_STORAGE)
         } else {
             updatingJob = CoroutineScope(Dispatchers.IO).launch {
-                readDatabase(viewModel.audioInfoList)
-                if (viewModel.audioInfoList.isNotEmpty()) {
-                    loadBitmaps(viewModel.audioInfoList, viewModel.bitmaps)
+                readDatabase(recyclerViewAdapter.audioInfoList)
+                if (recyclerViewAdapter.audioInfoList.isNotEmpty()) {
+                    loadBitmaps(recyclerViewAdapter.audioInfoList, recyclerViewAdapter.bitmapMap)
                 }
                 launch(Dispatchers.Main) { fragmentHome.root.isRefreshing = false }
             }
@@ -156,14 +159,14 @@ class HomeFragment: Fragment() {
         
         mediaStoreObserver = object : ContentObserver(null) {
             override fun onChange(selfChange: Boolean) {
-                viewModel.audioInfoList.clear()
+                recyclerViewAdapter.audioInfoList.clear()
                 fragmentHome.recyclerView.adapter?.notifyDataSetChanged()
                 fragmentHome.root.isRefreshing = true
                 updatingJob?.cancel()
                 updatingJob = CoroutineScope(Dispatchers.IO).launch {
-                    readAudioSystemDatabase(viewModel.audioInfoList)
-                    if (viewModel.audioInfoList.isNotEmpty()) {
-                        loadBitmaps(viewModel.audioInfoList, viewModel.bitmaps)
+                    readAudioSystemDatabase(recyclerViewAdapter.audioInfoList)
+                    if (recyclerViewAdapter.audioInfoList.isNotEmpty()) {
+                        loadBitmaps(recyclerViewAdapter.audioInfoList, recyclerViewAdapter.bitmapMap)
                     }
                 }
             }
@@ -219,7 +222,7 @@ class HomeFragment: Fragment() {
             audioDatabaseHelper.insertAudio(TABLE_AUDIO, audioInfoList)
             audioInfoList.sortBy { it.audioTitlePinyin }
             audioInfoList.forEachIndexed { index, audioInfo -> audioInfo.index = index }
-            CoroutineScope(Dispatchers.Main).launch { (fragmentHome.recyclerView.adapter as RecyclerViewAdapter).setAudioInfoList(audioInfoList) }
+            CoroutineScope(Dispatchers.Main).launch { recyclerViewAdapter.notifyDataSetChanged() }
             
             val mediaAlbumList = arrayListOf<MediaAlbum>()
             audioInfoList.forEach { audioInfo ->
@@ -246,7 +249,7 @@ class HomeFragment: Fragment() {
         }
         audioInfoList.sortBy { it.audioTitlePinyin }
         audioInfoList.forEachIndexed { index, audioInfo -> audioInfo.index = index }
-        CoroutineScope(Dispatchers.Main).launch { (fragmentHome.recyclerView.adapter as RecyclerViewAdapter).setAudioInfoList(audioInfoList) }
+        CoroutineScope(Dispatchers.Main).launch { recyclerViewAdapter.notifyDataSetChanged() }
     }
     
     private fun loadBitmaps(audioInfoList: ArrayList<AudioInfo>, bitmaps: MutableMap<Long, Bitmap?>) {
@@ -260,7 +263,7 @@ class HomeFragment: Fragment() {
         }
         
         CoroutineScope(Dispatchers.Main).launch {
-            tryOnly { (fragmentHome.recyclerView.adapter as RecyclerViewAdapter).setBitmaps(bitmaps) }
+            tryOnly { recyclerViewAdapter.notifyDataSetChanged() }
         }
     }
     

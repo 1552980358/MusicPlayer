@@ -1,6 +1,5 @@
 package sakuraba.saki.player.music.ui.home
 
-import android.graphics.Bitmap
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -10,11 +9,9 @@ import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.makeSnack
 import sakuraba.saki.player.music.R
-import sakuraba.saki.player.music.service.util.AudioInfo
 
 class HomeViewModel: ViewModel() {
     
-    val audioInfoList = arrayListOf<AudioInfo>()
     private var _snackbar: Snackbar? = null
     fun initSnackBar(fragmentActivity: FragmentActivity, listener: View.OnClickListener) {
         _snackbar = fragmentActivity.findViewById<CoordinatorLayout>(R.id.coordinator_layout)
@@ -30,7 +27,5 @@ class HomeViewModel: ViewModel() {
             }
     }
     val snackbar get() = _snackbar!!
-    
-    val bitmaps = mutableMapOf<Long, Bitmap?>()
     
 }
