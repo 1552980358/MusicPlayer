@@ -14,23 +14,20 @@ import sakuraba.saki.player.music.MainActivity
 
 object SystemUtil {
     
-    val Activity.pixelHeight get(): Int = Point().apply {
+    val Activity.pixelHeight get(): Int {
         /**
          * Running [Context.getResources.getDisplayMetrics.getHeightPixels] cannot get correct heightPixels.
          * e.g. on my Xiaomi Mi 10 Ultra, height pixel is 2340, but calling [Context.getResources.getDisplayMetrics.getHeightPixels]
          * will return 2206, where is much greater than the [Rect.bottom] of [DrawerLayout] of [MainActivity].
-         * So, we should use the [WindowManager.getDefaultDisplay] (API < 29) or [Display.getRealSize] (API >= 29)
+         * So, we should use the [WindowManager.getDefaultDisplay] (API < 29), [Display.getRealSize] (API = 29), or [WindowManager.getCurrentWindowMetrics.getBounds.height]
          * to get real heightPixel.
          **/
-        @Suppress("DEPRECATION")
-        when {
-            SDK_INT >= R ->
-                // Require API 29+
-                display?.getRealSize(this)
-            // Deprecated on API 29
-            else -> windowManager.defaultDisplay.getRealSize(this)
+        return  when {
+            SDK_INT > R -> windowManager.currentWindowMetrics.bounds.height()
+            SDK_INT == R -> Point().apply { @Suppress("DEPRECATION") display?.getRealSize(this) }.y
+            else -> Point().apply { @Suppress("DEPRECATION") windowManager.defaultDisplay.getRealSize(this) }.y
         }
-    }.y
+    }
     
     val Resources.navigationBarHeight get(): Int {
         val resId = getIdentifier("navigation_bar_height", "dimen", "android")
