@@ -1,6 +1,9 @@
 package sakuraba.saki.player.music
 
 import android.content.Context
+import android.content.Intent.ACTION_MAIN
+import android.content.Intent.CATEGORY_HOME
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
@@ -382,4 +385,12 @@ class MainActivity: BaseMediaControlActivity() {
         super.onDestroy()
         _activityMainMainBinding = null
     }
+    
+    override fun onBackPressed() {
+        when (findNavController(R.id.nav_host_fragment).currentDestination?.id) {
+            R.id.nav_home -> startActivity(intent(ACTION_MAIN) { flags = FLAG_ACTIVITY_NEW_TASK; addCategory(CATEGORY_HOME) })
+            else -> super.onBackPressed()
+        }
+    }
+    
 }
