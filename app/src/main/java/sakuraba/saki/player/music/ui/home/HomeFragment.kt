@@ -44,6 +44,7 @@ import sakuraba.saki.player.music.database.AudioDatabaseHelper.Companion.TABLE_A
 import sakuraba.saki.player.music.databinding.FragmentHomeBinding
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.ui.home.util.DividerItemDecoration
+import sakuraba.saki.player.music.ui.home.util.HomeFragmentData
 import sakuraba.saki.player.music.ui.home.util.RecyclerViewAdapterUtil
 import sakuraba.saki.player.music.util.ActivityFragmentInterface
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
@@ -83,6 +84,8 @@ class HomeFragment: Fragment() {
     
     private lateinit var recyclerViewAdapter: RecyclerViewAdapterUtil
     
+    private var homeFragmentData: HomeFragmentData? = null
+    
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         
@@ -91,7 +94,7 @@ class HomeFragment: Fragment() {
         _activityFragmentInterface = requireActivity().intent.getSerializableExtra(INTENT_ACTIVITY_FRAGMENT_INTERFACE) as ActivityFragmentInterface
         
         fragmentHome.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        recyclerViewAdapter = RecyclerViewAdapterUtil { pos ->
+        recyclerViewAdapter = RecyclerViewAdapterUtil(homeFragmentData) { pos ->
             activityFragmentInterface.onFragmentListItemClick(pos, recyclerViewAdapter.audioInfoList[pos], recyclerViewAdapter.audioInfoList)
         }
         recyclerViewAdapter.setAdapterToRecyclerView(fragmentHome.recyclerView)
@@ -265,6 +268,10 @@ class HomeFragment: Fragment() {
         CoroutineScope(Dispatchers.Main).launch {
             tryOnly { recyclerViewAdapter.notifyDataSetChanged() }
         }
+    }
+    
+    fun setHomeFragmentData(homeFragmentData: HomeFragmentData) {
+        this.homeFragmentData = homeFragmentData
     }
     
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

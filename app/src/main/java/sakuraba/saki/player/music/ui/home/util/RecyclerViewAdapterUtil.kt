@@ -13,7 +13,7 @@ import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.util.ViewHolderUtil.bindHolder
 
-class RecyclerViewAdapterUtil(selection: (pos: Int) -> Unit) {
+class RecyclerViewAdapterUtil(data: HomeFragmentData?, selection: (pos: Int) -> Unit) {
     
     private class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val image: ImageView = view.findViewById(R.id.image_view)
@@ -22,7 +22,13 @@ class RecyclerViewAdapterUtil(selection: (pos: Int) -> Unit) {
         val background: RelativeLayout = view.findViewById(R.id.relative_layout_root)
     }
     
-    private class RecyclerViewAdapter(val audioInfoList: List<AudioInfo>, val bitmapMap: MutableMap<Long, Bitmap?>, private val selection: (pos: Int) -> Unit): RecyclerView.Adapter<ViewHolder>() {
+    private class RecyclerViewAdapter(var audioInfoList: List<AudioInfo>, var bitmapMap: Map<Long, Bitmap?>, private val selection: (pos: Int) -> Unit): RecyclerView.Adapter<ViewHolder>() {
+        
+        constructor(data: HomeFragmentData?, selection: (pos: Int) -> Unit):
+            this(data?.audioInfoList ?: arrayListOf(),
+                data?.bitmapMap ?: mutableMapOf(),
+                selection
+            )
         
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_home_recycler_view, parent, false))
@@ -43,7 +49,7 @@ class RecyclerViewAdapterUtil(selection: (pos: Int) -> Unit) {
         
     }
     
-    private val adapter = RecyclerViewAdapter(arrayListOf(), mutableMapOf(), selection)
+    private val adapter = RecyclerViewAdapter(data, selection)
     
     fun setAdapterToRecyclerView(recyclerView: RecyclerView) {
         recyclerView.adapter = adapter
@@ -52,6 +58,6 @@ class RecyclerViewAdapterUtil(selection: (pos: Int) -> Unit) {
     fun notifyDataSetChanged() = adapter.notifyDataSetChanged()
     
     val audioInfoList get() = adapter.audioInfoList as ArrayList
-    val bitmapMap get() = adapter.bitmapMap
+    val bitmapMap get() = adapter.bitmapMap as MutableMap
     
 }
