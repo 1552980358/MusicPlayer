@@ -34,11 +34,7 @@ class RecyclerViewAdapterUtil(selection: (pos: Int) -> Unit) {
                 @Suppress("SetTextI18n")
                 summary.text = "$audioArtist - $audioAlbum"
                 // holder.image.setImageBitmap(getBitmap(holder.image.context))
-                var bitmap = bitmapMap[audioAlbumId]
-                if (bitmap == null) {
-                    bitmap = holder.background.context.getDrawable(R.drawable.ic_music)?.toBitmap()
-                }
-                image.setImageBitmap(bitmap)
+                image.setImageBitmap(bitmapMap[audioAlbumId] ?: holder.background.context.getDrawable(R.drawable.ic_music)?.toBitmap())
             }
             background.setOnClickListener { selection(position) }
         }
