@@ -57,7 +57,7 @@ class AlbumListFragment: Fragment() {
         behavior = BottomSheetBehavior.from(fragmentAlbumList.recyclerView)
         
         recyclerViewAdapter = RecyclerViewAdapterUtil(fragmentAlbumList.recyclerView) { pos ->
-            activityNotifier.onFragmentChanged(pos, recyclerViewAdapter.audioInfoList[pos], recyclerViewAdapter.audioInfoList)
+            activityNotifier.onFragmentListItemClick(pos, recyclerViewAdapter.audioInfoList[pos], recyclerViewAdapter.audioInfoList)
         }
         
         CoroutineScope(Dispatchers.IO).launch {

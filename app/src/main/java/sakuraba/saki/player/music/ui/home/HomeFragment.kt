@@ -92,7 +92,7 @@ class HomeFragment: Fragment() {
         
         fragmentHome.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recyclerViewAdapter = RecyclerViewAdapterUtil { pos ->
-            activityFragmentInterface.onFragmentChanged(pos, recyclerViewAdapter.audioInfoList[pos], recyclerViewAdapter.audioInfoList)
+            activityFragmentInterface.onFragmentListItemClick(pos, recyclerViewAdapter.audioInfoList[pos], recyclerViewAdapter.audioInfoList)
         }
         recyclerViewAdapter.setAdapterToRecyclerView(fragmentHome.recyclerView)
         findNavController().currentDestination
