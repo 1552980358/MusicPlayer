@@ -151,12 +151,16 @@ class HomeFragment: Fragment() {
             }
             registerRequestReadPermission.launch(READ_EXTERNAL_STORAGE)
         } else {
-            updatingJob = CoroutineScope(Dispatchers.IO).launch {
-                readDatabase(recyclerViewAdapter.audioInfoList)
-                if (recyclerViewAdapter.audioInfoList.isNotEmpty()) {
-                    loadBitmaps(recyclerViewAdapter.audioInfoList, recyclerViewAdapter.bitmapMap)
+            if (homeFragmentData?.hasData != true) {
+                updatingJob = CoroutineScope(Dispatchers.IO).launch {
+                    readDatabase(recyclerViewAdapter.audioInfoList)
+                    if (recyclerViewAdapter.audioInfoList.isNotEmpty()) {
+                        loadBitmaps(recyclerViewAdapter.audioInfoList, recyclerViewAdapter.bitmapMap)
+                    }
+                    launch(Dispatchers.Main) { fragmentHome.root.isRefreshing = false }
                 }
-                launch(Dispatchers.Main) { fragmentHome.root.isRefreshing = false }
+            } else {
+                fragmentHome.root.isRefreshing = false
             }
         }
         
@@ -284,6 +288,11 @@ class HomeFragment: Fragment() {
         return super.onOptionsItemSelected(item)
     }
     
+    override fun onPause() {
+        activityFragmentInterface.onHomeFragmentPaused(recyclerViewAdapter.audioInfoList, recyclerViewAdapter.bitmapMap)
+        super.onPause()
+    }
+    
     override fun onDestroy() {
         requireContext().contentResolver.unregisterContentObserver(mediaStoreObserver)
         super.onDestroy()
@@ -292,6 +301,7 @@ class HomeFragment: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _fragmentHomeBinding = null
+        homeFragmentData = null
     }
     
 }

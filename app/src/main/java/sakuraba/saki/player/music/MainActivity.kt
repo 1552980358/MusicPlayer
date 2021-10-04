@@ -52,6 +52,8 @@ import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import sakuraba.saki.player.music.base.BaseMediaControlActivity
 import sakuraba.saki.player.music.databinding.ActivityMainBinding
 import sakuraba.saki.player.music.service.util.AudioInfo
+import sakuraba.saki.player.music.ui.home.HomeFragment
+import sakuraba.saki.player.music.ui.home.util.HomeFragmentData
 import sakuraba.saki.player.music.util.ActivityFragmentInterface
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
@@ -95,8 +97,15 @@ class MainActivity: BaseMediaControlActivity() {
     private val playProgressBar get() = _playProgressBar!!
     
     private val fragmentLifecycleCallbacks =  object : FragmentManager.FragmentLifecycleCallbacks() {
+        private var homeFragmentData = HomeFragmentData()
+        
         override fun onFragmentAttached(fm: FragmentManager, f: Fragment, context: Context) {
             Log.e(f::class.java.simpleName, "onFragmentAttached")
+        }
+        override fun onFragmentPreCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
+            if (f is HomeFragment) {
+                f.setHomeFragmentData(homeFragmentData)
+            }
         }
         override fun onFragmentCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
             Log.e(f::class.java.simpleName, "onFragmentCreated")
@@ -108,6 +117,14 @@ class MainActivity: BaseMediaControlActivity() {
             Log.e(f::class.java.simpleName, "onFragmentStarted")
         }
         override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
+            if (f is HomeFragment) {
+                homeFragmentData.hasData = false
+                activityFragmentInterface.setOnHomeFragmentPausedListener { arrayList, mutableMap ->
+                    homeFragmentData.audioInfoList = arrayList
+                    homeFragmentData.bitmapMap = mutableMap
+                    homeFragmentData.hasData = true
+                }
+            }
             Log.e(f::class.java.simpleName, "onFragmentResumed")
         }
         override fun onFragmentPaused(fm: FragmentManager, f: Fragment) {
@@ -123,6 +140,9 @@ class MainActivity: BaseMediaControlActivity() {
             Log.e(f::class.java.simpleName, "onFragmentDestroyed")
         }
         override fun onFragmentDetached(fm: FragmentManager, f: Fragment) {
+            if (f is HomeFragment) {
+                activityFragmentInterface.removeOnHomeFragmentPausedListener()
+            }
             Log.e(f::class.java.simpleName, "onFragmentDetached")
         }
     }
@@ -223,6 +243,7 @@ class MainActivity: BaseMediaControlActivity() {
                 (drawable as AnimatedVectorDrawable).start()
             }
         }
+        
     }
     
     override fun onMediaBrowserConnected() {
@@ -388,7 +409,7 @@ class MainActivity: BaseMediaControlActivity() {
     
     override fun onBackPressed() {
         when (findNavController(R.id.nav_host_fragment).currentDestination?.id) {
-            R.id.nav_home -> startActivity(intent(ACTION_MAIN) { flags = FLAG_ACTIVITY_NEW_TASK; addCategory(CATEGORY_HOME) })
+            R.id.nav_home, R.id.nav_album -> startActivity(intent(ACTION_MAIN) { flags = FLAG_ACTIVITY_NEW_TASK; addCategory(CATEGORY_HOME) })
             else -> super.onBackPressed()
         }
     }
