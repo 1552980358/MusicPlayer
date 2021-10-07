@@ -14,8 +14,13 @@ class ActivityFragmentInterface(): Serializable {
         fun onPaused(arrayList: ArrayList<AudioInfo>, mutableMap: MutableMap<Long, Bitmap?>)
     }
     
+    private fun interface OnAlbumFragmentPausedListener: Serializable {
+        fun onPaused(arrayList: ArrayList<MediaAlbum>, mutableMap: MutableMap<Long, Bitmap?>)
+    }
+    
     private var fragmentListItemClickListener: OnFragmentListItemClickListener? = null
     private var homeFragmentPausedListener: OnHomeFragmentPausedListener? = null
+    private var albumFragmentPausedListener: OnAlbumFragmentPausedListener? = null
     
     constructor(block: (Int, AudioInfo?, ArrayList<AudioInfo>?) -> Unit): this() {
         fragmentListItemClickListener = OnFragmentListItemClickListener(block)
@@ -34,5 +39,17 @@ class ActivityFragmentInterface(): Serializable {
     
     fun onHomeFragmentPaused(arrayList: ArrayList<AudioInfo>, mutableMap: MutableMap<Long, Bitmap?>) =
         homeFragmentPausedListener?.onPaused(arrayList, mutableMap)
+    
+    fun setOnAlbumFragmentPausedListener(block: (arrayList: ArrayList<MediaAlbum>, mutableMap: MutableMap<Long, Bitmap?>) -> Unit) {
+        albumFragmentPausedListener = OnAlbumFragmentPausedListener(block)
+    }
+    
+    fun removeOnAlbumFragmentPausedListener() {
+        albumFragmentPausedListener = null
+    }
+    
+    fun onAlbumFragmentPaused(arrayList: ArrayList<MediaAlbum>, mutableMap: MutableMap<Long, Bitmap?>) {
+        albumFragmentPausedListener?.onPaused(arrayList, mutableMap)
+    }
     
 }
