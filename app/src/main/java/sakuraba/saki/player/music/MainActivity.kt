@@ -52,6 +52,8 @@ import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import sakuraba.saki.player.music.base.BaseMediaControlActivity
 import sakuraba.saki.player.music.databinding.ActivityMainBinding
 import sakuraba.saki.player.music.service.util.AudioInfo
+import sakuraba.saki.player.music.ui.album.AlbumFragment
+import sakuraba.saki.player.music.ui.album.util.AlbumFragmentData
 import sakuraba.saki.player.music.ui.home.HomeFragment
 import sakuraba.saki.player.music.ui.home.util.HomeFragmentData
 import sakuraba.saki.player.music.util.ActivityFragmentInterface
@@ -98,13 +100,15 @@ class MainActivity: BaseMediaControlActivity() {
     
     private val fragmentLifecycleCallbacks =  object : FragmentManager.FragmentLifecycleCallbacks() {
         private var homeFragmentData = HomeFragmentData()
+        private var albumFragmentData = AlbumFragmentData()
         
         override fun onFragmentAttached(fm: FragmentManager, f: Fragment, context: Context) {
             Log.e(f::class.java.simpleName, "onFragmentAttached")
         }
         override fun onFragmentPreCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
-            if (f is HomeFragment) {
-                f.setHomeFragmentData(homeFragmentData)
+            when (f) {
+                is HomeFragment -> f.setHomeFragmentData(homeFragmentData)
+                is AlbumFragment -> f.setAlbumFragmentData(albumFragmentData)
             }
         }
         override fun onFragmentCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
@@ -117,12 +121,22 @@ class MainActivity: BaseMediaControlActivity() {
             Log.e(f::class.java.simpleName, "onFragmentStarted")
         }
         override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
-            if (f is HomeFragment) {
-                homeFragmentData.hasData = false
-                activityFragmentInterface.setOnHomeFragmentPausedListener { arrayList, mutableMap ->
-                    homeFragmentData.audioInfoList = arrayList
-                    homeFragmentData.bitmapMap = mutableMap
-                    homeFragmentData.hasData = true
+            when (f) {
+                is HomeFragment -> {
+                    activityFragmentInterface.setOnHomeFragmentPausedListener { arrayList, mutableMap ->
+                        homeFragmentData.audioInfoList = arrayList
+                        homeFragmentData.bitmapMap = mutableMap
+                        homeFragmentData.hasData = true
+                    }
+                }
+                is AlbumFragment -> {
+                    activityFragmentInterface.setOnAlbumFragmentPausedListener { arrayList, mutableMap ->
+                        with(albumFragmentData) {
+                            mediaAlbumList = arrayList
+                            bitmapMap = mutableMap
+                            hasData = true
+                        }
+                    }
                 }
             }
             Log.e(f::class.java.simpleName, "onFragmentResumed")
@@ -140,8 +154,9 @@ class MainActivity: BaseMediaControlActivity() {
             Log.e(f::class.java.simpleName, "onFragmentDestroyed")
         }
         override fun onFragmentDetached(fm: FragmentManager, f: Fragment) {
-            if (f is HomeFragment) {
-                activityFragmentInterface.removeOnHomeFragmentPausedListener()
+            when (f) {
+                is HomeFragment -> activityFragmentInterface.removeOnHomeFragmentPausedListener()
+                is AlbumFragment -> activityFragmentInterface.removeOnAlbumFragmentPausedListener()
             }
             Log.e(f::class.java.simpleName, "onFragmentDetached")
         }
