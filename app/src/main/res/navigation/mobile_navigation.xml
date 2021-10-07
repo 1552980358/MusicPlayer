@@ -14,8 +14,10 @@
             android:id="@+id/action_nav_home_to_nav_setting"
             app:destination="@id/nav_setting" />
         <action
-            android:id="@+id/action_nav_home_to_nav_album3"
-            app:destination="@id/nav_album" />
+            android:id="@+id/action_nav_home_to_nav_album"
+            app:destination="@id/nav_album"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"/>
     </fragment>
     
     <fragment
@@ -25,6 +27,11 @@
         <action
             android:id="@+id/action_nav_album_to_nav_album_list"
             app:destination="@id/nav_album_list"/>
+        <action
+            android:id="@+id/action_nav_album_to_nav_home2"
+            app:destination="@id/nav_home"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"/>
     </fragment>
     
     <fragment
