@@ -15,10 +15,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
+import sakuraba.saki.player.music.MainActivity.Companion.INTENT_ACTIVITY_FRAGMENT_INTERFACE
 import sakuraba.saki.player.music.database.AudioDatabaseHelper
 import sakuraba.saki.player.music.databinding.FragmentAlbumBinding
 import sakuraba.saki.player.music.ui.album.util.AlbumFragmentData
 import sakuraba.saki.player.music.ui.album.util.RecyclerViewAdapterUtil
+import sakuraba.saki.player.music.util.ActivityFragmentInterface
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import java.util.concurrent.TimeUnit
 
@@ -26,6 +28,8 @@ class AlbumFragment: Fragment() {
     
     private var _fragmentAlbumBinding: FragmentAlbumBinding? = null
     private val fragmentAlbum get() = _fragmentAlbumBinding!!
+    private var _activityFragmentInterface: ActivityFragmentInterface? = null
+    private val activityFragmentInterface get() = _activityFragmentInterface!!
     private var albumFragmentData: AlbumFragmentData? = null
     
     private lateinit var recyclerViewAdapter: RecyclerViewAdapterUtil
@@ -33,6 +37,7 @@ class AlbumFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _fragmentAlbumBinding = FragmentAlbumBinding.inflate(layoutInflater)
         sharedElementReturnTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        _activityFragmentInterface = requireActivity().intent.getSerializableExtra(INTENT_ACTIVITY_FRAGMENT_INTERFACE) as ActivityFragmentInterface
         fragmentAlbum.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         recyclerViewAdapter = RecyclerViewAdapterUtil(albumFragmentData) { imageView, textView, mediaAlbum ->
             findNavController().navigate(
@@ -41,7 +46,6 @@ class AlbumFragment: Fragment() {
             )
         }
         recyclerViewAdapter.setAdapterToRecyclerView(fragmentAlbum.recyclerView)
-        fragmentAlbum.root.isRefreshing = true
         postponeEnterTransition(100, TimeUnit.MILLISECONDS)
         return fragmentAlbum.root
     }
@@ -83,5 +87,9 @@ class AlbumFragment: Fragment() {
         this.albumFragmentData = albumFragmentData
     }
     
+    override fun onPause() {
+        activityFragmentInterface.onAlbumFragmentPaused(recyclerViewAdapter.mediaAlbumList, recyclerViewAdapter.bitmapMap)
+        super.onPause()
+    }
     
 }
