@@ -8,6 +8,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO
+import sakuraba.saki.player.music.util.SettingUtil.KEY_PLAY
 
 class SettingFragment: PreferenceFragmentCompat() {
     
@@ -20,7 +21,10 @@ class SettingFragment: PreferenceFragmentCompat() {
             findNavController().navigate(R.id.nav_setting_audio_filter)
             return@setOnPreferenceClickListener true
         }
-        
+        findPreference<Preference>(KEY_PLAY)?.setOnPreferenceClickListener {
+            findNavController().navigate(R.id.nav_setting_audio_play)
+            return@setOnPreferenceClickListener true
+        }
     }
     
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
