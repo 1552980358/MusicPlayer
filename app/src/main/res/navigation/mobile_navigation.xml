@@ -49,9 +49,17 @@
         <action
             android:id="@+id/action_nav_setting_to_nav_setting_audio_filter"
             app:destination="@id/nav_setting_audio_filter" />
+        <action
+            android:id="@+id/action_nav_setting_to_nav_setting_audio_play"
+            app:destination="@id/nav_setting_audio_play"/>
     </fragment>
     
     <fragment
         android:id="@+id/nav_setting_audio_filter"
         android:name="sakuraba.saki.player.music.ui.setting.fragment.AudioFilterFragment" />
+    
+    <fragment
+        android:id="@+id/nav_setting_audio_play"
+        android:name="sakuraba.saki.player.music.ui.setting.fragment.AudioPlayFragment" />
+    
 </navigation>
