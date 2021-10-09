@@ -28,6 +28,10 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.register
 import lib.github1552980358.ktExtension.android.os.bundle
@@ -43,6 +47,7 @@ import sakuraba.saki.player.music.service.util.parseAsUri
 import sakuraba.saki.player.music.service.util.startForeground
 import sakuraba.saki.player.music.service.util.startService
 import sakuraba.saki.player.music.service.util.update
+import sakuraba.saki.player.music.util.Constants.ACTION_CONFIG_CHANGE
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
 import sakuraba.saki.player.music.util.Constants.ACTION_EXTRA
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_AUDIO_LIST
@@ -50,6 +55,8 @@ import sakuraba.saki.player.music.util.Constants.ACTION_UPDATE_PLAY_MODE
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_POS
+import sakuraba.saki.player.music.util.Constants.EXTRAS_CONFIG_KEY
+import sakuraba.saki.player.music.util.Constants.EXTRAS_CONFIG_VALUE
 import sakuraba.saki.player.music.util.Constants.EXTRAS_INDEX
 import sakuraba.saki.player.music.util.Constants.EXTRAS_PLAY_MODE
 import sakuraba.saki.player.music.util.Constants.EXTRAS_PLAY
@@ -66,6 +73,9 @@ import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PLAY
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PREV
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_CREATE
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_START_COMMAND
+import sakuraba.saki.player.music.util.SettingUtil.KEY_PLAY_FADE_IN_ENABLE
+import sakuraba.saki.player.music.util.SettingUtil.KEY_PLAY_FADE_OUT_ENABLE
+import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
 
 class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player.Listener {
     
@@ -91,6 +101,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
     private val mediaSessionCallback = object : MediaSessionCompat.Callback() {
         override fun onPlay() {
             Log.e(TAG, "onPlay")
+            exoPlayer.volume = 0F
             if (playbackStateCompat.state != STATE_PAUSED && playbackStateCompat.state != STATE_PLAYING) {
                 return
             }
@@ -98,25 +109,48 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
                 .setState(STATE_PLAYING, playbackStateCompat.position, 1F)
                 .build()
             mediaSession.setPlaybackState(playbackStateCompat)
+            exoPlayer.volume = 0.2F
             // mediaPlayer.start()
             exoPlayer.play()
-            startService(PlayService::class.java) {
-                putExtra(ACTION_EXTRA, EXTRAS_PLAY)
+            CoroutineScope(Dispatchers.IO).launch {
+                if (getBooleanSetting(KEY_PLAY_FADE_IN_ENABLE)) {
+                    delay(100)
+                    launch(Dispatchers.Main) { exoPlayer.volume = 0.4F }
+                    delay(100)
+                    launch(Dispatchers.Main) { exoPlayer.volume = 0.6F }
+                    delay(100)
+                    launch(Dispatchers.Main) { exoPlayer.volume = 0.8F }
+                    delay(100)
+                }
+                launch(Dispatchers.Main) { exoPlayer.volume = 1F }
             }
+            startService(PlayService::class.java) { putExtra(ACTION_EXTRA, EXTRAS_PLAY) }
         }
         override fun onPause() {
             Log.e(TAG, "onPause")
             if (playbackStateCompat.state != STATE_PLAYING) {
                 return
             }
-            playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
-                .setState(STATE_PAUSED, exoPlayer.currentPosition/*mediaPlayer.currentPosition.toLong()*/, 1F)
-                .build()
-            mediaSession.setPlaybackState(playbackStateCompat)
-            // mediaPlayer.pause()
-            exoPlayer.pause()
-            startService(PlayService::class.java) {
-                putExtra(ACTION_EXTRA, EXTRAS_PAUSE)
+            CoroutineScope(Dispatchers.IO).launch {
+                if (getBooleanSetting(KEY_PLAY_FADE_OUT_ENABLE)) {
+                    launch(Dispatchers.Main) { exoPlayer.volume = 0.8F }
+                    delay(100)
+                    launch(Dispatchers.Main) { exoPlayer.volume = 0.6F }
+                    delay(100)
+                    launch(Dispatchers.Main) { exoPlayer.volume = 0.4F }
+                    delay(100)
+                    launch(Dispatchers.Main) { exoPlayer.volume = 0.2F }
+                    delay(100)
+                }
+                launch(Dispatchers.Main) {
+                    // mediaPlayer.pause()
+                    exoPlayer.pause()
+                    playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                        .setState(STATE_PAUSED, exoPlayer.currentPosition/*mediaPlayer.currentPosition.toLong()*/, 1F)
+                        .build()
+                    mediaSession.setPlaybackState(playbackStateCompat)
+                    startService(PlayService::class.java) { putExtra(ACTION_EXTRA, EXTRAS_PAUSE) }
+                }
             }
         }
         override fun onStop() {
@@ -196,8 +230,20 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
                 .setState(STATE_PLAYING, 0, 1F)
                 .build()
             mediaSession.setPlaybackState(playbackStateCompat)
-            
+            exoPlayer.volume = 0.2F
             exoPlayer.play()
+            CoroutineScope(Dispatchers.IO).launch {
+                if (getBooleanSetting(KEY_PLAY_FADE_IN_ENABLE)) {
+                    delay(100)
+                    launch(Dispatchers.Main) { exoPlayer.volume = 0.4F }
+                    delay(100)
+                    launch(Dispatchers.Main) { exoPlayer.volume = 0.6F }
+                    delay(100)
+                    launch(Dispatchers.Main) { exoPlayer.volume = 0.8F }
+                    delay(100)
+                }
+                launch(Dispatchers.Main) { exoPlayer.volume = 1F }
+            }
             
             startService(PlayService::class.java) {
                 putExtra(ACTION_EXTRA, EXTRAS_PLAY)
@@ -232,6 +278,8 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
     
     private lateinit var wakeLock: WakeLock
     
+    private var fading = 0
+    
     override fun onCreate() {
         Log.e(TAG, ON_CREATE)
         super.onCreate()
@@ -242,6 +290,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
             .addCustomAction(ACTION_REQUEST_STATUS, ACTION_REQUEST_STATUS, R.drawable.ic_launcher_foreground)
             .addCustomAction(ACTION_UPDATE_PLAY_MODE, ACTION_UPDATE_PLAY_MODE, R.drawable.ic_launcher_foreground)
             .addCustomAction(ACTION_REQUEST_AUDIO_LIST, ACTION_REQUEST_AUDIO_LIST, R.drawable.ic_launcher_foreground)
+            .addCustomAction(ACTION_CONFIG_CHANGE, ACTION_CONFIG_CHANGE, R.drawable.ic_launcher_foreground)
             .setExtras(bundle { putInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST) })
             .build()
         
@@ -330,6 +379,19 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
                 result.sendResult(bundle { putSerializable(EXTRAS_AUDIO_INFO_LIST, getAudioList()) })
             }
             ACTION_REQUEST_AUDIO_LIST -> result.sendResult(bundle { putSerializable(ACTION_EXTRA, getAudioList()) })
+            ACTION_CONFIG_CHANGE -> {
+                extras?:return
+                when (extras.getString(EXTRAS_CONFIG_KEY)) {
+                    KEY_PLAY_FADE_IN_ENABLE -> {
+                        fading = if (extras.getBoolean(EXTRAS_CONFIG_VALUE)) {
+                            fading or 0x01
+                        } else {
+                            fading xor 0x01
+                        }
+                    }
+                }
+                
+            }
             else -> super.onCustomAction(action, extras, result)
         }
     }
