@@ -28,6 +28,10 @@
     <string name="setting_audio_title">Audio file</string>
     <string name="setting_audio_filter_size_title">Filter size</string>
     <string name="setting_audio_filter_duration_title">Filter duration</string>
+    <string name="setting_play_title">Audio Play</string>
+    <string name="setting_play_fade_title">Play Fading</string>
+    <string name="setting_play_fade_in_title">Fade in</string>
+    <string name="setting_play_fade_out_title">Fade out</string>
     
     <!-- SETTING KEY CONSTANT -->
     <string name="key_audio">key_audio</string>
@@ -38,6 +42,9 @@
     <string name="key_audio_filter_duration_enable">key_audio_filter_duration_enable</string>
     <string name="key_audio_filter_duration_value">key_audio_filter_duration_value</string>
     <string name="key_audio_filter_duration_unit">Unit: Millisecond (ms)</string>
-
-
+    
+    <string name="key_play">key_play</string>
+    <string name="key_play_fade_in_enable">key_play_fade_in_enable</string>
+    <string name="key_play_fade_out_enable">key_play_fade_out_enable</string>
+    
 </resources>
