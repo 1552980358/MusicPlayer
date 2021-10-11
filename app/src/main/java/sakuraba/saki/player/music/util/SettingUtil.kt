@@ -13,6 +13,7 @@ object SettingUtil {
     const val KEY_AUDIO_FILTER_SIZE_VALUE = "key_audio_filter_size_value"
     const val KEY_AUDIO_FILTER_DURATION_ENABLE = "key_audio_filter_duration_enable"
     const val KEY_AUDIO_FILTER_DURATION_VALUE = "key_audio_filter_duration_value"
+    const val KEY_PLAY_AUDIO_FOCUS_ENABLE = "key_play_audio_focus_enable"
     const val KEY_PLAY_FADE_IN_ENABLE = "key_play_fade_in_enable"
     const val KEY_PLAY_FADE_OUT_ENABLE = "key_play_fade_out_enable"
     
