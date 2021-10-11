@@ -29,6 +29,8 @@
     <string name="setting_audio_filter_size_title">Filter size</string>
     <string name="setting_audio_filter_duration_title">Filter duration</string>
     <string name="setting_play_title">Audio Play</string>
+    <string name="setting_play_audio_focus">Audio Focus</string>
+    <string name="setting_play_audio_focus_title">Allow other media play in parallel</string>
     <string name="setting_play_fade_title">Play Fading</string>
     <string name="setting_play_fade_in_title">Fade in</string>
     <string name="setting_play_fade_out_title">Fade out</string>
@@ -44,6 +46,7 @@
     <string name="key_audio_filter_duration_unit">Unit: Millisecond (ms)</string>
     
     <string name="key_play">key_play</string>
+    <string name="key_play_audio_focus_enable">key_play_audio_focus_enable</string>
     <string name="key_play_fade_in_enable">key_play_fade_in_enable</string>
     <string name="key_play_fade_out_enable">key_play_fade_out_enable</string>
     
