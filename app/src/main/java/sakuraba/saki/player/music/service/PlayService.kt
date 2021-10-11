@@ -2,6 +2,11 @@ package sakuraba.saki.player.music.service
 
 import android.app.Notification
 import android.content.Intent
+import android.media.AudioManager
+import android.media.AudioManager.AUDIOFOCUS_GAIN
+import android.media.AudioManager.AUDIOFOCUS_LOSS
+import android.media.AudioManager.AUDIOFOCUS_REQUEST_FAILED
+import android.media.AudioManager.STREAM_MUSIC
 import android.os.Bundle
 import android.os.PowerManager
 import android.os.PowerManager.PARTIAL_WAKE_LOCK
@@ -25,6 +30,11 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_STOPPED
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
+import androidx.media.AudioAttributesCompat
+import androidx.media.AudioAttributesCompat.CONTENT_TYPE_MUSIC
+import androidx.media.AudioAttributesCompat.USAGE_MEDIA
+import androidx.media.AudioFocusRequestCompat
+import androidx.media.AudioManagerCompat
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -35,6 +45,7 @@ import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.register
 import lib.github1552980358.ktExtension.android.os.bundle
+import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import sakuraba.saki.player.music.BuildConfig
 import sakuraba.saki.player.music.MainActivity
 import sakuraba.saki.player.music.R
@@ -73,6 +84,7 @@ import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PLAY
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PREV
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_CREATE
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_START_COMMAND
+import sakuraba.saki.player.music.util.SettingUtil.KEY_PLAY_AUDIO_FOCUS_ENABLE
 import sakuraba.saki.player.music.util.SettingUtil.KEY_PLAY_FADE_IN_ENABLE
 import sakuraba.saki.player.music.util.SettingUtil.KEY_PLAY_FADE_OUT_ENABLE
 import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
@@ -104,6 +116,11 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
             exoPlayer.volume = 0F
             if (playbackStateCompat.state != STATE_PAUSED && playbackStateCompat.state != STATE_PLAYING) {
                 return
+            }
+            if (!getBooleanSetting(KEY_PLAY_AUDIO_FOCUS_ENABLE)) {
+                if (AudioManagerCompat.requestAudioFocus(audioManager, audioFocusRequestCompat) == AUDIOFOCUS_REQUEST_FAILED) {
+                    return
+                }
             }
             playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
                 .setState(STATE_PLAYING, playbackStateCompat.position, 1F)
@@ -158,6 +175,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
             if (playbackStateCompat.state != STATE_PAUSED && playbackStateCompat.state != STATE_PLAYING) {
                 return
             }
+            tryOnly { AudioManagerCompat.abandonAudioFocusRequest(audioManager, audioFocusRequestCompat) }
             playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
                 .setState(STATE_STOPPED, 0, 1F)
                 .build()
@@ -204,6 +222,12 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
                 }
                 if (extras.containsKey(EXTRAS_AUDIO_INFO_POS)) {
                     listPos = extras.getInt(EXTRAS_AUDIO_INFO_POS)
+                }
+            }
+    
+            if (!getBooleanSetting(KEY_PLAY_AUDIO_FOCUS_ENABLE)) {
+                if (AudioManagerCompat.requestAudioFocus(audioManager, audioFocusRequestCompat) == AUDIOFOCUS_REQUEST_FAILED) {
+                    return
                 }
             }
             
@@ -278,6 +302,24 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
     
     private lateinit var wakeLock: WakeLock
     
+    private lateinit var audioManager: AudioManager
+    
+    private val audioFocusRequestCompat = AudioFocusRequestCompat.Builder(AUDIOFOCUS_GAIN)
+        .setOnAudioFocusChangeListener { newFocusState ->
+            Log.e(TAG, "OnAudioFocusChangeListener")
+            if (newFocusState == AUDIOFOCUS_LOSS) {
+                mediaSession.controller.transportControls.pause()
+            }
+        }
+        .setAudioAttributes(
+            AudioAttributesCompat.Builder()
+                .setContentType(CONTENT_TYPE_MUSIC)
+                .setUsage(USAGE_MEDIA)
+                .setLegacyStreamType(STREAM_MUSIC)
+                .build()
+        ).build()
+        
+    
     private var fading = 0
     
     override fun onCreate() {
@@ -312,6 +354,8 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
         broadcastReceiver.register(this, arrayOf(FILTER_NOTIFICATION_PREV, FILTER_NOTIFICATION_PLAY, FILTER_NOTIFICATION_PAUSE, FILTER_NOTIFICATION_NEXT))
         
         wakeLock = (getSystemService(POWER_SERVICE) as PowerManager).newWakeLock(PARTIAL_WAKE_LOCK, WAKE_LOCK_tAG)
+        
+        audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
