@@ -98,6 +98,8 @@ class MainActivity: BaseMediaControlActivity() {
     private var _playProgressBar: PlayProgressBar? = null
     private val playProgressBar get() = _playProgressBar!!
     
+    private var bottomSheetClickLock = true
+    
     private val fragmentLifecycleCallbacks =  object : FragmentManager.FragmentLifecycleCallbacks() {
         private var homeFragmentData = HomeFragmentData()
         private var albumFragmentData = AlbumFragmentData()
@@ -246,10 +248,13 @@ class MainActivity: BaseMediaControlActivity() {
         }
         
         findViewById<RelativeLayout>(R.id.relative_layout).setOnClickListener {
-            startActivity(
-                intent(this, PlayActivity::class.java) { putExtra(EXTRAS_AUDIO_INFO, audioInfo) },
-                ActivityOptionsCompat.makeSceneTransitionAnimation(this, Pair(imageView, TRANSITION_IMAGE_VIEW), Pair(textView, TRANSITION_TEXT_VIEW)).toBundle()
-            )
+            if (bottomSheetClickLock) {
+                bottomSheetClickLock = false
+                startActivity(
+                    intent(this, PlayActivity::class.java) { putExtra(EXTRAS_AUDIO_INFO, audioInfo) },
+                    ActivityOptionsCompat.makeSceneTransitionAnimation(this, Pair(imageView, TRANSITION_IMAGE_VIEW), Pair(textView, TRANSITION_TEXT_VIEW)).toBundle()
+                )
+            }
         }
         
         viewModel.state.observe(this) { newState ->
@@ -360,7 +365,7 @@ class MainActivity: BaseMediaControlActivity() {
     
     override fun onResume() {
         super.onResume()
-    
+        bottomSheetClickLock = true
         if (behavior.state == STATE_EXPANDED && mediaBrowserCompat.isConnected) {
             @Suppress("DuplicatedCode")
             mediaBrowserCompat.sendCustomAction(ACTION_REQUEST_STATUS, null, object : MediaBrowserCompat.CustomActionCallback() {
