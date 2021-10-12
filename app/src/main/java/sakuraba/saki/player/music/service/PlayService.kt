@@ -58,7 +58,6 @@ import sakuraba.saki.player.music.service.util.parseAsUri
 import sakuraba.saki.player.music.service.util.startForeground
 import sakuraba.saki.player.music.service.util.startService
 import sakuraba.saki.player.music.service.util.update
-import sakuraba.saki.player.music.util.Constants.ACTION_CONFIG_CHANGE
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
 import sakuraba.saki.player.music.util.Constants.ACTION_EXTRA
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_AUDIO_LIST
@@ -66,8 +65,6 @@ import sakuraba.saki.player.music.util.Constants.ACTION_UPDATE_PLAY_MODE
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_POS
-import sakuraba.saki.player.music.util.Constants.EXTRAS_CONFIG_KEY
-import sakuraba.saki.player.music.util.Constants.EXTRAS_CONFIG_VALUE
 import sakuraba.saki.player.music.util.Constants.EXTRAS_INDEX
 import sakuraba.saki.player.music.util.Constants.EXTRAS_PLAY_MODE
 import sakuraba.saki.player.music.util.Constants.EXTRAS_PLAY
@@ -319,9 +316,6 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
                 .build()
         ).build()
         
-    
-    private var fading = 0
-    
     override fun onCreate() {
         Log.e(TAG, ON_CREATE)
         super.onCreate()
@@ -332,7 +326,6 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
             .addCustomAction(ACTION_REQUEST_STATUS, ACTION_REQUEST_STATUS, R.drawable.ic_launcher_foreground)
             .addCustomAction(ACTION_UPDATE_PLAY_MODE, ACTION_UPDATE_PLAY_MODE, R.drawable.ic_launcher_foreground)
             .addCustomAction(ACTION_REQUEST_AUDIO_LIST, ACTION_REQUEST_AUDIO_LIST, R.drawable.ic_launcher_foreground)
-            .addCustomAction(ACTION_CONFIG_CHANGE, ACTION_CONFIG_CHANGE, R.drawable.ic_launcher_foreground)
             .setExtras(bundle { putInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST) })
             .build()
         
@@ -423,19 +416,6 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
                 result.sendResult(bundle { putSerializable(EXTRAS_AUDIO_INFO_LIST, getAudioList()) })
             }
             ACTION_REQUEST_AUDIO_LIST -> result.sendResult(bundle { putSerializable(ACTION_EXTRA, getAudioList()) })
-            ACTION_CONFIG_CHANGE -> {
-                extras?:return
-                when (extras.getString(EXTRAS_CONFIG_KEY)) {
-                    KEY_PLAY_FADE_IN_ENABLE -> {
-                        fading = if (extras.getBoolean(EXTRAS_CONFIG_VALUE)) {
-                            fading or 0x01
-                        } else {
-                            fading xor 0x01
-                        }
-                    }
-                }
-                
-            }
             else -> super.onCustomAction(action, extras, result)
         }
     }

@@ -16,7 +16,6 @@ object Constants {
     const val ACTION_UPDATE_PLAY_MODE = "update_play_mode"
     const val ACTION_EXTRA = "action_extra"
     const val ACTION_REQUEST_AUDIO_LIST = "request_audio_list"
-    const val ACTION_CONFIG_CHANGE = "action_config_change"
     
     const val EXTRAS_PLAY = "play"
     const val EXTRAS_PAUSE = "pause"
