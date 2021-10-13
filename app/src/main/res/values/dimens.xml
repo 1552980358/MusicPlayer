@@ -58,5 +58,11 @@
     <dimen name="album_list_recycler_view_content_text_view_num_size">40dp</dimen>
     <dimen name="album_list_recycler_view_content_text_view_num_margin">10dp</dimen>
     <dimen name="album_list_recycler_view_content_text_view_title_text_size">15sp</dimen>
+    
+    <dimen name="search_container_height">60dp</dimen>
+    <dimen name="search_container_padding">10dp</dimen>
+    <dimen name="search_text_view_num_size">40dp</dimen>
+    <dimen name="search_text_view_num_margin_end">10dp</dimen>
+    <dimen name="search_text_view_title_text_size">16sp</dimen>
 
 </resources>
