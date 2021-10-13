@@ -1,12 +1,14 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext.gradle_version = '7.0.0'
-    ext.kotlin_version = "1.5.21"
+    ext.kotlin_version = "1.5.30"
     ext.nav_version = "2.3.5"
+    ext.compose_version = "1.0.3"
     repositories {
         google()
         //noinspection JCenterRepository
         jcenter()
+        mavenCentral()
         maven { url 'https://jitpack.io' }
     }
     dependencies {
@@ -23,6 +25,7 @@ allprojects {
         google()
         //noinspection JCenterRepository
         jcenter()
+        mavenCentral()
         maven { url 'https://jitpack.io' }
     }
 }
