@@ -284,6 +284,9 @@ class HomeFragment: Fragment() {
     }
     
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (fragmentHome.root.isRefreshing) {
+            return super.onOptionsItemSelected(item)
+        }
         when (item.itemId) {
             R.id.action_settings -> findNavController().navigate(R.id.nav_setting)
             R.id.action_search -> findNavController().navigate(R.id.nav_search)
