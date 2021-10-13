@@ -112,7 +112,7 @@ class HomeFragment: Fragment() {
                     recyclerViewAdapter.audioInfoList.clear()
                     launch(Dispatchers.Main) {
                         findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)?.makeShortSnack(R.string.home_snack_scanning)?.show()
-                        fragmentHome.recyclerView.adapter?.notifyDataSetChanged()
+                        recyclerViewAdapter.notifyDataSetChanged()
                     }
                     readAudioSystemDatabase(recyclerViewAdapter.audioInfoList)
                     if (recyclerViewAdapter.audioInfoList.isNotEmpty()) {
@@ -167,7 +167,7 @@ class HomeFragment: Fragment() {
         mediaStoreObserver = object : ContentObserver(null) {
             override fun onChange(selfChange: Boolean) {
                 recyclerViewAdapter.audioInfoList.clear()
-                fragmentHome.recyclerView.adapter?.notifyDataSetChanged()
+                recyclerViewAdapter.notifyDataSetChanged()
                 fragmentHome.root.isRefreshing = true
                 updatingJob?.cancel()
                 updatingJob = CoroutineScope(Dispatchers.IO).launch {
