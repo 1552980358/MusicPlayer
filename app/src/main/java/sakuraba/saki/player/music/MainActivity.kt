@@ -56,6 +56,7 @@ import sakuraba.saki.player.music.ui.album.AlbumFragment
 import sakuraba.saki.player.music.ui.album.util.AlbumFragmentData
 import sakuraba.saki.player.music.ui.home.HomeFragment
 import sakuraba.saki.player.music.ui.home.util.HomeFragmentData
+import sakuraba.saki.player.music.ui.search.SearchFragment
 import sakuraba.saki.player.music.util.ActivityFragmentInterface
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
@@ -111,6 +112,7 @@ class MainActivity: BaseMediaControlActivity() {
             when (f) {
                 is HomeFragment -> f.setHomeFragmentData(homeFragmentData)
                 is AlbumFragment -> f.setAlbumFragmentData(albumFragmentData)
+                is SearchFragment -> f.setAudioInfoList(homeFragmentData.audioInfoList ?: arrayListOf())
             }
         }
         override fun onFragmentCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
