@@ -55,7 +55,8 @@ class RecyclerViewAdapterUtil(data: HomeFragmentData?, selection: (pos: Int) -> 
     fun setAdapterToRecyclerView(recyclerView: RecyclerView) {
         recyclerView.adapter = adapter
     }
-    
+
+    @Suppress("NotifyDataSetChanged")
     fun notifyDataSetChanged() = adapter.notifyDataSetChanged()
     
     val audioInfoList get() = adapter.audioInfoList as ArrayList

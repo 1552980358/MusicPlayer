@@ -59,6 +59,7 @@ class RecyclerViewAdapter(private val recyclerView: RecyclerView, private val li
     fun updateMediaItemList(newList: List<MediaItem>) {
         audioInfoList = null
         mediaItemList = newList
+        @Suppress("NotifyDataSetChanged")
         notifyDataSetChanged()
     }
     
@@ -74,7 +75,7 @@ class RecyclerViewAdapter(private val recyclerView: RecyclerView, private val li
         this.mediaItemList = null
         
         when {
-            audioInfoList == null && mediaItemList == null -> notifyDataSetChanged()
+            audioInfoList == null && mediaItemList == null -> @Suppress("NotifyDataSetChanged") notifyDataSetChanged()
             audioInfoList == null && mediaItemList != null -> {
                 if (mediaItemList.last().mediaId == newList.last().audioId) {
                     return
@@ -119,6 +120,7 @@ class RecyclerViewAdapter(private val recyclerView: RecyclerView, private val li
     fun resetAudioAudioList(newList: List<AudioInfo>) {
         audioInfoList = newList
         mediaItemList = null
+        @Suppress("NotifyDataSetChanged")
         notifyDataSetChanged()
     }
     

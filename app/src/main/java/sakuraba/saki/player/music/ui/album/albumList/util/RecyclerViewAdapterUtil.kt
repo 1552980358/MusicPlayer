@@ -45,7 +45,8 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView, listener: (pos: Int) -
     }
     
     val audioInfoList get() = recyclerViewAdapter.arrayList
-    
+
+    @Suppress("NotifyDataSetChanged")
     fun notifyDataUpdated() = recyclerViewAdapter.notifyDataSetChanged()
     
 }

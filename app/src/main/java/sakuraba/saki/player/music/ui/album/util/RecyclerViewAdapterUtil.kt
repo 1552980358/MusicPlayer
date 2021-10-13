@@ -54,7 +54,8 @@ class RecyclerViewAdapterUtil(data: AlbumFragmentData?, listener: (imageView: Im
     fun setAdapterToRecyclerView(recyclerView: RecyclerView) {
         recyclerView.adapter = adapter
     }
-    
+
+    @Suppress("NotifyDataSetChanged")
     fun notifyDataSetChanged() = adapter.notifyDataSetChanged()
     
     val mediaAlbumList get() = adapter.mediaAlbumList as ArrayList
