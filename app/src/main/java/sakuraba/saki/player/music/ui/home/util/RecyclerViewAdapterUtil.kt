@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import sakuraba.saki.player.music.R
@@ -40,7 +41,7 @@ class RecyclerViewAdapterUtil(data: HomeFragmentData?, selection: (pos: Int) -> 
                 @Suppress("SetTextI18n")
                 summary.text = "$audioArtist - $audioAlbum"
                 // holder.image.setImageBitmap(getBitmap(holder.image.context))
-                image.setImageBitmap(bitmapMap[audioAlbumId] ?: holder.background.context.getDrawable(R.drawable.ic_music)?.toBitmap())
+                image.setImageBitmap(bitmapMap[audioAlbumId] ?: ContextCompat.getDrawable(background.context, R.drawable.ic_music)?.toBitmap())
             }
             background.setOnClickListener { selection(position) }
         }

@@ -5,6 +5,7 @@ import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -51,7 +52,7 @@ class AlbumListFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        fragmentAlbumList.imageView.setImageBitmap(tryRun { loadAlbumArt(mediaAlbum.albumId) } ?: resources.getDrawable(R.drawable.ic_music, null).toBitmap())
+        fragmentAlbumList.imageView.setImageBitmap(tryRun { loadAlbumArt(mediaAlbum.albumId) } ?:  ContextCompat.getDrawable(requireContext(), R.drawable.ic_music)?.toBitmap())
         fragmentAlbumList.textViewTitle.text = mediaAlbum.title
     
         behavior = BottomSheetBehavior.from(fragmentAlbumList.recyclerView)
