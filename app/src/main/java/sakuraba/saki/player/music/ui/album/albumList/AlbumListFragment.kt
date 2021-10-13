@@ -37,7 +37,7 @@ class AlbumListFragment: Fragment() {
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _fragmentAlbumListBinding = FragmentAlbumListBinding.inflate(inflater)
-        mediaAlbum = arguments!!.getSerializable(EXTRAS_DATA) as MediaAlbum
+        mediaAlbum = requireArguments().getSerializable(EXTRAS_DATA) as MediaAlbum
         fragmentAlbumList.imageView.transitionName = "${mediaAlbum.albumId}_image"
         fragmentAlbumList.textViewTitle.transitionName = "${mediaAlbum.albumId}_text"
         
