@@ -35,6 +35,11 @@
             app:destination="@id/nav_home"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_nav_search_to_nav_album"
+            app:destination="@id/nav_album"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
     </fragment>
     
     <fragment
@@ -49,6 +54,11 @@
             app:destination="@id/nav_home"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"/>
+        <action
+            android:id="@+id/action_nav_album_to_nav_search"
+            app:destination="@id/nav_search"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
     </fragment>
     
     <fragment
