@@ -25,6 +25,10 @@
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
+
+        <service
+            android:name=".web.WebService"
+            android:exported="false"/>
         
         <activity
             android:name=".MainActivity"
