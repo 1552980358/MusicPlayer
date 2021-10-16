@@ -36,6 +36,9 @@ object Constants {
     const val FILTER_NOTIFICATION_PLAY = "${BuildConfig.APPLICATION_ID}.NotificationBroadcast.Play"
     const val FILTER_NOTIFICATION_PAUSE = "${BuildConfig.APPLICATION_ID}.NotificationBroadcast.Pause"
     const val FILTER_NOTIFICATION_NEXT = "${BuildConfig.APPLICATION_ID}.NotificationBroadcast.Next"
-    
+
+    const val EXTRA_WEBSERVER = "webserver"
+    const val EXTRA_WEBSERVER_START = 1
+    const val EXTRA_WEBSERVER_STOP = 0
     
 }
