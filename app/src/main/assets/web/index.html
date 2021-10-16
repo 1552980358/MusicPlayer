@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title id="title">Title</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+        }
+
+        /* 头部样式 */
+        .header {
+            background-color: #FFF;
+        }
+        .header_t {
+            text-align: center;
+        }
+
+        /* 导航条 */
+        .navbar {
+            overflow: hidden;
+            background-color: #6200EE;
+        }
+        .navbar a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+    </style>
+    <!-- Content -->
+    <style>
+        .content_title {
+            size: 3px;
+        }
+        .content_artist {
+            color: #666666;
+            size: 1px;
+        }
+        .content_album_art {
+            float: left;
+            width: 90px;
+            height: 90px;
+        }
+        .content_column_sub {
+            margin-right: 10px;
+            margin-top: 25px;
+            margin-left: 110px;
+        }
+        .content_column {
+            float: left;
+            width: 33.33%;
+            display: block;
+            text-decoration: none;
+            padding: 10px;
+        }
+        .content_column:hover {
+            background-color: #E0E0E0;
+            color: black;
+        }
+        .content_row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    </style>
+    <!-- Plat Control bar -->
+    <style>
+        .play_control {
+            border-radius:5px;
+            position: fixed;
+            right: 10px;
+            bottom: 10px;
+            width: 320px;
+            height: 80px;
+            z-index: 1;
+            background-color: #6200EE;
+            padding: 5px;
+        }
+        .play_control_img {
+            float: left;
+            width: 40px;
+            height: 40px;
+            margin-right: 5px;
+        }
+        .play_control_title {
+            margin: 0;
+            color: white;
+        }
+        .play_control_artist {
+            margin: 0;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1 class="header_t">MusicPlayer</h1>
+</div>
+
+<div class="navbar">
+    <a>Audio</a>
+    <a>Album</a>
+</div>
+
+<div id="play_control" class="play_control">
+    <!--suppress RequiredAttributes, HtmlRequiredAltAttribute-->
+    <img class="play_control_img">
+    <div>
+        <p class="play_control_title">Title</p>
+        <p class="play_control_artist">Artist</p>
+    </div>
+</div>
+
+<div id="content" style="margin-left: 100px; margin-right: 100px"></div>
+
+<script>
+    function getHostProtocol() {
+        return window.location.protocol
+    }
+    function getHost() {
+        return window.location.host
+    }
+    function getHostPort() {
+        return window.location.port
+    }
+    function getHostUrl() {
+        const host = getHost()
+        const port = getHostPort()
+        if (host.endsWith(port)) {
+            return getHostProtocol() + "//" + host
+        }
+        return getHostProtocol() + "//" + host + ':' + port
+        //return getHostProtocol() + "//192.168.1.100:1552"
+    }
+    async function getAudioData() {
+        let url = getHostUrl() + "/getMusicList"
+        await fetch(url)
+        .then(async function (response) {
+            loadAudio(JSON.parse(await response.text())['list'])
+        })
+    }
+    function loadAudio(json) {
+        let rowDiv = document.createElement('div')
+        rowDiv.setAttribute('class', 'content_row')
+        let count = 0
+        json.forEach(function (jsonObject) {
+            if (count % 3 === 0) {
+                document.getElementById('content').appendChild(rowDiv)
+                rowDiv = document.createElement('div')
+            }
+            if (!(jsonObject['title'] === "") && !(jsonObject['artist'] === "")) {
+                const column = document.createElement('a')
+                column.setAttribute('class', 'content_column')
+                column.setAttribute('onclick', 'contentClick(' + jsonObject['id'] + ')')
+
+                const albumArt = document.createElement('img')
+                albumArt.setAttribute('class', 'content_album_art')
+                albumArt.setAttribute('src', getHostUrl() + "/getAlbumArt?albumId=" + jsonObject['albumId'])
+                column.appendChild(albumArt)
+
+                const subColumn = document.createElement('div')
+                subColumn.setAttribute('class', 'content_column_sub')
+
+                const title = document.createElement('font')
+                title.setAttribute('class', 'content_title')
+                //title.setAttribute('size', '3px')
+                title.innerHTML = jsonObject['title'] + '<br>'
+                // column.appendChild(title)
+                subColumn.appendChild(title)
+                const artist = document.createElement('font')
+                artist.setAttribute('class', 'content_artist')
+                artist.innerText = jsonObject['artist']
+                // column.appendChild(artist)
+                subColumn.appendChild(artist)
+
+                column.appendChild(subColumn)
+                rowDiv.appendChild(column)
+
+                count++
+            }
+        })
+    }
+    getAudioData();
+    function hidePlayBar() {
+        document.getElementById('play_control').hidden = true
+    }
+    function showPlayBar() {
+        document.getElementById('play_control').hidden = false
+    }
+</script>
+</body>
+</html>
