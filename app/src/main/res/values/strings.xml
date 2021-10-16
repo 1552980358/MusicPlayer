@@ -51,5 +51,7 @@
     <string name="key_play_audio_focus_enable">key_play_audio_focus_enable</string>
     <string name="key_play_fade_in_enable">key_play_fade_in_enable</string>
     <string name="key_play_fade_out_enable">key_play_fade_out_enable</string>
+
+    <string name="webservice_notification_title">Web Service</string>
     
 </resources>
