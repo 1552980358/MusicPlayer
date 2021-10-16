@@ -95,6 +95,8 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
         }.close()
     
     fun clearTable(table: String) = writableDatabase.apply { delete(table, null, null) }.close()
+
+    fun queryAllAudio(arrayList: ArrayList<AudioInfo>) = queryAllAudio(arrayList) { }
     
     fun queryAllAudio(arrayList: ArrayList<AudioInfo>, array: (Array<String>) -> Unit) =
         readableDatabase.rawQuery("select * from $TABLE_AUDIO where $KEY_AUDIO_SIZE>? and $KEY_AUDIO_DURATION>?", arrayOf("0", "0").apply(array))?.apply {
