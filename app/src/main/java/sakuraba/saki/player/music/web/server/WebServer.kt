@@ -20,6 +20,7 @@ class WebServer(port: Int, private val context: Context): NanoHTTPD(port) {
         private const val EMPTY = ""
         private const val URL_GET_MUSIC_LIST = "${SLASH}getMusicList"
         private const val UTL_GET_ALBUM_ART = "${SLASH}getAlbumArt"
+        private const val URL_GET_DEFAULT_ALBUM_ART = "${SLASH}getDefaultAlbumArt"
     }
 
     override fun serve(session: IHTTPSession?): Response {
@@ -31,6 +32,7 @@ class WebServer(port: Int, private val context: Context): NanoHTTPD(port) {
             }
             URL_GET_MUSIC_LIST -> musicListJsonResponse(session)
             UTL_GET_ALBUM_ART -> albumArtResponse(session)
+            URL_GET_DEFAULT_ALBUM_ART -> defaultAlbumArtResponse
             else -> newFixedLengthResponse(session?.uri)
         }
     }
@@ -54,5 +56,10 @@ class WebServer(port: Int, private val context: Context): NanoHTTPD(port) {
         val bufferedInputStream = ByteArrayInputStream(byteArray)
         return newFixedLengthResponse(OK, "image/jpeg", bufferedInputStream, byteArray.size.toLong())
     }
+
+    private val defaultAlbumArtResponse get() =
+        context.assets.open("mipmap_music.png").readBytes().run {
+            newFixedLengthResponse(OK, "image/png", ByteArrayInputStream(this), size.toLong())
+        }
 
 }
