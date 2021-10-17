@@ -51,10 +51,9 @@ class WebServer(port: Int, private val context: Context): NanoHTTPD(port) {
     }
 
     private fun albumArtResponse(session: IHTTPSession?): Response {
-        val id = session?.parameters?.get("albumId")?.first()?.toLong() ?: return newFixedLengthResponse("")
-        val byteArray = tryRun { context.loadAlbumArt(id)?.getByteArray(format = JPEG) } ?: context.assets.open("mipmap_music.png").readBytes()
-        val bufferedInputStream = ByteArrayInputStream(byteArray)
-        return newFixedLengthResponse(OK, "image/jpeg", bufferedInputStream, byteArray.size.toLong())
+        val id = session?.parameters?.get("albumId")?.first()?.toLong() ?: return defaultAlbumArtResponse
+        val byteArray = tryRun { context.loadAlbumArt(id)?.getByteArray(format = JPEG) } ?: return defaultAlbumArtResponse
+        return newFixedLengthResponse(OK, "image/jpeg", ByteArrayInputStream(byteArray), byteArray.size.toLong())
     }
 
     private val defaultAlbumArtResponse get() =
