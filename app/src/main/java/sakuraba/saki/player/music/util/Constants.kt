@@ -7,6 +7,7 @@ object Constants {
     const val EXTRAS_AUDIO_INFO_POS = "audio_info_pos"
     const val EXTRAS_AUDIO_INFO = "audio_info"
     const val EXTRAS_AUDIO_INFO_LIST = "audio_info_list"
+    const val EXTRA_MEDIA_ID = "media_id"
     const val EXTRAS_STATUS = "status"
     const val EXTRAS_PROGRESS = "progress"
     const val EXTRAS_INDEX = "index"
@@ -19,6 +20,7 @@ object Constants {
     
     const val EXTRAS_PLAY = "play"
     const val EXTRAS_PAUSE = "pause"
+    const val EXTRA_INIT = "init"
     
     const val EXTRAS_CONFIG_KEY = "extra_config_key"
     const val EXTRAS_CONFIG_VALUE = "extra_config_value"
@@ -40,5 +42,7 @@ object Constants {
     const val EXTRA_WEBSERVER = "webserver"
     const val EXTRA_WEBSERVER_START = 1
     const val EXTRA_WEBSERVER_STOP = 0
+
+    const val FILTER_WEB_CONTROL_UTIL = "filter_web_control_util"
     
 }
