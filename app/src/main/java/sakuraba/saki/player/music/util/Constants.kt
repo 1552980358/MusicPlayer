@@ -42,7 +42,5 @@ object Constants {
     const val EXTRA_WEBSERVER = "webserver"
     const val EXTRA_WEBSERVER_START = 1
     const val EXTRA_WEBSERVER_STOP = 0
-
-    const val FILTER_WEB_CONTROL_UTIL = "filter_web_control_util"
     
 }
