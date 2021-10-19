@@ -34,7 +34,7 @@ class WebService: Service() {
         notificationManager = createNotificationManager
         connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
 
-        webServer = WebServer(SERVER_PORT, this, connectivityManager)
+        webServer = WebServer(SERVER_PORT, this, webControlUtil)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
