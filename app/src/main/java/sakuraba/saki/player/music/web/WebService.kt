@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.IBinder
 import androidx.core.app.NotificationManagerCompat
-
 import sakuraba.saki.player.music.util.Constants.EXTRA_WEBSERVER
 import sakuraba.saki.player.music.util.Constants.EXTRA_WEBSERVER_START
 import sakuraba.saki.player.music.util.Constants.EXTRA_WEBSERVER_STOP
@@ -15,6 +14,7 @@ import sakuraba.saki.player.music.web.util.NetworkUtil.ipAddress
 import sakuraba.saki.player.music.web.util.NotificationUtil.createNotificationManager
 import sakuraba.saki.player.music.web.util.NotificationUtil.getNotification
 import sakuraba.saki.player.music.web.util.NotificationUtil.startForeground
+import sakuraba.saki.player.music.web.util.WebControlUtil
 
 class WebService: Service() {
 
@@ -26,6 +26,8 @@ class WebService: Service() {
     private lateinit var notificationManager: NotificationManagerCompat
 
     private lateinit var connectivityManager: ConnectivityManager
+
+    private var webControlUtil = WebControlUtil()
 
     override fun onCreate() {
         super.onCreate()
