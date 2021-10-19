@@ -65,6 +65,7 @@ import sakuraba.saki.player.music.util.Constants.ACTION_UPDATE_PLAY_MODE
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_POS
+import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.Constants.EXTRAS_INDEX
 import sakuraba.saki.player.music.util.Constants.EXTRAS_PLAY_MODE
 import sakuraba.saki.player.music.util.Constants.EXTRAS_PLAY
@@ -75,6 +76,8 @@ import sakuraba.saki.player.music.util.Constants.PLAY_MODE_RANDOM
 import sakuraba.saki.player.music.util.Constants.PLAY_MODE_SINGLE
 import sakuraba.saki.player.music.util.Constants.PLAY_MODE_SINGLE_CYCLE
 import sakuraba.saki.player.music.util.Constants.EXTRAS_PAUSE
+import sakuraba.saki.player.music.util.Constants.EXTRA_INIT
+import sakuraba.saki.player.music.util.Constants.EXTRA_MEDIA_ID
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_NEXT
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PAUSE
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PLAY
@@ -85,6 +88,7 @@ import sakuraba.saki.player.music.util.SettingUtil.KEY_PLAY_AUDIO_FOCUS_ENABLE
 import sakuraba.saki.player.music.util.SettingUtil.KEY_PLAY_FADE_IN_ENABLE
 import sakuraba.saki.player.music.util.SettingUtil.KEY_PLAY_FADE_OUT_ENABLE
 import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
+import sakuraba.saki.player.music.web.util.WebControlUtil
 
 class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player.Listener {
     
@@ -287,6 +291,8 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
     private lateinit var playbackStateCompat: PlaybackStateCompat
     
     private lateinit var mediaMetadataCompat: MediaMetadataCompat
+
+    private var webControlUtil: WebControlUtil? = null
     
     private val broadcastReceiver = broadcastReceiver { _, intent, _ ->
         when (intent?.action) {
@@ -353,10 +359,31 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.e(TAG, "$ON_START_COMMAND $flags $startId")
-        notification = getNotification(audioInfoList[listPos], playbackStateCompat.state == STATE_PAUSED)
         when (intent?.getStringExtra(ACTION_EXTRA)) {
+            EXTRA_INIT -> {
+                Log.e(TAG, "EXTRA_INIT")
+                webControlUtil = intent.getSerializableExtra(EXTRAS_DATA) as WebControlUtil
+                webControlUtil?.set {
+                    onPlay { mediaSession.controller.transportControls.play() }
+                    onPause { mediaSession.controller.transportControls.pause() }
+                    onSkipToPrevious { mediaSession.controller.transportControls.skipToPrevious() }
+                    onSkipToNext { mediaSession.controller.transportControls.skipToNext() }
+                    onPlayFromMediaId { pos, mediaId, audioInfoList ->
+                        mediaSession.controller.transportControls.playFromMediaId(mediaId, bundle {
+                            putInt(EXTRAS_AUDIO_INFO_POS, pos)
+                            putSerializable(EXTRAS_AUDIO_INFO_LIST, audioInfoList)
+                        })
+                    }
+                }
+
+                @Suppress("UNCHECKED_CAST")
+                audioInfoList = intent.getSerializableExtra(EXTRAS_AUDIO_INFO_LIST) as ArrayList<AudioInfo>
+                listPos = intent.getIntExtra(EXTRAS_AUDIO_INFO_POS, -1)
+                mediaSession.controller.transportControls.playFromMediaId(intent.getStringExtra(EXTRA_MEDIA_ID), null)
+            }
             EXTRAS_PLAY -> {
                 Log.e(TAG, "EXTRAS_PLAY")
+                notification = getNotification(audioInfoList[listPos], playbackStateCompat.state == STATE_PAUSED)
                 if (!isForegroundService) {
                     startForeground(notification!!)
                     isForegroundService = true
@@ -370,6 +397,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
             }
             EXTRAS_PAUSE -> {
                 Log.e(TAG, "EXTRAS_PAUSE")
+                notification = getNotification(audioInfoList[listPos], playbackStateCompat.state == STATE_PAUSED)
                 startForeground(notification!!)
                 stopForeground(false)
                 isForegroundService = false
@@ -524,6 +552,11 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        Log.e(TAG, "onDestroy")
+        super.onDestroy()
     }
     
 }
