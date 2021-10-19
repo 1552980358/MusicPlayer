@@ -28,11 +28,18 @@ class WebServer(private val port: Int, private val context: Context, private val
     }
 
     override fun serve(session: IHTTPSession?): Response {
-        val uri = session?.uri!!
+        val uri = session?.uri ?: return newFixedLengthResponse("404 Unknown Uri")
         return when (session.uri) {
             EMPTY, SLASH, URL_GET_INDEX -> {
                 val indexStream = context.assets.open("web${separator}index.html")
-                newFixedLengthResponse(OK, MIME_HTML + CONTENT_TYPE_CHARSET, indexStream, indexStream.available().toLong())
+                newFixedLengthResponse(OK, MIME_HTML + CONTENT_TYPE_CHARSET, indexStream, indexStream.available().toLong()).apply {
+                    addHeader("Access-Control-Allow-Origin", session.headers.get("Access-Control-Allow-Origin") ?: "*")
+                    addHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS")
+                    addHeader("Access-Control-Allow-Headers", session.headers.get("Access-Control-Allow-Headers") ?: "*")
+                    addHeader("Access-Control-Allow-Credentials", "true")
+                    addHeader("Access-Control-Max-Age", "0")
+                    addHeader("Content-Type", "application/json$CONTENT_TYPE_CHARSET")
+                }
             }
             URL_GET_MUSIC_LIST -> musicListJsonResponse(session)
             UTL_GET_ALBUM_ART -> albumArtResponse(session)
@@ -50,22 +57,22 @@ class WebServer(private val port: Int, private val context: Context, private val
         }
     }
 
-    private fun musicListJsonResponse(session: IHTTPSession?): Response {
+    private fun musicListJsonResponse(session: IHTTPSession): Response {
         val arrayList = arrayListOf<AudioInfo>()
         AudioDatabaseHelper(context).queryAllAudio(arrayList)
         arrayList.sortBy { audioInfo -> audioInfo.audioTitlePinyin }
         return newFixedLengthResponse(arrayList.convertIntoJson).apply {
-            addHeader("Access-Control-Allow-Origin", session?.headers?.get("Access-Control-Allow-Origin") ?: "*")
+            addHeader("Access-Control-Allow-Origin", session.headers.get("Access-Control-Allow-Origin") ?: "*")
             addHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS")
-            addHeader("Access-Control-Allow-Headers", session?.headers?.get("Access-Control-Allow-Headers") ?: "*")
+            addHeader("Access-Control-Allow-Headers", session.headers.get("Access-Control-Allow-Headers") ?: "*")
             addHeader("Access-Control-Allow-Credentials", "true")
             addHeader("Access-Control-Max-Age", "0")
             addHeader("Content-Type", "application/json$CONTENT_TYPE_CHARSET")
         }
     }
 
-    private fun albumArtResponse(session: IHTTPSession?): Response {
-        val id = session?.parameters?.get("albumId")?.first()?.toLong() ?: return defaultAlbumArtResponse
+    private fun albumArtResponse(session: IHTTPSession): Response {
+        val id = session.parameters.get("albumId")?.first()?.toLong() ?: return defaultAlbumArtResponse
         val byteArray = tryRun { context.loadAlbumArt(id)?.getByteArray(format = JPEG) } ?: return defaultAlbumArtResponse
         return newFixedLengthResponse(OK, "image/x-icon", ByteArrayInputStream(byteArray), byteArray.size.toLong())
     }
