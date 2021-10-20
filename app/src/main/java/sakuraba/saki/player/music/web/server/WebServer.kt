@@ -74,7 +74,7 @@ class WebServer(port: Int, private val context: Context, private val webControlU
     }
 
     private fun albumArtResponse(session: IHTTPSession): Response {
-        val id = session.parameters.get("albumId")?.first()?.toLong() ?: return defaultAlbumArtResponse
+        val id = session.parameters["albumId"]?.first()?.toLong() ?: return defaultAlbumArtResponse
         val byteArray = tryRun { context.loadAlbumArt(id)?.getByteArray(format = JPEG) } ?: return defaultAlbumArtResponse
         return newFixedLengthResponse(OK, "image/x-icon", ByteArrayInputStream(byteArray), byteArray.size.toLong())
     }
@@ -87,8 +87,8 @@ class WebServer(port: Int, private val context: Context, private val webControlU
 
     private fun playMusic(session: IHTTPSession): Response {
         Log.e(TAG, "playMusic")
-        val id = session.parameters.get("id")?.first()?.toString() ?: return newFixedLengthResponse("404 Unknown Uri")
-        val pos = session.parameters.get("pos")?.first()?.toInt() ?: return newFixedLengthResponse("404 Unknown Uri")
+        val id = session.parameters["id"]?.first()?.toString() ?: return newFixedLengthResponse("404 Unknown Uri")
+        val pos = session.parameters["pos"]?.first()?.toInt() ?: return newFixedLengthResponse("404 Unknown Uri")
         Log.e(TAG, "id=$id pos=$pos")
         val arrayList = arrayListOf<AudioInfo>()
         AudioDatabaseHelper(context).queryAllAudio(arrayList)
@@ -109,9 +109,9 @@ class WebServer(port: Int, private val context: Context, private val webControlU
     }
 
     private fun Response.withHeaders(session: IHTTPSession) = apply {
-        addHeader("Access-Control-Allow-Origin", session.headers.get("Access-Control-Allow-Origin") ?: "*")
+        addHeader("Access-Control-Allow-Origin", session.headers["Access-Control-Allow-Origin"] ?: "*")
         addHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS")
-        addHeader("Access-Control-Allow-Headers", session.headers.get("Access-Control-Allow-Headers") ?: "*")
+        addHeader("Access-Control-Allow-Headers", session.headers["Access-Control-Allow-Headers"] ?: "*")
         addHeader("Access-Control-Allow-Credentials", "true")
         addHeader("Access-Control-Max-Age", "0")
     }
