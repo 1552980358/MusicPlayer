@@ -46,19 +46,7 @@ class WebServer(private val port: Int, private val context: Context, private val
             EMPTY, SLASH, URL_GET_INDEX -> {
                 Log.e(TAG, "index")
                 val indexStream = context.assets.open("web${separator}index.html")
-                newFixedLengthResponse(
-                    OK,
-                    "application/json$CONTENT_TYPE_CHARSET",
-                    indexStream,
-                    indexStream.available().toLong()
-                ).apply {
-                    addHeader("Access-Control-Allow-Origin", session.headers.get("Access-Control-Allow-Origin") ?: "*")
-                    addHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS")
-                    addHeader("Access-Control-Allow-Headers", session.headers.get("Access-Control-Allow-Headers") ?: "*")
-                    addHeader("Access-Control-Allow-Credentials", "true")
-                    addHeader("Access-Control-Max-Age", "0")
-
-                }
+                newFixedLengthResponse(OK, "application/json$CONTENT_TYPE_CHARSET", indexStream, indexStream.available().toLong()).withHeaders(session)
             }
             URL_GET_MUSIC_LIST -> musicListJsonResponse(session)
             UTL_GET_ALBUM_ART -> albumArtResponse(session)
@@ -82,13 +70,7 @@ class WebServer(private val port: Int, private val context: Context, private val
         val arrayList = arrayListOf<AudioInfo>()
         AudioDatabaseHelper(context).queryAllAudio(arrayList)
         arrayList.sortBy { audioInfo -> audioInfo.audioTitlePinyin }
-        return newFixedLengthResponse(OK, "application/json$CONTENT_TYPE_CHARSET", arrayList.convertIntoJson).apply {
-            addHeader("Access-Control-Allow-Origin", session.headers.get("Access-Control-Allow-Origin") ?: "*")
-            addHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS")
-            addHeader("Access-Control-Allow-Headers", session.headers.get("Access-Control-Allow-Headers") ?: "*")
-            addHeader("Access-Control-Allow-Credentials", "true")
-            addHeader("Access-Control-Max-Age", "0")
-        }
+        return newFixedLengthResponse(OK, "application/json$CONTENT_TYPE_CHARSET", arrayList.convertIntoJson).withHeaders(session)
     }
 
     private fun albumArtResponse(session: IHTTPSession): Response {
@@ -123,7 +105,15 @@ class WebServer(private val port: Int, private val context: Context, private val
             }
             webControlUtil.playFromMediaId(pos, id, arrayList)
         }
-        return newFixedLengthResponse("COMPLETE")
+        return newFixedLengthResponse("COMPLETE").withHeaders(session)
+    }
+
+    private fun Response.withHeaders(session: IHTTPSession) = apply {
+        addHeader("Access-Control-Allow-Origin", session.headers.get("Access-Control-Allow-Origin") ?: "*")
+        addHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS")
+        addHeader("Access-Control-Allow-Headers", session.headers.get("Access-Control-Allow-Headers") ?: "*")
+        addHeader("Access-Control-Allow-Credentials", "true")
+        addHeader("Access-Control-Max-Age", "0")
     }
 
 }
