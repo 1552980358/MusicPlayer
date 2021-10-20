@@ -46,7 +46,7 @@ class WebServer(private val port: Int, private val context: Context, private val
             EMPTY, SLASH, URL_GET_INDEX -> {
                 Log.e(TAG, "index")
                 val indexStream = context.assets.open("web${separator}index.html")
-                newFixedLengthResponse(OK, "application/json$CONTENT_TYPE_CHARSET", indexStream, indexStream.available().toLong()).withHeaders(session)
+                newFixedLengthResponse(OK, "$MIME_HTML$CONTENT_TYPE_CHARSET", indexStream, indexStream.available().toLong()).withHeaders(session)
             }
             URL_GET_MUSIC_LIST -> musicListJsonResponse(session)
             UTL_GET_ALBUM_ART -> albumArtResponse(session)
