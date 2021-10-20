@@ -26,7 +26,7 @@ import sakuraba.saki.player.music.web.util.WebControlUtil
 import java.io.ByteArrayInputStream
 import java.io.File.separator
 
-class WebServer(private val port: Int, private val context: Context, private val webControlUtil: WebControlUtil): NanoHTTPD(port) {
+class WebServer(port: Int, private val context: Context, private val webControlUtil: WebControlUtil): NanoHTTPD(port) {
 
     companion object {
         private const val TAG = "WebServer"
