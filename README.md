@@ -24,6 +24,9 @@
     - Commit: [298b132](https://github.com/1552980358/MusicPlayer/commit/298b132064cbcb492ed818fb286a21de531366af)
     - Google Document Source: [Pending intents mutability](https://developer.android.com/about/versions/12/behavior-changes-12#pending-intent-mutability)
 
+## Webpage Server
+`src/main/assets/web/*`: Please refers to (here)[https://github.com/1552980358/MusicPlayer-Webpage]
+
 ## Required Permission
 - `android.permission.FOREGROUND_SERVICE`
 - `android.permission.READ_EXTERNAL_STORAGE`
