@@ -17,7 +17,6 @@ import lib.github1552980358.ktExtension.android.view.heightF
 import lib.github1552980358.ktExtension.android.view.widthF
 import sakuraba.saki.player.music.R
 
-
 class PlaySeekbar: View {
     
     private fun interface OnSeekChangeListener {
@@ -28,6 +27,7 @@ class PlaySeekbar: View {
     constructor(context: Context, attributeSet: AttributeSet?): super(context, attributeSet)
     
     private val paint = Paint().apply { isAntiAlias = true }
+    private val paintRemain = Paint().apply { isAntiAlias = true }
     
     var isUserTouched = false
     var isReleased = true
@@ -54,8 +54,10 @@ class PlaySeekbar: View {
             }
             return@setOnTouchListener true
         }
-        paint.color = Color.WHITE
         paint.strokeWidth = resources.getDimension(R.dimen.play_seek_bar_indicator_thick)
+        paint.style = Paint.Style.STROKE
+        paintRemain.strokeWidth = resources.getDimension(R.dimen.play_seek_bar_indicator_thick)
+        paintRemain.style = Paint.Style.STROKE
     }
     
     var progress = 1L
@@ -73,8 +75,13 @@ class PlaySeekbar: View {
             invalidate()
         }
     
-    fun setCursorColor(@ColorInt colorInt: Int) {
+    fun setProgressColor(@ColorInt colorInt: Int) {
         paint.color = colorInt
+        invalidate()
+    }
+
+    fun setRemainColor(@ColorInt colorInt: Int) {
+        paintRemain.color = colorInt
         invalidate()
     }
     
@@ -100,6 +107,10 @@ class PlaySeekbar: View {
             drawX < paint.strokeWidth / 2 -> drawX = paint.strokeWidth / 2
             drawX >= width -> drawX = widthF - paint.strokeWidth / 2
         }
+
+        val lineY = height / 2F
+        canvas.drawLine(drawX, lineY, widthF, lineY, paintRemain)
+        canvas.drawLine(0F, lineY, drawX, lineY, paint)
         canvas.drawLine(drawX, 0F, drawX, heightF, paint)
     }
     
