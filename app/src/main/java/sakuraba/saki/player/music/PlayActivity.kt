@@ -110,9 +110,9 @@ class PlayActivity: BaseMediaControlActivity() {
     private var seekbarBackgroundColor = TRANSPARENT
     
     private lateinit var playModeListCycle: Drawable
-    private val playModeSingleCycle by lazy { resources.getDrawable(R.drawable.ic_single_cycle, null) }
-    private val playModeRandom by lazy { resources.getDrawable(R.drawable.ic_random, null) }
-    private val playModeSingle by lazy { resources.getDrawable(R.drawable.ic_single, null) }
+    private val playModeSingleCycle by lazy { ContextCompat.getDrawable(this, R.drawable.ic_single_cycle) }
+    private val playModeRandom by lazy { ContextCompat.getDrawable(this, R.drawable.ic_random) }
+    private val playModeSingle by lazy { ContextCompat.getDrawable(this, R.drawable.ic_single) }
     
     private var _recyclerView: RecyclerView? = null
     private val recyclerView get() = _recyclerView!!
@@ -161,7 +161,7 @@ class PlayActivity: BaseMediaControlActivity() {
                 @Suppress("SetTextI18n")
                 textViewSummary.text = "${audioInfo.audioArtist} - ${audioInfo.audioAlbum}"
             }
-            val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: resources.getDrawable(R.drawable.ic_music, null).toBitmap()
+            val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: ContextCompat.getDrawable(this@PlayActivity, R.drawable.ic_music)?.toBitmap()
             launch(Dispatchers.Main) { activityPlay.imageView.setImageBitmap(bitmap) }
             MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated(true)
         }
@@ -393,7 +393,8 @@ class PlayActivity: BaseMediaControlActivity() {
     override fun onMediaControllerMetadataChanged(metadata: MediaMetadataCompat?) {
         metadata ?: return
         CoroutineScope(Dispatchers.IO).launch {
-            val bitmap = tryRun { loadAlbumArt(metadata.getString(METADATA_KEY_ALBUM_ART_URI)) } ?: resources.getDrawable(R.drawable.ic_music, null).toBitmap()
+            val bitmap = tryRun { loadAlbumArt(metadata.getString(METADATA_KEY_ALBUM_ART_URI)) }
+                ?: ContextCompat.getDrawable(this@PlayActivity, R.drawable.ic_music)?.toBitmap()
             launch(Dispatchers.Main) { activityPlay.imageView.setImageBitmap(bitmap) }
             MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated(false)
         }
