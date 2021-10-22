@@ -26,6 +26,11 @@
                 android:layout_width="match_parent"
                 android:transitionName="image_view"
                 tools:ignore="ContentDescription" />
+
+            <sakuraba.saki.player.music.widget.LyricLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/lyric_layout" />
     
             <RelativeLayout
                 android:layout_height="wrap_content"
@@ -33,7 +38,7 @@
                 android:fitsSystemWindows="true"
                 android:id="@+id/relative_layout_toolbar_root"
                 android:background="@drawable/activity_play_filter">
-        
+
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
@@ -129,14 +134,14 @@
                 android:layout_height="match_parent"
                 android:layout_width="0dp"
                 android:layout_weight="2">
-                
+
                 <ImageButton
-                    android:layout_height="wrap_content"
-                    android:id="@+id/image_button_volume"
+                    android:id="@+id/image_button_lyric"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_speaker"
+                    android:src="@drawable/ic_lyric"
                     tools:ignore="ContentDescription" />
     
             </RelativeLayout>
