@@ -8,10 +8,9 @@ import android.view.MotionEvent.ACTION_DOWN
 import android.view.MotionEvent.ACTION_MOVE
 import android.view.MotionEvent.ACTION_UP
 import android.view.View
-import androidx.core.content.ContextCompat
+import androidx.annotation.ColorInt
 import lib.github1552980358.ktExtension.android.view.heightF
 import lib.github1552980358.ktExtension.android.view.widthF
-import sakuraba.saki.player.music.R
 
 class VerticalSeekbar: View {
     
@@ -34,7 +33,6 @@ class VerticalSeekbar: View {
         paintRemain.apply {
             isAntiAlias = true
             style = Paint.Style.FILL_AND_STROKE
-            color = ContextCompat.getColor(context, R.color.vertical_seekbar_remain_light)
         }
         paintPass.apply {
             isAntiAlias = true
@@ -74,15 +72,15 @@ class VerticalSeekbar: View {
             else -> progress
         }
     }
-    
-    fun updateColor(newColor: Int, isLight: Boolean) {
-        paintPass.color = newColor
+
+    fun updatePrimaryColor(@ColorInt newColor: Int) {
         paintCircle.color = newColor
-        if (isLight) {
-            paintRemain.color = ContextCompat.getColor(context, R.color.vertical_seekbar_remain_light)
-        } else {
-            paintRemain.color = ContextCompat.getColor(context, R.color.vertical_seekbar_remain_dark)
-        }
+        paintPass.color = newColor
+        invalidate()
+    }
+
+    fun updateSecondaryColor(@ColorInt newColor: Int) {
+        paintRemain.color = newColor
         invalidate()
     }
     
