@@ -106,6 +106,8 @@ class PlayActivity: BaseMediaControlActivity() {
     
     @Volatile
     private var activityBackgroundColor = TRANSPARENT
+    @Volatile
+    private var seekbarBackgroundColor = TRANSPARENT
     
     private lateinit var playModeListCycle: Drawable
     private val playModeSingleCycle by lazy { resources.getDrawable(R.drawable.ic_single_cycle, null) }
@@ -116,9 +118,6 @@ class PlayActivity: BaseMediaControlActivity() {
     private val recyclerView get() = _recyclerView!!
     
     private var volumePopupWindow: VolumePopupWindow? = null
-    
-    private val playSeekbarColorLight by lazy { ContextCompat.getColor(this, R.color.play_play_seekbar_background_light) }
-    private val playSeekbarColorDark by lazy { ContextCompat.getColor(this, R.color.play_play_seekbar_background_dark) }
     
     private lateinit var audioManager: AudioManager
     
@@ -450,11 +449,21 @@ class PlayActivity: BaseMediaControlActivity() {
             }
             activityBackgroundColor = backgroundColor
         }
+        if (seekbarBackgroundColor != primaryTextColor) {
+            ValueAnimator.ofArgb(seekbarBackgroundColor, primaryTextColor).apply {
+                duration = 500
+                addUpdateListener {
+                    activityPlay.relativeLayout.setBackgroundColor(animatedValue as Int)
+                }
+                CoroutineScope(Dispatchers.Main).launch { start() }
+            }
+            seekbarBackgroundColor = primaryTextColor
+        }
         CoroutineScope(Dispatchers.Main).launch { viewModel.setIsLightBackground(isLight) }
         if (isInit) {
             CoroutineScope(Dispatchers.Main).launch {
                 updateControlButtonColor(if (isLight) BLACK else WHITE)
-                activityPlay.relativeLayout.setBackgroundColor(if (isLight) playSeekbarColorLight else playSeekbarColorDark)
+                // activityPlay.relativeLayout.setBackgroundColor(if (isLight) playSeekbarColorLight else playSeekbarColorDark)
                 viewModel.isLightBackground.observe(this@PlayActivity) { isLight ->
                     if (isLight) { ValueAnimator.ofArgb(WHITE, BLACK) } else { ValueAnimator.ofArgb(BLACK, WHITE) }.apply {
                         duration = 500
@@ -463,16 +472,18 @@ class PlayActivity: BaseMediaControlActivity() {
                             volumePopupWindow?.updateIsLight(animatedValue as Int, isLight)
                         }
                     }.start()
-                    if (isLight) {
-                        ValueAnimator.ofArgb(playSeekbarColorDark, playSeekbarColorLight)
-                    } else {
-                        ValueAnimator.ofArgb(playSeekbarColorLight, playSeekbarColorDark)
-                    }.apply {
-                        duration = 500
-                        addUpdateListener {
-                            activityPlay.relativeLayout.setBackgroundColor(animatedValue as Int)
-                        }
-                    }.start()
+                    /**
+                     * if (isLight) {
+                     *     ValueAnimator.ofArgb(playSeekbarColorDark, playSeekbarColorLight)
+                     * } else {
+                     *     ValueAnimator.ofArgb(playSeekbarColorLight, playSeekbarColorDark)
+                     * }.apply {
+                     *     duration = 500
+                     *     addUpdateListener {
+                     *         activityPlay.relativeLayout.setBackgroundColor(animatedValue as Int)
+                     *     }
+                     * }.start()
+                    **/
                     if (isLight) { ValueAnimator.ofArgb(BLACK, WHITE) } else { ValueAnimator.ofArgb(WHITE, BLACK) }.apply {
                         duration = 500
                         addUpdateListener {
