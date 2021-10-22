@@ -53,5 +53,7 @@
     <string name="key_play_fade_out_enable">key_play_fade_out_enable</string>
 
     <string name="webservice_notification_title">Web Service</string>
+
+    <string name="lyric_empty_list">Empty Lyric List</string>
     
 </resources>
