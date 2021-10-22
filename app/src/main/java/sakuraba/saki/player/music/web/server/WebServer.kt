@@ -54,13 +54,7 @@ class WebServer(port: Int, private val context: Context, private val webControlU
             URI_PLAY_AUDIO -> playMusic(session)
             else -> {
                 val indexStream = context.assets.open("web$uri")
-                val mimeType = when {
-                    uri.endsWith("css") -> "text/css$CONTENT_TYPE_CHARSET"
-                    uri.endsWith("js") -> "text/javascript$CONTENT_TYPE_CHARSET"
-                    uri.endsWith("ico") -> "image/x-icon"
-                    else -> MIME_HTML
-                }
-                newFixedLengthResponse(OK, mimeType, indexStream, indexStream.available().toLong())
+                newFixedLengthResponse(OK, uri.mimeType, indexStream, indexStream.available().toLong())
             }
         }
     }
@@ -106,6 +100,13 @@ class WebServer(port: Int, private val context: Context, private val webControlU
             webControlUtil.playFromMediaId(pos, id, arrayList)
         }
         return newFixedLengthResponse("COMPLETE").withHeaders(session)
+    }
+
+    private val String.mimeType get() = when {
+        endsWith("css") -> "text/css$CONTENT_TYPE_CHARSET"
+        endsWith("js") -> "text/javascript$CONTENT_TYPE_CHARSET"
+        endsWith("ico") -> "image/x-icon"
+        else -> MIME_HTML
     }
 
     private fun Response.withHeaders(session: IHTTPSession) = apply {
