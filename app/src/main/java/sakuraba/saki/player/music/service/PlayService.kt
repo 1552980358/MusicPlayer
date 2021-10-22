@@ -2,6 +2,7 @@ package sakuraba.saki.player.music.service
 
 import android.app.Notification
 import android.content.Intent
+import android.content.Intent.ACTION_HEADSET_PLUG
 import android.media.AudioManager
 import android.media.AudioManager.AUDIOFOCUS_LOSS
 import android.media.AudioManager.AUDIOFOCUS_REQUEST_FAILED
@@ -300,6 +301,17 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
             FILTER_NOTIFICATION_PLAY -> mediaSession.controller.transportControls.play()
             FILTER_NOTIFICATION_PAUSE -> mediaSession.controller.transportControls.pause()
             FILTER_NOTIFICATION_NEXT -> mediaSession.controller.transportControls.skipToNext()
+            ACTION_HEADSET_PLUG -> {
+                if (intent.getIntExtra("state", -1) == 0 && exoPlayer.isPlaying) {
+                    // mediaSession.controller.transportControls.pause()
+                    exoPlayer.pause()
+                    playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                        .setState(STATE_PAUSED, exoPlayer.currentPosition/*mediaPlayer.currentPosition.toLong()*/, 1F)
+                        .build()
+                    mediaSession.setPlaybackState(playbackStateCompat)
+                    startService(PlayService::class.java) { putExtra(ACTION_EXTRA, EXTRAS_PAUSE) }
+                }
+            }
         }
     }
     
@@ -350,7 +362,16 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
         
         notificationManager = createNotificationManager
         
-        broadcastReceiver.register(this, arrayOf(FILTER_NOTIFICATION_PREV, FILTER_NOTIFICATION_PLAY, FILTER_NOTIFICATION_PAUSE, FILTER_NOTIFICATION_NEXT))
+        broadcastReceiver.register(
+            this,
+            arrayOf(
+                FILTER_NOTIFICATION_PREV,
+                FILTER_NOTIFICATION_PLAY,
+                FILTER_NOTIFICATION_PAUSE,
+                FILTER_NOTIFICATION_NEXT,
+                ACTION_HEADSET_PLUG
+            )
+        )
         
         wakeLock = (getSystemService(POWER_SERVICE) as PowerManager).newWakeLock(PARTIAL_WAKE_LOCK, WAKE_LOCK_tAG)
         
