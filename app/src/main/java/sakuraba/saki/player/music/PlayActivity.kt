@@ -108,6 +108,8 @@ class PlayActivity: BaseMediaControlActivity() {
     private var activityBackgroundColor = TRANSPARENT
     @Volatile
     private var seekbarBackgroundColor = TRANSPARENT
+    @Volatile
+    private var progressColor = TRANSPARENT
     
     private lateinit var playModeListCycle: Drawable
     private val playModeSingleCycle by lazy { ContextCompat.getDrawable(this, R.drawable.ic_single_cycle) }
@@ -454,11 +456,24 @@ class PlayActivity: BaseMediaControlActivity() {
             ValueAnimator.ofArgb(seekbarBackgroundColor, primaryTextColor).apply {
                 duration = 500
                 addUpdateListener {
-                    activityPlay.relativeLayout.setBackgroundColor(animatedValue as Int)
+                    // activityPlay.relativeLayout.setBackgroundColor(animatedValue as Int)
+                    activityPlay.playSeekBar.setProgressColor(animatedValue as Int)
+                    activityPlay.durationViewProgress.updateTextColor(animatedValue as Int)
                 }
                 CoroutineScope(Dispatchers.Main).launch { start() }
             }
             seekbarBackgroundColor = primaryTextColor
+        }
+        if (progressColor != secondaryTextColor) {
+            ValueAnimator.ofArgb(progressColor, secondaryTextColor).apply {
+                duration = 500
+                addUpdateListener {
+                    activityPlay.playSeekBar.setRemainColor(animatedValue as Int)
+                    activityPlay.durationViewDuration.updateTextColor(animatedValue as Int)
+                }
+                CoroutineScope(Dispatchers.Main).launch { start() }
+            }
+            progressColor = secondaryTextColor
         }
         CoroutineScope(Dispatchers.Main).launch { viewModel.setIsLightBackground(isLight) }
         if (isInit) {
@@ -485,14 +500,16 @@ class PlayActivity: BaseMediaControlActivity() {
                      *     }
                      * }.start()
                     **/
-                    if (isLight) { ValueAnimator.ofArgb(BLACK, WHITE) } else { ValueAnimator.ofArgb(WHITE, BLACK) }.apply {
-                        duration = 500
-                        addUpdateListener {
-                            activityPlay.durationViewProgress.updateTextColor(animatedValue as Int)
-                            activityPlay.durationViewDuration.updateTextColor(animatedValue as Int)
-                            activityPlay.playSeekBar.setCursorColor(animatedValue as Int)
-                        }
-                    }.start()
+                    /**
+                     * if (isLight) { ValueAnimator.ofArgb(BLACK, WHITE) } else { ValueAnimator.ofArgb(WHITE, BLACK) }.apply {
+                     *     duration = 500
+                     *     addUpdateListener {
+                     *         activityPlay.durationViewProgress.updateTextColor(animatedValue as Int)
+                     *         activityPlay.durationViewDuration.updateTextColor(animatedValue as Int)
+                     *         activityPlay.playSeekBar.setCursorColor(animatedValue as Int)
+                     *     }
+                     * }.start()
+                    */
                 }
             }
         }
