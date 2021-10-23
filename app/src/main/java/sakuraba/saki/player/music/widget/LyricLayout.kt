@@ -74,13 +74,14 @@ class LyricLayout: RelativeLayout {
         }
     }
 
-    fun updateVisibility() {
+    fun updateVisibility(): Boolean {
         isShow = !isShow
         (if (isShow) ValueAnimator.ofFloat(0F, 1F) else ValueAnimator.ofFloat(1F, 0F)).apply {
             duration = 500
             addUpdateListener { alpha = animatedValue as Float }
             start()
         }
+        return isShow
     }
 
     fun updatePrimaryColor(@ColorInt newColor: Int) {
