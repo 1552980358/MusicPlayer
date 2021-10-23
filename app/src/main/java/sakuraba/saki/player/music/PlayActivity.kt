@@ -279,6 +279,7 @@ class PlayActivity: BaseMediaControlActivity() {
             activityPlay.imageButtonLyric.setImageResource(
                 if (activityPlay.lyricLayout.updateVisibility()) R.drawable.ic_lyric_enabled else R.drawable.ic_lyric
             )
+            activityPlay.imageButtonLyric.drawable?.setTint(if (viewModel.isLightBackground.value == true) BLACK else WHITE)
         }
         _recyclerView = findViewById(R.id.recycler_view)
         recyclerView.itemAnimator = DefaultItemAnimator()
