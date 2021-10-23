@@ -301,7 +301,9 @@ class PlayActivity: BaseMediaControlActivity() {
         }
         */
         activityPlay.imageButtonLyric.setOnClickListener {
-            activityPlay.lyricLayout.updateVisibility()
+            activityPlay.imageButtonLyric.setImageResource(
+                if (activityPlay.lyricLayout.updateVisibility()) R.drawable.ic_lyric_enabled else R.drawable.ic_lyric
+            )
         }
         _recyclerView = findViewById(R.id.recycler_view)
         recyclerView.itemAnimator = DefaultItemAnimator()
