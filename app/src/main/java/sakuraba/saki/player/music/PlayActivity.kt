@@ -79,8 +79,6 @@ class PlayActivity: BaseMediaControlActivity() {
     
     companion object {
         private const val TAG = "PlayActivity"
-        // private const val VOLUME_CHANGED_ACTION = "android.media.VOLUME_CHANGED_ACTION"
-        // private const val EXTRA_VOLUME_STREAM_TYPE = "android.media.EXTRA_VOLUME_STREAM_TYPE"
     }
     
     private var _activityPlayBinding: ActivityPlayBinding? = null
@@ -113,18 +111,7 @@ class PlayActivity: BaseMediaControlActivity() {
     private var _recyclerView: RecyclerView? = null
     private val recyclerView get() = _recyclerView!!
 
-    /**
-     * private var volumePopupWindow: VolumePopupWindow? = null
-     *
-     * private lateinit var audioManager: AudioManager
-     *
-     * private val broadcastReceiver = broadcastReceiver { _, intent, _ ->
-     *     if (intent?.action == VOLUME_CHANGED_ACTION && intent.getIntExtra(EXTRA_VOLUME_STREAM_TYPE, -1) == STREAM_MUSIC) {
-     *         updateVolumeIcon()
-     *         volumePopupWindow?.updateVolume(audioManager.getStreamVolume(STREAM_MUSIC))
-     *     }
-     * }
-    **/
+
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = TRANSPARENT
@@ -151,9 +138,7 @@ class PlayActivity: BaseMediaControlActivity() {
     
         playModeListCycle = activityPlay.imageButtonPlayMode.drawable
         viewModel.updatePlayMode(PLAY_MODE_LIST)
-        
-        // audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
-        
+
         CoroutineScope(Dispatchers.IO).launch {
             val audioInfo = intent?.getSerializableExtra(EXTRAS_AUDIO_INFO) as AudioInfo? ?: return@launch
             launch(Dispatchers.Main) {
@@ -289,17 +274,7 @@ class PlayActivity: BaseMediaControlActivity() {
             )
             activityPlay.imageButtonPlayMode.drawable.setTint(if (viewModel.isLightBackground.value == true) BLACK else WHITE)
         }
-        /*
-        activityPlay.imageButtonVolume.setOnClickListener {
-            if (volumePopupWindow?.isShowing == true) {
-                volumePopupWindow?.dismiss()
-                volumePopupWindow = null
-                return@setOnClickListener
-            }
-            volumePopupWindow = VolumePopupWindow(this, activityPlay.imageButtonVolume, viewModel.isLightBackground.value == true, activityBackgroundColor, audioManager)
-            volumePopupWindow?.show()
-        }
-        */
+
         activityPlay.imageButtonLyric.setOnClickListener {
             activityPlay.imageButtonLyric.setImageResource(
                 if (activityPlay.lyricLayout.updateVisibility()) R.drawable.ic_lyric_enabled else R.drawable.ic_lyric
@@ -318,10 +293,6 @@ class PlayActivity: BaseMediaControlActivity() {
                 behavior.state = STATE_EXPANDED
             }
         }
-        
-        // broadcastReceiver.register(this, arrayOf(VOLUME_CHANGED_ACTION))
-        
-        // updateVolumeIcon()
     }
     
     override fun onMediaBrowserConnected() {
@@ -406,8 +377,7 @@ class PlayActivity: BaseMediaControlActivity() {
             activityPlay.lyricLayout.updateBitmap(bitmap)
         }
         viewModel.updateDuration(metadata.getLong(METADATA_KEY_DURATION))
-        // textViewTitle.text = metadata.getString(METADATA_KEY_TITLE)
-        // textViewSummary.text = metadata.getString(METADATA_KEY_ARTIST)
+
         ValueAnimator.ofArgb(BLACK, WHITE).apply {
             duration = 400
             addUpdateListener {
@@ -451,7 +421,6 @@ class PlayActivity: BaseMediaControlActivity() {
                 duration = 500
                 addUpdateListener {
                     activityPlay.root.setBackgroundColor(animatedValue as Int)
-                    // volumePopupWindow?.updateBackground(animatedValue as Int)
                 }
                 CoroutineScope(Dispatchers.Main).launch { start() }
             }
@@ -461,7 +430,6 @@ class PlayActivity: BaseMediaControlActivity() {
             ValueAnimator.ofArgb(seekbarBackgroundColor, primaryTextColor).apply {
                 duration = 500
                 addUpdateListener {
-                    // activityPlay.relativeLayout.setBackgroundColor(animatedValue as Int)
                     activityPlay.playSeekBar.setProgressColor(animatedValue as Int)
                     activityPlay.durationViewProgress.updateTextColor(animatedValue as Int)
                     activityPlay.lyricLayout.updatePrimaryColor(animatedValue as Int)
@@ -486,58 +454,17 @@ class PlayActivity: BaseMediaControlActivity() {
         if (isInit) {
             CoroutineScope(Dispatchers.Main).launch {
                 updateControlButtonColor(if (isLight) BLACK else WHITE)
-                // activityPlay.relativeLayout.setBackgroundColor(if (isLight) playSeekbarColorLight else playSeekbarColorDark)
                 viewModel.isLightBackground.observe(this@PlayActivity) { isLight ->
                     if (isLight) { ValueAnimator.ofArgb(WHITE, BLACK) } else { ValueAnimator.ofArgb(BLACK, WHITE) }.apply {
                         duration = 500
                         addUpdateListener {
                             updateControlButtonColor(animatedValue as Int)
-                            // volumePopupWindow?.updateIsLight(animatedValue as Int, isLight)
                         }
                     }.start()
-                    /**
-                     * if (isLight) {
-                     *     ValueAnimator.ofArgb(playSeekbarColorDark, playSeekbarColorLight)
-                     * } else {
-                     *     ValueAnimator.ofArgb(playSeekbarColorLight, playSeekbarColorDark)
-                     * }.apply {
-                     *     duration = 500
-                     *     addUpdateListener {
-                     *         activityPlay.relativeLayout.setBackgroundColor(animatedValue as Int)
-                     *     }
-                     * }.start()
-                    **/
-                    /**
-                     * if (isLight) { ValueAnimator.ofArgb(BLACK, WHITE) } else { ValueAnimator.ofArgb(WHITE, BLACK) }.apply {
-                     *     duration = 500
-                     *     addUpdateListener {
-                     *         activityPlay.durationViewProgress.updateTextColor(animatedValue as Int)
-                     *         activityPlay.durationViewDuration.updateTextColor(animatedValue as Int)
-                     *         activityPlay.playSeekBar.setCursorColor(animatedValue as Int)
-                     *     }
-                     * }.start()
-                    */
                 }
             }
         }
     }
-
-    /**
-     * private fun updateVolumeIcon() {
-     *     val max = audioManager.getStreamMaxVolume(STREAM_MUSIC)
-     *     val min = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) audioManager.getStreamMinVolume(STREAM_MUSIC) else 0).toFloat()
-     *     val diff = (max - min) / 3F
-     *     activityPlay.imageButtonVolume.setImageResource(
-     *         when (audioManager.getStreamVolume(STREAM_MUSIC).toFloat()) {
-     *             0F -> R.drawable.ic_volume_mute
-     *             in (min .. diff) -> R.drawable.ic_volume_low
-     *             in (diff .. diff * 2) -> R.drawable.ic_volume_mid
-     *             else -> R.drawable.ic_volume_high
-     *         }
-     *     )
-     *     activityPlay.imageButtonVolume.drawable.setTint(if (viewModel.isLightBackground.value == true) BLACK else WHITE)
-     * }
-    **/
 
     override fun onBackPressed() {
         Log.e(TAG, ON_BACK_PRESSED)
