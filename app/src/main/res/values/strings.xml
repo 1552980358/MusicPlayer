@@ -23,6 +23,7 @@
     <string name="home_snack_scanning">Calling system refreshing… Wait for completion</string>
     
     <string name="play_bottom_sheet_queue">Queue</string>
+    <string name="play_menu_details">Details</string>
     
     <string name="setting_enable">Enable</string>
     <string name="setting_value">Value</string>
