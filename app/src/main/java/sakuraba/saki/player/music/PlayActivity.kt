@@ -20,6 +20,8 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
@@ -72,6 +74,7 @@ import sakuraba.saki.player.music.util.Coroutine.ms_1000_int
 import sakuraba.saki.player.music.util.SystemUtil.pixelHeight
 import sakuraba.saki.player.music.ui.play.util.DividerItemDecoration
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
+import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_BACK_PRESSED
 import sakuraba.saki.player.music.util.SystemUtil.navigationBarHeight
 
@@ -111,6 +114,7 @@ class PlayActivity: BaseMediaControlActivity() {
     private var _recyclerView: RecyclerView? = null
     private val recyclerView get() = _recyclerView!!
 
+    private lateinit var audioInfo: AudioInfo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -294,6 +298,20 @@ class PlayActivity: BaseMediaControlActivity() {
                 behavior.state = STATE_EXPANDED
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_play, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_details -> startActivity(intent(this, AudioDetailActivity::class.java) {
+                putExtra(EXTRAS_DATA, audioInfo)
+            })
+        }
+        return super.onOptionsItemSelected(item)
     }
     
     override fun onMediaBrowserConnected() {
