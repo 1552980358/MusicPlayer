@@ -36,7 +36,7 @@
     <string name="setting_play_fade_title">Play Fading</string>
     <string name="setting_play_fade_in_title">Fade in</string>
     <string name="setting_play_fade_out_title">Fade out</string>
-    
+
     <!-- SETTING KEY CONSTANT -->
     <string name="key_audio">key_audio</string>
     <string name="key_audio_filter_size_enable">key_audio_filter_size_enable</string>
@@ -55,5 +55,22 @@
     <string name="webservice_notification_title">Web Service</string>
 
     <string name="lyric_empty_list">Empty Lyric List</string>
-    
+
+    <string name="audio_detail_title">Title</string>
+    <string name="audio_detail_title_key">key_title</string>
+    <string name="audio_detail_artist">Artist</string>
+    <string name="audio_detail_artist_key">key_artist</string>
+    <string name="audio_detail_album">Album</string>
+    <string name="audio_detail_album_key">key_album</string>
+    <string name="audio_detail_duration">Duration</string>
+    <string name="audio_detail_duration_key">key_duration</string>
+    <string name="audio_detail_format">Format</string>
+    <string name="audio_detail_format_key">key_format</string>
+    <string name="audio_detail_bit_rate">Bit Rate</string>
+    <string name="audio_detail_bit_rate_key">key_bit_rate</string>
+    <string name="audio_detail_sample_rate">Sample Rate</string>
+    <string name="audio_detail_sample_rate_key">key_sample_rate</string>
+    <string name="audio_detail_bit_depth">Bit Depth</string>
+    <string name="audio_detail_bit_depth_key">key_bit_depth</string>
+
 </resources>
