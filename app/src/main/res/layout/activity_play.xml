@@ -43,7 +43,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:id="@+id/toolbar"
-                    app:menu="@menu/menu_play"/>
+                    app:menu="@menu/menu_play"
+                    android:theme="@style/Theme.MusicPlayer.AppBarOverlay"
+                    app:popupTheme="@style/Theme.MusicPlayer.PopupOverlay"/>
             </RelativeLayout>
         </RelativeLayout>
     

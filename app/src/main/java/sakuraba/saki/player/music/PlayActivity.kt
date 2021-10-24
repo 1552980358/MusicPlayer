@@ -49,6 +49,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.android.content.getStatusBarHeight
+import lib.github1552980358.ktExtension.android.content.intent
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
@@ -129,7 +130,6 @@ class PlayActivity: BaseMediaControlActivity() {
         setSupportActionBar(activityPlay.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        activityPlay.toolbar.navigationIcon?.setTint(WHITE)
         activityPlay.toolbar.setNavigationOnClickListener { onBackPressed() }
         
         activityPlay.imageView.layoutParams = activityPlay.imageView.layoutParams.apply { height = resources.displayMetrics.widthPixels }
@@ -324,7 +324,7 @@ class PlayActivity: BaseMediaControlActivity() {
                         resultData?:return
                         isPlaying = false
                         job?.cancel()
-                        val audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
+                        audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
                         viewModel.updateDuration(audioInfo.audioDuration)
                         viewModel.updateProgress(resultData.getLong(Constants.EXTRAS_PROGRESS))
                         viewModel.updateState(resultData.getInt(EXTRAS_STATUS))
@@ -518,7 +518,7 @@ class PlayActivity: BaseMediaControlActivity() {
                     resultData?:return
                     isPlaying = false
                     job?.cancel()
-                    val audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
+                    audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
                     viewModel.updateDuration(audioInfo.audioDuration)
                     viewModel.updateProgress(resultData.getLong(Constants.EXTRAS_PROGRESS))
                     viewModel.updateState(resultData.getInt(EXTRAS_STATUS))
