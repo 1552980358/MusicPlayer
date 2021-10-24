@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="Basics"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="@string/audio_detail_title_key"
+            android:title="@string/audio_detail_title"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="@string/audio_detail_artist_key"
+            android:title="@string/audio_detail_artist"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="@string/audio_detail_album_key"
+            android:title="@string/audio_detail_album"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="@string/audio_detail_duration_key"
+            android:title="@string/audio_detail_duration"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="File"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="@string/audio_detail_format_key"
+            android:title="@string/audio_detail_format"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="@string/audio_detail_bit_rate_key"
+            android:title="@string/audio_detail_bit_rate"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="@string/audio_detail_sample_rate_key"
+            android:title="@string/audio_detail_sample_rate"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="@string/audio_detail_bit_depth_key"
+            android:title="@string/audio_detail_bit_depth"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Lyric"
+        app:iconSpaceReserved="false">
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
