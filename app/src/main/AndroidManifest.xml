@@ -45,6 +45,10 @@
         <activity
             android:name=".PlayActivity"
             android:theme="@style/Theme.MusicPlayer.NoActionBar.Translucent"/>
+
+        <activity
+            android:name=".AudioDetailActivity"
+            android:theme="@style/Theme.MusicPlayer.NoActionBar" />
         
     </application>
 
