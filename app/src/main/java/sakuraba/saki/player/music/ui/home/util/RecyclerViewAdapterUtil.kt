@@ -9,9 +9,12 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import lib.github1552980358.ktExtension.android.content.intent
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
+import sakuraba.saki.player.music.AudioDetailActivity
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.service.util.AudioInfo
+import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.ViewHolderUtil.bindHolder
 
 class RecyclerViewAdapterUtil(data: HomeFragmentData?, selection: (pos: Int) -> Unit) {
@@ -44,6 +47,10 @@ class RecyclerViewAdapterUtil(data: HomeFragmentData?, selection: (pos: Int) -> 
                 image.setImageBitmap(bitmapMap[audioAlbumId] ?: ContextCompat.getDrawable(background.context, R.drawable.ic_music)?.toBitmap())
             }
             background.setOnClickListener { selection(position) }
+            background.setOnLongClickListener {
+                background.context.startActivity(intent(background.context, AudioDetailActivity::class.java) { putExtra(EXTRAS_DATA, audioInfo) })
+                return@setOnLongClickListener true
+            }
         }
         
         override fun getItemCount() = audioInfoList.size
