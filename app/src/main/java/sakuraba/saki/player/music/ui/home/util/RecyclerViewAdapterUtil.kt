@@ -14,6 +14,7 @@ import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import sakuraba.saki.player.music.AudioDetailActivity
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.service.util.AudioInfo
+import sakuraba.saki.player.music.util.ActivityUtil.fadeAnim
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.ViewHolderUtil.bindHolder
 
@@ -49,6 +50,7 @@ class RecyclerViewAdapterUtil(data: HomeFragmentData?, selection: (pos: Int) -> 
             background.setOnClickListener { selection(position) }
             background.setOnLongClickListener {
                 background.context.startActivity(intent(background.context, AudioDetailActivity::class.java) { putExtra(EXTRAS_DATA, audioInfo) })
+                background.context.fadeAnim()
                 return@setOnLongClickListener true
             }
         }
