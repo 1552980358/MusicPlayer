@@ -87,5 +87,10 @@
     <string name="audio_detail_lyric_view_key">key_lyric_view</string>
     <string name="audio_detail_lyric_remove">Remove Lyric</string>
     <string name="audio_detail_lyric_remove_key">key_lyric_remove</string>
+    <string name="audio_detail_lyric_remove_removed">Lyric removed</string>
+    <string name="audio_detail_lyric_remove_dialog_title">Remove imported lyric</string>
+    <string name="audio_detail_lyric_remove_dialog_content">Confirm?</string>
+    <string name="audio_detail_lyric_remove_dialog_confirm">Confirm</string>
+    <string name="audio_detail_lyric_remove_dialog_cancel">Cancel</string>
 
 </resources>
