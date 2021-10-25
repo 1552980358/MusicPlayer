@@ -10,7 +10,6 @@ import android.media.AudioManager.STREAM_MUSIC
 import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.annotation.ColorInt
 import com.google.android.renderscript.Toolkit
@@ -20,6 +19,7 @@ import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.register
 import sakuraba.saki.player.music.databinding.LayoutLyricBinding
+import sakuraba.saki.player.music.util.LyricUtil.readLyric
 
 class LyricLayout: RelativeLayout {
 
@@ -108,8 +108,19 @@ class LyricLayout: RelativeLayout {
         context.unregisterReceiver(broadcastReceiver)
     }
 
-    override fun setLayoutParams(params: ViewGroup.LayoutParams?) {
-        super.setLayoutParams(params)
+    fun updateLyric(audioId: String) {
+        layoutLyric.lyricView.isLoading = true
+        CoroutineScope(Dispatchers.IO).launch {
+            val lyricList = layoutLyric.lyricView.lyricList
+            val timeList = layoutLyric.lyricView.timeList
+            lyricList.clear()
+            timeList.clear()
+            context.readLyric(audioId, lyricList, timeList)
+            layoutLyric.lyricView.isLoading = false
+        }
     }
+
+    fun updatePosition(position: Long) =
+        layoutLyric.lyricView.updatePosition(position)
 
 }
