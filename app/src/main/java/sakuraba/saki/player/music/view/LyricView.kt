@@ -137,7 +137,7 @@ class LyricView: View {
         return end
     }
 
-    private fun calculateLyricLines(lyric: String, arrayList: ArrayList<String>, paint: Paint): Int {
+    private fun calculateLyricLines(lyric: String, arrayList: ArrayList<String>, paint: Paint) {
         arrayList.clear()
         var offset = 0
         var end: Int
@@ -147,11 +147,28 @@ class LyricView: View {
             arrayList.add(lyric.substring(offset, end))
             offset = end
         }
-        return arrayList.size
     }
 
-    private fun calculateLyricHeight(lyric: String, arrayList: ArrayList<String>, textHeight: Float, paint: Paint) =
-        calculateLyricLines(lyric, arrayList, paint) * textHeight
+    private fun calculateLyricLinesWithSpace(lyric: String, arrayList: ArrayList<String>, paint: Paint) {
+        arrayList.clear()
+        val stringBuilder = StringBuilder("")
+        lyric.split(' ').forEach { string ->
+            if (paint.measureText("$stringBuilder$string") > width) {
+                arrayList.add(stringBuilder.toString())
+                stringBuilder.clear()
+            }
+            stringBuilder.append(string.plus(' '))
+        }
+        arrayList.add(stringBuilder.toString())
+    }
+
+    private fun calculateLyricHeight(lyric: String, arrayList: ArrayList<String>, textHeight: Float, paint: Paint): Float {
+        when {
+            lyric.contains(' ') -> calculateLyricLinesWithSpace(lyric, arrayList, paint)
+            else -> calculateLyricLines(lyric, arrayList, paint)
+        }
+        return arrayList.size * textHeight
+    }
 
     private fun Canvas.drawLyric(arrayList: ArrayList<String>, offsetY: Float, textHeight: Float, paint: Paint) {
         arrayList.forEachIndexed { index, line ->
