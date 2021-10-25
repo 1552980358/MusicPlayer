@@ -17,17 +17,26 @@ class LyricView: View {
 
     private val primaryTextHeight: Float
     private val secondaryTextHeight: Float
-    private lateinit var lyricList: List<String>
-    private lateinit var timeList: List<Long>
+    val lyricList = arrayListOf<String>()
+    val timeList = arrayListOf<Long>()
     private var currentIndex = -1
     @Suppress("JoinDeclarationAndAssignment")
     private val emptyListStr: String
+    private val loadingStr: String
 
     private val primaryPaint = Paint()
     private val secondaryPaint = Paint()
 
+    var isLoading = false
+        set(value) {
+            field = value
+            currentIndex = -1
+            postInvalidate()
+        }
+
     init {
         emptyListStr = getString(R.string.lyric_empty_list)
+        loadingStr = getString(R.string.lyric_loading)
         primaryPaint.apply {
             isAntiAlias = true
             textSize = getDimension(R.dimen.view_lyric_primary_text_size)
@@ -80,9 +89,15 @@ class LyricView: View {
         super.onDraw(canvas)
         canvas ?: return
 
-        if (currentIndex == -1) {
-            canvas.drawText(emptyListStr, (width - primaryPaint.measureText(emptyListStr)) / 2F, (height - primaryTextHeight) / 2F, primaryPaint)
-            return
+        when {
+            isLoading -> {
+                canvas.drawText(loadingStr, (width - primaryPaint.measureText(emptyListStr)) / 2F, (height - primaryTextHeight) / 2F, primaryPaint)
+                return
+            }
+            lyricList.isEmpty() || timeList.isEmpty() || currentIndex == -1 -> {
+                canvas.drawText(emptyListStr, (width - primaryPaint.measureText(emptyListStr)) / 2F, (height - primaryTextHeight) / 2F, primaryPaint)
+                return
+            }
         }
 
         // Draw current index first
