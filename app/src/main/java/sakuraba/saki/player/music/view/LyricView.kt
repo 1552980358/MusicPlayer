@@ -26,6 +26,7 @@ class LyricView: View {
 
     private val primaryPaint = Paint()
     private val secondaryPaint = Paint()
+    private val lineList = arrayListOf<String>()
 
     var isLoading = false
         set(value) {
@@ -104,31 +105,58 @@ class LyricView: View {
         }
 
         // Draw current index first
-        var posY = (height - primaryTextHeight) / 2F
-        var lyricText = lyricList[currentIndex]
-        canvas.drawText(lyricText, (width - primaryPaint.measureText(lyricText)) / 2F, posY, primaryPaint)
-
-        // Draw upper
+        var textHeight = calculateLyricHeight(lyricList[currentIndex].trim(), lineList, primaryTextHeight, primaryPaint)
+        val startY =  (height - textHeight) / 2
+        var offsetY = startY
+        canvas.drawLyric(lineList, offsetY, primaryTextHeight, primaryPaint)
         var i: Int
-        if (currentIndex != 0) {
+        if (currentIndex < lyricList.lastIndex) {
             i = currentIndex
-            while (--i > 0 && posY >= 0) {
-                lyricText = lyricList[i]
-                posY -= (primaryTextHeight * 2)
-                canvas.drawText(lyricText, (width - primaryPaint.measureText(lyricText)) / 2F, posY, secondaryPaint)
+            offsetY += textHeight + secondaryTextHeight
+            while (++i < lyricList.size && offsetY < height) {
+                textHeight = calculateLyricHeight(lyricList[i].trim(), lineList, secondaryTextHeight, secondaryPaint)
+                canvas.drawLyric(lineList, offsetY, secondaryTextHeight, secondaryPaint)
+                offsetY += textHeight + secondaryTextHeight
             }
         }
 
-        if (currentIndex != lyricList.lastIndex) {
-            posY = (height - primaryTextHeight) / 2F
+        if (currentIndex > 0) {
+            offsetY = startY
             i = currentIndex
-            while (++i < lyricList.size && posY < height) {
-                lyricText = lyricList[i]
-                posY += (primaryTextHeight * 2)
-                canvas.drawText(lyricText, (width - primaryPaint.measureText(lyricText)) / 2F, posY, secondaryPaint)
+            while (--i > -1 && offsetY > -1) {
+                offsetY -= calculateLyricHeight(lyricList[i].trim(), lineList, secondaryTextHeight, secondaryPaint) + secondaryTextHeight
+                canvas.drawLyric(lineList, offsetY, secondaryTextHeight, secondaryPaint)
             }
         }
+    }
 
+    private fun calculateOffset(lyric: String, offset: Int, paint: Paint): Int {
+        var end = offset
+        @Suppress("ControlFlowWithEmptyBody")
+        while (++end < lyric.length && paint.measureText(lyric.substring(offset, end)) < width);
+        return end
+    }
+
+    private fun calculateLyricLines(lyric: String, arrayList: ArrayList<String>, paint: Paint): Int {
+        arrayList.clear()
+        var offset = 0
+        var end: Int
+        val lastIndex = lyric.lastIndex
+        while (offset < lastIndex) {
+            end = calculateOffset(lyric, offset, paint)
+            arrayList.add(lyric.substring(offset, end))
+            offset = end
+        }
+        return arrayList.size
+    }
+
+    private fun calculateLyricHeight(lyric: String, arrayList: ArrayList<String>, textHeight: Float, paint: Paint) =
+        calculateLyricLines(lyric, arrayList, paint) * textHeight
+
+    private fun Canvas.drawLyric(arrayList: ArrayList<String>, offsetY: Float, textHeight: Float, paint: Paint) {
+        arrayList.forEachIndexed { index, line ->
+            drawText(line, (width - paint.measureText(line)) / 2, offsetY + index * textHeight, paint)
+        }
     }
 
 }
