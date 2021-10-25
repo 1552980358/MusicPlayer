@@ -426,6 +426,7 @@ class PlayActivity: BaseMediaControlActivity() {
                 @Suppress("UNCHECKED_CAST")
                 val list = resultData.getSerializable(ACTION_EXTRA) as MutableList<AudioInfo>? ?: return
                 (recyclerView.adapter as RecyclerViewAdapter).updateAudioInfoList(list)
+                audioInfo = list.last()
             }
         })
     }
