@@ -8,6 +8,11 @@ import android.media.MediaMetadataRetriever.METADATA_KEY_MIMETYPE
 import android.media.MediaMetadataRetriever.METADATA_KEY_SAMPLERATE
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import kotlinx.coroutines.CoroutineScope
@@ -15,11 +20,16 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.shortSnack
+import lib.github1552980358.ktExtension.androidx.fragment.app.findActivityViewById
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.service.util.mediaUriStr
 import sakuraba.saki.player.music.service.util.parseAsUri
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
+import sakuraba.saki.player.music.util.LyricUtil.decodeLine
+import sakuraba.saki.player.music.util.LyricUtil.removeLyric
+import sakuraba.saki.player.music.util.LyricUtil.writeLyric
 
 class AudioDetailFragment: PreferenceFragmentCompat() {
 
@@ -32,6 +42,9 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
         const val KEY_BIT_RATE = "key_bit_rate"
         const val KEY_SAMPLE_RATE = "key_sample_rate"
         const val KEY_BIT_DEPTH = "key_bit_depth"
+        const val KEY_LYRIC_IMPORT = "key_lyric_import"
+        const val KEY_LYRIC_VIEW = "key_lyric_view"
+        const val KEY_LYRIC_REMOVE = "key_lyric_remove"
         
         private const val UNIT_BITS = "bits"
         private const val UNIT_KILO = "K"
@@ -41,6 +54,8 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
         private const val PER = "/"
     }
 
+    private lateinit var navController: NavController
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.xml_audio_detail, rootKey)
         (requireActivity().intent.getSerializableExtra(EXTRAS_DATA) as AudioInfo).apply {
@@ -48,7 +63,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
             findPreference<Preference>(KEY_ARTIST)?.summary = audioArtist
             findPreference<Preference>(KEY_ALBUM)?.summary = audioAlbum
             findPreference<Preference>(KEY_DURATION)?.summary = audioDuration.toTimeFormat
-
+            navController = findNavController()
             CoroutineScope(Dispatchers.IO).launch {
 
                 val mediaExtractorAsync = async(Dispatchers.IO) {
@@ -96,6 +111,56 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                 launch(Dispatchers.Main) {
                     findPreference<Preference>(KEY_BIT_DEPTH)?.summary = "$bitPerSample $UNIT_BITS$PER$UNIT_SAMPLE"
                 }
+            }
+
+            val pickLyric = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+                if (uri == null) {
+                    findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)?.shortSnack(R.string.audio_detail_lyric_import_no_file_selected)
+                    return@registerForActivityResult
+                }
+                val inputStream = requireContext().contentResolver.openInputStream(uri)
+                if (inputStream == null) {
+                    findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)
+                        ?.shortSnack(getString(R.string.audio_detail_lyric_import_cannot_open_file) + uri.toString())
+                    return@registerForActivityResult
+                }
+                val lines: List<String>
+                inputStream.use { stream -> lines = stream.bufferedReader().readLines() }
+
+                val lyricList = arrayListOf<String>()
+                val timeList = arrayListOf<Long>()
+                lines.forEach { line -> line.decodeLine(lyricList, timeList) }
+                if (lyricList.size == timeList.size && lyricList.isNotEmpty()) {
+                    requireContext().writeLyric(audioId, lyricList, timeList)
+                    findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)
+                        ?.shortSnack(R.string.audio_detail_lyric_import_succeed)
+                    return@registerForActivityResult
+                }
+                findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)
+                    ?.shortSnack(getString(R.string.audio_detail_lyric_import_incorrect_format) + uri.toString())
+            }
+            findPreference<Preference>(KEY_LYRIC_IMPORT)?.apply {
+                setOnPreferenceClickListener {
+                    pickLyric.launch("*/*")
+                    return@setOnPreferenceClickListener true
+                }
+            }
+            findPreference<Preference>(KEY_LYRIC_VIEW)?.setOnPreferenceClickListener {
+                navController.navigate(AudioDetailFragmentDirections.actionNavAudioDetailToNavLyricView(audioId))
+                return@setOnPreferenceClickListener true
+            }
+            findPreference<Preference>(KEY_LYRIC_REMOVE)?.setOnPreferenceClickListener {
+                AlertDialog.Builder(requireContext())
+                    .setTitle(R.string.audio_detail_lyric_remove_dialog_title)
+                    .setMessage(R.string.audio_detail_lyric_remove_dialog_content)
+                    .setPositiveButton(R.string.audio_detail_lyric_remove_dialog_confirm) { _, _ ->
+                        requireContext().removeLyric(audioId)
+                        findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)
+                            ?.shortSnack(R.string.audio_detail_lyric_remove_removed)
+                    }
+                    .setNegativeButton(R.string.audio_detail_lyric_remove_dialog_cancel) { _, _ -> }
+                    .show()
+                return@setOnPreferenceClickListener true
             }
         }
     }
