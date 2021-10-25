@@ -175,6 +175,7 @@ class PlayActivity: BaseMediaControlActivity() {
             if (!activityPlay.playSeekBar.isUserTouched) {
                 activityPlay.playSeekBar.progress = newProgress
             }
+            activityPlay.lyricLayout.updatePosition(newProgress)
         }
         viewModel.duration.observe(this) { newDuration ->
             activityPlay.playSeekBar.max = newDuration
@@ -325,6 +326,7 @@ class PlayActivity: BaseMediaControlActivity() {
                         isPlaying = false
                         job?.cancel()
                         audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
+                        activityPlay.lyricLayout.updateLyric(audioInfo.audioId)
                         viewModel.updateDuration(audioInfo.audioDuration)
                         viewModel.updateProgress(resultData.getLong(Constants.EXTRAS_PROGRESS))
                         viewModel.updateState(resultData.getInt(EXTRAS_STATUS))
@@ -427,6 +429,7 @@ class PlayActivity: BaseMediaControlActivity() {
                 val list = resultData.getSerializable(ACTION_EXTRA) as MutableList<AudioInfo>? ?: return
                 (recyclerView.adapter as RecyclerViewAdapter).updateAudioInfoList(list)
                 audioInfo = list.last()
+                activityPlay.lyricLayout.updateLyric(audioInfo.audioId)
             }
         })
     }
@@ -520,6 +523,7 @@ class PlayActivity: BaseMediaControlActivity() {
                     isPlaying = false
                     job?.cancel()
                     audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
+                    activityPlay.lyricLayout.updateLyric(audioInfo.audioId)
                     viewModel.updateDuration(audioInfo.audioDuration)
                     viewModel.updateProgress(resultData.getLong(Constants.EXTRAS_PROGRESS))
                     viewModel.updateState(resultData.getInt(EXTRAS_STATUS))
