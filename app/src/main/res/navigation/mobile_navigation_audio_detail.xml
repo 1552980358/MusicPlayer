@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation_audio_detail"
+    app:startDestination="@id/nav_audio_detail">
+
+    <fragment
+        android:id="@+id/nav_audio_detail"
+        android:name="sakuraba.saki.player.music.audioDetail.AudioDetailFragment"
+        android:label="@string/menu_audio_detail" >
+        <action
+            android:id="@+id/action_nav_audio_detail_to_nav_lyric_view"
+            app:destination="@id/nav_lyric_view"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out">
+            <argument
+                android:name="data"
+                app:argType="string" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_lyric_view"
+        android:name="sakuraba.saki.player.music.audioDetail.lyricPreview.LyricViewFragment"
+        android:label="@string/menu_lyric_view"
+        tools:layout="@layout/fragment_lyric_view" />
+
+</navigation>
