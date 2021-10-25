@@ -28,6 +28,7 @@ import sakuraba.saki.player.music.service.util.mediaUriStr
 import sakuraba.saki.player.music.service.util.parseAsUri
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.LyricUtil.decodeLine
+import sakuraba.saki.player.music.util.LyricUtil.hasLyric
 import sakuraba.saki.player.music.util.LyricUtil.removeLyric
 import sakuraba.saki.player.music.util.LyricUtil.writeLyric
 
@@ -134,6 +135,8 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                     requireContext().writeLyric(audioId, lyricList, timeList)
                     findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)
                         ?.shortSnack(R.string.audio_detail_lyric_import_succeed)
+                    findPreference<Preference>(KEY_LYRIC_VIEW)?.isEnabled = true
+                    findPreference<Preference>(KEY_LYRIC_REMOVE)?.isEnabled = true
                     return@registerForActivityResult
                 }
                 findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)
@@ -145,22 +148,35 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                     return@setOnPreferenceClickListener true
                 }
             }
-            findPreference<Preference>(KEY_LYRIC_VIEW)?.setOnPreferenceClickListener {
-                navController.navigate(AudioDetailFragmentDirections.actionNavAudioDetailToNavLyricView(audioId))
-                return@setOnPreferenceClickListener true
+            val hasLyric = requireContext().hasLyric(audioId)
+            findPreference<Preference>(KEY_LYRIC_VIEW)?.apply {
+                if (!hasLyric) {
+                    isEnabled = false
+                }
+                setOnPreferenceClickListener {
+                    navController.navigate(AudioDetailFragmentDirections.actionNavAudioDetailToNavLyricView(audioId))
+                    return@setOnPreferenceClickListener true
+                }
             }
-            findPreference<Preference>(KEY_LYRIC_REMOVE)?.setOnPreferenceClickListener {
-                AlertDialog.Builder(requireContext())
-                    .setTitle(R.string.audio_detail_lyric_remove_dialog_title)
-                    .setMessage(R.string.audio_detail_lyric_remove_dialog_content)
-                    .setPositiveButton(R.string.audio_detail_lyric_remove_dialog_confirm) { _, _ ->
-                        requireContext().removeLyric(audioId)
-                        findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)
-                            ?.shortSnack(R.string.audio_detail_lyric_remove_removed)
-                    }
-                    .setNegativeButton(R.string.audio_detail_lyric_remove_dialog_cancel) { _, _ -> }
-                    .show()
-                return@setOnPreferenceClickListener true
+            findPreference<Preference>(KEY_LYRIC_REMOVE)?.apply {
+                if (!hasLyric) {
+                    isEnabled = false
+                }
+                setOnPreferenceClickListener {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle(R.string.audio_detail_lyric_remove_dialog_title)
+                        .setMessage(R.string.audio_detail_lyric_remove_dialog_content)
+                        .setPositiveButton(R.string.audio_detail_lyric_remove_dialog_confirm) { _, _ ->
+                            requireContext().removeLyric(audioId)
+                            findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)
+                                ?.shortSnack(R.string.audio_detail_lyric_remove_removed)
+                            findPreference<Preference>(KEY_LYRIC_VIEW)?.isEnabled = false
+                            isEnabled = false
+                        }
+                        .setNegativeButton(R.string.audio_detail_lyric_remove_dialog_cancel) { _, _ -> }
+                        .show()
+                    return@setOnPreferenceClickListener true
+                }
             }
         }
     }
