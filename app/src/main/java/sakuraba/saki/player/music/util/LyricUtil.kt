@@ -42,6 +42,14 @@ object LyricUtil {
         }
     }
 
+    fun Context.removeLyric(id: String) {
+        File(lyricDirFile, id.plus(LYRIC_EXT)).apply {
+            if (exists()) {
+                delete()
+            }
+        }
+    }
+
     fun String.decodeLine(lyricList: ArrayList<String>, timeList: ArrayList<Long>) {
         Log.e("LINE", this)
         /**
