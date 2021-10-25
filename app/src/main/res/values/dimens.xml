@@ -65,5 +65,9 @@
     <dimen name="view_lyric_secondary_text_size">12sp</dimen>
 
     <dimen name="layout_lyric_seekbar_width">35dp</dimen>
+    <dimen name="layout_lyric_seekbar_margins">5dp</dimen>
+    <dimen name="layout_lyric_relative_layout_margin_end">10dp</dimen>
+    <dimen name="layout_lyric_lyric_view_margin_start_end">45dp</dimen>
+    <dimen name="layout_lyric_lyric_view_margin_bottom">30dp</dimen>
 
 </resources>
