@@ -15,7 +15,7 @@ class AudioDetailActivity: AppCompatActivity() {
         setContentView(activityAudioDetail.root)
         setSupportActionBar(activityAudioDetail.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        activityAudioDetail.toolbar.setNavigationOnClickListener { finish() }
+        activityAudioDetail.toolbar.setNavigationOnClickListener { onBackPressed() }
     }
 
 }
