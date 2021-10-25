@@ -14,10 +14,6 @@ import sakuraba.saki.player.music.R
 
 class PlayProgressBar: View {
     
-    companion object {
-    
-    }
-    
     constructor(context: Context): this(context, null)
     constructor(context: Context, attributeSet: AttributeSet?): super(context, attributeSet)
     
