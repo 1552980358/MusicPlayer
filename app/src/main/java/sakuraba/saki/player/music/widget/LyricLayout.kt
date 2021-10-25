@@ -69,7 +69,7 @@ class LyricLayout: RelativeLayout {
 
         layoutLyric.relativeLayout.apply {
             layoutParams = layoutParams.apply {
-                height = resources.displayMetrics.widthPixels * 3 / 5
+                height = resources.displayMetrics.widthPixels * 2 / 5
             }
         }
     }
