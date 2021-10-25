@@ -54,7 +54,10 @@ class LyricView: View {
     }
 
     fun updatePosition(position: Long) {
-        currentIndex = findPosition(position)
+        if (!isLoading) {
+            currentIndex = findPosition(position)
+            invalidate()
+        }
     }
 
     private fun findPosition(position: Long): Int {
