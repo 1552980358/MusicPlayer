@@ -59,6 +59,7 @@
     <string name="webservice_notification_title">Web Service</string>
 
     <string name="lyric_empty_list">Empty Lyric List</string>
+    <string name="lyric_loading">Empty Lyric List</string>
 
     <string name="audio_detail_title">Title</string>
     <string name="audio_detail_title_key">key_title</string>
