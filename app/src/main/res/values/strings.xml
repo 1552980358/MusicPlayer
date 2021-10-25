@@ -15,6 +15,9 @@
     <string name="menu_home">Home</string>
     <string name="menu_album">Album</string>
     <string name="menu_search">Search</string>
+
+    <string name="menu_audio_detail">Audio Detail</string>
+    <string name="menu_lyric_view">Lyric View</string>
     
     <string name="home_snack_open_setting_text">Please give permission on reading external storage in system setting</string>
     <string name="home_snack_open_setting_button">Setting</string>
@@ -73,5 +76,16 @@
     <string name="audio_detail_sample_rate_key">key_sample_rate</string>
     <string name="audio_detail_bit_depth">Bit Depth</string>
     <string name="audio_detail_bit_depth_key">key_bit_depth</string>
+    <string name="audio_detail_lyric">Lyric</string>
+    <string name="audio_detail_lyric_import">Import Lyric From Storage</string>
+    <string name="audio_detail_lyric_import_key">key_lyric_import</string>
+    <string name="audio_detail_lyric_import_succeed">Lyric import succeed</string>
+    <string name="audio_detail_lyric_import_no_file_selected">No lyric file selected</string>
+    <string name="audio_detail_lyric_import_cannot_open_file">Cannot open selected file: </string>
+    <string name="audio_detail_lyric_import_incorrect_format">Empty or incorrect lyric format: </string>
+    <string name="audio_detail_lyric_view">View Lyric</string>
+    <string name="audio_detail_lyric_view_key">key_lyric_view</string>
+    <string name="audio_detail_lyric_remove">Remove Lyric</string>
+    <string name="audio_detail_lyric_remove_key">key_lyric_remove</string>
 
 </resources>
