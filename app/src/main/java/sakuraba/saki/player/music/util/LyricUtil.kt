@@ -50,6 +50,8 @@ object LyricUtil {
         }
     }
 
+    fun Context.hasLyric(id: String) = File(lyricDirFile, id.plus(LYRIC_EXT)).exists()
+
     fun String.decodeLine(lyricList: ArrayList<String>, timeList: ArrayList<Long>) {
         Log.e("LINE", this)
         /**
