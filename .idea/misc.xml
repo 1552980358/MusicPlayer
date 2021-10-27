@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/MusicPlayer/app/src/main/res/xml/xml_audio_filter.xml" value="0.36666666666666664" />
+        <entry key="..\:/MusicPlayer/app/src/main/res/xml/xml_setting.xml" value="0.5" />
+        <entry key="..\:/MusicPlayer/app/src/main/res/xml/xml_web_server.xml" value="0.36666666666666664" />
+      </map>
+    </option>
+  </component>
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$" />
   </component>
