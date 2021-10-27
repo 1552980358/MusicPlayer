@@ -7,6 +7,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import sakuraba.saki.player.music.R
+import sakuraba.saki.player.music.R.string.key_web_server
+import sakuraba.saki.player.music.util.PreferenceUtil.preference
 import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO
 import sakuraba.saki.player.music.util.SettingUtil.KEY_PLAY
 
@@ -25,8 +27,14 @@ class SettingFragment: PreferenceFragmentCompat() {
             findNavController().navigate(R.id.nav_setting_audio_play)
             return@setOnPreferenceClickListener true
         }
+
+        preference(key_web_server)?.setOnPreferenceClickListener {
+            findNavController().navigate(SettingFragmentDirections.actionNavSettingToNavSettingWebServer())
+            return@setOnPreferenceClickListener true
+        }
+
     }
-    
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
     }
