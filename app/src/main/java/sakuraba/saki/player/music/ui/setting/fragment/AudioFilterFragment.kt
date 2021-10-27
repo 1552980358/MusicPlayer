@@ -1,16 +1,13 @@
 package sakuraba.saki.player.music.ui.setting.fragment
 
 import android.os.Bundle
-import androidx.preference.Preference
+import androidx.annotation.StringRes
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SwitchPreferenceCompat
 import lib.github1552980358.ktExtension.android.content.commit
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.ui.setting.dialog.TextInputDialogFragment
-import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO_FILTER_DURATION_ENABLE
-import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO_FILTER_DURATION_VALUE
-import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO_FILTER_SIZE_ENABLE
-import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO_FILTER_SIZE_VALUE
+import sakuraba.saki.player.music.util.PreferenceUtil.preference
+import sakuraba.saki.player.music.util.PreferenceUtil.switchPreference
 import sakuraba.saki.player.music.util.SettingUtil.defaultSharedPreference
 import sakuraba.saki.player.music.util.SettingUtil.getIntSetting
 
@@ -23,52 +20,51 @@ class AudioFilterFragment: PreferenceFragmentCompat() {
     
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.xml_audio_filter, rootKey)
-        
-        getSwitchPreference(KEY_AUDIO_FILTER_SIZE_ENABLE) {
-            setPreferenceEnabled(KEY_AUDIO_FILTER_SIZE_VALUE, isChecked)
+
+        switchPreference(R.string.key_audio_filter_size_enable) {
+            setPreferenceEnabled(R.string.key_audio_filter_size_value, isChecked)
             setOnPreferenceChangeListener { _, newValue ->
-                setPreferenceEnabled(KEY_AUDIO_FILTER_SIZE_VALUE, newValue as Boolean)
+                setPreferenceEnabled(R.string.key_audio_filter_size_value, newValue as Boolean)
                 return@setOnPreferenceChangeListener true
             }
         }
-        getPreference(KEY_AUDIO_FILTER_SIZE_VALUE) {
+        preference(R.string.key_audio_filter_size_value) {
             if (getIntSetting(R.string.key_audio_filter_size_value) == null) {
-                defaultSharedPreference.commit(KEY_AUDIO_FILTER_SIZE_VALUE, DEFAULT_AUDIO_FILTER_SIZE)
+                defaultSharedPreference.commit(getString(R.string.key_audio_filter_size_value), DEFAULT_AUDIO_FILTER_SIZE)
             }
             setOnPreferenceClickListener {
-                TextInputDialogFragment(R.string.setting_audio_filter_size_title, KEY_AUDIO_FILTER_SIZE_VALUE, DEFAULT_AUDIO_FILTER_SIZE).show(parentFragmentManager)
+                TextInputDialogFragment(
+                    R.string.setting_audio_filter_size_title,
+                    getString(R.string.key_audio_filter_size_value),
+                    DEFAULT_AUDIO_FILTER_SIZE
+                ).show(parentFragmentManager)
                 return@setOnPreferenceClickListener true
             }
         }
-        
-        getSwitchPreference(KEY_AUDIO_FILTER_DURATION_ENABLE) {
-            setPreferenceEnabled(KEY_AUDIO_FILTER_DURATION_VALUE, isChecked)
+        switchPreference(R.string.key_audio_filter_duration_enable) {
+            setPreferenceEnabled(R.string.key_audio_filter_duration_value, isChecked)
             setOnPreferenceChangeListener { _, newValue ->
-                setPreferenceEnabled(KEY_AUDIO_FILTER_DURATION_VALUE, newValue as Boolean)
+                setPreferenceEnabled(R.string.key_audio_filter_duration_value, newValue as Boolean)
                 return@setOnPreferenceChangeListener true
             }
         }
-        getPreference(KEY_AUDIO_FILTER_DURATION_VALUE) {
+        preference(R.string.key_audio_filter_duration_value) {
             if (getIntSetting(R.string.key_audio_filter_duration_value) == null) {
-                defaultSharedPreference.commit(KEY_AUDIO_FILTER_DURATION_VALUE, DEFAULT_AUDIO_DURATION_SIZE)
+                defaultSharedPreference.commit(getString(R.string.key_audio_filter_duration_value), DEFAULT_AUDIO_DURATION_SIZE)
             }
             setOnPreferenceClickListener {
-                TextInputDialogFragment(R.string.setting_audio_filter_duration_title, KEY_AUDIO_FILTER_DURATION_VALUE, DEFAULT_AUDIO_DURATION_SIZE).show(parentFragmentManager)
+                TextInputDialogFragment(
+                    R.string.setting_audio_filter_duration_title,
+                    getString(R.string.key_audio_filter_duration_value),
+                    DEFAULT_AUDIO_DURATION_SIZE
+                ).show(parentFragmentManager)
                 return@setOnPreferenceClickListener true
             }
         }
     }
     
-    private fun setPreferenceEnabled(key: String, isEnabled: Boolean) {
-        findPreference<Preference>(key)?.isEnabled = isEnabled
+    private fun setPreferenceEnabled(@StringRes resId: Int, isEnabled: Boolean) {
+        preference(resId)?.isEnabled = isEnabled
     }
-    
-    private fun getPreference(key: String, block: Preference.() -> Unit) {
-        findPreference<Preference>(key)?.apply(block)
-    }
-    
-    private fun getSwitchPreference(key: String, block: SwitchPreferenceCompat.() -> Unit) {
-        findPreference<SwitchPreferenceCompat>(key)?.apply(block)
-    }
-    
+
 }
