@@ -4,6 +4,12 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import android.util.Log
+import sakuraba.saki.player.music.R.string.key_web_server_enable
+import sakuraba.saki.player.music.service.util.startService
+import sakuraba.saki.player.music.util.Constants.EXTRA_WEBSERVER
+import sakuraba.saki.player.music.util.Constants.EXTRA_WEBSERVER_START
+import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
+import sakuraba.saki.player.music.web.WebService
 
 @Suppress("unused")
 class ApplicationClass: Application() {
@@ -40,6 +46,10 @@ class ApplicationClass: Application() {
                 Log.e(activity::class.java.simpleName, "onActivityDestroyed")
             }
         })
+
+        if (getBooleanSetting(getString(key_web_server_enable))) {
+            startService(WebService::class.java) { putExtra(EXTRA_WEBSERVER, EXTRA_WEBSERVER_START) }
+        }
     }
     
 }
