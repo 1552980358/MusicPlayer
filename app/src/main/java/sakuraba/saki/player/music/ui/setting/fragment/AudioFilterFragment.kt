@@ -32,7 +32,7 @@ class AudioFilterFragment: PreferenceFragmentCompat() {
             }
         }
         getPreference(KEY_AUDIO_FILTER_SIZE_VALUE) {
-            if (getIntSetting(KEY_AUDIO_FILTER_SIZE_VALUE) == null) {
+            if (getIntSetting(R.string.key_audio_filter_size_value) == null) {
                 defaultSharedPreference.commit(KEY_AUDIO_FILTER_SIZE_VALUE, DEFAULT_AUDIO_FILTER_SIZE)
             }
             setOnPreferenceClickListener {
@@ -49,7 +49,7 @@ class AudioFilterFragment: PreferenceFragmentCompat() {
             }
         }
         getPreference(KEY_AUDIO_FILTER_DURATION_VALUE) {
-            if (getIntSetting(KEY_AUDIO_FILTER_DURATION_VALUE) == null) {
+            if (getIntSetting(R.string.key_audio_filter_duration_value) == null) {
                 defaultSharedPreference.commit(KEY_AUDIO_FILTER_DURATION_VALUE, DEFAULT_AUDIO_DURATION_SIZE)
             }
             setOnPreferenceClickListener {

@@ -50,9 +50,7 @@ import sakuraba.saki.player.music.util.ActivityFragmentInterface
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.MediaAlbum
 import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO_FILTER_DURATION_ENABLE
-import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO_FILTER_DURATION_VALUE
 import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO_FILTER_SIZE_ENABLE
-import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO_FILTER_SIZE_VALUE
 import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
 import sakuraba.saki.player.music.util.SettingUtil.getIntSettingOrThrow
 import sakuraba.saki.player.music.util.SettingUtil.getStringSettingOrThrow
@@ -247,11 +245,11 @@ class HomeFragment: Fragment() {
         Log.e(TAG, "readDatabase")
         audioInfoList.clear()
         audioDatabaseHelper.queryAllAudio(audioInfoList) {
-            if (getBooleanSetting(KEY_AUDIO_FILTER_SIZE_ENABLE)) {
-                it[0] = (getIntSettingOrThrow(KEY_AUDIO_FILTER_SIZE_VALUE) * 1000).toString()
+            if (getBooleanSetting(R.string.key_audio_filter_size_enable)) {
+                it[0] = (getIntSettingOrThrow(R.string.key_audio_filter_size_value) * 1000).toString()
             }
-            if (getBooleanSetting(KEY_AUDIO_FILTER_DURATION_ENABLE)) {
-                it[1] = getStringSettingOrThrow(KEY_AUDIO_FILTER_DURATION_VALUE)
+            if (getBooleanSetting(R.string.key_audio_filter_duration_enable)) {
+                it[1] = getStringSettingOrThrow(R.string.key_audio_filter_duration_value)
             }
         }
         audioInfoList.sortBy { it.audioTitlePinyin }

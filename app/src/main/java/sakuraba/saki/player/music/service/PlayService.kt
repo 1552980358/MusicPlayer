@@ -85,9 +85,6 @@ import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PLAY
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PREV
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_CREATE
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_START_COMMAND
-import sakuraba.saki.player.music.util.SettingUtil.KEY_PLAY_AUDIO_FOCUS_ENABLE
-import sakuraba.saki.player.music.util.SettingUtil.KEY_PLAY_FADE_IN_ENABLE
-import sakuraba.saki.player.music.util.SettingUtil.KEY_PLAY_FADE_OUT_ENABLE
 import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
 import sakuraba.saki.player.music.web.util.WebControlUtil
 
@@ -119,7 +116,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
             if (playbackStateCompat.state != STATE_PAUSED && playbackStateCompat.state != STATE_PLAYING) {
                 return
             }
-            if (!getBooleanSetting(KEY_PLAY_AUDIO_FOCUS_ENABLE)) {
+            if (!getBooleanSetting(R.string.key_play_audio_focus_enable)) {
                 if (AudioManagerCompat.requestAudioFocus(audioManager, audioFocusRequestCompat) == AUDIOFOCUS_REQUEST_FAILED) {
                     return
                 }
@@ -132,7 +129,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
             // mediaPlayer.start()
             exoPlayer.play()
             CoroutineScope(Dispatchers.IO).launch {
-                if (getBooleanSetting(KEY_PLAY_FADE_IN_ENABLE)) {
+                if (getBooleanSetting(R.string.key_play_fade_in_enable)) {
                     delay(100)
                     launch(Dispatchers.Main) { exoPlayer.volume = 0.4F }
                     delay(100)
@@ -151,7 +148,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
                 return
             }
             CoroutineScope(Dispatchers.IO).launch {
-                if (getBooleanSetting(KEY_PLAY_FADE_OUT_ENABLE)) {
+                if (getBooleanSetting(R.string.key_play_fade_out_enable)) {
                     launch(Dispatchers.Main) { exoPlayer.volume = 0.8F }
                     delay(100)
                     launch(Dispatchers.Main) { exoPlayer.volume = 0.6F }
@@ -227,7 +224,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
                 }
             }
     
-            if (!getBooleanSetting(KEY_PLAY_AUDIO_FOCUS_ENABLE)) {
+            if (!getBooleanSetting(R.string.key_play_audio_focus_enable)) {
                 if (AudioManagerCompat.requestAudioFocus(audioManager, audioFocusRequestCompat) == AUDIOFOCUS_REQUEST_FAILED) {
                     return
                 }
@@ -259,7 +256,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
             exoPlayer.volume = 0.2F
             exoPlayer.play()
             CoroutineScope(Dispatchers.IO).launch {
-                if (getBooleanSetting(KEY_PLAY_FADE_IN_ENABLE)) {
+                if (getBooleanSetting(R.string.key_play_fade_in_enable)) {
                     delay(100)
                     launch(Dispatchers.Main) { exoPlayer.volume = 0.4F }
                     delay(100)
