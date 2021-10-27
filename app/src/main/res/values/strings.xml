@@ -30,7 +30,8 @@
     
     <string name="setting_enable">Enable</string>
     <string name="setting_value">Value</string>
-    
+
+    <string name="setting_audio">Audio</string>
     <string name="setting_audio_title">Audio file</string>
     <string name="setting_audio_filter_size_title">Filter size</string>
     <string name="setting_audio_filter_duration_title">Filter duration</string>
@@ -93,5 +94,11 @@
     <string name="audio_detail_lyric_remove_dialog_content">Confirm?</string>
     <string name="audio_detail_lyric_remove_dialog_confirm">Confirm</string>
     <string name="audio_detail_lyric_remove_dialog_cancel">Cancel</string>
+
+    <string name="extension_title">Extension</string>
+    <string name="web_server_title">Web Server</string>
+    <string name="key_web_server">key_web_server</string>
+    <string name="web_server_enable">Enable Web Server</string>
+    <string name="key_web_server_enable">key_web_server_enable</string>
 
 </resources>
