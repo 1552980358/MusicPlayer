@@ -4,13 +4,12 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import androidx.navigation.fragment.findNavController
-import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import sakuraba.saki.player.music.R
+import sakuraba.saki.player.music.R.string.key_audio
+import sakuraba.saki.player.music.R.string.key_play
 import sakuraba.saki.player.music.R.string.key_web_server
 import sakuraba.saki.player.music.util.PreferenceUtil.preference
-import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO
-import sakuraba.saki.player.music.util.SettingUtil.KEY_PLAY
 
 class SettingFragment: PreferenceFragmentCompat() {
     
@@ -19,12 +18,12 @@ class SettingFragment: PreferenceFragmentCompat() {
         
         setHasOptionsMenu(true)
         
-        findPreference<Preference>(KEY_AUDIO)?.setOnPreferenceClickListener {
-            findNavController().navigate(R.id.nav_setting_audio_filter)
+        preference(key_audio)?.setOnPreferenceClickListener {
+            findNavController().navigate(SettingFragmentDirections.actionNavSettingToNavSettingAudioFilter())
             return@setOnPreferenceClickListener true
         }
-        findPreference<Preference>(KEY_PLAY)?.setOnPreferenceClickListener {
-            findNavController().navigate(R.id.nav_setting_audio_play)
+        preference(key_play)?.setOnPreferenceClickListener {
+            findNavController().navigate(SettingFragmentDirections.actionNavSettingToNavSettingAudioPlay())
             return@setOnPreferenceClickListener true
         }
 
