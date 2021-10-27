@@ -49,8 +49,6 @@ import sakuraba.saki.player.music.ui.home.util.RecyclerViewAdapterUtil
 import sakuraba.saki.player.music.util.ActivityFragmentInterface
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.MediaAlbum
-import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO_FILTER_DURATION_ENABLE
-import sakuraba.saki.player.music.util.SettingUtil.KEY_AUDIO_FILTER_SIZE_ENABLE
 import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
 import sakuraba.saki.player.music.util.SettingUtil.getIntSettingOrThrow
 import sakuraba.saki.player.music.util.SettingUtil.getStringSettingOrThrow
