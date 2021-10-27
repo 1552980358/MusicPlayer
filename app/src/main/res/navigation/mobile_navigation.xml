@@ -79,6 +79,13 @@
         <action
             android:id="@+id/action_nav_setting_to_nav_setting_audio_play"
             app:destination="@id/nav_setting_audio_play"/>
+        <action
+            android:id="@+id/action_nav_setting_to_nav_setting_web_server"
+            app:destination="@id/nav_setting_web_server"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
     </fragment>
     
     <fragment
@@ -88,5 +95,9 @@
     <fragment
         android:id="@+id/nav_setting_audio_play"
         android:name="sakuraba.saki.player.music.ui.setting.fragment.AudioPlayFragment" />
+
+    <fragment
+        android:id="@+id/nav_setting_web_server"
+        android:name="sakuraba.saki.player.music.ui.setting.fragment.WebServerFragment" />
     
 </navigation>
