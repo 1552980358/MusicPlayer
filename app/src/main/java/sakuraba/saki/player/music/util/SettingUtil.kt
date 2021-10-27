@@ -6,11 +6,6 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 
 object SettingUtil {
-
-    const val KEY_AUDIO_FILTER_SIZE_ENABLE = "key_audio_filter_size_enable"
-    const val KEY_AUDIO_FILTER_SIZE_VALUE = "key_audio_filter_size_value"
-    const val KEY_AUDIO_FILTER_DURATION_ENABLE = "key_audio_filter_duration_enable"
-    const val KEY_AUDIO_FILTER_DURATION_VALUE = "key_audio_filter_duration_value"
     
     val Context.defaultSharedPreference get() = PreferenceManager.getDefaultSharedPreferences(this)!!
     val Fragment.defaultSharedPreference get() = requireContext().defaultSharedPreference
