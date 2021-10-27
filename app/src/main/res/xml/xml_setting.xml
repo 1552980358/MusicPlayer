@@ -3,14 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <Preference
-        android:key="@string/key_audio"
-        android:title="@string/setting_audio_title"
-        app:iconSpaceReserved="false" />
-    
-    <Preference
-        android:key="@string/key_play"
-        android:title="@string/setting_play_title"
-        app:iconSpaceReserved="false" />
+    <PreferenceCategory
+        android:title="@string/setting_audio"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="@string/key_audio"
+            android:title="@string/setting_audio_title"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="@string/key_play"
+            android:title="@string/setting_play_title"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/extension_title"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="@string/key_web_server"
+            android:title="@string/web_server_title"
+            app:iconSpaceReserved="false"/>
+
+    </PreferenceCategory>
 
 </PreferenceScreen>
