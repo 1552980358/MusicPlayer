@@ -16,13 +16,17 @@
         <action
             android:id="@+id/action_nav_home_to_nav_album"
             app:destination="@id/nav_album"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"/>
+            app:popEnterAnim="@anim/translate_pop_enter"
+            app:popExitAnim="@anim/translate_pop_exit"
+            app:enterAnim="@anim/translate_enter"
+            app:exitAnim="@anim/translate_exit"/>
         <action
             android:id="@+id/action_nav_home_to_nav_search"
             app:destination="@id/nav_search"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out" />
+            app:popEnterAnim="@anim/translate_pop_enter"
+            app:popExitAnim="@anim/translate_pop_exit"
+            app:enterAnim="@anim/translate_enter"
+            app:exitAnim="@anim/translate_exit" />
     </fragment>
 
     <fragment
@@ -33,13 +37,17 @@
         <action
             android:id="@+id/action_nav_search_to_nav_home"
             app:destination="@id/nav_home"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out" />
+            app:popEnterAnim="@anim/translate_pop_enter"
+            app:popExitAnim="@anim/translate_pop_exit"
+            app:enterAnim="@anim/translate_enter"
+            app:exitAnim="@anim/translate_exit" />
         <action
             android:id="@+id/action_nav_search_to_nav_album"
             app:destination="@id/nav_album"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out" />
+            app:popEnterAnim="@anim/translate_pop_enter"
+            app:popExitAnim="@anim/translate_pop_exit"
+            app:enterAnim="@anim/translate_enter"
+            app:exitAnim="@anim/translate_exit" />
     </fragment>
     
     <fragment
@@ -52,13 +60,17 @@
         <action
             android:id="@+id/action_nav_album_to_nav_home2"
             app:destination="@id/nav_home"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"/>
+            app:popEnterAnim="@anim/translate_pop_enter"
+            app:popExitAnim="@anim/translate_pop_exit"
+            app:enterAnim="@anim/translate_enter"
+            app:exitAnim="@anim/translate_exit"/>
         <action
             android:id="@+id/action_nav_album_to_nav_search"
             app:destination="@id/nav_search"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out" />
+            app:popEnterAnim="@anim/translate_pop_enter"
+            app:popExitAnim="@anim/translate_pop_exit"
+            app:enterAnim="@anim/translate_enter"
+            app:exitAnim="@anim/translate_exit" />
     </fragment>
     
     <fragment
@@ -76,24 +88,24 @@
         <action
             android:id="@+id/action_nav_setting_to_nav_setting_audio_filter"
             app:destination="@id/nav_setting_audio_filter"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out" />
+            app:popEnterAnim="@anim/translate_pop_enter"
+            app:popExitAnim="@anim/translate_pop_exit"
+            app:enterAnim="@anim/translate_enter"
+            app:exitAnim="@anim/translate_exit" />
         <action
             android:id="@+id/action_nav_setting_to_nav_setting_audio_play"
             app:destination="@id/nav_setting_audio_play"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out" />
+            app:popEnterAnim="@anim/translate_pop_enter"
+            app:popExitAnim="@anim/translate_pop_exit"
+            app:enterAnim="@anim/translate_enter"
+            app:exitAnim="@anim/translate_exit" />
         <action
             android:id="@+id/action_nav_setting_to_nav_setting_web_server"
             app:destination="@id/nav_setting_web_server"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out" />
+            app:popEnterAnim="@anim/translate_pop_enter"
+            app:popExitAnim="@anim/translate_pop_exit"
+            app:enterAnim="@anim/translate_enter"
+            app:exitAnim="@anim/translate_exit" />
     </fragment>
     
     <fragment
