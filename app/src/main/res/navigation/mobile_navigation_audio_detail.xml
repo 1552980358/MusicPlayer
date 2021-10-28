@@ -12,10 +12,10 @@
         <action
             android:id="@+id/action_nav_audio_detail_to_nav_lyric_view"
             app:destination="@id/nav_lyric_view"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out">
+            app:enterAnim="@anim/translate_enter"
+            app:exitAnim="@anim/translate_exit"
+            app:popEnterAnim="@anim/translate_pop_enter"
+            app:popExitAnim="@anim/translate_pop_exit">
             <argument
                 android:name="data"
                 app:argType="string" />
