@@ -2,15 +2,23 @@ package sakuraba.saki.player.music.util
 
 import android.app.Activity
 import android.content.Context
+import sakuraba.saki.player.music.R
 
 object ActivityUtil {
 
-    fun Context.fadeAnim() {
+    fun Context.translateEnter() {
         if (this is Activity) {
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            translateEnter()
         }
     }
 
-    fun Activity.fadeAnim() = overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+    fun Context.translateExit() {
+        if (this is Activity) {
+            translateExit()
+        }
+    }
+
+    fun Activity.translateEnter() = overridePendingTransition(R.anim.translate_enter, R.anim.translate_exit)
+    fun Activity.translateExit() = overridePendingTransition(R.anim.translate_pop_enter, R.anim.translate_pop_exit)
 
 }
