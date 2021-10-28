@@ -12,7 +12,11 @@
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_nav_home_to_nav_setting"
-            app:destination="@id/nav_setting" />
+            app:destination="@id/nav_setting"
+            app:popEnterAnim="@anim/translate_pop_enter"
+            app:popExitAnim="@anim/translate_pop_exit"
+            app:enterAnim="@anim/translate_enter"
+            app:exitAnim="@anim/translate_exit"/>
         <action
             android:id="@+id/action_nav_home_to_nav_album"
             app:destination="@id/nav_album"
