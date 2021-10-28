@@ -284,8 +284,8 @@ class HomeFragment: Fragment() {
             return super.onOptionsItemSelected(item)
         }
         when (item.itemId) {
-            R.id.action_settings -> findNavController().navigate(R.id.nav_setting)
-            R.id.action_search -> findNavController().navigate(R.id.nav_search)
+            R.id.action_settings -> findNavController().navigate(HomeFragmentDirections.actionNavHomeToNavSetting())
+            R.id.action_search -> findNavController().navigate(HomeFragmentDirections.actionNavHomeToNavSearch())
         }
         return super.onOptionsItemSelected(item)
     }
