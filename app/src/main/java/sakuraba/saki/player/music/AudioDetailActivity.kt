@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import sakuraba.saki.player.music.databinding.ActivityAudioDetailBinding
-import sakuraba.saki.player.music.util.ActivityUtil.fadeAnim
+import sakuraba.saki.player.music.util.ActivityUtil.translateExit
 
 class AudioDetailActivity: AppCompatActivity() {
 
@@ -23,7 +23,8 @@ class AudioDetailActivity: AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         if (findNavController(R.id.fragment).currentDestination?.id == R.id.nav_audio_detail) {
-            fadeAnim()
+            // fadeAnim()
+            translateExit()
         }
     }
 
