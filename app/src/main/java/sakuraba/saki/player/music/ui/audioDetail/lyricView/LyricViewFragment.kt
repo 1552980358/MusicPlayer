@@ -1,11 +1,11 @@
-package sakuraba.saki.player.music.audioDetail.lyricPreview
+package sakuraba.saki.player.music.ui.audioDetail.lyricView
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import sakuraba.saki.player.music.audioDetail.lyricPreview.util.RecyclerViewAdapterUtil
+import sakuraba.saki.player.music.ui.audioDetail.lyricView.util.RecyclerViewAdapterUtil
 import sakuraba.saki.player.music.databinding.FragmentLyricViewBinding
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.LyricUtil.readLyric

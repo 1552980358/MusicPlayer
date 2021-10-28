@@ -1,4 +1,4 @@
-package sakuraba.saki.player.music.audioDetail.lyricPreview.util
+package sakuraba.saki.player.music.ui.audioDetail.lyricView.util
 
 import android.view.LayoutInflater
 import android.view.View

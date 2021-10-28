@@ -1,4 +1,4 @@
-package sakuraba.saki.player.music.audioDetail
+package sakuraba.saki.player.music.ui.audioDetail
 
 import android.media.MediaExtractor
 import android.media.MediaFormat
