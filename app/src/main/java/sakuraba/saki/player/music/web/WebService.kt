@@ -3,11 +3,20 @@ package sakuraba.saki.player.music.web
 import android.app.Service
 import android.content.Intent
 import android.net.ConnectivityManager
+import android.net.wifi.WifiManager.EXTRA_WIFI_STATE
+import android.net.wifi.WifiManager.WIFI_STATE_CHANGED_ACTION
+import android.net.wifi.WifiManager.WIFI_STATE_DISABLED
+import android.net.wifi.WifiManager.WIFI_STATE_UNKNOWN
 import android.os.IBinder
 import androidx.core.app.NotificationManagerCompat
+import lib.github1552980358.ktExtension.android.content.broadcastReceiver
+import lib.github1552980358.ktExtension.android.content.register
+import sakuraba.saki.player.music.R
+import sakuraba.saki.player.music.service.util.startService
 import sakuraba.saki.player.music.util.Constants.EXTRA_WEBSERVER
 import sakuraba.saki.player.music.util.Constants.EXTRA_WEBSERVER_START
 import sakuraba.saki.player.music.util.Constants.EXTRA_WEBSERVER_STOP
+import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
 import sakuraba.saki.player.music.web.server.WebServer
 import sakuraba.saki.player.music.web.util.NetworkUtil.hasConnection
 import sakuraba.saki.player.music.web.util.NetworkUtil.ipAddress
@@ -29,12 +38,23 @@ class WebService: Service() {
 
     private var webControlUtil = WebControlUtil()
 
+    private val broadcastReceiver = broadcastReceiver { _, intent, receiver ->
+        intent ?: return@broadcastReceiver
+        if (intent.action == WIFI_STATE_CHANGED_ACTION
+            && intent.getIntExtra(EXTRA_WIFI_STATE, WIFI_STATE_UNKNOWN) == WIFI_STATE_DISABLED
+            && getBooleanSetting(R.string.key_web_server_disconnect_enable)
+            && webServer.isAlive) {
+            startService(WebService::class.java) { putExtra(EXTRA_WEBSERVER, EXTRA_WEBSERVER_STOP) }
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
         notificationManager = createNotificationManager
         connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
 
         webServer = WebServer(SERVER_PORT, this, webControlUtil)
+        broadcastReceiver.register(this, arrayOf(WIFI_STATE_CHANGED_ACTION))
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -55,10 +75,16 @@ class WebService: Service() {
                 if (webServer.isAlive) {
                     webServer.stop()
                 }
+                stopSelf()
             }
         }
 
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    override fun onDestroy() {
+        unregisterReceiver(broadcastReceiver)
+        super.onDestroy()
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
