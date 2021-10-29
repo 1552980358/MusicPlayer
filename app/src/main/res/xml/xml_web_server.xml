@@ -9,4 +9,10 @@
         android:defaultValue="false"
         app:iconSpaceReserved="false"/>
 
+    <SwitchPreferenceCompat
+        android:key="@string/key_web_server_disconnect_enable"
+        android:title="@string/web_server_disconnect_enable"
+        android:defaultValue="false"
+        app:iconSpaceReserved="false" />
+
 </PreferenceScreen>
