@@ -38,7 +38,7 @@ class WebServerFragment: PreferenceFragmentCompat() {
             }
             setOnPreferenceChangeListener { _, newValue ->
                 tryOnly {
-                    if ((newValue as String).toInt() in 0 .. 65535) {
+                    if ((newValue as String).toInt() in 1025 .. 65535) {
                         summary = text
                         return@setOnPreferenceChangeListener true
                     }
