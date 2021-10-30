@@ -15,4 +15,11 @@
         android:defaultValue="false"
         app:iconSpaceReserved="false" />
 
+    <EditTextPreference
+        android:key="@string/key_web_server_port"
+        android:title="@string/web_server_port"
+        android:defaultValue="1552"
+        
+        app:iconSpaceReserved="false" />
+
 </PreferenceScreen>
