@@ -18,7 +18,7 @@ import sakuraba.saki.player.music.util.ActivityUtil.translateEnter
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.ViewHolderUtil.bindHolder
 
-class RecyclerViewAdapterUtil(data: HomeFragmentData?, selection: (pos: Int) -> Unit) {
+class RecyclerViewAdapterUtil(data: HomeFragmentData, selection: (pos: Int) -> Unit) {
     
     private class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val image: ImageView = view.findViewById(R.id.image_view)
@@ -27,14 +27,8 @@ class RecyclerViewAdapterUtil(data: HomeFragmentData?, selection: (pos: Int) -> 
         val background: RelativeLayout = view.findViewById(R.id.relative_layout_root)
     }
     
-    private class RecyclerViewAdapter(var audioInfoList: List<AudioInfo>, var bitmapMap: Map<Long, Bitmap?>, private val selection: (pos: Int) -> Unit): RecyclerView.Adapter<ViewHolder>() {
-        
-        constructor(data: HomeFragmentData?, selection: (pos: Int) -> Unit):
-            this(data?.audioInfoList ?: arrayListOf(),
-                data?.bitmapMap ?: mutableMapOf(),
-                selection
-            )
-        
+    private class RecyclerViewAdapter(val audioInfoList: List<AudioInfo>, val bitmapMap: Map<Long, Bitmap?>, private val selection: (pos: Int) -> Unit): RecyclerView.Adapter<ViewHolder>() {
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_home_recycler_view, parent, false))
         
@@ -44,7 +38,6 @@ class RecyclerViewAdapterUtil(data: HomeFragmentData?, selection: (pos: Int) -> 
                 title.text = audioTitle
                 @Suppress("SetTextI18n")
                 summary.text = "$audioArtist - $audioAlbum"
-                // holder.image.setImageBitmap(getBitmap(holder.image.context))
                 image.setImageBitmap(bitmapMap[audioAlbumId] ?: ContextCompat.getDrawable(background.context, R.drawable.ic_music)?.toBitmap())
             }
             background.setOnClickListener { selection(position) }
@@ -59,7 +52,7 @@ class RecyclerViewAdapterUtil(data: HomeFragmentData?, selection: (pos: Int) -> 
         
     }
     
-    private val adapter = RecyclerViewAdapter(data, selection)
+    private val adapter = RecyclerViewAdapter(data.audioInfoList ?: arrayListOf(), data.bitmapMap ?: mutableMapOf(), selection)
     
     fun setAdapterToRecyclerView(recyclerView: RecyclerView) {
         recyclerView.adapter = adapter
