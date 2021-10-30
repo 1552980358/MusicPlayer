@@ -80,7 +80,7 @@ class HomeFragment: Fragment() {
     
     private lateinit var recyclerViewAdapter: RecyclerViewAdapterUtil
     
-    private var homeFragmentData: HomeFragmentData? = null
+    private lateinit var homeFragmentData: HomeFragmentData
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
@@ -94,7 +94,6 @@ class HomeFragment: Fragment() {
             activityFragmentInterface.onFragmentListItemClick(pos, recyclerViewAdapter.audioInfoList[pos], recyclerViewAdapter.audioInfoList)
         }
         recyclerViewAdapter.setAdapterToRecyclerView(fragmentHome.recyclerView)
-        findNavController().currentDestination
         fragmentHome.recyclerView.addItemDecoration(DividerItemDecoration())
         
         fragmentHome.root.isRefreshing = true
@@ -147,7 +146,7 @@ class HomeFragment: Fragment() {
             }
             registerRequestReadPermission.launch(READ_EXTERNAL_STORAGE)
         } else {
-            if (homeFragmentData?.hasData != true) {
+            if (!homeFragmentData.hasData) {
                 updatingJob = CoroutineScope(Dispatchers.IO).launch {
                     readDatabase(recyclerViewAdapter.audioInfoList)
                     if (recyclerViewAdapter.audioInfoList.isNotEmpty()) {
@@ -303,7 +302,6 @@ class HomeFragment: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _fragmentHomeBinding = null
-        homeFragmentData = null
     }
     
 }
