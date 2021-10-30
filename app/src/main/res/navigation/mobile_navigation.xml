@@ -88,7 +88,8 @@
     
     <fragment
         android:id="@+id/nav_setting"
-        android:name="sakuraba.saki.player.music.ui.setting.SettingFragment" >
+        android:name="sakuraba.saki.player.music.ui.setting.SettingFragment"
+        android:label="@string/menu_setting">
         <action
             android:id="@+id/action_nav_setting_to_nav_setting_audio_filter"
             app:destination="@id/nav_setting_audio_filter"
@@ -114,14 +115,17 @@
     
     <fragment
         android:id="@+id/nav_setting_audio_filter"
-        android:name="sakuraba.saki.player.music.ui.setting.fragment.AudioFilterFragment" />
+        android:name="sakuraba.saki.player.music.ui.setting.fragment.AudioFilterFragment"
+        android:label="@string/menu_setting_audio_filter"/>
     
     <fragment
         android:id="@+id/nav_setting_audio_play"
-        android:name="sakuraba.saki.player.music.ui.setting.fragment.AudioPlayFragment" />
+        android:name="sakuraba.saki.player.music.ui.setting.fragment.AudioPlayFragment"
+        android:label="@string/menu_setting_audio_play"/>
 
     <fragment
         android:id="@+id/nav_setting_web_server"
-        android:name="sakuraba.saki.player.music.ui.setting.fragment.WebServerFragment" />
+        android:name="sakuraba.saki.player.music.ui.setting.fragment.WebServerFragment"
+        android:label="@string/menu_setting_extension_web_server" />
     
 </navigation>
