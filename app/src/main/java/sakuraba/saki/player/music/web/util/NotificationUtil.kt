@@ -44,4 +44,6 @@ object NotificationUtil {
         .setSmallIcon(R.drawable.ic_launcher_foreground)
         .build()
 
+    fun NotificationManagerCompat.updateNotification(notification: Notification) = notify(NotificationId, notification)
+
 }
