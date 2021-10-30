@@ -39,7 +39,7 @@ class WebServerFragment: PreferenceFragmentCompat() {
             setOnPreferenceChangeListener { _, newValue ->
                 tryOnly {
                     if ((newValue as String).toInt() in 1025 .. 65535) {
-                        summary = text
+                        summary = newValue
                         if (switchPreference(key_web_server_enable)?.isEnabled == true) {
                             requireContext().startService(WebService::class.java) {
                                 putExtra(EXTRA_WEBSERVER, EXTRA_WEBSERVER_START)
