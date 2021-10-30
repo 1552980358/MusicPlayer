@@ -15,6 +15,10 @@
     <string name="menu_home">Home</string>
     <string name="menu_album">Album</string>
     <string name="menu_search">Search</string>
+    <string name="menu_setting">Setting</string>
+    <string name="menu_setting_audio_filter">Audio File</string>
+    <string name="menu_setting_audio_play">Audio Play</string>
+    <string name="menu_setting_extension_web_server">Web Server</string>
 
     <string name="menu_audio_detail">Audio Detail</string>
     <string name="menu_lyric_view">Lyric View</string>
