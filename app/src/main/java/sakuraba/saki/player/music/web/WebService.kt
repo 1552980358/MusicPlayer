@@ -9,8 +9,10 @@ import android.net.wifi.WifiManager.WIFI_STATE_DISABLED
 import android.net.wifi.WifiManager.WIFI_STATE_UNKNOWN
 import android.os.IBinder
 import androidx.core.app.NotificationManagerCompat
+import androidx.preference.PreferenceManager
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.register
+import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.service.util.startService
 import sakuraba.saki.player.music.util.Constants.EXTRA_WEBSERVER
@@ -28,7 +30,8 @@ import sakuraba.saki.player.music.web.util.WebControlUtil
 class WebService: Service() {
 
     companion object {
-        private const val SERVER_PORT = 1552
+        private const val DEFAULT_SERVER_PORT = 1552
+        private const val DEFAULT_SERVER_PORT_STR = "$DEFAULT_SERVER_PORT"
     }
 
     private lateinit var webServer: WebServer
@@ -37,6 +40,8 @@ class WebService: Service() {
     private lateinit var connectivityManager: ConnectivityManager
 
     private var webControlUtil = WebControlUtil()
+
+    private var serverPort = DEFAULT_SERVER_PORT
 
     private val broadcastReceiver = broadcastReceiver { _, intent, receiver ->
         intent ?: return@broadcastReceiver
@@ -52,8 +57,6 @@ class WebService: Service() {
         super.onCreate()
         notificationManager = createNotificationManager
         connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        webServer = WebServer(SERVER_PORT, this, webControlUtil)
         broadcastReceiver.register(this, arrayOf(WIFI_STATE_CHANGED_ACTION))
     }
 
@@ -65,14 +68,22 @@ class WebService: Service() {
                 if (!connectivityManager.hasConnection) {
                     stopForeground(true)
                 }
-                if (!webServer.isAlive) {
-                    webServer.start()
+                if (::webServer.isInitialized && webServer.isAlive) {
+                    webServer.stop()
                 }
-                startForeground(getNotification("${connectivityManager.ipAddress}:$SERVER_PORT"))
+                tryOnly {
+                    serverPort = PreferenceManager.getDefaultSharedPreferences(this)
+                        .getString(getString(R.string.key_web_server_port), DEFAULT_SERVER_PORT_STR)
+                        ?.toInt() ?: DEFAULT_SERVER_PORT
+                }
+
+                webServer = WebServer(serverPort, this, webControlUtil).apply { start() }
+
+                startForeground(getNotification("${connectivityManager.ipAddress}:$serverPort"))
             }
             EXTRA_WEBSERVER_STOP -> {
                 stopForeground(true)
-                if (webServer.isAlive) {
+                if (::webServer.isInitialized && webServer.isAlive) {
                     webServer.stop()
                 }
                 stopSelf()
