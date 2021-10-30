@@ -104,7 +104,7 @@
     <string name="key_web_server_disconnect_enable">key_web_server_disconnect_enable</string>
     <string name="web_server_port">Server Port</string>
     <string name="key_web_server_port">key_web_server_port</string>
-    <string name="web_server_port_range">Port should be in range 0 to 65535</string>
+    <string name="web_server_port_range">Port should be in range 1025 to 65535</string>
 
     <string name="web_service_wifi_disconnected">Wi-Fi disconnected,\nWebService Stopped.</string>
 
