@@ -1,5 +1,6 @@
 package sakuraba.saki.player.music.util
 
+import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
@@ -15,5 +16,12 @@ object PreferenceUtil {
 
     fun PreferenceFragmentCompat.switchPreference(id: Int, block: SwitchPreferenceCompat.() -> Unit) =
         switchPreference(id)?.block()
+
+    fun PreferenceFragmentCompat.editTextPreference(id: Int) =
+        findPreference<EditTextPreference>(getString(id))
+
+    fun PreferenceFragmentCompat.editTextPreference(id: Int, block: EditTextPreference.() -> Unit) =
+        editTextPreference(id)?.block()
+
 
 }
