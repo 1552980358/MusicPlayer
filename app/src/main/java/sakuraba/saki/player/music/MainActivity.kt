@@ -31,6 +31,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -191,7 +192,7 @@ class MainActivity: BaseMediaControlActivity() {
                 playProgressBar.max = audioInfo.audioDuration
                 textView.text = audioInfo.audioTitle
                 CoroutineScope(Dispatchers.IO).launch {
-                    val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: resources.getDrawable(R.drawable.ic_music, null).toBitmap()
+                    val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
                     launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
                 }
             }
@@ -295,7 +296,7 @@ class MainActivity: BaseMediaControlActivity() {
                         }
                         textView.text = audioInfo.audioTitle
                         CoroutineScope(Dispatchers.IO).launch {
-                            val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: resources.getDrawable(R.drawable.ic_music, null).toBitmap()
+                            val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
                             launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
                         }
                     }
@@ -349,7 +350,7 @@ class MainActivity: BaseMediaControlActivity() {
     override fun onMediaControllerMetadataChanged(metadata: MediaMetadataCompat?) {
         metadata ?: return
         CoroutineScope(Dispatchers.IO).launch {
-            val bitmap = tryRun { loadAlbumArt(metadata.getString(METADATA_KEY_ALBUM_ART_URI)) } ?: resources.getDrawable(R.drawable.ic_music, null).toBitmap()
+            val bitmap = tryRun { loadAlbumArt(metadata.getString(METADATA_KEY_ALBUM_ART_URI)) } ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
             launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
         }
         textView.text = metadata.getString(METADATA_KEY_TITLE)
@@ -390,7 +391,7 @@ class MainActivity: BaseMediaControlActivity() {
                     }
                     textView.text = audioInfo.audioTitle
                     CoroutineScope(Dispatchers.IO).launch {
-                        val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: resources.getDrawable(R.drawable.ic_music, null).toBitmap()
+                        val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
                         launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
                     }
                 }
