@@ -49,7 +49,7 @@ class SearchFragment: BaseMainFragment() {
                     val searchResultList = recyclerViewAdapter.audioInfoList
                     searchResultList.clear()
 
-                    if (newText != null && audioInfoList.isNotEmpty()) {
+                    if (!newText.isNullOrEmpty() && audioInfoList.isNotEmpty()) {
                         newText.split(' ').forEach { keyWord ->
                             audioInfoList.forEach { audioInfo ->
                                 if (audioInfo.check(keyWord) && !searchResultList.contains(audioInfo)) {
