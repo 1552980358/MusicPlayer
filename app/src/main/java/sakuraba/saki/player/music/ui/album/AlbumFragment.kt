@@ -13,7 +13,7 @@ import sakuraba.saki.player.music.databinding.FragmentAlbumBinding
 import sakuraba.saki.player.music.ui.album.util.RecyclerViewAdapterUtil
 import sakuraba.saki.player.music.util.ActivityFragmentInterface
 import java.util.concurrent.TimeUnit
-import sakuraba.saki.player.music.util.BaseMainFragment
+import sakuraba.saki.player.music.base.BaseMainFragment
 
 class AlbumFragment: BaseMainFragment() {
     

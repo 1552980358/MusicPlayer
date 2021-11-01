@@ -9,7 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import sakuraba.saki.player.music.R
-import sakuraba.saki.player.music.ui.home.util.MainFragmentData
+import sakuraba.saki.player.music.util.MainFragmentData
 import sakuraba.saki.player.music.util.MediaAlbum
 
 class RecyclerViewAdapterUtil(data: MainFragmentData, listener: (imageView: ImageView, textView: TextView, mediaAlbum: MediaAlbum) -> Unit) {

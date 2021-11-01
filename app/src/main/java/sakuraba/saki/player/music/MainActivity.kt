@@ -66,9 +66,9 @@ import sakuraba.saki.player.music.database.AudioDatabaseHelper.Companion.TABLE_A
 import sakuraba.saki.player.music.database.AudioDatabaseHelper.Companion.TABLE_AUDIO
 import sakuraba.saki.player.music.databinding.ActivityMainBinding
 import sakuraba.saki.player.music.service.util.AudioInfo
-import sakuraba.saki.player.music.ui.home.util.MainFragmentData
+import sakuraba.saki.player.music.util.MainFragmentData
 import sakuraba.saki.player.music.util.ActivityFragmentInterface
-import sakuraba.saki.player.music.util.BaseMainFragment
+import sakuraba.saki.player.music.base.BaseMainFragment
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO

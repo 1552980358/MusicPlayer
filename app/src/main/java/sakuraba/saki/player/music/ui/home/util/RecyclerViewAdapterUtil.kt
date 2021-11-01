@@ -16,6 +16,7 @@ import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.util.ActivityUtil.translateEnter
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
+import sakuraba.saki.player.music.util.MainFragmentData
 import sakuraba.saki.player.music.util.ViewHolderUtil.bindHolder
 
 class RecyclerViewAdapterUtil(private val data: MainFragmentData, selection: (pos: Int) -> Unit) {

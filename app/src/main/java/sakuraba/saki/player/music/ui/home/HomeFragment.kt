@@ -19,7 +19,7 @@ import sakuraba.saki.player.music.databinding.FragmentHomeBinding
 import sakuraba.saki.player.music.ui.home.util.DividerItemDecoration
 import sakuraba.saki.player.music.ui.home.util.RecyclerViewAdapterUtil
 import sakuraba.saki.player.music.util.ActivityFragmentInterface
-import sakuraba.saki.player.music.util.BaseMainFragment
+import sakuraba.saki.player.music.base.BaseMainFragment
 
 class HomeFragment: BaseMainFragment() {
     

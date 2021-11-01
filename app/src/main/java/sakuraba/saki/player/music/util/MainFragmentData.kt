@@ -1,9 +1,8 @@
-package sakuraba.saki.player.music.ui.home.util
+package sakuraba.saki.player.music.util
 
 import android.graphics.Bitmap
 import sakuraba.saki.player.music.service.util.AudioInfo
 import java.io.Serializable
-import sakuraba.saki.player.music.util.MediaAlbum
 
 class MainFragmentData: Serializable {
 
