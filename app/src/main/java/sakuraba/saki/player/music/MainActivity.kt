@@ -2,13 +2,16 @@ package sakuraba.saki.player.music
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.Context
+import android.content.Intent
 import android.content.Intent.ACTION_MAIN
 import android.content.Intent.CATEGORY_HOME
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.drawable.AnimatedVectorDrawable
+import android.net.Uri.fromParts
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI
@@ -48,6 +51,8 @@ import androidx.navigation.NavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_INDEFINITE
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -57,9 +62,11 @@ import lib.github1552980358.ktExtension.android.content.intent
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.android.view.getDimensionPixelSize
+import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.makeSnack
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import lib.github1552980358.ktExtension.jvm.util.copy
+import sakuraba.saki.player.music.BuildConfig.APPLICATION_ID
 import sakuraba.saki.player.music.base.BaseMediaControlActivity
 import sakuraba.saki.player.music.database.AudioDatabaseHelper
 import sakuraba.saki.player.music.database.AudioDatabaseHelper.Companion.TABLE_ALBUM
@@ -110,6 +117,8 @@ class MainActivity: BaseMediaControlActivity() {
     private val textView get() = _textView!!
     private var _playProgressBar: PlayProgressBar? = null
     private val playProgressBar get() = _playProgressBar!!
+    private var _coordinatorLayout: CoordinatorLayout? = null
+    private val coordinatorLayout get() = _coordinatorLayout!!
     
     private var bottomSheetClickLock = true
 
@@ -166,6 +175,8 @@ class MainActivity: BaseMediaControlActivity() {
     private lateinit var requestPermission: ActivityResultLauncher<String>
 
     private lateinit var audioDatabaseHelper: AudioDatabaseHelper
+
+    private lateinit var snackBar: Snackbar
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -258,12 +269,19 @@ class MainActivity: BaseMediaControlActivity() {
             }
         }
 
+        _coordinatorLayout = findViewById(R.id.coordinator_layout)
+
         audioDatabaseHelper = AudioDatabaseHelper(this)
+
+        snackBar = coordinatorLayout.makeSnack(R.string.main_snack_open_setting_text, LENGTH_INDEFINITE)
+            .setAction(R.string.main_snack_open_setting_button) {
+                startActivity(Intent(ACTION_APPLICATION_DETAILS_SETTINGS, fromParts("package", APPLICATION_ID, null)))
+            }
 
         requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             when {
                 it -> CoroutineScope(Dispatchers.IO).launch { initLaunchProcess() }
-                else -> Unit
+                else -> snackBar.show()
             }
         }
 
@@ -467,6 +485,11 @@ class MainActivity: BaseMediaControlActivity() {
     
     override fun onResume() {
         super.onResume()
+
+        if (snackBar.isShown && ActivityCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
+            snackBar.dismiss()
+        }
+
         bottomSheetClickLock = true
         if (behavior.state == STATE_EXPANDED && mediaBrowserCompat.isConnected) {
             @Suppress("DuplicatedCode")
