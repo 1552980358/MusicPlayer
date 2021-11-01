@@ -35,7 +35,6 @@ class HomeFragment: BaseMainFragment() {
     private lateinit var recyclerViewAdapter: RecyclerViewAdapterUtil
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         
         _fragmentHomeBinding = FragmentHomeBinding.inflate(inflater)
         
