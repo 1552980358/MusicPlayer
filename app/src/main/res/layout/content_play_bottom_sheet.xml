@@ -24,14 +24,13 @@
             android:id="@+id/relative_layout_audio_info"
             android:background="?attr/selectableItemBackground"
             android:padding="@dimen/play_bottom_sheet_relative_layout_padding">
-        
+
             <ImageView
                 android:layout_width="@dimen/play_bottom_sheet_image_view_size"
                 android:layout_height="@dimen/play_bottom_sheet_image_view_size"
                 android:id="@+id/image_view_speaker"
                 android:padding="@dimen/play_bottom_sheet_image_view_padding"
                 android:layout_marginEnd="@dimen/play_bottom_sheet_image_view_margin_end"
-                android:src="@drawable/ic_speaker"
                 tools:ignore="ContentDescription" />
         
             <LinearLayout
