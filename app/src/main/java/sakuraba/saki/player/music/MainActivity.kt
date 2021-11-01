@@ -362,6 +362,7 @@ class MainActivity: BaseMediaControlActivity() {
             }
         }
         CoroutineScope(Dispatchers.Main).launch { mainFragmentData.onCompleteLoading() }
+        mainFragmentData.refreshCompleted = true
 
         mainFragmentData.albumList
         audioDatabaseHelper.queryMediaAlbum(mainFragmentData.albumList)

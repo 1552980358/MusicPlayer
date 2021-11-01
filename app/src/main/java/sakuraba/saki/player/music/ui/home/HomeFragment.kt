@@ -68,6 +68,10 @@ class HomeFragment: BaseMainFragment() {
             recyclerViewAdapter.notifyDataSetChanged()
             fragmentHome.root.isRefreshing = false
         }
+
+        if (mainFragmentData.refreshCompleted) {
+            fragmentHome.root.isRefreshing = false
+        }
         
         return fragmentHome.root
     }
