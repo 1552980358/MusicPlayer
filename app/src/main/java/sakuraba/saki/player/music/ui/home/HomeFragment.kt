@@ -8,7 +8,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.makeShortSnack
@@ -26,9 +25,7 @@ class HomeFragment: BaseMainFragment() {
     companion object {
         private const val TAG = "HomeFragment"
     }
-    
-    private lateinit var viewModel: HomeViewModel
-    
+
     private var _fragmentHomeBinding: FragmentHomeBinding? = null
     private val fragmentHome get() = _fragmentHomeBinding!!
     
