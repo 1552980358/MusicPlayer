@@ -20,7 +20,7 @@ class MainFragmentData: Serializable {
 
     var audioInfoList: ArrayList<AudioInfo> = audioInfoFullList
 
-    var hasData = false
+    var refreshCompleted = false
 
     private var loadingStageChangeListener: LoadingStageChangeListener? = null
     private var completeLoadingListener: CompleteLoadingListener? = null
