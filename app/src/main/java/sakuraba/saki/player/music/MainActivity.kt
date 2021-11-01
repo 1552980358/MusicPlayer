@@ -1,11 +1,14 @@
 package sakuraba.saki.player.music
 
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.Context
 import android.content.Intent.ACTION_MAIN
 import android.content.Intent.CATEGORY_HOME
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
+import android.provider.MediaStore
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI
@@ -23,6 +26,8 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -30,8 +35,11 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
+import androidx.core.database.getLongOrNull
+import androidx.core.database.getStringOrNull
 import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -49,16 +57,18 @@ import lib.github1552980358.ktExtension.android.content.intent
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.android.view.getDimensionPixelSize
+import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
+import lib.github1552980358.ktExtension.jvm.util.copy
 import sakuraba.saki.player.music.base.BaseMediaControlActivity
+import sakuraba.saki.player.music.database.AudioDatabaseHelper
+import sakuraba.saki.player.music.database.AudioDatabaseHelper.Companion.TABLE_ALBUM
+import sakuraba.saki.player.music.database.AudioDatabaseHelper.Companion.TABLE_AUDIO
 import sakuraba.saki.player.music.databinding.ActivityMainBinding
 import sakuraba.saki.player.music.service.util.AudioInfo
-import sakuraba.saki.player.music.ui.album.AlbumFragment
-import sakuraba.saki.player.music.ui.album.util.AlbumFragmentData
-import sakuraba.saki.player.music.ui.home.HomeFragment
-import sakuraba.saki.player.music.ui.home.util.HomeFragmentData
-import sakuraba.saki.player.music.ui.search.SearchFragment
+import sakuraba.saki.player.music.ui.home.util.MainFragmentData
 import sakuraba.saki.player.music.util.ActivityFragmentInterface
+import sakuraba.saki.player.music.util.BaseMainFragment
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO
@@ -70,6 +80,7 @@ import sakuraba.saki.player.music.util.Constants.TRANSITION_IMAGE_VIEW
 import sakuraba.saki.player.music.util.Constants.TRANSITION_TEXT_VIEW
 import sakuraba.saki.player.music.util.Coroutine.delay1second
 import sakuraba.saki.player.music.util.Coroutine.ms_1000_int
+import sakuraba.saki.player.music.util.MediaAlbum
 import sakuraba.saki.player.music.widget.PlayProgressBar
 
 class MainActivity: BaseMediaControlActivity() {
@@ -101,19 +112,17 @@ class MainActivity: BaseMediaControlActivity() {
     private val playProgressBar get() = _playProgressBar!!
     
     private var bottomSheetClickLock = true
+
+    private var mainFragmentData = MainFragmentData()
     
     private val fragmentLifecycleCallbacks =  object : FragmentManager.FragmentLifecycleCallbacks() {
-        private var homeFragmentData = HomeFragmentData()
-        private var albumFragmentData = AlbumFragmentData()
-        
+
         override fun onFragmentAttached(fm: FragmentManager, f: Fragment, context: Context) {
             Log.e(f::class.java.simpleName, "onFragmentAttached")
         }
         override fun onFragmentPreCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
-            when (f) {
-                is HomeFragment -> f.setHomeFragmentData(homeFragmentData)
-                is AlbumFragment -> f.setAlbumFragmentData(albumFragmentData)
-                is SearchFragment -> f.setAudioInfoList(homeFragmentData.audioInfoList ?: arrayListOf())
+            if (f is BaseMainFragment) {
+                f.mainFragmentData = mainFragmentData
             }
         }
         override fun onFragmentCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
@@ -126,24 +135,6 @@ class MainActivity: BaseMediaControlActivity() {
             Log.e(f::class.java.simpleName, "onFragmentStarted")
         }
         override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
-            when (f) {
-                is HomeFragment -> {
-                    activityFragmentInterface.setOnHomeFragmentPausedListener { arrayList, mutableMap ->
-                        homeFragmentData.audioInfoList = arrayList
-                        homeFragmentData.bitmapMap = mutableMap
-                        homeFragmentData.hasData = true
-                    }
-                }
-                is AlbumFragment -> {
-                    activityFragmentInterface.setOnAlbumFragmentPausedListener { arrayList, mutableMap ->
-                        with(albumFragmentData) {
-                            mediaAlbumList = arrayList
-                            bitmapMap = mutableMap
-                            hasData = true
-                        }
-                    }
-                }
-            }
             Log.e(f::class.java.simpleName, "onFragmentResumed")
         }
         override fun onFragmentPaused(fm: FragmentManager, f: Fragment) {
@@ -159,10 +150,6 @@ class MainActivity: BaseMediaControlActivity() {
             Log.e(f::class.java.simpleName, "onFragmentDestroyed")
         }
         override fun onFragmentDetached(fm: FragmentManager, f: Fragment) {
-            when (f) {
-                is HomeFragment -> activityFragmentInterface.removeOnHomeFragmentPausedListener()
-                is AlbumFragment -> activityFragmentInterface.removeOnAlbumFragmentPausedListener()
-            }
             Log.e(f::class.java.simpleName, "onFragmentDetached")
         }
     }
@@ -175,6 +162,10 @@ class MainActivity: BaseMediaControlActivity() {
     // private var playBackState = STATE_NONE
     
     private lateinit var audioInfo: AudioInfo
+
+    private lateinit var requestPermission: ActivityResultLauncher<String>
+
+    private lateinit var audioDatabaseHelper: AudioDatabaseHelper
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -266,7 +257,114 @@ class MainActivity: BaseMediaControlActivity() {
                 (drawable as AnimatedVectorDrawable).start()
             }
         }
-        
+
+        audioDatabaseHelper = AudioDatabaseHelper(this)
+
+        requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            when {
+                it -> CoroutineScope(Dispatchers.IO).launch { initLaunchProcess() }
+                else -> Unit
+            }
+        }
+
+        if (ActivityCompat.checkSelfPermission(this@MainActivity, READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
+            requestPermission.launch(READ_EXTERNAL_STORAGE)
+            return
+        }
+        CoroutineScope(Dispatchers.IO).launch { launchProcess() }
+    }
+
+    private fun initLaunchProcess() {
+        contentResolver.query(
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            null,
+            null,
+            null,
+            MediaStore.Audio.AudioColumns.IS_MUSIC
+        )?.apply {
+            var id: String?
+            var title: String?
+            var artist: String?
+            var album: String?
+            var albumId: Long?
+            var duration: Long?
+            var size: Long?
+            while (moveToNext()) {
+                id = getStringOrNull(getColumnIndex(MediaStore.Audio.AudioColumns._ID))
+                title = getStringOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.TITLE))
+                @Suppress("InlinedApi")
+                artist = getStringOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST))
+                @Suppress("InlinedApi")
+                album = getStringOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM))
+                albumId = getLongOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM_ID))
+                @Suppress("InlinedApi")
+                duration = getLongOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.DURATION))
+                size = getLongOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.SIZE))
+                if (id != null && title != null && artist != null && album != null && albumId != null && duration != null && size != null) {
+                    mainFragmentData.audioInfoFullList.add(
+                        AudioInfo(
+                            id,
+                            title,
+                            artist,
+                            album,
+                            albumId,
+                            duration,
+                            size
+                        )
+                    )
+                }
+            }
+            close()
+        }
+
+        if (mainFragmentData.audioInfoFullList.isNotEmpty()) {
+            mainFragmentData.audioInfoFullList.forEach { Log.e("TAG", it.audioTitle) }
+            mainFragmentData.audioInfoFullList.sortBy { it.audioId }
+            audioDatabaseHelper.insertAudio(TABLE_AUDIO, mainFragmentData.audioInfoFullList)
+            val mediaAlbumList = arrayListOf<MediaAlbum>()
+            mainFragmentData.audioInfoFullList.forEach { audioInfo ->
+                when (val index =
+                    mediaAlbumList.indexOfFirst { mediaAlbum -> mediaAlbum.albumId == audioInfo.audioAlbumId }) {
+                    -1 -> mediaAlbumList.add(
+                        MediaAlbum(
+                            audioInfo.audioAlbumId,
+                            audioInfo.audioAlbum,
+                            audioInfo.audioAlbumPinyin
+                        )
+                    )
+                    else -> mediaAlbumList[index].numberOfAudio++
+                }
+            }
+            mediaAlbumList.sortBy { mediaAlbum -> mediaAlbum.albumId }
+            audioDatabaseHelper.insertMediaAlbum(TABLE_ALBUM, mediaAlbumList)
+
+            launchProcess()
+        }
+    }
+
+    private fun launchProcess() {
+        mainFragmentData.audioInfoList = mainFragmentData.audioInfoFullList.run {
+            clear()
+            audioDatabaseHelper.queryAllAudio(this)
+            sortBy { it.audioTitlePinyin }
+            copy()
+        }
+
+        CoroutineScope(Dispatchers.Main).launch { mainFragmentData.onCompleteLoad() }
+
+        mainFragmentData.bitmapMap.apply {
+            clear()
+
+            mainFragmentData.audioInfoFullList.forEach { audioInfo ->
+                tryOnly {
+                    this[audioInfo.audioAlbumId] = loadAlbumArt(audioInfo.audioAlbumId)
+                }
+            }
+        }
+        CoroutineScope(Dispatchers.Main).launch { mainFragmentData.onCompleteLoad() }
+
+        mainFragmentData.albumList
+        audioDatabaseHelper.queryMediaAlbum(mainFragmentData.albumList)
     }
     
     override fun onMediaBrowserConnected() {

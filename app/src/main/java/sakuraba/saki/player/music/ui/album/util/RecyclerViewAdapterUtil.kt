@@ -9,9 +9,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import sakuraba.saki.player.music.R
+import sakuraba.saki.player.music.ui.home.util.MainFragmentData
 import sakuraba.saki.player.music.util.MediaAlbum
 
-class RecyclerViewAdapterUtil(data: AlbumFragmentData?, listener: (imageView: ImageView, textView: TextView, mediaAlbum: MediaAlbum) -> Unit) {
+class RecyclerViewAdapterUtil(data: MainFragmentData, listener: (imageView: ImageView, textView: TextView, mediaAlbum: MediaAlbum) -> Unit) {
     
     private class AlbumViewHolder(view: View): RecyclerView.ViewHolder(view) {
         
@@ -49,7 +50,7 @@ class RecyclerViewAdapterUtil(data: AlbumFragmentData?, listener: (imageView: Im
         
     }
     
-    private val adapter = RecyclerViewAdapter(data?.mediaAlbumList ?: arrayListOf(), data?.bitmapMap ?: mutableMapOf(), listener)
+    private val adapter = RecyclerViewAdapter(data.albumList, data.bitmapMap, listener)
     
     fun setAdapterToRecyclerView(recyclerView: RecyclerView) {
         recyclerView.adapter = adapter
