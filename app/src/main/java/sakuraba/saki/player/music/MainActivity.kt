@@ -73,8 +73,7 @@ import sakuraba.saki.player.music.database.AudioDatabaseHelper.Companion.TABLE_A
 import sakuraba.saki.player.music.database.AudioDatabaseHelper.Companion.TABLE_AUDIO
 import sakuraba.saki.player.music.databinding.ActivityMainBinding
 import sakuraba.saki.player.music.service.util.AudioInfo
-import sakuraba.saki.player.music.util.MainFragmentData
-import sakuraba.saki.player.music.util.ActivityFragmentInterface
+import sakuraba.saki.player.music.util.MainActivityInterface
 import sakuraba.saki.player.music.base.BaseMainFragment
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
@@ -94,7 +93,6 @@ class MainActivity: BaseMediaControlActivity() {
     
     companion object {
         const val TAG = "MainActivity"
-        const val INTENT_ACTIVITY_FRAGMENT_INTERFACE = "ActivityFragmentInterface"
     }
     
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -104,8 +102,8 @@ class MainActivity: BaseMediaControlActivity() {
     private lateinit var viewModel: MainViewModel
     
     private lateinit var behavior: BottomSheetBehavior<RelativeLayout>
-    
-    private lateinit var activityFragmentInterface: ActivityFragmentInterface
+
+    private lateinit var activityInterface: MainActivityInterface
     
     private var isOnPaused = false
     
@@ -121,8 +119,6 @@ class MainActivity: BaseMediaControlActivity() {
     private val coordinatorLayout get() = _coordinatorLayout!!
     
     private var bottomSheetClickLock = true
-
-    private var mainFragmentData = MainFragmentData()
     
     private val fragmentLifecycleCallbacks =  object : FragmentManager.FragmentLifecycleCallbacks() {
 
@@ -131,7 +127,7 @@ class MainActivity: BaseMediaControlActivity() {
         }
         override fun onFragmentPreCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
             if (f is BaseMainFragment) {
-                f.mainFragmentData = mainFragmentData
+                f.activityInterface = activityInterface
             }
         }
         override fun onFragmentCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
@@ -183,7 +179,7 @@ class MainActivity: BaseMediaControlActivity() {
         
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
         
-        activityFragmentInterface = ActivityFragmentInterface { pos, audioInfo, audioInfoList ->
+        activityInterface = MainActivityInterface { pos, audioInfo, audioInfoList ->
             mediaControllerCompat.transportControls.playFromMediaId(audioInfo?.audioId, bundle {
                 putInt(EXTRAS_AUDIO_INFO_POS, pos)
                 putSerializable(EXTRAS_AUDIO_INFO, audioInfo)
@@ -199,8 +195,6 @@ class MainActivity: BaseMediaControlActivity() {
                 }
             }
         }
-    
-        intent?.putExtra(INTENT_ACTIVITY_FRAGMENT_INTERFACE, activityFragmentInterface)
         
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         _activityMainMainBinding = ActivityMainBinding.inflate(layoutInflater)
@@ -319,7 +313,7 @@ class MainActivity: BaseMediaControlActivity() {
                 duration = getLongOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.DURATION))
                 size = getLongOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.SIZE))
                 if (id != null && title != null && artist != null && album != null && albumId != null && duration != null && size != null) {
-                    mainFragmentData.audioInfoFullList.add(
+                    activityInterface.audioInfoFullList.add(
                         AudioInfo(
                             id,
                             title,
@@ -335,12 +329,12 @@ class MainActivity: BaseMediaControlActivity() {
             close()
         }
 
-        if (mainFragmentData.audioInfoFullList.isNotEmpty()) {
-            mainFragmentData.audioInfoFullList.forEach { Log.e("TAG", it.audioTitle) }
-            mainFragmentData.audioInfoFullList.sortBy { it.audioId }
-            audioDatabaseHelper.insertAudio(TABLE_AUDIO, mainFragmentData.audioInfoFullList)
+        if (activityInterface.audioInfoFullList.isNotEmpty()) {
+            activityInterface.audioInfoFullList.forEach { Log.e("TAG", it.audioTitle) }
+            activityInterface.audioInfoFullList.sortBy { it.audioId }
+            audioDatabaseHelper.insertAudio(TABLE_AUDIO, activityInterface.audioInfoFullList)
             val mediaAlbumList = arrayListOf<MediaAlbum>()
-            mainFragmentData.audioInfoFullList.forEach { audioInfo ->
+            activityInterface.audioInfoFullList.forEach { audioInfo ->
                 when (val index =
                     mediaAlbumList.indexOfFirst { mediaAlbum -> mediaAlbum.albumId == audioInfo.audioAlbumId }) {
                     -1 -> mediaAlbumList.add(
@@ -361,29 +355,29 @@ class MainActivity: BaseMediaControlActivity() {
     }
 
     private fun launchProcess() {
-        mainFragmentData.audioInfoList = mainFragmentData.audioInfoFullList.run {
-            clear()
-            audioDatabaseHelper.queryAllAudio(this)
-            sortBy { it.audioTitlePinyin }
-            copy()
+        activityInterface.audioInfoList = activityInterface.audioInfoFullList.run {
+                clear()
+                audioDatabaseHelper.queryAllAudio(this)
+                sortBy { it.audioTitlePinyin }
+                copy()
         }
 
-        CoroutineScope(Dispatchers.Main).launch { mainFragmentData.onLoadStageChange() }
+        CoroutineScope(Dispatchers.Main).launch { activityInterface.onLoadStageChange() }
 
-        mainFragmentData.bitmapMap.apply {
+        activityInterface.bitmapMap.apply {
             clear()
 
-            mainFragmentData.audioInfoFullList.forEach { audioInfo ->
+            activityInterface.audioInfoFullList.forEach { audioInfo ->
                 tryOnly {
                     this[audioInfo.audioAlbumId] = loadAlbumArt(audioInfo.audioAlbumId)
                 }
             }
         }
-        CoroutineScope(Dispatchers.Main).launch { mainFragmentData.onCompleteLoading() }
-        mainFragmentData.refreshCompleted = true
+        CoroutineScope(Dispatchers.Main).launch { activityInterface.onCompleteLoading() }
+        activityInterface.refreshCompleted = true
 
-        mainFragmentData.albumList
-        audioDatabaseHelper.queryMediaAlbum(mainFragmentData.albumList)
+        activityInterface.albumList
+        audioDatabaseHelper.queryMediaAlbum(activityInterface.albumList)
     }
     
     override fun onMediaBrowserConnected() {

@@ -12,12 +12,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.makeShortSnack
 import lib.github1552980358.ktExtension.androidx.fragment.app.findActivityViewById
-import sakuraba.saki.player.music.MainActivity.Companion.INTENT_ACTIVITY_FRAGMENT_INTERFACE
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.databinding.FragmentHomeBinding
 import sakuraba.saki.player.music.ui.home.util.DividerItemDecoration
 import sakuraba.saki.player.music.ui.home.util.RecyclerViewAdapterUtil
-import sakuraba.saki.player.music.util.ActivityFragmentInterface
 import sakuraba.saki.player.music.base.BaseMainFragment
 
 class HomeFragment: BaseMainFragment() {
@@ -28,21 +26,16 @@ class HomeFragment: BaseMainFragment() {
 
     private var _fragmentHomeBinding: FragmentHomeBinding? = null
     private val fragmentHome get() = _fragmentHomeBinding!!
-    
-    private var _activityFragmentInterface: ActivityFragmentInterface? = null
-    private val activityFragmentInterface get() = _activityFragmentInterface!!
 
     private lateinit var recyclerViewAdapter: RecyclerViewAdapterUtil
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         
         _fragmentHomeBinding = FragmentHomeBinding.inflate(inflater)
-        
-        _activityFragmentInterface = requireActivity().intent.getSerializableExtra(INTENT_ACTIVITY_FRAGMENT_INTERFACE) as ActivityFragmentInterface
-        
+
         fragmentHome.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        recyclerViewAdapter = RecyclerViewAdapterUtil(mainFragmentData) { pos ->
-            activityFragmentInterface.onFragmentListItemClick(pos, recyclerViewAdapter.audioInfoList[pos], recyclerViewAdapter.audioInfoList)
+        recyclerViewAdapter = RecyclerViewAdapterUtil(activityInterface) { pos ->
+            activityInterface.onFragmentListItemClick(pos, recyclerViewAdapter.audioInfoList[pos], recyclerViewAdapter.audioInfoList)
         }
         recyclerViewAdapter.setAdapterToRecyclerView(fragmentHome.recyclerView)
         fragmentHome.recyclerView.addItemDecoration(DividerItemDecoration())
@@ -56,16 +49,16 @@ class HomeFragment: BaseMainFragment() {
 
         setHasOptionsMenu(true)
 
-        mainFragmentData.setLoadingStageChangeListener {
+        activityInterface.setLoadingStageChangeListener {
             recyclerViewAdapter.notifyDataSetChanged()
         }
 
-        mainFragmentData.setCompleteLoadingListener {
+        activityInterface.setCompleteLoadingListener {
             recyclerViewAdapter.notifyDataSetChanged()
             fragmentHome.root.isRefreshing = false
         }
 
-        if (mainFragmentData.refreshCompleted) {
+        if (activityInterface.refreshCompleted) {
             fragmentHome.root.isRefreshing = false
         }
         

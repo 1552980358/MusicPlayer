@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
@@ -15,25 +14,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
-import sakuraba.saki.player.music.MainActivity.Companion.INTENT_ACTIVITY_FRAGMENT_INTERFACE
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.database.AudioDatabaseHelper
 import sakuraba.saki.player.music.databinding.FragmentAlbumListBinding
 import sakuraba.saki.player.music.ui.album.albumList.util.RecyclerViewAdapterUtil
-import sakuraba.saki.player.music.util.ActivityFragmentInterface
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.MediaAlbum
 import java.util.concurrent.TimeUnit
+import sakuraba.saki.player.music.base.BaseMainFragment
 
-class AlbumListFragment: Fragment() {
+class AlbumListFragment: BaseMainFragment() {
     
     private var _fragmentAlbumListBinding: FragmentAlbumListBinding? = null
     private val fragmentAlbumList get() = _fragmentAlbumListBinding!!
     private lateinit var behavior: BottomSheetBehavior<RecyclerView>
     private lateinit var recyclerViewAdapter: RecyclerViewAdapterUtil
-    private var _activityFragmentInterface: ActivityFragmentInterface? = null
-    private val activityNotifier get() = _activityFragmentInterface!!
     private lateinit var mediaAlbum: MediaAlbum
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -41,9 +37,7 @@ class AlbumListFragment: Fragment() {
         mediaAlbum = requireArguments().getSerializable(EXTRAS_DATA) as MediaAlbum
         fragmentAlbumList.imageView.transitionName = "${mediaAlbum.albumId}_image"
         fragmentAlbumList.textViewTitle.transitionName = "${mediaAlbum.albumId}_text"
-        
-        _activityFragmentInterface = requireActivity().intent.getSerializableExtra(INTENT_ACTIVITY_FRAGMENT_INTERFACE) as ActivityFragmentInterface
-        
+
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
         postponeEnterTransition(250, TimeUnit.MILLISECONDS)
         return fragmentAlbumList.root
@@ -58,7 +52,7 @@ class AlbumListFragment: Fragment() {
         behavior = BottomSheetBehavior.from(fragmentAlbumList.recyclerView)
         
         recyclerViewAdapter = RecyclerViewAdapterUtil(fragmentAlbumList.recyclerView) { pos ->
-            activityNotifier.onFragmentListItemClick(pos, recyclerViewAdapter.audioInfoList[pos], recyclerViewAdapter.audioInfoList)
+            activityInterface.onFragmentListItemClick(pos, recyclerViewAdapter.audioInfoList[pos], recyclerViewAdapter.audioInfoList)
         }
         
         CoroutineScope(Dispatchers.IO).launch {

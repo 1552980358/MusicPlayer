@@ -1,37 +1,38 @@
 package sakuraba.saki.player.music.ui.search
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
-import androidx.fragment.app.Fragment
-import sakuraba.saki.player.music.MainActivity.Companion.INTENT_ACTIVITY_FRAGMENT_INTERFACE
 import sakuraba.saki.player.music.R
+import sakuraba.saki.player.music.base.BaseMainFragment
 import sakuraba.saki.player.music.databinding.FragmentSearchBinding
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.ui.search.util.RecyclerViewAdapterUtil
 import sakuraba.saki.player.music.ui.search.util.SoftKeyboardUtil.hideSoftKeyboard
-import sakuraba.saki.player.music.util.ActivityFragmentInterface
 
-class SearchFragment: Fragment() {
+class SearchFragment: BaseMainFragment() {
 
     private var _fragmentSearchBinding: FragmentSearchBinding? = null
     private val fragmentSearch get() = _fragmentSearchBinding!!
     private lateinit var recyclerViewAdapter: RecyclerViewAdapterUtil
     private lateinit var audioInfoList: ArrayList<AudioInfo>
-    private lateinit var activityFragmentInterface: ActivityFragmentInterface
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        activityFragmentInterface = requireActivity().intent.getSerializableExtra(INTENT_ACTIVITY_FRAGMENT_INTERFACE) as ActivityFragmentInterface
         _fragmentSearchBinding = FragmentSearchBinding.inflate(inflater)
         setHasOptionsMenu(true)
+        audioInfoList = activityInterface.audioInfoList
         return fragmentSearch.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerViewAdapter = RecyclerViewAdapterUtil(fragmentSearch.recyclerView) { audioInfo ->
-            activityFragmentInterface.onFragmentListItemClick(audioInfo.index, audioInfo, audioInfoList)
+            activityInterface.onFragmentListItemClick(audioInfo.index, audioInfo, audioInfoList)
         }
     }
 
@@ -79,10 +80,6 @@ class SearchFragment: Fragment() {
         _fragmentSearchBinding = null
         requireActivity().hideSoftKeyboard()
         super.onDestroyView()
-    }
-
-    fun setAudioInfoList(audioInfoList: ArrayList<AudioInfo>) {
-        this.audioInfoList = audioInfoList
     }
 
 }
