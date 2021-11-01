@@ -9,6 +9,7 @@ import android.graphics.Color.TRANSPARENT
 import android.graphics.Color.WHITE
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
+import android.media.AudioManager
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -26,6 +27,7 @@ import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -75,6 +77,8 @@ import sakuraba.saki.player.music.util.Coroutine.delay1second
 import sakuraba.saki.player.music.util.Coroutine.ms_1000_int
 import sakuraba.saki.player.music.util.SystemUtil.pixelHeight
 import sakuraba.saki.player.music.ui.play.util.DividerItemDecoration
+import sakuraba.saki.player.music.util.AudioUtil
+import sakuraba.saki.player.music.util.AudioUtil.getOutputDevice
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_BACK_PRESSED
@@ -299,6 +303,17 @@ class PlayActivity: BaseMediaControlActivity() {
             if (behavior.state != STATE_EXPANDED) {
                 behavior.state = STATE_EXPANDED
             }
+        }
+
+        findViewById<ImageView>(R.id.image_view_speaker).apply {
+            val device = (getSystemService(AUDIO_SERVICE) as AudioManager).getOutputDevice
+            when (device) {
+                AudioUtil.AudioDevice.HEADSET, AudioUtil.AudioDevice.HEADPHONE
+                    , AudioUtil.AudioDevice.USB_DEVICE -> { setImageResource(R.drawable.ic_headset) }
+                AudioUtil.AudioDevice.BLUETOOTH_A2DP -> { setImageResource(R.drawable.ic_bluetooth) }
+                else -> setImageResource(R.drawable.ic_speaker)
+            }
+            Log.e(TAG, device.toString())
         }
     }
 
