@@ -60,8 +60,13 @@ class HomeFragment: BaseMainFragment() {
 
         setHasOptionsMenu(true)
 
-        mainFragmentData.setLoadingListener {
+        mainFragmentData.setLoadingStageChangeListener {
             recyclerViewAdapter.notifyDataSetChanged()
+        }
+
+        mainFragmentData.setCompleteLoadingListener {
+            recyclerViewAdapter.notifyDataSetChanged()
+            fragmentHome.root.isRefreshing = false
         }
         
         return fragmentHome.root
@@ -101,11 +106,7 @@ class HomeFragment: BaseMainFragment() {
         activityFragmentInterface.onHomeFragmentPaused(recyclerViewAdapter.audioInfoList, recyclerViewAdapter.bitmapMap)
         super.onPause()
     }
-    
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _fragmentHomeBinding = null

@@ -7,8 +7,12 @@ import sakuraba.saki.player.music.util.MediaAlbum
 
 class MainFragmentData: Serializable {
 
-    private fun interface LoadingListener {
-        fun onCompleteLoad()
+    private fun interface LoadingStageChangeListener {
+        fun onLoading()
+    }
+
+    private fun interface CompleteLoadingListener {
+        fun onComplete()
     }
 
     val audioInfoFullList = arrayListOf<AudioInfo>()
@@ -19,12 +23,19 @@ class MainFragmentData: Serializable {
 
     var hasData = false
 
-    private var listener: LoadingListener? = null
+    private var loadingStageChangeListener: LoadingStageChangeListener? = null
+    private var completeLoadingListener: CompleteLoadingListener? = null
 
-    fun setLoadingListener(block: () -> Unit) {
-        listener = LoadingListener(block)
+    fun setLoadingStageChangeListener(block: () -> Unit) {
+        loadingStageChangeListener = LoadingStageChangeListener(block)
     }
 
-    fun onCompleteLoad() = listener?.onCompleteLoad()
+    fun setCompleteLoadingListener(block: () -> Unit) {
+        completeLoadingListener = CompleteLoadingListener(block)
+    }
+
+    fun onLoadStageChange() = loadingStageChangeListener?.onLoading()
+
+    fun onCompleteLoading() = completeLoadingListener?.onComplete()
 
 }

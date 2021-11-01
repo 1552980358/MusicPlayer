@@ -350,7 +350,7 @@ class MainActivity: BaseMediaControlActivity() {
             copy()
         }
 
-        CoroutineScope(Dispatchers.Main).launch { mainFragmentData.onCompleteLoad() }
+        CoroutineScope(Dispatchers.Main).launch { mainFragmentData.onLoadStageChange() }
 
         mainFragmentData.bitmapMap.apply {
             clear()
@@ -361,7 +361,7 @@ class MainActivity: BaseMediaControlActivity() {
                 }
             }
         }
-        CoroutineScope(Dispatchers.Main).launch { mainFragmentData.onCompleteLoad() }
+        CoroutineScope(Dispatchers.Main).launch { mainFragmentData.onCompleteLoading() }
 
         mainFragmentData.albumList
         audioDatabaseHelper.queryMediaAlbum(mainFragmentData.albumList)
