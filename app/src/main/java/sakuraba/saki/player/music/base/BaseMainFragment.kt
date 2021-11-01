@@ -1,10 +1,10 @@
 package sakuraba.saki.player.music.base
 
 import androidx.fragment.app.Fragment
-import sakuraba.saki.player.music.util.MainFragmentData
+import sakuraba.saki.player.music.util.MainActivityInterface
 
 open class BaseMainFragment: Fragment() {
 
-    lateinit var mainFragmentData: MainFragmentData
+    lateinit var activityInterface: MainActivityInterface
 
 }
