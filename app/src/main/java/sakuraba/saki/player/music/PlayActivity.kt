@@ -514,6 +514,10 @@ class PlayActivity: BaseMediaControlActivity() {
     }
 
     override fun onStop() {
+        /**
+         * Solution token from
+         * https://stackoverflow.com/a/60506947/11685230
+         **/
         Instrumentation().callActivityOnSaveInstanceState(this, Bundle())
         super.onStop()
     }
