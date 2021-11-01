@@ -3,6 +3,7 @@ package sakuraba.saki.player.music
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
+import android.app.Instrumentation
 import android.graphics.Color.BLACK
 import android.graphics.Color.TRANSPARENT
 import android.graphics.Color.WHITE
@@ -493,7 +494,7 @@ class PlayActivity: BaseMediaControlActivity() {
         Log.e(TAG, ON_BACK_PRESSED)
         when (behavior.state) {
             STATE_EXPANDED, STATE_HALF_EXPANDED, STATE_DRAGGING, STATE_SETTLING -> behavior.state = STATE_COLLAPSED
-            else -> super.onBackPressed()
+            else -> finishAfterTransition()
         }
     }
     
@@ -510,6 +511,11 @@ class PlayActivity: BaseMediaControlActivity() {
         isPlaying = false
         job?.cancel()
         super.onPause()
+    }
+
+    override fun onStop() {
+        Instrumentation().callActivityOnSaveInstanceState(this, Bundle())
+        super.onStop()
     }
     
     override fun onResume() {
