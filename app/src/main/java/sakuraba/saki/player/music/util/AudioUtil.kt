@@ -2,14 +2,12 @@ package sakuraba.saki.player.music.util
 
 import android.media.AudioDeviceInfo.TYPE_BLUETOOTH_A2DP
 import android.media.AudioDeviceInfo.TYPE_BUILTIN_SPEAKER
-import android.media.AudioDeviceInfo.TYPE_USB_DEVICE
 import android.media.AudioDeviceInfo.TYPE_USB_HEADSET
 import android.media.AudioDeviceInfo.TYPE_WIRED_HEADPHONES
 import android.media.AudioDeviceInfo.TYPE_WIRED_HEADSET
 import android.media.AudioManager
 import android.media.AudioManager.GET_DEVICES_OUTPUTS
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 
 object AudioUtil {
@@ -32,7 +30,6 @@ object AudioUtil {
                 TYPE_BLUETOOTH_A2DP -> currentDevice = type
                 TYPE_USB_HEADSET -> currentDevice = type
             }
-            Log.e("TAG", audioDeviceInfo.type.toString())
         }
         return when (currentDevice) {
             TYPE_BUILTIN_SPEAKER -> AudioDevice.BUILD_IN_SPEAKER

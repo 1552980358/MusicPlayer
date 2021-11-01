@@ -313,7 +313,6 @@ class PlayActivity: BaseMediaControlActivity() {
                 AudioUtil.AudioDevice.BLUETOOTH_A2DP -> { setImageResource(R.drawable.ic_bluetooth) }
                 else -> setImageResource(R.drawable.ic_speaker)
             }
-            Log.e(TAG, device.toString())
         }
     }
 
