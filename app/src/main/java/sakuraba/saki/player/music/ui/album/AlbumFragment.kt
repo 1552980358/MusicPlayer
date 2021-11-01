@@ -43,10 +43,5 @@ class AlbumFragment: BaseMainFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
     }
-    
-    override fun onPause() {
-        activityFragmentInterface.onAlbumFragmentPaused(recyclerViewAdapter.mediaAlbumList, recyclerViewAdapter.bitmapMap)
-        super.onPause()
-    }
-    
+
 }

@@ -72,20 +72,6 @@ class HomeFragment: BaseMainFragment() {
         return fragmentHome.root
     }
     
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-        /*
-        // Register content observer
-        requireContext().contentResolver.apply {
-            registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mediaStoreObserver)
-            registerContentObserver(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, true, mediaStoreObserver)
-            registerContentObserver(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, true, mediaStoreObserver)
-            registerContentObserver(MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI, true, mediaStoreObserver)
-            // registerContentObserver(MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI, true, observer)
-        }
-         */
-    }
-    
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
         inflater.inflate(R.menu.menu_home, menu)
@@ -100,11 +86,6 @@ class HomeFragment: BaseMainFragment() {
             R.id.action_search -> findNavController().navigate(HomeFragmentDirections.actionNavHomeToNavSearch())
         }
         return super.onOptionsItemSelected(item)
-    }
-    
-    override fun onPause() {
-        activityFragmentInterface.onHomeFragmentPaused(recyclerViewAdapter.audioInfoList, recyclerViewAdapter.bitmapMap)
-        super.onPause()
     }
 
     override fun onDestroyView() {
