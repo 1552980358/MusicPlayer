@@ -20,7 +20,7 @@
     - Commit: [6e5e1e8](https://github.com/1552980358/MusicPlayer/commit/6e5e1e86a643c1be2a5d002d4c6b900b97baf23c)
     - Google Document Source: [getSize](https://developer.android.com/reference/android/view/Display#getSize(android.graphics.Point))
 - Android S - 12.0 (API 31)
-  - `NotificationUtil.kt: Fix "Warning: Missing PendingIntent mutability flag" on Android 12 [Test Commit]`
+  - `NotificationUtil.kt: Fix "Warning: Missing PendingIntent mutability flag" on Android 12`
     - Commit: [298b132](https://github.com/1552980358/MusicPlayer/commit/298b132064cbcb492ed818fb286a21de531366af)
     - Google Document Source: [Pending intents mutability](https://developer.android.com/about/versions/12/behavior-changes-12#pending-intent-mutability)
   
@@ -35,13 +35,16 @@
   ```
 
 ## Webpage Server
-`src/main/assets/web/*`: Please refers to (here)[https://github.com/1552980358/MusicPlayer-Webpage]
+`src/main/assets/web/*`: Please refers to [here](https://github.com/1552980358/MusicPlayer-Webpage)
 
 ## Required Permission
 - `android.permission.FOREGROUND_SERVICE`
 - `android.permission.READ_EXTERNAL_STORAGE`
 - `android.permission.WAKE_LOCK`
 - `android.permission.INTERNET`
+- `android.permission.ACCESS_WIFI_STATE`
+- `android.permission.MODIFY_AUDIO_SETTINGS`
+- `android.permission.BLUETOOTH_CONNECT`
 
 ## Dependencies
 - `org.jetbrains.kotlin:kotlin-stdlib`
