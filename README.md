@@ -64,10 +64,14 @@
 - `com.google.android.material:material`
 - `com.google.android.exoplayer:exoplayer-core`
 - `com.google.android.exoplayer:exoplayer-hls`
+- `com.google.code.gson:gson`
+- `com.github.android:renderscript-intrinsics-replacement-toolkit`
 - `com.github.promeg:tinypinyin`
 - `com.github.1552980358:KtExtension`
 - `com.github.1552980358:KtExtensionAndroid`
 - `com.github.mkaflowski:Media-Style-Palette`
+- `org.nanohttpd:nanohttpd`
+- `org.nanohttpd:nanohttpd-websocket`
 - Dependencies detail can be found here [build.gradle](build.gradle) and [build.gradle](app/build.gradle)
 
 ## Maintenance Language
