@@ -7,6 +7,7 @@ import android.content.Intent.ACTION_MAIN
 import android.content.Intent.CATEGORY_HOME
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.database.ContentObserver
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.net.Uri.fromParts
 import android.os.Bundle
@@ -63,6 +64,7 @@ import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.android.view.getDimensionPixelSize
 import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.makeSnack
+import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.shortSnack
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import lib.github1552980358.ktExtension.jvm.util.copy
@@ -173,6 +175,8 @@ class MainActivity: BaseMediaControlActivity() {
     private lateinit var audioDatabaseHelper: AudioDatabaseHelper
 
     private lateinit var snackBar: Snackbar
+
+    private lateinit var mediaStoreObserver: ContentObserver
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -271,6 +275,24 @@ class MainActivity: BaseMediaControlActivity() {
             .setAction(R.string.main_snack_open_setting_button) {
                 startActivity(Intent(ACTION_APPLICATION_DETAILS_SETTINGS, fromParts("package", APPLICATION_ID, null)))
             }
+
+        mediaStoreObserver = object : ContentObserver(null) {
+            override fun onChange(selfChange: Boolean) {
+                activityInterface.onContentChange()
+                CoroutineScope(Dispatchers.IO).launch {
+                    audioDatabaseHelper.clearTable(TABLE_AUDIO)
+                    audioDatabaseHelper.clearTable(TABLE_AUDIO)
+                    initLaunchProcess()
+                }
+            }
+        }
+
+        contentResolver.apply {
+            registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mediaStoreObserver)
+            registerContentObserver(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, true, mediaStoreObserver)
+            registerContentObserver(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, true, mediaStoreObserver)
+            registerContentObserver(MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI, true, mediaStoreObserver)
+        }
 
         requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             when {
