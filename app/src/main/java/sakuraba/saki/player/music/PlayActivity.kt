@@ -4,6 +4,8 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.app.Instrumentation
+import android.bluetooth.BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED
+import android.content.Intent.ACTION_HEADSET_PLUG
 import android.graphics.Color.BLACK
 import android.graphics.Color.TRANSPARENT
 import android.graphics.Color.WHITE
@@ -51,8 +53,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.getStatusBarHeight
 import lib.github1552980358.ktExtension.android.content.intent
+import lib.github1552980358.ktExtension.android.content.register
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
@@ -119,8 +123,18 @@ class PlayActivity: BaseMediaControlActivity() {
     
     private var _recyclerView: RecyclerView? = null
     private val recyclerView get() = _recyclerView!!
+    private var _imageViewDevice: ImageView? = null
+    private val imageViewDevice get() = _imageViewDevice!!
 
     private lateinit var audioInfo: AudioInfo
+
+    private lateinit var audioManager: AudioManager
+
+    private val broadcastReceiver = broadcastReceiver { _, intent, _ ->
+        when (intent?.action) {
+            ACTION_HEADSET_PLUG, ACTION_CONNECTION_STATE_CHANGED -> updateAudioDeviceIcon()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -305,14 +319,20 @@ class PlayActivity: BaseMediaControlActivity() {
             }
         }
 
-        findViewById<ImageView>(R.id.image_view_speaker).apply {
-            val device = (getSystemService(AUDIO_SERVICE) as AudioManager).getOutputDevice
-            when (device) {
-                AudioUtil.AudioDevice.HEADSET, AudioUtil.AudioDevice.HEADPHONE
-                    , AudioUtil.AudioDevice.USB_DEVICE -> { setImageResource(R.drawable.ic_headset) }
-                AudioUtil.AudioDevice.BLUETOOTH_A2DP -> { setImageResource(R.drawable.ic_bluetooth) }
-                else -> setImageResource(R.drawable.ic_speaker)
-            }
+        audioManager = (getSystemService(AUDIO_SERVICE) as AudioManager)
+
+        _imageViewDevice = findViewById(R.id.image_view_device)
+
+        updateAudioDeviceIcon()
+        broadcastReceiver.register(this, arrayOf(ACTION_HEADSET_PLUG, ACTION_CONNECTION_STATE_CHANGED))
+    }
+
+    private fun updateAudioDeviceIcon() = imageViewDevice.run {
+        when (audioManager.getOutputDevice) {
+            AudioUtil.AudioDevice.HEADSET, AudioUtil.AudioDevice.HEADPHONE
+                , AudioUtil.AudioDevice.USB_DEVICE -> { setImageResource(R.drawable.ic_headset) }
+            AudioUtil.AudioDevice.BLUETOOTH_A2DP -> { setImageResource(R.drawable.ic_bluetooth) }
+            else -> setImageResource(R.drawable.ic_speaker)
         }
     }
 
@@ -565,6 +585,7 @@ class PlayActivity: BaseMediaControlActivity() {
     }
     
     override fun onDestroy() {
+        unregisterReceiver(broadcastReceiver)
         activityPlay.lyricLayout.unregisterBroadcastReceiver()
         super.onDestroy()
         _activityPlayBinding = null
