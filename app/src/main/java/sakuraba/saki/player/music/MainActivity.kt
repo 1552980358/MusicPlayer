@@ -287,6 +287,14 @@ class MainActivity: BaseMediaControlActivity() {
             }
         }
 
+        activityInterface.setRequestRefreshListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                audioDatabaseHelper.clearTable(TABLE_AUDIO)
+                audioDatabaseHelper.clearTable(TABLE_AUDIO)
+                initLaunchProcess()
+            }
+        }
+
         contentResolver.apply {
             registerContentObserver(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, true, mediaStoreObserver)
             registerContentObserver(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, true, mediaStoreObserver)
