@@ -28,7 +28,7 @@
             <ImageView
                 android:layout_width="@dimen/play_bottom_sheet_image_view_size"
                 android:layout_height="@dimen/play_bottom_sheet_image_view_size"
-                android:id="@+id/image_view_speaker"
+                android:id="@+id/image_view_device"
                 android:padding="@dimen/play_bottom_sheet_image_view_padding"
                 android:layout_marginEnd="@dimen/play_bottom_sheet_image_view_margin_end"
                 tools:ignore="ContentDescription" />
@@ -37,7 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_toEndOf="@id/image_view_speaker"
+                android:layout_toEndOf="@id/image_view_device"
                 android:layout_centerVertical="true">
             
                 <TextView
