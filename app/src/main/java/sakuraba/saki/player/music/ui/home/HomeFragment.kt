@@ -42,20 +42,21 @@ class HomeFragment: BaseMainFragment() {
         
         fragmentHome.root.isRefreshing = true
 
-        fragmentHome.root.setOnRefreshListener {
-            findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)?.makeShortSnack(R.string.home_snack_waiting_for_media_scanner)?.show()
-
-        }
+        fragmentHome.root.setOnRefreshListener { activityInterface.onRequestRefresh() }
 
         setHasOptionsMenu(true)
 
-        activityInterface.setLoadingStageChangeListener {
-            recyclerViewAdapter.notifyDataSetChanged()
-        }
-
-        activityInterface.setCompleteLoadingListener {
-            recyclerViewAdapter.notifyDataSetChanged()
-            fragmentHome.root.isRefreshing = false
+        activityInterface.apply {
+            setLoadingStageChangeListener {
+                recyclerViewAdapter.notifyDataSetChanged()
+            }
+            setCompleteLoadingListener {
+                recyclerViewAdapter.notifyDataSetChanged()
+                fragmentHome.root.isRefreshing = false
+            }
+            setContentChangeRefreshListener {
+                fragmentHome.root.isRefreshing = true
+            }
         }
 
         if (activityInterface.refreshCompleted) {
@@ -79,6 +80,11 @@ class HomeFragment: BaseMainFragment() {
             R.id.action_search -> findNavController().navigate(HomeFragmentDirections.actionNavHomeToNavSearch())
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroy() {
+        activityInterface.removeContentChangeRefreshListener()
+        super.onDestroy()
     }
 
     override fun onDestroyView() {
