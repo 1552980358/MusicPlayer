@@ -17,6 +17,14 @@ class MainActivityInterface(): Serializable {
     private fun interface CompleteLoadingListener {
         fun onComplete()
     }
+
+    private fun interface RequestRefreshListener {
+        fun onRequestRefresh()
+    }
+
+    private fun interface ContentChangeRefreshListener {
+        fun onContentChange()
+    }
     
     private var fragmentListItemClickListener: OnFragmentListItemClickListener? = null
 
@@ -37,6 +45,8 @@ class MainActivityInterface(): Serializable {
 
     private var loadingStageChangeListener: LoadingStageChangeListener? = null
     private var completeLoadingListener: CompleteLoadingListener? = null
+    private var requestRefreshListener: RequestRefreshListener? = null
+    private var contentChangeRefreshListener: ContentChangeRefreshListener? = null
 
     fun setLoadingStageChangeListener(block: () -> Unit) {
         loadingStageChangeListener = LoadingStageChangeListener(block)
@@ -46,8 +56,24 @@ class MainActivityInterface(): Serializable {
         completeLoadingListener = CompleteLoadingListener(block)
     }
 
+    fun setRequestRefreshListener(block: () -> Unit) {
+        requestRefreshListener = RequestRefreshListener(block)
+    }
+
+    fun setContentChangeRefreshListener(block: () -> Unit) {
+        contentChangeRefreshListener = ContentChangeRefreshListener(block)
+    }
+
+    fun removeContentChangeRefreshListener() {
+        completeLoadingListener = null
+    }
+
     fun onLoadStageChange() = loadingStageChangeListener?.onLoading()
 
     fun onCompleteLoading() = completeLoadingListener?.onComplete()
+
+    fun onRequestRefresh() = requestRefreshListener?.onRequestRefresh()
+
+    fun onContentChange() = contentChangeRefreshListener?.onContentChange()
 
 }
