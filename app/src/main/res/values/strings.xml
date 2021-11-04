@@ -101,6 +101,10 @@
     <string name="audio_detail_lyric_remove_dialog_confirm">Confirm</string>
     <string name="audio_detail_lyric_remove_dialog_cancel">Cancel</string>
     <string name="audio_detail_file">File</string>
+    <string name="audio_detail_size">Size</string>
+    <string name="audio_detail_size_key">key_size</string>
+    <string name="audio_detail_path">Path</string>
+    <string name="audio_detail_path_key">key_path</string>
 
     <string name="extension_title">Extension</string>
     <string name="web_server_title">Web Server</string>
