@@ -76,4 +76,20 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="@string/audio_detail_file"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="@string/audio_detail_size_key"
+            android:title="@string/audio_detail_size"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="@string/audio_detail_path_key"
+            android:title="@string/audio_detail_path"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>
