@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        android:title="Basics"
+        android:title="@string/audio_detail_basics"
         app:iconSpaceReserved="false">
 
         <Preference
@@ -51,7 +51,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="File"
+        android:title="@string/audio_detail_quality"
         app:iconSpaceReserved="false">
 
         <Preference
