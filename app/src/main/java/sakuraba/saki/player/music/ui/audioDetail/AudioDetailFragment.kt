@@ -32,7 +32,14 @@ import sakuraba.saki.player.music.util.LyricUtil.hasLyric
 import sakuraba.saki.player.music.util.LyricUtil.removeLyric
 import sakuraba.saki.player.music.util.LyricUtil.writeLyric
 import sakuraba.saki.player.music.util.PreferenceUtil.preference
+import sakuraba.saki.player.music.util.UnitUtil.PER
+import sakuraba.saki.player.music.util.UnitUtil.UNIT_BITS
+import sakuraba.saki.player.music.util.UnitUtil.UNIT_Hertz
+import sakuraba.saki.player.music.util.UnitUtil.UNIT_SAMPLE
+import sakuraba.saki.player.music.util.UnitUtil.UNIT_SEC
 import sakuraba.saki.player.music.util.UnitUtil.asMiB
+import sakuraba.saki.player.music.util.UnitUtil.getAsKilo
+import sakuraba.saki.player.music.util.UnitUtil.toTimeFormat
 
 class AudioDetailFragment: PreferenceFragmentCompat() {
 
@@ -48,13 +55,6 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
         const val KEY_LYRIC_IMPORT = "key_lyric_import"
         const val KEY_LYRIC_VIEW = "key_lyric_view"
         const val KEY_LYRIC_REMOVE = "key_lyric_remove"
-        
-        private const val UNIT_BITS = "bits"
-        private const val UNIT_KILO = "K"
-        private const val UNIT_Hertz = "Hz"
-        private const val UNIT_SEC = "s"
-        private const val UNIT_SAMPLE = "sample"
-        private const val PER = "/"
     }
 
     private lateinit var navController: NavController
@@ -187,10 +187,5 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
 
     private fun MediaFormat.readTrackFormat(key: String): Int? =
         if (containsKey(key)) getInteger(key) else null
-
-    private val String.getAsKilo get() = toInt().getAsKilo
-    private val Int.getAsKilo get() = "${(this / 1000)} $UNIT_KILO"
-    private val Long.addZero get() = if (this > 9) this.toString() else "0${this}"
-    private val Long.toTimeFormat get() = (this / 60000).toString() + ':' + (this / 1000 % 60).addZero
 
 }
