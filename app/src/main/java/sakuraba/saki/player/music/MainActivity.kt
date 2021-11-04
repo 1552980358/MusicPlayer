@@ -64,7 +64,6 @@ import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.android.view.getDimensionPixelSize
 import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.makeSnack
-import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.shortSnack
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import lib.github1552980358.ktExtension.jvm.util.copy
@@ -86,8 +85,8 @@ import sakuraba.saki.player.music.util.Constants.EXTRAS_PROGRESS
 import sakuraba.saki.player.music.util.Constants.EXTRAS_STATUS
 import sakuraba.saki.player.music.util.Constants.TRANSITION_IMAGE_VIEW
 import sakuraba.saki.player.music.util.Constants.TRANSITION_TEXT_VIEW
-import sakuraba.saki.player.music.util.Coroutine.delay1second
-import sakuraba.saki.player.music.util.Coroutine.ms_1000_int
+import sakuraba.saki.player.music.util.CoroutineUtil.delay1second
+import sakuraba.saki.player.music.util.CoroutineUtil.ms_1000_int
 import sakuraba.saki.player.music.util.MediaAlbum
 import sakuraba.saki.player.music.widget.PlayProgressBar
 
