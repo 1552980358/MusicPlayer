@@ -329,6 +329,7 @@ class MainActivity: BaseMediaControlActivity() {
             var albumId: Long?
             var duration: Long?
             var size: Long?
+            var data: String?
             while (moveToNext()) {
                 id = getStringOrNull(getColumnIndex(MediaStore.Audio.AudioColumns._ID))
                 title = getStringOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.TITLE))
@@ -340,7 +341,9 @@ class MainActivity: BaseMediaControlActivity() {
                 @Suppress("InlinedApi")
                 duration = getLongOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.DURATION))
                 size = getLongOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.SIZE))
-                if (id != null && title != null && artist != null && album != null && albumId != null && duration != null && size != null) {
+                @Suppress("DEPRECATION")
+                data = getStringOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.DATA))
+                if (id != null && title != null && artist != null && album != null && albumId != null && duration != null && size != null && data != null) {
                     activityInterface.audioInfoFullList.add(
                         AudioInfo(
                             id,
@@ -349,7 +352,8 @@ class MainActivity: BaseMediaControlActivity() {
                             album,
                             albumId,
                             duration,
-                            size
+                            size,
+                            data
                         )
                     )
                 }

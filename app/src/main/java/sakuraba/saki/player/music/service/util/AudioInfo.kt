@@ -13,9 +13,10 @@ class AudioInfo(
     val audioAlbumPinyin: String,
     val audioAlbumId: Long,
     val audioDuration: Long,
-    val audioSize: Long
+    val audioSize: Long,
+    val audioPath: String
     ): Serializable {
-    constructor(audioId: String, audioTitle: String, audioArtist: String, audioAlbum: String, audioAlbumId: Long, audioDuration: Long, audioSize: Long):
+    constructor(audioId: String, audioTitle: String, audioArtist: String, audioAlbum: String, audioAlbumId: Long, audioDuration: Long, audioSize: Long, audioPath: String):
         this(
             audioId,
             audioTitle,
@@ -26,7 +27,8 @@ class AudioInfo(
             Pinyin.toPinyin(audioAlbum, ""),
             audioAlbumId,
             audioDuration,
-            audioSize
+            audioSize,
+            audioPath
         )
     var index = -1
 }

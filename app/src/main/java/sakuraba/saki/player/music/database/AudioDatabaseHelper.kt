@@ -27,6 +27,7 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
         private const val KEY_AUDIO_ALBUM_ID = "audio_album_id"
         private const val KEY_AUDIO_DURATION = "audio_duration"
         private const val KEY_AUDIO_SIZE = "audio_size"
+        private const val KEY_AUDIO_PATH = "audio_path"
         
         private const val KEY_ALBUM_ID = "album_id"
         private const val KEY_ALBUM_TITLE = "album_title"
@@ -48,6 +49,7 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
                 "$KEY_AUDIO_ALBUM_ID text, " +
                 "$KEY_AUDIO_DURATION long," +
                 "$KEY_AUDIO_SIZE long," +
+                "$KEY_AUDIO_PATH text," +
                 "primary key ( $KEY_AUDIO_ID )" +
                 ")"
         )
@@ -78,6 +80,7 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
                     put(KEY_AUDIO_ALBUM_ID, audioInfo.audioAlbumId)
                     put(KEY_AUDIO_DURATION, audioInfo.audioDuration)
                     put(KEY_AUDIO_SIZE, audioInfo.audioSize)
+                    put(KEY_AUDIO_PATH, audioInfo.audioPath)
                 })
             }
         }.close()
@@ -115,7 +118,8 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
                     getString(getColumnIndexOrThrow(KEY_AUDIO_ALBUM_PINYIN)),
                     getLong(getColumnIndexOrThrow(KEY_AUDIO_ALBUM_ID)),
                     getLong(getColumnIndexOrThrow(KEY_AUDIO_DURATION)),
-                    getLong(getColumnIndexOrThrow(KEY_AUDIO_SIZE))
+                    getLong(getColumnIndexOrThrow(KEY_AUDIO_SIZE)),
+                    getString(getColumnIndexOrThrow(KEY_AUDIO_PATH))
                 ))
             }
         } while (moveToNext())
@@ -156,7 +160,8 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
                     getString(getColumnIndexOrThrow(KEY_AUDIO_ALBUM_PINYIN)),
                     getLong(getColumnIndexOrThrow(KEY_AUDIO_ALBUM_ID)),
                     getLong(getColumnIndexOrThrow(KEY_AUDIO_DURATION)),
-                    getLong(getColumnIndexOrThrow(KEY_AUDIO_SIZE))
+                    getLong(getColumnIndexOrThrow(KEY_AUDIO_SIZE)),
+                    getString(getColumnIndexOrThrow(KEY_AUDIO_PATH))
                 ))
             } while (moveToNext())
         }.close()
