@@ -9,9 +9,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import sakuraba.saki.player.music.R
@@ -23,6 +20,8 @@ import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.MediaAlbum
 import java.util.concurrent.TimeUnit
 import sakuraba.saki.player.music.base.BaseMainFragment
+import sakuraba.saki.player.music.util.CoroutineUtil.io
+import sakuraba.saki.player.music.util.CoroutineUtil.ui
 
 class AlbumListFragment: BaseMainFragment() {
     
@@ -55,9 +54,9 @@ class AlbumListFragment: BaseMainFragment() {
             activityInterface.onFragmentListItemClick(pos, recyclerViewAdapter.audioInfoList[pos], recyclerViewAdapter.audioInfoList)
         }
         
-        CoroutineScope(Dispatchers.IO).launch {
+        io {
             AudioDatabaseHelper(requireContext()).queryAudioForMediaAlbum(recyclerViewAdapter.audioInfoList, mediaAlbum.albumId)
-            launch(Dispatchers.Main) {
+            ui {
                 behavior.peekHeight = fragmentAlbumList.root.height - resources.getDimensionPixelSize(R.dimen.album_list_header_height)
                 recyclerViewAdapter.notifyDataUpdated()
                 behavior.state = STATE_COLLAPSED

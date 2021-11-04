@@ -39,10 +39,7 @@ import androidx.media.AudioManagerCompat.AUDIOFOCUS_GAIN
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.register
 import lib.github1552980358.ktExtension.android.os.bundle
@@ -83,6 +80,8 @@ import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_NEXT
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PAUSE
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PLAY
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PREV
+import sakuraba.saki.player.music.util.CoroutineUtil.io
+import sakuraba.saki.player.music.util.CoroutineUtil.ui
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_CREATE
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_START_COMMAND
 import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
@@ -128,17 +127,17 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
             exoPlayer.volume = 0.2F
             // mediaPlayer.start()
             exoPlayer.play()
-            CoroutineScope(Dispatchers.IO).launch {
+            io {
                 if (getBooleanSetting(R.string.key_play_fade_in_enable)) {
                     delay(100)
-                    launch(Dispatchers.Main) { exoPlayer.volume = 0.4F }
+                    ui { exoPlayer.volume = 0.4F }
                     delay(100)
-                    launch(Dispatchers.Main) { exoPlayer.volume = 0.6F }
+                    ui { exoPlayer.volume = 0.6F }
                     delay(100)
-                    launch(Dispatchers.Main) { exoPlayer.volume = 0.8F }
+                    ui { exoPlayer.volume = 0.8F }
                     delay(100)
                 }
-                launch(Dispatchers.Main) { exoPlayer.volume = 1F }
+                ui { exoPlayer.volume = 1F }
             }
             startService(PlayService::class.java) { putExtra(ACTION_EXTRA, EXTRAS_PLAY) }
         }
@@ -147,18 +146,18 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
             if (playbackStateCompat.state != STATE_PLAYING) {
                 return
             }
-            CoroutineScope(Dispatchers.IO).launch {
+            io {
                 if (getBooleanSetting(R.string.key_play_fade_out_enable)) {
-                    launch(Dispatchers.Main) { exoPlayer.volume = 0.8F }
+                    ui { exoPlayer.volume = 0.8F }
                     delay(100)
-                    launch(Dispatchers.Main) { exoPlayer.volume = 0.6F }
+                    ui { exoPlayer.volume = 0.6F }
                     delay(100)
-                    launch(Dispatchers.Main) { exoPlayer.volume = 0.4F }
+                    ui { exoPlayer.volume = 0.4F }
                     delay(100)
-                    launch(Dispatchers.Main) { exoPlayer.volume = 0.2F }
+                    ui { exoPlayer.volume = 0.2F }
                     delay(100)
                 }
-                launch(Dispatchers.Main) {
+                ui {
                     // mediaPlayer.pause()
                     exoPlayer.pause()
                     playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
@@ -255,17 +254,17 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
             mediaSession.setPlaybackState(playbackStateCompat)
             exoPlayer.volume = 0.2F
             exoPlayer.play()
-            CoroutineScope(Dispatchers.IO).launch {
+            io {
                 if (getBooleanSetting(R.string.key_play_fade_in_enable)) {
                     delay(100)
-                    launch(Dispatchers.Main) { exoPlayer.volume = 0.4F }
+                    ui { exoPlayer.volume = 0.4F }
                     delay(100)
-                    launch(Dispatchers.Main) { exoPlayer.volume = 0.6F }
+                    ui { exoPlayer.volume = 0.6F }
                     delay(100)
-                    launch(Dispatchers.Main) { exoPlayer.volume = 0.8F }
+                    ui { exoPlayer.volume = 0.8F }
                     delay(100)
                 }
-                launch(Dispatchers.Main) { exoPlayer.volume = 1F }
+                ui { exoPlayer.volume = 1F }
             }
             
             startService(PlayService::class.java) {

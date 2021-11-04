@@ -15,11 +15,9 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.shortSnack
 import lib.github1552980358.ktExtension.androidx.fragment.app.findActivityViewById
 import sakuraba.saki.player.music.R
@@ -27,6 +25,8 @@ import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.service.util.mediaUriStr
 import sakuraba.saki.player.music.service.util.parseAsUri
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
+import sakuraba.saki.player.music.util.CoroutineUtil.io
+import sakuraba.saki.player.music.util.CoroutineUtil.ui
 import sakuraba.saki.player.music.util.LyricUtil.decodeLine
 import sakuraba.saki.player.music.util.LyricUtil.hasLyric
 import sakuraba.saki.player.music.util.LyricUtil.removeLyric
@@ -65,7 +65,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
             findPreference<Preference>(KEY_ALBUM)?.summary = audioAlbum
             findPreference<Preference>(KEY_DURATION)?.summary = audioDuration.toTimeFormat
             navController = findNavController()
-            CoroutineScope(Dispatchers.IO).launch {
+            io {
 
                 val mediaExtractorAsync = async(Dispatchers.IO) {
                     MediaExtractor().apply { setDataSource(requireContext(), audioId.mediaUriStr.parseAsUri, null) }
@@ -75,12 +75,12 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                 MediaMetadataRetriever().apply {
                     setDataSource(context, audioId.mediaUriStr.parseAsUri)
 
-                    launch(Dispatchers.Main) {
+                    ui {
                         findPreference<Preference>(KEY_FORMAT)?.summary =
                             extractMetadata(METADATA_KEY_MIMETYPE)?.run { substring(indexOf('/') + 1) }
                     }
 
-                    launch(Dispatchers.Main) {
+                    ui {
                         findPreference<Preference>(KEY_BIT_RATE)?.summary = extractMetadata(METADATA_KEY_BITRATE)?.getAsKilo + "$UNIT_BITS$PER$UNIT_SEC"
                     }
 
@@ -93,7 +93,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                 val mediaExtractor = mediaExtractorAsync.await()
 
                 if (mediaExtractor.trackCount == 0) {
-                    return@launch
+                    return@io
                 }
                 val trackFormat = mediaExtractor.getTrackFormat(0)
 
@@ -104,12 +104,12 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                 val bitPerSampleAsync = async { trackFormat.readTrackFormat("bits-per-sample") }
 
                 val sampleRate = sampleRateAsync?.await() ?: sampleRateStr!!.toInt()
-                launch(Dispatchers.Main) {
+                ui {
                     findPreference<Preference>(KEY_SAMPLE_RATE)?.summary = sampleRate.getAsKilo + UNIT_Hertz
                 }
 
                 val bitPerSample = bitPerSampleAsync.await() ?: 16  // Default for almost audio file
-                launch(Dispatchers.Main) {
+                ui {
                     findPreference<Preference>(KEY_BIT_DEPTH)?.summary = "$bitPerSample $UNIT_BITS$PER$UNIT_SAMPLE"
                 }
             }

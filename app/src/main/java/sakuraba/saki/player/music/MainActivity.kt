@@ -54,11 +54,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPS
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_INDEFINITE
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.android.content.intent
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.android.os.bundle
@@ -86,7 +83,9 @@ import sakuraba.saki.player.music.util.Constants.EXTRAS_STATUS
 import sakuraba.saki.player.music.util.Constants.TRANSITION_IMAGE_VIEW
 import sakuraba.saki.player.music.util.Constants.TRANSITION_TEXT_VIEW
 import sakuraba.saki.player.music.util.CoroutineUtil.delay1second
+import sakuraba.saki.player.music.util.CoroutineUtil.io
 import sakuraba.saki.player.music.util.CoroutineUtil.ms_1000_int
+import sakuraba.saki.player.music.util.CoroutineUtil.ui
 import sakuraba.saki.player.music.util.MediaAlbum
 import sakuraba.saki.player.music.widget.PlayProgressBar
 
@@ -192,9 +191,9 @@ class MainActivity: BaseMediaControlActivity() {
                 this.audioInfo = audioInfo
                 playProgressBar.max = audioInfo.audioDuration
                 textView.text = audioInfo.audioTitle
-                CoroutineScope(Dispatchers.IO).launch {
+                io {
                     val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
-                    launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
+                    ui { imageView.setImageBitmap(bitmap) }
                 }
             }
         }
@@ -278,7 +277,7 @@ class MainActivity: BaseMediaControlActivity() {
         mediaStoreObserver = object : ContentObserver(null) {
             override fun onChange(selfChange: Boolean) {
                 activityInterface.onContentChange()
-                CoroutineScope(Dispatchers.IO).launch {
+                io {
                     audioDatabaseHelper.clearTable(TABLE_AUDIO)
                     audioDatabaseHelper.clearTable(TABLE_AUDIO)
                     initLaunchProcess()
@@ -287,7 +286,7 @@ class MainActivity: BaseMediaControlActivity() {
         }
 
         activityInterface.setRequestRefreshListener {
-            CoroutineScope(Dispatchers.IO).launch {
+            io {
                 audioDatabaseHelper.clearTable(TABLE_AUDIO)
                 audioDatabaseHelper.clearTable(TABLE_AUDIO)
                 initLaunchProcess()
@@ -303,7 +302,7 @@ class MainActivity: BaseMediaControlActivity() {
 
         requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             when {
-                it -> CoroutineScope(Dispatchers.IO).launch { initLaunchProcess() }
+                it -> io { initLaunchProcess() }
                 else -> snackBar.show()
             }
         }
@@ -312,7 +311,7 @@ class MainActivity: BaseMediaControlActivity() {
             requestPermission.launch(READ_EXTERNAL_STORAGE)
             return
         }
-        CoroutineScope(Dispatchers.IO).launch { launchProcess() }
+        io { launchProcess() }
     }
 
     private fun initLaunchProcess() {
@@ -391,7 +390,7 @@ class MainActivity: BaseMediaControlActivity() {
                 copy()
         }
 
-        CoroutineScope(Dispatchers.Main).launch { activityInterface.onLoadStageChange() }
+        ui { activityInterface.onLoadStageChange() }
 
         activityInterface.bitmapMap.apply {
             clear()
@@ -402,7 +401,7 @@ class MainActivity: BaseMediaControlActivity() {
                 }
             }
         }
-        CoroutineScope(Dispatchers.Main).launch { activityInterface.onCompleteLoading() }
+        ui { activityInterface.onCompleteLoading() }
         activityInterface.refreshCompleted = true
 
         activityInterface.albumList
@@ -435,9 +434,9 @@ class MainActivity: BaseMediaControlActivity() {
                             STATE_PAUSED -> imageButton.setImageResource(R.drawable.ic_play)
                         }
                         textView.text = audioInfo.audioTitle
-                        CoroutineScope(Dispatchers.IO).launch {
+                        io {
                             val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
-                            launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
+                            ui { imageView.setImageBitmap(bitmap) }
                         }
                     }
                 })
@@ -489,9 +488,9 @@ class MainActivity: BaseMediaControlActivity() {
     
     override fun onMediaControllerMetadataChanged(metadata: MediaMetadataCompat?) {
         metadata ?: return
-        CoroutineScope(Dispatchers.IO).launch {
+        io {
             val bitmap = tryRun { loadAlbumArt(metadata.getString(METADATA_KEY_ALBUM_ART_URI)) } ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
-            launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
+            ui { imageView.setImageBitmap(bitmap) }
         }
         textView.text = metadata.getString(METADATA_KEY_TITLE)
         playProgressBar.max = metadata.getLong(METADATA_KEY_DURATION)
@@ -535,9 +534,9 @@ class MainActivity: BaseMediaControlActivity() {
                         STATE_PAUSED -> imageButton.setImageResource(R.drawable.ic_play)
                     }
                     textView.text = audioInfo.audioTitle
-                    CoroutineScope(Dispatchers.IO).launch {
+                    io {
                         val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
-                        launch(Dispatchers.Main) { imageView.setImageBitmap(bitmap) }
+                        ui { imageView.setImageBitmap(bitmap) }
                     }
                 }
             })
@@ -545,12 +544,12 @@ class MainActivity: BaseMediaControlActivity() {
     }
     
     @Suppress("DuplicatedCode")
-    private fun getProgressSyncJob(progress: Long) = CoroutineScope(Dispatchers.IO).launch {
+    private fun getProgressSyncJob(progress: Long) = io {
         val currentProgress = delayForCorrection(progress)
-        launch(Dispatchers.Main) { viewModel.updateProgress(currentProgress) }
+        ui { viewModel.updateProgress(currentProgress) }
         while (isPlaying) {
             delay1second()
-            launch(Dispatchers.Main) { viewModel.updateProgress(viewModel.progressValue + ms_1000_int) }
+            ui { viewModel.updateProgress(viewModel.progressValue + ms_1000_int) }
         }
     }
     

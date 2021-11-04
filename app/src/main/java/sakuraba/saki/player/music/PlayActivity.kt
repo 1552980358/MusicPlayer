@@ -48,11 +48,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_DRAGGIN
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HALF_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_SETTLING
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.getStatusBarHeight
 import lib.github1552980358.ktExtension.android.content.intent
@@ -85,6 +82,8 @@ import sakuraba.saki.player.music.util.AudioUtil
 import sakuraba.saki.player.music.util.AudioUtil.getOutputDevice
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
+import sakuraba.saki.player.music.util.CoroutineUtil.io
+import sakuraba.saki.player.music.util.CoroutineUtil.ui
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_BACK_PRESSED
 import sakuraba.saki.player.music.util.SystemUtil.navigationBarHeight
 
@@ -162,15 +161,15 @@ class PlayActivity: BaseMediaControlActivity() {
         playModeListCycle = activityPlay.imageButtonPlayMode.drawable
         viewModel.updatePlayMode(PLAY_MODE_LIST)
 
-        CoroutineScope(Dispatchers.IO).launch {
-            val audioInfo = intent?.getSerializableExtra(EXTRAS_AUDIO_INFO) as AudioInfo? ?: return@launch
-            launch(Dispatchers.Main) {
+        io {
+            val audioInfo = intent?.getSerializableExtra(EXTRAS_AUDIO_INFO) as AudioInfo? ?: return@io
+            ui {
                 textViewTitle.text = audioInfo.audioTitle
                 @Suppress("SetTextI18n")
                 textViewSummary.text = "${audioInfo.audioArtist} - ${audioInfo.audioAlbum}"
             }
             val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: ContextCompat.getDrawable(this@PlayActivity, R.drawable.ic_music)?.toBitmap()
-            launch(Dispatchers.Main) { activityPlay.imageView.setImageBitmap(bitmap) }
+            ui { activityPlay.imageView.setImageBitmap(bitmap) }
             MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated(true)
             activityPlay.lyricLayout.updateBitmap(bitmap)
         }
@@ -354,7 +353,7 @@ class PlayActivity: BaseMediaControlActivity() {
         if (mediaBrowserCompat.isConnected) {
             registerMediaController()
     
-            CoroutineScope(Dispatchers.IO).launch {
+            io {
                 mediaBrowserCompat.sendCustomAction(Constants.ACTION_REQUEST_STATUS, null, object : MediaBrowserCompat.CustomActionCallback() {
                     override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
                         resultData?:return
@@ -381,12 +380,12 @@ class PlayActivity: BaseMediaControlActivity() {
     }
     
     @Suppress("DuplicatedCode")
-    private fun getProgressSyncJob(progress: Long) = CoroutineScope(Dispatchers.IO).launch {
+    private fun getProgressSyncJob(progress: Long) = io {
         val currentProgress = delayForCorrection(progress)
-        launch(Dispatchers.Main) { viewModel.updateProgress(currentProgress) }
+        ui { viewModel.updateProgress(currentProgress) }
         while (isPlaying) {
             delay1second()
-            launch(Dispatchers.Main) { viewModel.updateProgress(viewModel.progressValue + ms_1000_int) }
+            ui { viewModel.updateProgress(viewModel.progressValue + ms_1000_int) }
         }
     }
     
@@ -425,10 +424,10 @@ class PlayActivity: BaseMediaControlActivity() {
     
     override fun onMediaControllerMetadataChanged(metadata: MediaMetadataCompat?) {
         metadata ?: return
-        CoroutineScope(Dispatchers.IO).launch {
+        io {
             val bitmap = tryRun { loadAlbumArt(metadata.getString(METADATA_KEY_ALBUM_ART_URI)) }
                 ?: ContextCompat.getDrawable(this@PlayActivity, R.drawable.ic_music)?.toBitmap()
-            launch(Dispatchers.Main) { activityPlay.imageView.setImageBitmap(bitmap) }
+            ui { activityPlay.imageView.setImageBitmap(bitmap) }
             MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated(false)
             activityPlay.lyricLayout.updateBitmap(bitmap)
         }
@@ -480,7 +479,7 @@ class PlayActivity: BaseMediaControlActivity() {
                 addUpdateListener {
                     activityPlay.root.setBackgroundColor(animatedValue as Int)
                 }
-                CoroutineScope(Dispatchers.Main).launch { start() }
+                ui { start() }
             }
             activityBackgroundColor = backgroundColor
         }
@@ -492,7 +491,7 @@ class PlayActivity: BaseMediaControlActivity() {
                     activityPlay.durationViewProgress.updateTextColor(animatedValue as Int)
                     activityPlay.lyricLayout.updatePrimaryColor(animatedValue as Int)
                 }
-                CoroutineScope(Dispatchers.Main).launch { start() }
+                ui { start() }
             }
             seekbarBackgroundColor = primaryTextColor
         }
@@ -504,13 +503,13 @@ class PlayActivity: BaseMediaControlActivity() {
                     activityPlay.durationViewDuration.updateTextColor(animatedValue as Int)
                     activityPlay.lyricLayout.updateSecondaryColor(animatedValue as Int)
                 }
-                CoroutineScope(Dispatchers.Main).launch { start() }
+                ui { start() }
             }
             progressColor = secondaryTextColor
         }
-        CoroutineScope(Dispatchers.Main).launch { viewModel.setIsLightBackground(isLight) }
+        ui { viewModel.setIsLightBackground(isLight) }
         if (isInit) {
-            CoroutineScope(Dispatchers.Main).launch {
+            ui {
                 updateControlButtonColor(if (isLight) BLACK else WHITE)
                 viewModel.isLightBackground.observe(this@PlayActivity) { isLight ->
                     if (isLight) { ValueAnimator.ofArgb(WHITE, BLACK) } else { ValueAnimator.ofArgb(BLACK, WHITE) }.apply {
