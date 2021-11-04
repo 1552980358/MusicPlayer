@@ -30,6 +30,27 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:title="@string/audio_detail_lyric"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="@string/audio_detail_lyric_import_key"
+            android:title="@string/audio_detail_lyric_import"
+            app:iconSpaceReserved="false"/>
+
+        <Preference
+            android:key="@string/audio_detail_lyric_view_key"
+            android:title="@string/audio_detail_lyric_view"
+            app:iconSpaceReserved="false"/>
+
+        <Preference
+            android:key="@string/audio_detail_lyric_remove_key"
+            android:title="@string/audio_detail_lyric_remove"
+            app:iconSpaceReserved="false"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="File"
         app:iconSpaceReserved="false">
 
@@ -52,27 +73,6 @@
             android:key="@string/audio_detail_bit_depth_key"
             android:title="@string/audio_detail_bit_depth"
             app:iconSpaceReserved="false" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:title="Lyric"
-        app:iconSpaceReserved="false">
-
-        <Preference
-            android:key="@string/audio_detail_lyric_import_key"
-            android:title="@string/audio_detail_lyric_import"
-            app:iconSpaceReserved="false"/>
-
-        <Preference
-            android:key="@string/audio_detail_lyric_view_key"
-            android:title="@string/audio_detail_lyric_view"
-            app:iconSpaceReserved="false"/>
-
-        <Preference
-            android:key="@string/audio_detail_lyric_remove_key"
-            android:title="@string/audio_detail_lyric_remove"
-            app:iconSpaceReserved="false"/>
 
     </PreferenceCategory>
 
