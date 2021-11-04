@@ -66,6 +66,7 @@
     <string name="lyric_empty_list">Empty Lyric List</string>
     <string name="lyric_loading">Empty Lyric List</string>
 
+    <string name="audio_detail_basics">Basics</string>
     <string name="audio_detail_title">Title</string>
     <string name="audio_detail_title_key">key_title</string>
     <string name="audio_detail_artist">Artist</string>
@@ -74,6 +75,7 @@
     <string name="audio_detail_album_key">key_album</string>
     <string name="audio_detail_duration">Duration</string>
     <string name="audio_detail_duration_key">key_duration</string>
+    <string name="audio_detail_quality">Quality</string>
     <string name="audio_detail_format">Format</string>
     <string name="audio_detail_format_key">key_format</string>
     <string name="audio_detail_bit_rate">Bit Rate</string>
@@ -98,6 +100,7 @@
     <string name="audio_detail_lyric_remove_dialog_content">Confirm?</string>
     <string name="audio_detail_lyric_remove_dialog_confirm">Confirm</string>
     <string name="audio_detail_lyric_remove_dialog_cancel">Cancel</string>
+    <string name="audio_detail_file">File</string>
 
     <string name="extension_title">Extension</string>
     <string name="web_server_title">Web Server</string>
