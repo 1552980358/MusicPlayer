@@ -31,6 +31,8 @@ import sakuraba.saki.player.music.util.LyricUtil.decodeLine
 import sakuraba.saki.player.music.util.LyricUtil.hasLyric
 import sakuraba.saki.player.music.util.LyricUtil.removeLyric
 import sakuraba.saki.player.music.util.LyricUtil.writeLyric
+import sakuraba.saki.player.music.util.PreferenceUtil.preference
+import sakuraba.saki.player.music.util.UnitUtil.asMiB
 
 class AudioDetailFragment: PreferenceFragmentCompat() {
 
@@ -64,6 +66,8 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
             findPreference<Preference>(KEY_ARTIST)?.summary = audioArtist
             findPreference<Preference>(KEY_ALBUM)?.summary = audioAlbum
             findPreference<Preference>(KEY_DURATION)?.summary = audioDuration.toTimeFormat
+            preference(R.string.audio_detail_size_key)?.summary = audioSize.asMiB
+            preference(R.string.audio_detail_path_key)?.summary = audioPath
             navController = findNavController()
             io {
 
