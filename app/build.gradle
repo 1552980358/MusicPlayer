@@ -62,8 +62,9 @@ dependencies {
     kapt "androidx.databinding:databinding-compiler-common:$gradle_version"
 
     implementation 'com.google.android.material:material:1.4.0'
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.15.1'
-    implementation 'com.google.android.exoplayer:exoplayer-hls:2.15.1'
+    def exoPlayerVersion = '2.16.0'
+    implementation "com.google.android.exoplayer:exoplayer-core:$exoPlayerVersion"
+    implementation "com.google.android.exoplayer:exoplayer-hls:$exoPlayerVersion"
     implementation 'com.google.code.gson:gson:2.8.8'
 
     implementation 'com.github.android:renderscript-intrinsics-replacement-toolkit:b6363490c3'
