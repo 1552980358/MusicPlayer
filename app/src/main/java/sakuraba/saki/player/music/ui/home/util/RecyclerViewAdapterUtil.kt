@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import lib.github1552980358.ktExtension.android.content.intent
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
@@ -15,11 +17,10 @@ import sakuraba.saki.player.music.AudioDetailActivity
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.util.MainActivityInterface
-import sakuraba.saki.player.music.util.ActivityUtil.translateEnter
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.ViewHolderUtil.bindHolder
 
-class RecyclerViewAdapterUtil(private val activityInterface: MainActivityInterface, selection: (pos: Int) -> Unit) {
+class RecyclerViewAdapterUtil(private val fragment: Fragment, private val activityInterface: MainActivityInterface, selection: (pos: Int) -> Unit) {
     
     private class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val image: ImageView = view.findViewById(R.id.image_view)

@@ -7,11 +7,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.makeShortSnack
-import lib.github1552980358.ktExtension.androidx.fragment.app.findActivityViewById
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.databinding.FragmentHomeBinding
 import sakuraba.saki.player.music.ui.home.util.DividerItemDecoration
@@ -34,7 +31,7 @@ class HomeFragment: BaseMainFragment() {
         _fragmentHomeBinding = FragmentHomeBinding.inflate(inflater)
 
         fragmentHome.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        recyclerViewAdapter = RecyclerViewAdapterUtil(activityInterface) { pos ->
+        recyclerViewAdapter = RecyclerViewAdapterUtil(this, activityInterface) { pos ->
             activityInterface.onFragmentListItemClick(pos, recyclerViewAdapter.audioInfoList[pos], recyclerViewAdapter.audioInfoList)
         }
         recyclerViewAdapter.setAdapterToRecyclerView(fragmentHome.recyclerView)
@@ -62,7 +59,7 @@ class HomeFragment: BaseMainFragment() {
         if (activityInterface.refreshCompleted) {
             fragmentHome.root.isRefreshing = false
         }
-        
+
         return fragmentHome.root
     }
     
