@@ -8,9 +8,14 @@ import android.media.MediaMetadataRetriever.METADATA_KEY_MIMETYPE
 import android.media.MediaMetadataRetriever.METADATA_KEY_SAMPLERATE
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
@@ -20,10 +25,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.shortSnack
 import lib.github1552980358.ktExtension.androidx.fragment.app.findActivityViewById
+import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import sakuraba.saki.player.music.R
+import sakuraba.saki.player.music.databinding.FragmentAudioDetailBinding
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.service.util.mediaUriStr
 import sakuraba.saki.player.music.service.util.parseAsUri
+import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.CoroutineUtil.io
 import sakuraba.saki.player.music.util.CoroutineUtil.ui
@@ -59,9 +67,33 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
 
     private lateinit var navController: NavController
 
+    private lateinit var audioInfo: AudioInfo
+
+    private var _fragmentAudioDetailBinding: FragmentAudioDetailBinding? = null
+    private val fragmentAudioDetail get() = _fragmentAudioDetailBinding!!
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        audioInfo = (requireActivity().intent.getSerializableExtra(EXTRAS_DATA) as AudioInfo)
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _fragmentAudioDetailBinding = FragmentAudioDetailBinding.inflate(layoutInflater, container, false)
+        fragmentAudioDetail.imageView.apply {
+            audioInfo.apply {
+                transitionName = audioId + "_image"
+                setImageBitmap(
+                    tryRun { loadAlbumArt(audioAlbumId) } ?: ContextCompat.getDrawable(requireContext(), R.drawable.ic_music)!!.toBitmap()
+                )
+            }
+        }
+        fragmentAudioDetail.preferenceFragmentContainer.addView(super.onCreateView(inflater, fragmentAudioDetail.preferenceFragmentContainer, savedInstanceState))
+        return fragmentAudioDetail.root
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.xml_audio_detail, rootKey)
-        (requireActivity().intent.getSerializableExtra(EXTRAS_DATA) as AudioInfo).apply {
+        audioInfo.apply {
             findPreference<Preference>(KEY_TITLE)?.summary = audioTitle
             findPreference<Preference>(KEY_ARTIST)?.summary = audioArtist
             findPreference<Preference>(KEY_ALBUM)?.summary = audioAlbum
