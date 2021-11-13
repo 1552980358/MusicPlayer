@@ -70,4 +70,7 @@
     <dimen name="layout_lyric_lyric_view_margin_start_end">45dp</dimen>
     <dimen name="layout_lyric_lyric_view_margin_bottom">30dp</dimen>
 
+    <dimen name="audio_detail_relative_layout_height">170dp</dimen>
+    <dimen name="audio_detail_image_view_size">150dp</dimen>
+
 </resources>
