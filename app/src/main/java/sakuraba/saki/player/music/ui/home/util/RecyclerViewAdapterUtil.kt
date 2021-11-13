@@ -29,7 +29,7 @@ class RecyclerViewAdapterUtil(private val fragment: Fragment, private val activi
         val background: RelativeLayout = view.findViewById(R.id.relative_layout_root)
     }
     
-    private class RecyclerViewAdapter(var audioInfoList: List<AudioInfo>, val bitmapMap: Map<Long, Bitmap?>, private val selection: (pos: Int) -> Unit): RecyclerView.Adapter<ViewHolder>() {
+    private inner class RecyclerViewAdapter(var audioInfoList: List<AudioInfo>, val bitmapMap: Map<Long, Bitmap?>, private val selection: (pos: Int) -> Unit): RecyclerView.Adapter<ViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_home_recycler_view, parent, false))
@@ -44,8 +44,11 @@ class RecyclerViewAdapterUtil(private val fragment: Fragment, private val activi
             }
             background.setOnClickListener { selection(position) }
             background.setOnLongClickListener {
-                background.context.startActivity(intent(background.context, AudioDetailActivity::class.java) { putExtra(EXTRAS_DATA, audioInfo) })
-                background.context.translateEnter()
+                image.transitionName = "${audioInfo.audioId}_image"
+                fragment.startActivity(
+                    intent(fragment.requireContext(), AudioDetailActivity::class.java) { putExtra(EXTRAS_DATA, audioInfo) },
+                    ActivityOptionsCompat.makeSceneTransitionAnimation(fragment.requireActivity(), image, image.transitionName).toBundle()
+                )
                 return@setOnLongClickListener true
             }
         }
