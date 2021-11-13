@@ -6,11 +6,14 @@
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/ic_bluetooth.xml" value="0.30462962962962964" />
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/ic_headset.xml" value="0.30462962962962964" />
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/ic_speaker.xml" value="0.30462962962962964" />
+        <entry key="..\:/MusicPlayer/app/src/main/res/layout/activity_audio_detail.xml" value="0.17831813576494426" />
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/activity_main.xml" value="0.17831813576494426" />
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/activity_play.xml" value="0.5" />
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/app_bar_main.xml" value="0.17831813576494426" />
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/content_play_bottom_sheet.xml" value="0.36666666666666664" />
-        <entry key="..\:/MusicPlayer/app/src/main/res/xml/xml_audio_detail.xml" value="0.5" />
+        <entry key="..\:/MusicPlayer/app/src/main/res/layout/fragment_audio_detail.xml" value="0.36666666666666664" />
+        <entry key="..\:/MusicPlayer/app/src/main/res/layout/preference_album.xml" value="0.17831813576494426" />
+        <entry key="..\:/MusicPlayer/app/src/main/res/xml/xml_audio_detail.xml" value="0.18" />
         <entry key="..\:/MusicPlayer/app/src/main/res/xml/xml_audio_filter.xml" value="0.36666666666666664" />
         <entry key="..\:/MusicPlayer/app/src/main/res/xml/xml_setting.xml" value="0.5" />
         <entry key="..\:/MusicPlayer/app/src/main/res/xml/xml_web_server.xml" value="0.36666666666666664" />
