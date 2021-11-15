@@ -16,6 +16,8 @@ class AudioDetailActivity: AppCompatActivity() {
 
     private var _activityAudioDetailBinding: ActivityAudioDetailBinding? = null
     private val activityAudioDetail get() = _activityAudioDetailBinding!!
+    
+    private var needBackPressedAnim = false
 
     private val fragmentLifecycleCallbacks =  object : FragmentManager.FragmentLifecycleCallbacks() {
         override fun onFragmentAttached(fm: FragmentManager, f: Fragment, context: Context) {
@@ -60,6 +62,8 @@ class AudioDetailActivity: AppCompatActivity() {
         activityAudioDetail.toolbar.setNavigationOnClickListener { onBackPressed() }
         postponeEnterTransition()
         startPostponedEnterTransition()
+        
+        needBackPressedAnim = intent?.hasExtra(PlayActivity::class.java.simpleName) == true
     }
 
     override fun onStop() {
@@ -71,7 +75,7 @@ class AudioDetailActivity: AppCompatActivity() {
         when (findNavController(R.id.fragment).currentDestination?.id) {
             R.id.nav_audio_detail ->
                 (supportFragmentManager.findFragmentById(R.id.fragment)?.childFragmentManager?.fragments?.first() as AudioDetailFragment?)
-                    ?.onActivityBackPressed(this)
+                    ?.onActivityBackPressed(this, needBackPressedAnim)
             else -> super.onBackPressed()
         }
     }
