@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.findNavController
 import sakuraba.saki.player.music.databinding.ActivityAudioDetailBinding
+import sakuraba.saki.player.music.ui.audioDetail.AudioDetailFragment
 
 class AudioDetailActivity: AppCompatActivity() {
 
@@ -66,9 +67,13 @@ class AudioDetailActivity: AppCompatActivity() {
         super.onStop()
     }
 
-    override fun onBackPressed() = when (findNavController(R.id.fragment).currentDestination?.id) {
-        R.id.nav_audio_detail -> supportFinishAfterTransition()
-        else -> super.onBackPressed()
+    override fun onBackPressed() {
+        when (findNavController(R.id.fragment).currentDestination?.id) {
+            R.id.nav_audio_detail ->
+                (supportFragmentManager.findFragmentById(R.id.fragment)?.childFragmentManager?.fragments?.first() as AudioDetailFragment?)
+                    ?.onActivityBackPressed(this)
+            else -> super.onBackPressed()
+        }
     }
 
     override fun onDestroy() {
