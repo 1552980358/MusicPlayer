@@ -59,6 +59,7 @@ class AudioDetailActivity: AppCompatActivity() {
         setContentView(activityAudioDetail.root)
         setSupportActionBar(activityAudioDetail.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_up)
         activityAudioDetail.toolbar.setNavigationOnClickListener { onBackPressed() }
         postponeEnterTransition()
         startPostponedEnterTransition()
