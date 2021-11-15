@@ -342,9 +342,15 @@ class PlayActivity: BaseMediaControlActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_details -> startActivity(intent(this, AudioDetailActivity::class.java) {
-                putExtra(EXTRAS_DATA, audioInfo)
-            })
+            R.id.menu_details -> {
+                startActivity(intent(this, AudioDetailActivity::class.java) {
+                    putExtra(EXTRAS_DATA, audioInfo)
+                    this@PlayActivity::class.java.simpleName.apply {
+                        putExtra(this, this)
+                    }
+                })
+                overridePendingTransition(R.anim.translate_up_enter, R.anim.translate_up_exit)
+            }
         }
         return super.onOptionsItemSelected(item)
     }
