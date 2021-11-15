@@ -1,5 +1,6 @@
 package sakuraba.saki.player.music.ui.audioDetail
 
+import android.graphics.Color
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
@@ -11,8 +12,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
@@ -20,6 +24,8 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -71,6 +77,8 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
 
     private var _fragmentAudioDetailBinding: FragmentAudioDetailBinding? = null
     private val fragmentAudioDetail get() = _fragmentAudioDetailBinding!!
+    
+    private lateinit var behavior: BottomSheetBehavior<RelativeLayout>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         audioInfo = (requireActivity().intent.getSerializableExtra(EXTRAS_DATA) as AudioInfo)
@@ -235,5 +243,12 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
 
     private fun MediaFormat.readTrackFormat(key: String): Int? =
         if (containsKey(key)) getInteger(key) else null
+    
+    fun onActivityBackPressed(activity: AppCompatActivity) {
+        when (behavior.state) {
+            STATE_COLLAPSED -> activity.finishAfterTransition()
+            else -> behavior.state = STATE_COLLAPSED
+        }
+    }
 
 }
