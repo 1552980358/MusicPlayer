@@ -87,7 +87,23 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                 )
             }
         }
-        fragmentAudioDetail.preferenceFragmentContainer.addView(super.onCreateView(inflater, fragmentAudioDetail.preferenceFragmentContainer, savedInstanceState))
+        fragmentAudioDetail.preferenceFragmentContainer.apply {
+            addView(super.onCreateView(inflater, fragmentAudioDetail.preferenceFragmentContainer, savedInstanceState))
+            setBackgroundColor(Color.WHITE)
+        }
+        behavior = BottomSheetBehavior.from(fragmentAudioDetail.preferenceFragmentContainer)
+        fragmentAudioDetail.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                fragmentAudioDetail.preferenceFragmentContainer.apply {
+                    layoutParams = layoutParams.apply {
+                        height = fragmentAudioDetail.root.height
+                    }
+                }
+                behavior.peekHeight = fragmentAudioDetail.root.height - resources.getDimensionPixelSize(R.dimen.audio_detail_relative_layout_height)
+                behavior.state = STATE_COLLAPSED
+                fragmentAudioDetail.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
         return fragmentAudioDetail.root
     }
 
