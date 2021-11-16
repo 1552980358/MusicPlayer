@@ -392,7 +392,7 @@ class MainActivity: BaseMediaControlActivity() {
                 audioDatabaseHelper.queryAllAudio(this)
                 sortBy { it.audioTitlePinyin }
                 copy()
-        }
+        }.apply { forEachIndexed { index, audioInfo -> audioInfo.index = index } }
 
         ui { activityInterface.onLoadStageChange() }
 
