@@ -76,4 +76,11 @@ class MainActivityInterface(): Serializable {
 
     fun onContentChange() = contentChangeRefreshListener?.onContentChange()
 
+    fun clearLists() {
+        audioInfoFullList.clear()
+        audioInfoList.clear()
+        bitmapMap.clear()
+        albumList.clear()
+    }
+
 }
