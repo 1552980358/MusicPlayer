@@ -197,10 +197,10 @@ class MainActivity: BaseMediaControlActivity() {
                 this.audioInfo = audioInfo
                 playProgressBar.max = audioInfo.audioDuration
                 textView.text = audioInfo.audioTitle
-                io {
-                    val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
-                    ui { imageView.setImageBitmap(bitmap) }
-                }
+                imageView.setImageBitmap(
+                        activityInterface.bitmapMap[audioInfo.audioAlbumId]
+                                ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
+                )
             }
         }
         
