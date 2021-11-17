@@ -8,6 +8,8 @@ import android.content.Intent.CATEGORY_HOME
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.database.ContentObserver
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.net.Uri.fromParts
 import android.os.Bundle
@@ -57,7 +59,9 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import lib.github1552980358.ktExtension.android.content.intent
+import lib.github1552980358.ktExtension.android.graphics.heightF
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
+import lib.github1552980358.ktExtension.android.graphics.widthF
 import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.android.view.getDimensionPixelSize
 import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.makeSnack
@@ -74,6 +78,8 @@ import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.util.MainActivityInterface
 import sakuraba.saki.player.music.base.BaseMainFragment
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
+import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArts
+import sakuraba.saki.player.music.util.BitmapUtil.writeAlbumArt
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
@@ -288,7 +294,7 @@ class MainActivity: BaseMediaControlActivity() {
         activityInterface.setRequestRefreshListener {
             io {
                 audioDatabaseHelper.clearTable(TABLE_AUDIO)
-                audioDatabaseHelper.clearTable(TABLE_AUDIO)
+                audioDatabaseHelper.clearTable(TABLE_ALBUM)
                 initLaunchProcess()
             }
         }
@@ -382,8 +388,31 @@ class MainActivity: BaseMediaControlActivity() {
             mediaAlbumList.sortBy { mediaAlbum -> mediaAlbum.albumId }
             audioDatabaseHelper.insertMediaAlbum(TABLE_ALBUM, mediaAlbumList)
 
-            launchProcess()
+            activityInterface.audioInfoList = activityInterface.audioInfoFullList.copy().apply {
+                sortBy { it.audioTitlePinyin }
+                forEachIndexed { index, audioInfo -> audioInfo.index = index }
+            }
+            ui { activityInterface.onLoadStageChange() }
+
+            var bitmap: Bitmap?
+            val matrix = Matrix()
+            val bitmapSize = resources.getDimensionPixelSize(R.dimen.home_recycler_view_image_view_size)
+            activityInterface.audioInfoFullList.forEach { audioInfo ->
+                if (!activityInterface.bitmapMap.containsKey(audioInfo.audioAlbumId)) {
+                    tryOnly {
+                        bitmap = null
+                        bitmap = loadAlbumArt(audioInfo.audioAlbumId)
+                        matrix.apply {
+                            setScale(bitmapSize / bitmap!!.widthF, bitmapSize / bitmap!!.heightF)
+                        }
+                        bitmap = Bitmap.createBitmap(bitmap!!, 0, 0, bitmap!!.width, bitmap!!.height, matrix, false)
+                        writeAlbumArt(audioInfo.audioAlbumId, bitmap)
+                        activityInterface.bitmapMap[audioInfo.audioAlbumId] = bitmap
+                    }
+                }
+            }
         }
+        ui { activityInterface.onCompleteLoading() }
     }
 
     private fun launchProcess() {
@@ -396,19 +425,10 @@ class MainActivity: BaseMediaControlActivity() {
 
         ui { activityInterface.onLoadStageChange() }
 
-        activityInterface.bitmapMap.apply {
-            clear()
-
-            activityInterface.audioInfoFullList.forEach { audioInfo ->
-                tryOnly {
-                    this[audioInfo.audioAlbumId] = loadAlbumArt(audioInfo.audioAlbumId)
-                }
-            }
-        }
+        loadAlbumArts(activityInterface.bitmapMap)
         ui { activityInterface.onCompleteLoading() }
         activityInterface.refreshCompleted = true
 
-        activityInterface.albumList
         audioDatabaseHelper.queryMediaAlbum(activityInterface.albumList)
     }
     
