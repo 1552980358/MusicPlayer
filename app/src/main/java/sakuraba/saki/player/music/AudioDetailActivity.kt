@@ -59,12 +59,13 @@ class AudioDetailActivity: AppCompatActivity() {
         setContentView(activityAudioDetail.root)
         setSupportActionBar(activityAudioDetail.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_up)
         activityAudioDetail.toolbar.setNavigationOnClickListener { onBackPressed() }
         postponeEnterTransition()
         startPostponedEnterTransition()
-        
         needBackPressedAnim = intent?.hasExtra(PlayActivity::class.java.simpleName) == true
+        if (needBackPressedAnim) {
+            supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_up)
+        }
     }
 
     override fun onStop() {
