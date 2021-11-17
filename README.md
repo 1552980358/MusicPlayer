@@ -23,7 +23,14 @@
   - `NotificationUtil.kt: Fix "Warning: Missing PendingIntent mutability flag" on Android 12`
     - Commit: [298b132](https://github.com/1552980358/MusicPlayer/commit/298b132064cbcb492ed818fb286a21de531366af)
     - Google Document Source: [Pending intents mutability](https://developer.android.com/about/versions/12/behavior-changes-12#pending-intent-mutability)
-  
+  - Safer component exporting
+    - `If your app targets Android 12 or higher and contains activities, services, or broadcast receivers that use intent filters, you must explicitly declare the android:exported attribute for these app components.`
+    - `AndroidManifest.xml: Implement WebService`
+      - Commit: [3ec15b9](https://github.com/1552980358/MusicPlayer/commit/3ec15b932f6f872be5d29f9fac9e96b251d3c1fd#diff-7fa6aef292187a049f7a4d6060d8df3ba212d838789c78940bd363344b1c38cd)
+    - `Update and implement android build gradle into 7.0.0`
+      - Commit: [f1e7bbc](https://github.com/1552980358/MusicPlayer/commit/f1e7bbce27b9c2eba5096493fa3d0883aa1673df#diff-7fa6aef292187a049f7a4d6060d8df3ba212d838789c78940bd363344b1c38cd)
+    - Google Document Source: [Safer component exporting](https://developer.android.com/about/versions/12/behavior-changes-12#exported)
+
 ## Lyric format
 - Time statement before lyric text
 - One line per one line of lyric
