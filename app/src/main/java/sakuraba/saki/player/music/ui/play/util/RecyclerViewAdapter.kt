@@ -86,13 +86,6 @@ class RecyclerViewAdapter(private val recyclerView: RecyclerView, private val li
                     notifyItemRangeChanged(0, newList.size)
                     return
                 }
-                @Suppress("DuplicatedCode")
-                if (mediaItemList[mediaItemList.lastIndex - 1].mediaId == newList.last().audioId) {
-                    notifyItemInserted(0)
-                    notifyItemRangeChanged(0, newList.size)
-                    recyclerView.scrollToPosition(0)
-                    return
-                }
                 notifyItemRangeRemoved(0, mediaItemList.indexOfFirst { mediaItem -> mediaItem.mediaId == newList.last().audioId })
                 notifyItemRangeChanged(0, newList.size)
             }
@@ -103,12 +96,6 @@ class RecyclerViewAdapter(private val recyclerView: RecyclerView, private val li
                 if (audioInfoList.first().audioId == newList.last().audioId) {
                     notifyItemRemoved(0)
                     notifyItemRangeChanged(0, newList.size)
-                    return
-                }
-                if (audioInfoList[audioInfoList.lastIndex - 1].audioId == newList.last().audioId) {
-                    notifyItemInserted(0)
-                    notifyItemRangeChanged(0, newList.size)
-                    recyclerView.scrollToPosition(0)
                     return
                 }
                 notifyItemRangeRemoved(0, audioInfoList.indexOfFirst { audioInfo -> audioInfo.audioId == newList.last().audioId })
