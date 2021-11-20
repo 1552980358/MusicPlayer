@@ -6,6 +6,7 @@ import android.animation.ValueAnimator
 import android.app.Instrumentation
 import android.bluetooth.BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED
 import android.content.Intent.ACTION_HEADSET_PLUG
+import android.graphics.BitmapFactory
 import android.graphics.Color.BLACK
 import android.graphics.Color.TRANSPARENT
 import android.graphics.Color.WHITE
@@ -168,7 +169,8 @@ class PlayActivity: BaseMediaControlActivity() {
                 @Suppress("SetTextI18n")
                 textViewSummary.text = "${audioInfo.audioArtist} - ${audioInfo.audioAlbum}"
             }
-            val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: ContextCompat.getDrawable(this@PlayActivity, R.drawable.ic_music)?.toBitmap()
+            val byteArray = intent?.getByteArrayExtra(EXTRAS_DATA)
+            val bitmap = tryRun { BitmapFactory.decodeByteArray(byteArray, 0, byteArray!!.size) } ?: ContextCompat.getDrawable(this@PlayActivity, R.drawable.ic_music)?.toBitmap()
             ui { activityPlay.imageView.setImageBitmap(bitmap) }
             MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated(true)
             activityPlay.lyricLayout.updateBitmap(bitmap)
