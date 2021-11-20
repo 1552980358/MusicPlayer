@@ -86,6 +86,7 @@ import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_POS
+import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.Constants.EXTRAS_PROGRESS
 import sakuraba.saki.player.music.util.Constants.EXTRAS_STATUS
 import sakuraba.saki.player.music.util.Constants.TRANSITION_IMAGE_VIEW
@@ -260,7 +261,10 @@ class MainActivity: BaseMediaControlActivity() {
             if (bottomSheetClickLock) {
                 bottomSheetClickLock = false
                 startActivity(
-                    intent(this, PlayActivity::class.java) { putExtra(EXTRAS_AUDIO_INFO, audioInfo) },
+                    intent(this, PlayActivity::class.java) {
+                        putExtra(EXTRAS_DATA, activityInterface.byteArrayMap[audioInfo.audioAlbumId])
+                        putExtra(EXTRAS_AUDIO_INFO, audioInfo)
+                    },
                     ActivityOptionsCompat.makeSceneTransitionAnimation(this, Pair(imageView, TRANSITION_IMAGE_VIEW), Pair(textView, TRANSITION_TEXT_VIEW)).toBundle()
                 )
             }
