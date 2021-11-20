@@ -37,8 +37,8 @@ import androidx.media.AudioFocusRequestCompat
 import androidx.media.AudioManagerCompat
 import androidx.media.AudioManagerCompat.AUDIOFOCUS_GAIN
 import androidx.media.MediaBrowserServiceCompat
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
 import kotlinx.coroutines.delay
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.register
@@ -353,7 +353,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
         // mediaPlayer = MediaPlayer()
         // mediaPlayer.setOnCompletionListener(this)
         
-        exoPlayer = SimpleExoPlayer.Builder(this).build()
+        exoPlayer = ExoPlayer.Builder(this).build()
         exoPlayer.addListener(this)
         
         notificationManager = createNotificationManager
