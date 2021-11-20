@@ -91,7 +91,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
     
     companion object {
         private const val TAG = "PlayService"
-        private const val WAKE_LOCK_tAG = "$TAG::PlayWakeLock"
+        private const val WAKE_LOCK_TAG = "$TAG::PlayWakeLock"
         private const val ROOT_ID = TAG
         private const val PlaybackStateActions =
             ACTION_PLAY_PAUSE or ACTION_STOP or ACTION_SEEK_TO or ACTION_PLAY_FROM_MEDIA_ID or ACTION_SKIP_TO_NEXT or ACTION_SKIP_TO_PREVIOUS or ACTION_SKIP_TO_QUEUE_ITEM
@@ -369,7 +369,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
             )
         )
         
-        wakeLock = (getSystemService(POWER_SERVICE) as PowerManager).newWakeLock(PARTIAL_WAKE_LOCK, WAKE_LOCK_tAG)
+        wakeLock = (getSystemService(POWER_SERVICE) as PowerManager).newWakeLock(PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG)
         
         audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
     }
