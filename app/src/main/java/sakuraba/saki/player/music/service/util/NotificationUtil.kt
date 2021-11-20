@@ -11,6 +11,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.app.NotificationCompat.MediaStyle
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
@@ -59,7 +60,7 @@ fun Context.getNotification(audioInfo: AudioInfo, isPaused: Boolean = false) =
         setVibrate(longArrayOf(0))
         setContentTitle(audioInfo.audioTitle)
         setContentText("${audioInfo.audioArtist} - ${audioInfo.audioAlbum}")
-        val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: resources.getDrawable(R.drawable.ic_music, null).toBitmap()
+        val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: ContextCompat.getDrawable(this@getNotification, R.drawable.ic_music)!!.toBitmap()
         setLargeIcon(bitmap)
         addAction(
             R.drawable.ic_prev,
