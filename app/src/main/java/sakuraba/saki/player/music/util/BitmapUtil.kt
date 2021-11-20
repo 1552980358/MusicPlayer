@@ -46,5 +46,18 @@ object BitmapUtil {
             bitmapMap[file.name.toLong()] = file.readAsBitmap()
         }
     }
+
+    private const val ALBUM_ART_RAW_DIR = "album_art_raw"
+    private val Context.albumArtRawDir get() = getExternalFilesDir(ALBUM_ART_RAW_DIR)
+
+    fun Context.writeAlbumArtRaw(albumId: Long, bitmap: Bitmap?) =
+            bitmap?.writeAlbumArt(File(albumArtRawDir, albumId.toString()))
+
+    fun Context.loadAlbumArtRaw(byteArrayMap: MutableMap<Long, ByteArray>) {
+        albumArtRawDir?.listFiles()?.forEach { file ->
+            byteArrayMap[file.name.toLong()] = file.readBytes()
+            // bitmapMap[file.name.toLong()] = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+        }
+    }
     
 }
