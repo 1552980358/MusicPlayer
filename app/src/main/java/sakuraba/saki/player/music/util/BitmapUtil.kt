@@ -29,20 +29,22 @@ object BitmapUtil {
     
     fun Fragment.loadAlbumArt(albumId: Long) = requireContext().loadAlbumArt(albumId)
 
-    private const val ALBUM_ART_DIR = "album_art"
-    private val Context.albumArtDir get() = getExternalFilesDir(ALBUM_ART_DIR)
+    private const val ALBUM_ART_40DP_DIR = "album_art_40dp"
+    private val Context.albumArt40DpDir get() = getExternalFilesDir(ALBUM_ART_40DP_DIR)
+
+    fun Bitmap.writeAlbumArt(file: File) =
+            getByteArray(format = Bitmap.CompressFormat.JPEG)?.apply { file.writeBytes(this) }
 
     fun Context.readAlbumArt(albumId: Long) = tryRun {
-        val byteArray = File(albumArtDir, albumId.toString()).readBytes()
+        val byteArray = File(albumArt40DpDir, albumId.toString()).readBytes()
         BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
     }
 
-    fun Context.writeAlbumArt(albumId: Long, bitmap: Bitmap?) {
-        bitmap?.getByteArray(format = Bitmap.CompressFormat.JPEG)?.let { bytes -> File(albumArtDir, albumId.toString()).writeBytes(bytes) }
-    }
+    fun Context.writeAlbumArt40Dp(albumId: Long, bitmap: Bitmap?) =
+            bitmap?.writeAlbumArt(File(albumArt40DpDir, albumId.toString()))
 
-    fun Context.loadAlbumArts(bitmapMap: MutableMap<Long, Bitmap?>) {
-        albumArtDir?.listFiles()?.forEach { file ->
+    fun Context.loadAlbumArts40Dp(bitmapMap: MutableMap<Long, Bitmap?>) {
+        albumArt40DpDir?.listFiles()?.forEach { file ->
             bitmapMap[file.name.toLong()] = file.readAsBitmap()
         }
     }

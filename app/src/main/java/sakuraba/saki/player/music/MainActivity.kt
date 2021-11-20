@@ -78,8 +78,10 @@ import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.util.MainActivityInterface
 import sakuraba.saki.player.music.base.BaseMainFragment
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
-import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArts
-import sakuraba.saki.player.music.util.BitmapUtil.writeAlbumArt
+import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
+import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArts40Dp
+import sakuraba.saki.player.music.util.BitmapUtil.writeAlbumArt40Dp
+import sakuraba.saki.player.music.util.BitmapUtil.writeAlbumArtRaw
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
@@ -403,11 +405,12 @@ class MainActivity: BaseMediaControlActivity() {
                     tryOnly {
                         bitmap = null
                         bitmap = loadAlbumArt(audioInfo.audioAlbumId)
+                        activityInterface.byteArrayMap[audioInfo.audioAlbumId] = writeAlbumArtRaw(audioInfo.audioAlbumId, bitmap)!!
                         matrix.apply {
                             setScale(bitmapSize / bitmap!!.widthF, bitmapSize / bitmap!!.heightF)
                         }
                         bitmap = Bitmap.createBitmap(bitmap!!, 0, 0, bitmap!!.width, bitmap!!.height, matrix, false)
-                        writeAlbumArt(audioInfo.audioAlbumId, bitmap)
+                        writeAlbumArt40Dp(audioInfo.audioAlbumId, bitmap)
                         activityInterface.bitmapMap[audioInfo.audioAlbumId] = bitmap
                     }
                 }
@@ -426,7 +429,7 @@ class MainActivity: BaseMediaControlActivity() {
 
         ui { activityInterface.onLoadStageChange() }
 
-        loadAlbumArts(activityInterface.bitmapMap)
+        loadAlbumArts40Dp(activityInterface.bitmapMap)
         ui { activityInterface.onCompleteLoading() }
         activityInterface.refreshCompleted = true
 
