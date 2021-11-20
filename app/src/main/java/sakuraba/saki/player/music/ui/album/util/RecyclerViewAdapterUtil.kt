@@ -56,7 +56,11 @@ class RecyclerViewAdapterUtil(data: MainActivityInterface, listener: (imageView:
         }
         
         override fun getItemCount() = mediaAlbumList.size
-        
+
+        override fun getItemViewType(position: Int): Int {
+            return position
+        }
+
     }
     
     private val adapter = RecyclerViewAdapter(data.albumList, data.byteArrayMap, listener)
