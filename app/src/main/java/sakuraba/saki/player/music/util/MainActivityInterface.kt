@@ -38,6 +38,7 @@ class MainActivityInterface(): Serializable {
     val audioInfoFullList = arrayListOf<AudioInfo>()
     val bitmapMap = mutableMapOf<Long, Bitmap?>()
     val albumList = arrayListOf<MediaAlbum>()
+    val byteArrayMap = mutableMapOf<Long, ByteArray>()
 
     var audioInfoList: ArrayList<AudioInfo> = audioInfoFullList
 
