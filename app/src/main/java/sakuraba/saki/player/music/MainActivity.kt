@@ -433,6 +433,7 @@ class MainActivity: BaseMediaControlActivity() {
         ui { activityInterface.onCompleteLoading() }
         activityInterface.refreshCompleted = true
 
+        loadAlbumArtRaw(activityInterface.byteArrayMap)
         audioDatabaseHelper.queryMediaAlbum(activityInterface.albumList)
     }
     

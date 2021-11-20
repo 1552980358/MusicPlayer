@@ -1,6 +1,6 @@
 package sakuraba.saki.player.music.ui.album.util
 
-import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,12 +9,18 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import sakuraba.saki.player.music.R
+import sakuraba.saki.player.music.util.CoroutineUtil.io
+import sakuraba.saki.player.music.util.CoroutineUtil.ui
 import sakuraba.saki.player.music.util.MainActivityInterface
 import sakuraba.saki.player.music.util.MediaAlbum
 
 class RecyclerViewAdapterUtil(data: MainActivityInterface, listener: (imageView: ImageView, textView: TextView, mediaAlbum: MediaAlbum) -> Unit) {
     
     private class AlbumViewHolder(view: View): RecyclerView.ViewHolder(view) {
+
+        init {
+            setIsRecyclable(false)
+        }
         
         val imageView: ImageView = view.findViewById(R.id.image_view)
         
@@ -26,10 +32,10 @@ class RecyclerViewAdapterUtil(data: MainActivityInterface, listener: (imageView:
     
     private class RecyclerViewAdapter(
         val mediaAlbumList: List<MediaAlbum>,
-        val bitmapMap: Map<Long, Bitmap?>,
+        val bitmapMap: Map<Long, ByteArray>,
         private val listener: (imageView: ImageView, textView: TextView, mediaAlbum: MediaAlbum) -> Unit
     ): RecyclerView.Adapter<AlbumViewHolder>() {
-        
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
             = AlbumViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.content_album, parent, false))
         
@@ -40,9 +46,12 @@ class RecyclerViewAdapterUtil(data: MainActivityInterface, listener: (imageView:
             }
             holder.imageView.transitionName = "${mediaAlbumList[position].albumId}_image"
             holder.textView.transitionName = "${mediaAlbumList[position].albumId}_text"
-            val bitmap = bitmapMap[mediaAlbumList[position].albumId]
-            if (bitmap != null) {
-                holder.imageView.setImageBitmap(bitmap)
+            val byteArray = bitmapMap[mediaAlbumList[position].albumId]
+            if (byteArray != null) {
+                io {
+                    val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+                    ui { holder.imageView.setImageBitmap(bitmap) }
+                }
             }
         }
         
@@ -50,7 +59,7 @@ class RecyclerViewAdapterUtil(data: MainActivityInterface, listener: (imageView:
         
     }
     
-    private val adapter = RecyclerViewAdapter(data.albumList, data.bitmapMap, listener)
+    private val adapter = RecyclerViewAdapter(data.albumList, data.byteArrayMap, listener)
     
     fun setAdapterToRecyclerView(recyclerView: RecyclerView) {
         recyclerView.adapter = adapter
