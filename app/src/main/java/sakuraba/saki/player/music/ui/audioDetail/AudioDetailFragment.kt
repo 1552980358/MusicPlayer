@@ -57,20 +57,6 @@ import sakuraba.saki.player.music.util.UnitUtil.toTimeFormat
 
 class AudioDetailFragment: PreferenceFragmentCompat() {
 
-    private companion object {
-        const val KEY_TITLE = "key_title"
-        const val KEY_ARTIST = "key_artist"
-        const val KEY_ALBUM = "key_album"
-        const val KEY_DURATION = "key_duration"
-        const val KEY_FORMAT = "key_format"
-        const val KEY_BIT_RATE = "key_bit_rate"
-        const val KEY_SAMPLE_RATE = "key_sample_rate"
-        const val KEY_BIT_DEPTH = "key_bit_depth"
-        const val KEY_LYRIC_IMPORT = "key_lyric_import"
-        const val KEY_LYRIC_VIEW = "key_lyric_view"
-        const val KEY_LYRIC_REMOVE = "key_lyric_remove"
-    }
-
     private lateinit var navController: NavController
 
     private lateinit var audioInfo: AudioInfo
@@ -118,10 +104,10 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.xml_audio_detail, rootKey)
         audioInfo.apply {
-            findPreference<Preference>(KEY_TITLE)?.summary = audioTitle
-            findPreference<Preference>(KEY_ARTIST)?.summary = audioArtist
-            findPreference<Preference>(KEY_ALBUM)?.summary = audioAlbum
-            findPreference<Preference>(KEY_DURATION)?.summary = audioDuration.toTimeFormat
+            preference(R.string.audio_detail_title_key)?.summary = audioTitle
+            preference(R.string.audio_detail_artist_key)?.summary = audioArtist
+            preference(R.string.audio_detail_album_key)?.summary = audioAlbum
+            preference(R.string.audio_detail_duration_key)?.summary = audioDuration.toTimeFormat
             preference(R.string.audio_detail_size_key)?.summary = audioSize.asMiB
             preference(R.string.audio_detail_path_key)?.summary = audioPath
             navController = findNavController()
@@ -136,12 +122,12 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                     setDataSource(context, audioId.mediaUriStr.parseAsUri)
 
                     ui {
-                        findPreference<Preference>(KEY_FORMAT)?.summary =
+                        preference(R.string.audio_detail_format_key)?.summary =
                             extractMetadata(METADATA_KEY_MIMETYPE)?.run { substring(indexOf('/') + 1) }
                     }
 
                     ui {
-                        findPreference<Preference>(KEY_BIT_RATE)?.summary = extractMetadata(METADATA_KEY_BITRATE)?.getAsKilo + "$UNIT_BITS$PER$UNIT_SEC"
+                        preference(R.string.audio_detail_bit_rate_key)?.summary = extractMetadata(METADATA_KEY_BITRATE)?.getAsKilo + "$UNIT_BITS$PER$UNIT_SEC"
                     }
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -165,12 +151,12 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
 
                 val sampleRate = sampleRateAsync?.await() ?: sampleRateStr!!.toInt()
                 ui {
-                    findPreference<Preference>(KEY_SAMPLE_RATE)?.summary = sampleRate.getAsKilo + UNIT_Hertz
+                    preference(R.string.audio_detail_sample_rate_key)?.summary = sampleRate.getAsKilo + UNIT_Hertz
                 }
 
                 val bitPerSample = bitPerSampleAsync.await() ?: 16  // Default for almost audio file
                 ui {
-                    findPreference<Preference>(KEY_BIT_DEPTH)?.summary = "$bitPerSample $UNIT_BITS$PER$UNIT_SAMPLE"
+                    preference(R.string.audio_detail_bit_rate_key)?.summary = "$bitPerSample $UNIT_BITS$PER$UNIT_SAMPLE"
                 }
             }
 
@@ -195,21 +181,21 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                     requireContext().writeLyric(audioId, lyricList, timeList)
                     findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)
                         ?.shortSnack(R.string.audio_detail_lyric_import_succeed)
-                    findPreference<Preference>(KEY_LYRIC_VIEW)?.isEnabled = true
-                    findPreference<Preference>(KEY_LYRIC_REMOVE)?.isEnabled = true
+                    preference(R.string.audio_detail_lyric_view_key)?.isEnabled = true
+                    preference(R.string.audio_detail_lyric_remove_key)?.isEnabled = true
                     return@registerForActivityResult
                 }
                 findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)
                     ?.shortSnack(getString(R.string.audio_detail_lyric_import_incorrect_format) + uri.toString())
             }
-            findPreference<Preference>(KEY_LYRIC_IMPORT)?.apply {
+            preference(R.string.audio_detail_lyric_import_key)?.apply {
                 setOnPreferenceClickListener {
                     pickLyric.launch("*/*")
                     return@setOnPreferenceClickListener true
                 }
             }
             val hasLyric = requireContext().hasLyric(audioId)
-            findPreference<Preference>(KEY_LYRIC_VIEW)?.apply {
+            preference(R.string.audio_detail_lyric_view_key)?.apply {
                 if (!hasLyric) {
                     isEnabled = false
                 }
@@ -218,7 +204,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                     return@setOnPreferenceClickListener true
                 }
             }
-            findPreference<Preference>(KEY_LYRIC_REMOVE)?.apply {
+            preference(R.string.audio_detail_lyric_remove_key)?.apply {
                 if (!hasLyric) {
                     isEnabled = false
                 }
@@ -230,7 +216,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                             requireContext().removeLyric(audioId)
                             findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)
                                 ?.shortSnack(R.string.audio_detail_lyric_remove_removed)
-                            findPreference<Preference>(KEY_LYRIC_VIEW)?.isEnabled = false
+                            preference(R.string.audio_detail_lyric_view_key)?.isEnabled = false
                             isEnabled = false
                         }
                         .setNegativeButton(R.string.audio_detail_lyric_remove_dialog_cancel) { _, _ -> }
