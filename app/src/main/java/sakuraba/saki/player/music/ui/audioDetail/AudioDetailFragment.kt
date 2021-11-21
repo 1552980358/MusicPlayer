@@ -229,17 +229,10 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
 
     private fun MediaFormat.readTrackFormat(key: String): Int? =
         if (containsKey(key)) getInteger(key) else null
-    
-    fun onActivityBackPressed(activity: AppCompatActivity, needAnim: Boolean) {
+
+    fun onActivityBackPressed(activity: AppCompatActivity) {
         when (behavior.state) {
-            STATE_COLLAPSED -> {
-                activity.apply {
-                    finishAfterTransition()
-                    if (needAnim) {
-                        overridePendingTransition(R.anim.translate_up_pop_enter, R.anim.translate_up_pop_exit)
-                    }
-                }
-            }
+            STATE_COLLAPSED -> activity.finishAfterTransition()
             else -> behavior.state = STATE_COLLAPSED
         }
     }

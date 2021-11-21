@@ -73,9 +73,19 @@ class AudioDetailActivity: AppCompatActivity() {
 
     override fun onBackPressed() {
         when (findNavController(R.id.fragment).currentDestination?.id) {
-            R.id.nav_audio_detail ->
-                (supportFragmentManager.findFragmentById(R.id.fragment)?.childFragmentManager?.fragments?.first() as AudioDetailFragment?)
-                    ?.onActivityBackPressed(this, needBackPressedAnim)
+            R.id.nav_audio_detail -> {
+                when {
+                    needBackPressedAnim -> {
+                        super.onBackPressed()
+                        overridePendingTransition(R.anim.translate_up_pop_enter, R.anim.translate_up_pop_exit)
+                    }
+                    else -> {
+                        (supportFragmentManager.findFragmentById(R.id.fragment)
+                            ?.childFragmentManager?.fragments?.first() as AudioDetailFragment?)
+                            ?.onActivityBackPressed(this)
+                    }
+                }
+            }
             else -> super.onBackPressed()
         }
     }
