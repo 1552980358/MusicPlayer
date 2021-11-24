@@ -325,7 +325,7 @@ class PlayActivity: BaseMediaControlActivity() {
         _imageViewDevice = findViewById(R.id.image_view_device)
 
         updateAudioDeviceIcon()
-        broadcastReceiver.register(this, arrayOf(ACTION_HEADSET_PLUG, ACTION_CONNECTION_STATE_CHANGED))
+        broadcastReceiver.register(this, ACTION_HEADSET_PLUG, ACTION_CONNECTION_STATE_CHANGED)
     }
 
     private fun updateAudioDeviceIcon() = imageViewDevice.run {

@@ -72,7 +72,7 @@ dependencies {
     implementation 'com.github.promeg:tinypinyin:2.0.3'
 
     implementation 'com.github.1552980358:KtExtension:1.1'
-    implementation 'com.github.1552980358:KtExtensionAndroid:1.1.6'
+    implementation 'com.github.1552980358:KtExtensionAndroid:1.1.7'
 
     implementation 'com.github.mkaflowski:Media-Style-Palette:1.3'
 

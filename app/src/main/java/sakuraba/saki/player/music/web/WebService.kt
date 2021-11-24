@@ -45,7 +45,7 @@ class WebService: Service() {
 
     private var serverPort = DEFAULT_SERVER_PORT
 
-    private val broadcastReceiver = broadcastReceiver { _, intent, receiver ->
+    private val broadcastReceiver = broadcastReceiver { _, intent, _ ->
         intent ?: return@broadcastReceiver
         if (intent.action == WIFI_STATE_CHANGED_ACTION
             && intent.getIntExtra(EXTRA_WIFI_STATE, WIFI_STATE_UNKNOWN) == WIFI_STATE_DISABLED
@@ -59,7 +59,7 @@ class WebService: Service() {
         super.onCreate()
         notificationManager = createNotificationManager
         connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-        broadcastReceiver.register(this, arrayOf(WIFI_STATE_CHANGED_ACTION))
+        broadcastReceiver.register(this, WIFI_STATE_CHANGED_ACTION)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

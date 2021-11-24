@@ -65,7 +65,7 @@ class LyricLayout: RelativeLayout {
             audioManager.getStreamMaxVolume(STREAM_MUSIC)
         )
 
-        broadcastReceiver.register(context, arrayOf(VOLUME_CHANGED_ACTION))
+        broadcastReceiver.register(context, VOLUME_CHANGED_ACTION)
 
         layoutLyric.relativeLayout.apply {
             layoutParams = layoutParams.apply {

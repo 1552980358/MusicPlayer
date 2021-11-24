@@ -360,13 +360,11 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
         
         broadcastReceiver.register(
             this,
-            arrayOf(
-                FILTER_NOTIFICATION_PREV,
-                FILTER_NOTIFICATION_PLAY,
-                FILTER_NOTIFICATION_PAUSE,
-                FILTER_NOTIFICATION_NEXT,
-                ACTION_HEADSET_PLUG
-            )
+            FILTER_NOTIFICATION_PREV,
+            FILTER_NOTIFICATION_PLAY,
+            FILTER_NOTIFICATION_PAUSE,
+            FILTER_NOTIFICATION_NEXT,
+            ACTION_HEADSET_PLUG
         )
         
         wakeLock = (getSystemService(POWER_SERVICE) as PowerManager).newWakeLock(PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG)
