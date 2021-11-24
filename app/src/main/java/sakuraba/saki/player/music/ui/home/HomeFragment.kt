@@ -39,7 +39,7 @@ class HomeFragment: BaseMainFragment() {
         
         fragmentHome.root.isRefreshing = true
 
-        fragmentHome.root.setOnRefreshListener { activityInterface.onRequestRefresh() }
+        fragmentHome.root.isEnabled = false
 
         setHasOptionsMenu(true)
 
@@ -75,6 +75,10 @@ class HomeFragment: BaseMainFragment() {
         when (item.itemId) {
             R.id.action_settings -> findNavController().navigate(HomeFragmentDirections.actionNavHomeToNavSetting())
             R.id.action_search -> findNavController().navigate(HomeFragmentDirections.actionNavHomeToNavSearch())
+            R.id.action_refresh -> {
+                fragmentHome.root.isRefreshing = true
+                activityInterface.onRequestRefresh()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
