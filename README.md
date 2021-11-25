@@ -30,6 +30,9 @@
     - `Update and implement android build gradle into 7.0.0`
       - Commit: [f1e7bbc](https://github.com/1552980358/MusicPlayer/commit/f1e7bbce27b9c2eba5096493fa3d0883aa1673df#diff-7fa6aef292187a049f7a4d6060d8df3ba212d838789c78940bd363344b1c38cd)
     - Google Document Source: [Safer component exporting](https://developer.android.com/about/versions/12/behavior-changes-12#exported)
+  - `Add support Android 12.0 SplashScreen`
+    - Commit: [9096b6c](https://github.com/1552980358/MusicPlayer/commit/9096b6c2220c422703cc90a96db8bb49208690b2)
+    - Google Document Source: [Splash screens](https://developer.android.com/guide/topics/ui/splash-screen)
 
 ## Lyric format
 - Time statement before lyric text
