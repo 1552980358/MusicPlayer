@@ -36,8 +36,6 @@ class HomeFragment: BaseMainFragment() {
         }
         recyclerViewAdapter.setAdapterToRecyclerView(fragmentHome.recyclerView)
         fragmentHome.recyclerView.addItemDecoration(DividerItemDecoration())
-        
-        fragmentHome.root.isRefreshing = true
 
         fragmentHome.root.isEnabled = false
 
@@ -69,9 +67,6 @@ class HomeFragment: BaseMainFragment() {
     }
     
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (fragmentHome.root.isRefreshing) {
-            return super.onOptionsItemSelected(item)
-        }
         when (item.itemId) {
             R.id.action_settings -> findNavController().navigate(HomeFragmentDirections.actionNavHomeToNavSetting())
             R.id.action_search -> findNavController().navigate(HomeFragmentDirections.actionNavHomeToNavSearch())
