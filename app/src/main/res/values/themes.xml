@@ -13,10 +13,13 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
-    <style name="Theme.MusicPlayer.NoActionBar">
+    <style name="Theme.MusicPlayer.NoActionBar" parent="Theme.MusicPlayer">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="Theme.MusicPlayer.NoActionBar.MainActivity" parent="Theme.MusicPlayer.NoActionBar" />
+
     <style name="Theme.MusicPlayer.NoActionBar.Translucent" parent="Theme.MusicPlayer.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
