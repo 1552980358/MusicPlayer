@@ -77,6 +77,7 @@ import sakuraba.saki.player.music.databinding.ActivityMainBinding
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.util.MainActivityInterface
 import sakuraba.saki.player.music.base.BaseMainFragment
+import sakuraba.saki.player.music.base.BasePreferenceFragmentCompat
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArts40Dp
@@ -137,8 +138,9 @@ class MainActivity: BaseMediaControlActivity() {
             Log.e(f::class.java.simpleName, "onFragmentAttached")
         }
         override fun onFragmentPreCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
-            if (f is BaseMainFragment) {
-                f.activityInterface = activityInterface
+            when (f) {
+                is BaseMainFragment -> f.activityInterface = activityInterface
+                is BasePreferenceFragmentCompat -> f.activityInterface = activityInterface
             }
         }
         override fun onFragmentCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
