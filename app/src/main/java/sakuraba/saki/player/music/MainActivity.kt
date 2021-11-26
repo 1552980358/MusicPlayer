@@ -378,22 +378,21 @@ class MainActivity: BaseMediaControlActivity() {
             activityInterface.audioInfoFullList.forEach { Log.e("TAG", it.audioTitle) }
             activityInterface.audioInfoFullList.sortBy { it.audioId }
             audioDatabaseHelper.insertAudio(TABLE_AUDIO, activityInterface.audioInfoFullList)
-            val mediaAlbumList = arrayListOf<MediaAlbum>()
             activityInterface.audioInfoFullList.forEach { audioInfo ->
                 when (val index =
-                    mediaAlbumList.indexOfFirst { mediaAlbum -> mediaAlbum.albumId == audioInfo.audioAlbumId }) {
-                    -1 -> mediaAlbumList.add(
+                        activityInterface.albumList.indexOfFirst { mediaAlbum -> mediaAlbum.albumId == audioInfo.audioAlbumId }) {
+                    -1 -> activityInterface.albumList.add(
                         MediaAlbum(
                             audioInfo.audioAlbumId,
                             audioInfo.audioAlbum,
                             audioInfo.audioAlbumPinyin
                         )
                     )
-                    else -> mediaAlbumList[index].numberOfAudio++
+                    else -> activityInterface.albumList[index].numberOfAudio++
                 }
             }
-            mediaAlbumList.sortBy { mediaAlbum -> mediaAlbum.albumId }
-            audioDatabaseHelper.insertMediaAlbum(TABLE_ALBUM, mediaAlbumList)
+            activityInterface.albumList.sortBy { mediaAlbum -> mediaAlbum.albumId }
+            audioDatabaseHelper.insertMediaAlbum(TABLE_ALBUM, activityInterface.albumList)
 
             activityInterface.audioInfoList = activityInterface.audioInfoFullList.copy().apply {
                 sortBy { it.audioTitlePinyin }
