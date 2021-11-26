@@ -96,6 +96,8 @@ import sakuraba.saki.player.music.util.CoroutineUtil.io
 import sakuraba.saki.player.music.util.CoroutineUtil.ms_1000_int
 import sakuraba.saki.player.music.util.CoroutineUtil.ui
 import sakuraba.saki.player.music.util.MediaAlbum
+import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
+import sakuraba.saki.player.music.util.SettingUtil.getIntSettingOrThrow
 import sakuraba.saki.player.music.widget.PlayProgressBar
 
 class MainActivity: BaseMediaControlActivity() {
@@ -428,7 +430,15 @@ class MainActivity: BaseMediaControlActivity() {
                 audioDatabaseHelper.queryAllAudio(this)
                 sortBy { it.audioTitlePinyin }
                 copy()
-        }.apply { forEachIndexed { index, audioInfo -> audioInfo.index = index } }
+        }.apply {
+            if (getBooleanSetting(R.string.key_audio_filter_size_enable)) {
+                tryOnly { removeAll { audioInfo -> audioInfo.audioSize < getIntSettingOrThrow(R.string.key_audio_filter_size_value) } }
+            }
+            if (getBooleanSetting(R.string.key_audio_filter_duration_enable)) {
+                tryOnly { removeAll { audioInfo -> audioInfo.audioDuration < getIntSettingOrThrow(R.string.key_audio_filter_duration_value) } }
+            }
+            forEachIndexed { index, audioInfo -> audioInfo.index = index }
+        }
 
         ui { activityInterface.onLoadStageChange() }
 
