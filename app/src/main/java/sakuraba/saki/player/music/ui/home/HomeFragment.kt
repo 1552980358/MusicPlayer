@@ -78,6 +78,14 @@ class HomeFragment: BaseMainFragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (activityInterface.hasAudioInfoListUpdated) {
+            recyclerViewAdapter.notifyDataSetChanged()
+            activityInterface.hasAudioInfoListUpdated = false
+        }
+    }
+
     override fun onDestroy() {
         activityInterface.removeContentChangeRefreshListener()
         super.onDestroy()
