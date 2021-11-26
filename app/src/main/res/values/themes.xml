@@ -18,7 +18,15 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.MusicPlayer.NoActionBar.MainActivity" parent="Theme.MusicPlayer.NoActionBar" />
+    <style name="Theme.MusicPlayer.NoActionBar.MainActivity" parent="Theme.SplashScreen">
+
+        <item name="windowSplashScreenBackground">@color/purple_500</item>
+
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+
+        <item name="postSplashScreenTheme">@style/Theme.MusicPlayer.NoActionBar</item>
+
+    </style>
 
     <style name="Theme.MusicPlayer.NoActionBar.Translucent" parent="Theme.MusicPlayer.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>
