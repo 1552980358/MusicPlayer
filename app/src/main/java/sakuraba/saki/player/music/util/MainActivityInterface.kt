@@ -84,4 +84,6 @@ class MainActivityInterface(): Serializable {
         albumList.clear()
     }
 
+    var hasAudioInfoListUpdated = false
+
 }
