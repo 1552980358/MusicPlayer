@@ -9,6 +9,7 @@ import android.media.MediaMetadataRetriever.METADATA_KEY_MIMETYPE
 import android.media.MediaMetadataRetriever.METADATA_KEY_SAMPLERATE
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,6 @@ import android.view.ViewTreeObserver
 import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
@@ -88,6 +88,17 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
             setBackgroundColor(Color.WHITE)
         }
         behavior = BottomSheetBehavior.from(fragmentAudioDetail.preferenceFragmentContainer)
+        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                Log.e("BottomSheetStateChanged", newState.toString())
+            }
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                Log.e("BottomSheetOnSlide", slideOffset.toString())
+                if (slideOffset == 0F && behavior.state == STATE_COLLAPSED && exit) {
+                    requireActivity().finishAfterTransition()
+                }
+            }
+        })
         fragmentAudioDetail.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 fragmentAudioDetail.preferenceFragmentContainer.apply {
