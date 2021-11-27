@@ -82,7 +82,7 @@ class AudioDetailActivity: AppCompatActivity() {
                     else -> {
                         (supportFragmentManager.findFragmentById(R.id.fragment)
                             ?.childFragmentManager?.fragments?.first() as AudioDetailFragment?)
-                            ?.onActivityBackPressed(this)
+                            ?.onActivityBackPressed()
                     }
                 }
             }

@@ -66,6 +66,8 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
     
     private lateinit var behavior: BottomSheetBehavior<RelativeLayout>
 
+    private var exit = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         audioInfo = (requireActivity().intent.getSerializableExtra(EXTRAS_DATA) as AudioInfo)
         super.onCreate(savedInstanceState)
@@ -230,10 +232,15 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
     private fun MediaFormat.readTrackFormat(key: String): Int? =
         if (containsKey(key)) getInteger(key) else null
 
-    fun onActivityBackPressed(activity: AppCompatActivity) {
-        when (behavior.state) {
-            STATE_COLLAPSED -> activity.finishAfterTransition()
-            else -> behavior.state = STATE_COLLAPSED
+    fun onActivityBackPressed() {
+        if (!exit) {
+            if (behavior.state == STATE_COLLAPSED) {
+                requireActivity().finishAfterTransition()
+                return
+            }
+            exit = true
+            behavior.state = STATE_COLLAPSED
+            requireActivity().finishAfterTransition()
         }
     }
 
