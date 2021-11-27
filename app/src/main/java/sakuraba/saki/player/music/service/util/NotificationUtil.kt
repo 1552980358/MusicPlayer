@@ -5,18 +5,22 @@ import android.app.NotificationChannel
 import android.app.NotificationManager.IMPORTANCE_HIGH
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
+import android.app.PendingIntent.getActivity
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.app.NotificationCompat.MediaStyle
+import lib.github1552980358.ktExtension.android.content.intent
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import sakuraba.saki.player.music.BuildConfig
+import sakuraba.saki.player.music.MainActivity
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_NEXT
@@ -87,5 +91,9 @@ fun Context.getNotification(audioInfo: AudioInfo, isPaused: Boolean = false) =
             null,
             PendingIntent.getBroadcast(this@getNotification, 0, Intent(FILTER_NOTIFICATION_NEXT), pendingIntentFlag)
         )
-        
+
+        setContentIntent(getActivity(this@getNotification, 0, intent(this@getNotification, MainActivity::class.java) {
+            addFlags(FLAG_ACTIVITY_NEW_TASK)
+        }, pendingIntentFlag))
+
     }.build()
