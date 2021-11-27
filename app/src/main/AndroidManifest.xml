@@ -37,7 +37,8 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.MusicPlayer.NoActionBar.MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -47,7 +48,8 @@
         
         <activity
             android:name=".PlayActivity"
-            android:theme="@style/Theme.MusicPlayer.NoActionBar.Translucent"/>
+            android:theme="@style/Theme.MusicPlayer.NoActionBar.Translucent"
+            android:launchMode="singleTask" />
 
         <activity
             android:name=".AudioDetailActivity"
