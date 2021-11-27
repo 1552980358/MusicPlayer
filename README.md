@@ -61,6 +61,7 @@
 - `org.jetbrains.kotlinx:kotlinx-coroutines-core`
 - `org.jetbrains.kotlinx:kotlinx-coroutines-android`
 - `androidx.core:core-ktx`
+- `androidx.core:core-splashscreen`
 - `androidx.appcompat:appcompat`
 - `androidx.constraintlayout:constraintlayout`
 - `androidx.navigation:navigation-fragment-ktx`
