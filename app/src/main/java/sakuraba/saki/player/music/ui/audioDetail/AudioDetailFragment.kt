@@ -162,14 +162,14 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                 }
                 val bitPerSampleAsync = async { trackFormat.readTrackFormat("bits-per-sample") }
 
-                val sampleRate = sampleRateAsync?.await() ?: sampleRateStr!!.toInt()
+                val sampleRate = sampleRateAsync?.await() ?: sampleRateStr?.toInt() ?: 44100
                 ui {
                     preference(R.string.audio_detail_sample_rate_key)?.summary = sampleRate.getAsKilo + UNIT_Hertz
                 }
 
                 val bitPerSample = bitPerSampleAsync.await() ?: 16  // Default for almost audio file
                 ui {
-                    preference(R.string.audio_detail_bit_rate_key)?.summary = "$bitPerSample $UNIT_BITS$PER$UNIT_SAMPLE"
+                    preference(R.string.audio_detail_bit_depth_key)?.summary = "$bitPerSample $UNIT_BITS$PER$UNIT_SAMPLE"
                 }
             }
 
