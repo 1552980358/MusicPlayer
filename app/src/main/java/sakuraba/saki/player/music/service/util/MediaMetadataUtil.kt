@@ -16,7 +16,7 @@ object MediaMetadataUtil {
         putString(METADATA_KEY_TITLE, audioInfo.audioTitle)
         putString(METADATA_KEY_ARTIST, audioInfo.audioArtist)
         putString(METADATA_KEY_ALBUM, audioInfo.audioAlbum)
-        putString(METADATA_KEY_ALBUM_ART_URI, audioInfo.audioAlbumId.getURI.toString())
+        putString(METADATA_KEY_ALBUM_ART_URI, audioInfo.audioAlbumId.toString())
         putLong(METADATA_KEY_DURATION, audioInfo.audioDuration)
         return this
     }
