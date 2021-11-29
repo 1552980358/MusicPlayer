@@ -99,11 +99,11 @@ class LyricLayout: RelativeLayout {
 
     fun updateBitmap(bitmap: Bitmap?) {
         if (bitmap == null) {
-            layoutLyric.imageView.setImageBitmap(null)
+            ui { layoutLyric.imageView.setImageBitmap(null) }
             return
         }
         val blurredBitmap = Toolkit.blur(bitmap, 25)
-        CoroutineScope(Dispatchers.Main).launch { layoutLyric.imageView.setImageBitmap(blurredBitmap) }
+        ui { layoutLyric.imageView.setImageBitmap(blurredBitmap) }
     }
 
     fun unregisterBroadcastReceiver() {
