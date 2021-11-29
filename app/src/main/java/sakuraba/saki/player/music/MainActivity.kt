@@ -63,6 +63,7 @@ import lib.github1552980358.ktExtension.android.content.intent
 import lib.github1552980358.ktExtension.android.graphics.heightF
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.android.graphics.widthF
+import lib.github1552980358.ktExtension.android.kotlin.toBitmap
 import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.android.view.getDimensionPixelSize
 import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.makeSnack
@@ -536,7 +537,8 @@ class MainActivity: BaseMediaControlActivity() {
     override fun onMediaControllerMetadataChanged(metadata: MediaMetadataCompat?) {
         metadata ?: return
         io {
-            val bitmap = tryRun { loadAlbumArt(metadata.getString(METADATA_KEY_ALBUM_ART_URI)) } ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
+            val bitmap =
+                    tryRun { activityInterface.byteArrayMap[metadata.getString(METADATA_KEY_ALBUM_ART_URI).toLong()]?.toBitmap() } ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
             ui { imageView.setImageBitmap(bitmap) }
         }
         textView.text = metadata.getString(METADATA_KEY_TITLE)
