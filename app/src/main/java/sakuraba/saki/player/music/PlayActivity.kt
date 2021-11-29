@@ -436,7 +436,22 @@ class PlayActivity: BaseMediaControlActivity() {
         io {
             val bitmap = tryRun { loadAlbumArtRaw(metadata.getString(METADATA_KEY_ALBUM_ART_URI)) }
                     ?: ContextCompat.getDrawable(this@PlayActivity, R.drawable.ic_music)?.toBitmap()
-            ui { activityPlay.imageView.setImageBitmap(bitmap) }
+            // ui { activityPlay.imageView.setImageBitmap(bitmap) }
+            ValueAnimator.ofFloat(1F, 0F).apply {
+                duration = 250
+                addUpdateListener { activityPlay.imageView.alpha = animatedValue as Float }
+                addListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        activityPlay.imageView.setImageBitmap(bitmap)
+                        ValueAnimator.ofFloat(0F, 1F).apply {
+                            duration = 250
+                            addUpdateListener { activityPlay.imageView.alpha = animatedValue as Float }
+                            // ui { start() }
+                        }.start()
+                    }
+                })
+                ui { start() }
+            }
             MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated(false)
             activityPlay.lyricLayout.updateBitmap(bitmap)
         }
