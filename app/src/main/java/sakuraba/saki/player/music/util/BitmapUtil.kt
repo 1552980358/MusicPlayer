@@ -61,5 +61,14 @@ object BitmapUtil {
             // bitmapMap[file.name.toLong()] = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
         }
     }
+
+    fun Context.loadAlbumArtRaw(albumId: String): Bitmap? {
+        albumArtRawDir?.listFiles()?.forEach { file ->
+            if (file.name.contains(albumId)) {
+                return file.readAsBitmap()
+            }
+        }
+        return null
+    }
     
 }
