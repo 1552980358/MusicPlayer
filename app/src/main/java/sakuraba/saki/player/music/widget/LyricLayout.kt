@@ -19,7 +19,9 @@ import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.register
 import sakuraba.saki.player.music.databinding.LayoutLyricBinding
+import sakuraba.saki.player.music.util.CoroutineUtil.ui
 import sakuraba.saki.player.music.util.LyricUtil.readLyric
+import sakuraba.saki.player.music.util.createLyric
 
 class LyricLayout: RelativeLayout {
 
@@ -109,14 +111,11 @@ class LyricLayout: RelativeLayout {
     }
 
     fun updateLyric(audioId: String) {
-        layoutLyric.lyricView.isLoading = true
         CoroutineScope(Dispatchers.IO).launch {
-            val lyricList = layoutLyric.lyricView.lyricList
-            val timeList = layoutLyric.lyricView.timeList
-            lyricList.clear()
-            timeList.clear()
-            context.readLyric(audioId, lyricList, timeList)
-            layoutLyric.lyricView.isLoading = false
+            createLyric {
+                context.readLyric(audioId, lyricList, timeList)
+                ui { layoutLyric.lyricView.updateLyric(this@createLyric) }
+            }
         }
     }
 

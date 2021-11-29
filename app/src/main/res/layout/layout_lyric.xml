@@ -11,7 +11,7 @@
         android:id="@+id/image_view"
         tools:ignore="ContentDescription" />
 
-    <sakuraba.saki.player.music.view.LyricView
+    <sakuraba.saki.player.music.view.LyricRecyclerView
         android:id="@+id/lyric_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
