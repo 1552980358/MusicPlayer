@@ -1,6 +1,5 @@
 package sakuraba.saki.player.music.ui.album.util
 
-import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +7,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import lib.github1552980358.ktExtension.android.kotlin.toBitmap
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.util.CoroutineUtil.io
 import sakuraba.saki.player.music.util.CoroutineUtil.ui
@@ -49,7 +49,7 @@ class RecyclerViewAdapterUtil(data: MainActivityInterface, listener: (imageView:
             val byteArray = bitmapMap[mediaAlbumList[position].albumId]
             if (byteArray != null) {
                 io {
-                    val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+                    val bitmap = byteArray.toBitmap()
                     ui { holder.imageView.setImageBitmap(bitmap) }
                 }
             }
