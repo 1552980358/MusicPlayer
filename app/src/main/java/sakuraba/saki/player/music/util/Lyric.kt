@@ -6,3 +6,5 @@ class Lyric {
     val size get() = timeList.size
     val lastIndex get() = timeList.lastIndex
 }
+
+fun createLyric(block: Lyric.() -> Unit) = Lyric().apply(block)
