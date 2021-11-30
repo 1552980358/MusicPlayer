@@ -64,12 +64,10 @@ import lib.github1552980358.ktExtension.android.content.intent
 import lib.github1552980358.ktExtension.android.graphics.heightF
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.android.graphics.widthF
-import lib.github1552980358.ktExtension.android.kotlin.toBitmap
 import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.android.view.getDimensionPixelSize
 import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.makeSnack
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
-import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import lib.github1552980358.ktExtension.jvm.util.copy
 import sakuraba.saki.player.music.BuildConfig.APPLICATION_ID
 import sakuraba.saki.player.music.base.BaseMediaControlActivity
