@@ -18,11 +18,11 @@ import androidx.media.MediaBrowserServiceCompat
 import androidx.media.app.NotificationCompat.MediaStyle
 import lib.github1552980358.ktExtension.android.content.intent
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
-import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import sakuraba.saki.player.music.BuildConfig
 import sakuraba.saki.player.music.MainActivity
 import sakuraba.saki.player.music.R
-import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
+import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
+import sakuraba.saki.player.music.util.BitmapUtil.loadAudioArtRaw
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_NEXT
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PAUSE
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PLAY
@@ -64,7 +64,9 @@ fun Context.getNotification(audioInfo: AudioInfo, isPaused: Boolean = false) =
         setVibrate(longArrayOf(0))
         setContentTitle(audioInfo.audioTitle)
         setContentText("${audioInfo.audioArtist} - ${audioInfo.audioAlbum}")
-        val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: ContextCompat.getDrawable(this@getNotification, R.drawable.ic_music)!!.toBitmap()
+        val bitmap = loadAudioArtRaw(audioInfo.audioId)
+            ?: loadAlbumArtRaw(audioInfo.audioAlbumId)
+            ?: ContextCompat.getDrawable(this@getNotification, R.drawable.ic_music)!!.toBitmap()
         setLargeIcon(bitmap)
         addAction(
             R.drawable.ic_prev,
