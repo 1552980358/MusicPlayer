@@ -405,6 +405,12 @@ class MainActivity: BaseMediaControlActivity() {
             audioDatabaseHelper.insertMediaAlbum(TABLE_ALBUM, activityInterface.albumList)
 
             activityInterface.audioInfoList = activityInterface.audioInfoFullList.copy().apply {
+                if (getBooleanSetting(R.string.key_audio_filter_size_enable)) {
+                    tryOnly { removeAll { audioInfo -> audioInfo.audioSize < getIntSettingOrThrow(R.string.key_audio_filter_size_value) } }
+                }
+                if (getBooleanSetting(R.string.key_audio_filter_duration_enable)) {
+                    tryOnly { removeAll { audioInfo -> audioInfo.audioDuration < getIntSettingOrThrow(R.string.key_audio_filter_duration_value) } }
+                }
                 sortBy { it.audioTitlePinyin }
                 forEachIndexed { index, audioInfo -> audioInfo.index = index }
             }
