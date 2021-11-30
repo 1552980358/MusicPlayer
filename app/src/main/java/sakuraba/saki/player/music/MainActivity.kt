@@ -427,6 +427,7 @@ class MainActivity: BaseMediaControlActivity() {
                 }
             }
         }
+        loadAudioArt40Dp(activityInterface.audioBitmapMap)
         ui { activityInterface.onCompleteLoading() }
     }
 
@@ -448,6 +449,7 @@ class MainActivity: BaseMediaControlActivity() {
 
         ui { activityInterface.onLoadStageChange() }
 
+        loadAudioArt40Dp(activityInterface.audioBitmapMap)
         loadAlbumArts40Dp(activityInterface.bitmapMap)
         ui { activityInterface.onCompleteLoading() }
         activityInterface.refreshCompleted = true
