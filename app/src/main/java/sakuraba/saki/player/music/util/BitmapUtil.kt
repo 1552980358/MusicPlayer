@@ -99,7 +99,7 @@ object BitmapUtil {
         }
     }
 
-    fun Context.removeAudioArtRaw(audioId: String) {
+    fun Context.removeAudioArt(audioId: String) {
         audioArtRawDir?.listFiles()?.forEach { file ->
             if (file.name.startsWith(audioId)) {
                 file.delete()
