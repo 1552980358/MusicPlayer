@@ -95,7 +95,7 @@ object BitmapUtil {
         }
     }
 
-    val Bitmap.cutAsCube get() = when {
+    val Bitmap.cutAsCube get(): Bitmap = when {
         width > height -> Bitmap.createBitmap(this, (width - height) / 2, 0, height, height)
         width < height -> Bitmap.createBitmap(this, 0, (height - width) / 2, width, width)
         else -> this
