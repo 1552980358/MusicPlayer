@@ -10,16 +10,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
-import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.database.AudioDatabaseHelper
 import sakuraba.saki.player.music.databinding.FragmentAlbumListBinding
 import sakuraba.saki.player.music.ui.album.albumList.util.RecyclerViewAdapterUtil
-import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.MediaAlbum
 import java.util.concurrent.TimeUnit
 import sakuraba.saki.player.music.base.BaseMainFragment
+import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
 import sakuraba.saki.player.music.util.CoroutineUtil.io
 import sakuraba.saki.player.music.util.CoroutineUtil.ui
 
@@ -45,7 +44,7 @@ class AlbumListFragment: BaseMainFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        fragmentAlbumList.imageView.setImageBitmap(tryRun { loadAlbumArt(mediaAlbum.albumId) } ?:  ContextCompat.getDrawable(requireContext(), R.drawable.ic_music)?.toBitmap())
+        fragmentAlbumList.imageView.setImageBitmap(requireContext().loadAlbumArtRaw(mediaAlbum.albumId) ?:  ContextCompat.getDrawable(requireContext(), R.drawable.ic_music)?.toBitmap())
         fragmentAlbumList.textViewTitle.text = mediaAlbum.title
     
         behavior = BottomSheetBehavior.from(fragmentAlbumList.recyclerView)
