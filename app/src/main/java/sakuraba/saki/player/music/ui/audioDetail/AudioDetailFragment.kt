@@ -1,6 +1,9 @@
 package sakuraba.saki.player.music.ui.audioDetail
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.Matrix
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
@@ -22,22 +25,27 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
-import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
+import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_INDEFINITE
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.makeSnack
 import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.shortSnack
 import lib.github1552980358.ktExtension.androidx.fragment.app.findActivityViewById
-import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.databinding.FragmentAudioDetailBinding
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.service.util.mediaUriStr
 import sakuraba.saki.player.music.service.util.parseAsUri
-import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
+import sakuraba.saki.player.music.util.BitmapUtil.cutAsCube
+import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
+import sakuraba.saki.player.music.util.BitmapUtil.loadAudioArtRaw
+import sakuraba.saki.player.music.util.BitmapUtil.removeAudioArt
+import sakuraba.saki.player.music.util.BitmapUtil.writeAudioArt40Dp
+import sakuraba.saki.player.music.util.BitmapUtil.writeAudioArtRaw
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.CoroutineUtil.io
 import sakuraba.saki.player.music.util.CoroutineUtil.ui
@@ -68,6 +76,8 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
 
     private var exit = false
 
+    private var coordinatorLayout: CoordinatorLayout? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         audioInfo = (requireActivity().intent.getSerializableExtra(EXTRAS_DATA) as AudioInfo)
         super.onCreate(savedInstanceState)
@@ -79,9 +89,63 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
             audioInfo.apply {
                 transitionName = audioId + "_image"
                 setImageBitmap(
-                    tryRun { loadAlbumArt(audioAlbumId) } ?: ContextCompat.getDrawable(requireContext(), R.drawable.ic_music)!!.toBitmap()
+                    requireContext().loadAudioArtRaw(audioId)
+                        ?: requireContext().loadAlbumArtRaw(audioAlbumId)
+                        ?: ContextCompat.getDrawable(requireContext(), R.drawable.ic_music)!!.toBitmap()
                 )
             }
+        }
+        coordinatorLayout = findActivityViewById(R.id.coordinator_layout)
+        fragmentAudioDetail.imageView.setImageBitmap(
+            requireContext().loadAudioArtRaw(audioInfo.audioId)
+                ?: requireContext().loadAlbumArtRaw(audioInfo.audioAlbumId)
+                ?: ContextCompat.getDrawable(requireContext(), R.drawable.ic_music)!!.toBitmap()
+        )
+        val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            if (uri == null) {
+                coordinatorLayout?.shortSnack(R.string.audio_detail_image_loading_canceled)
+                return@registerForActivityResult
+            }
+            val snackBar = coordinatorLayout?.makeSnack(R.string.audio_detail_image_loading, LENGTH_INDEFINITE)
+            snackBar?.show()
+            val fileDescriptor = requireContext().contentResolver.openFileDescriptor(uri, "r")
+            if (fileDescriptor == null) {
+                snackBar?.dismiss()
+                coordinatorLayout?.shortSnack(R.string.audio_detail_image_loading_failed)
+                return@registerForActivityResult
+            }
+            io {
+                var bitmap: Bitmap
+                fileDescriptor.use {
+                    bitmap = BitmapFactory.decodeFileDescriptor(it.fileDescriptor).cutAsCube
+                }
+                ui { fragmentAudioDetail.imageView.setImageBitmap(bitmap) }
+                requireContext().writeAudioArtRaw(audioInfo.audioId, bitmap)
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, Matrix().apply {
+                    (resources.getDimension(R.dimen.dp_40) / bitmap.width).apply { setScale(this, this) }
+                }, false)
+                requireContext().writeAudioArt40Dp(audioInfo.audioId, bitmap)
+                ui {
+                    snackBar?.dismiss()
+                    coordinatorLayout?.shortSnack(R.string.audio_detail_image_loading_succeed)
+                }
+            }
+        }
+        fragmentAudioDetail.relativeLayout.setOnClickListener {
+            AlertDialog.Builder(requireContext())
+                .setTitle(R.string.audio_detail_image_title)
+                .setMessage(R.string.audio_detail_image_content)
+                .setNeutralButton(R.string.audio_detail_image_default) { _, _->
+                    io {
+                        requireContext().removeAudioArt(audioInfo.audioId)
+                        val bitmap = requireContext().loadAlbumArtRaw(audioInfo.audioAlbumId)
+                            ?: ContextCompat.getDrawable(requireContext(), R.drawable.ic_music)!!.toBitmap()
+                        ui { fragmentAudioDetail.imageView.setImageBitmap(bitmap) }
+                    }
+                }.setPositiveButton(R.string.audio_detail_image_storage) { _, _ ->
+                    pickImage.launch("image/*")
+                }.setNegativeButton(R.string.audio_detail_image_cancel) { _, _ -> }
+                .show()
         }
         fragmentAudioDetail.preferenceFragmentContainer.apply {
             addView(super.onCreateView(inflater, fragmentAudioDetail.preferenceFragmentContainer, savedInstanceState))
