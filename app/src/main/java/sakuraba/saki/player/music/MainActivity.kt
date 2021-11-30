@@ -20,6 +20,7 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
@@ -83,6 +84,7 @@ import sakuraba.saki.player.music.base.BasePreferenceFragmentCompat
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArts40Dp
+import sakuraba.saki.player.music.util.BitmapUtil.loadAudioArt40Dp
 import sakuraba.saki.player.music.util.BitmapUtil.writeAlbumArt40Dp
 import sakuraba.saki.player.music.util.BitmapUtil.writeAlbumArtRaw
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
