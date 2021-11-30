@@ -6,7 +6,6 @@ import android.animation.ValueAnimator
 import android.app.Instrumentation
 import android.bluetooth.BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED
 import android.content.Intent.ACTION_HEADSET_PLUG
-import android.graphics.BitmapFactory
 import android.graphics.Color.BLACK
 import android.graphics.Color.TRANSPARENT
 import android.graphics.Color.WHITE
@@ -19,6 +18,7 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
@@ -58,7 +58,6 @@ import lib.github1552980358.ktExtension.android.content.intent
 import lib.github1552980358.ktExtension.android.content.register
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.android.os.bundle
-import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import mkaflowski.mediastylepalette.MediaNotificationProcessor
 import sakuraba.saki.player.music.base.BaseMediaControlActivity
 import sakuraba.saki.player.music.databinding.ActivityPlayBinding
@@ -83,6 +82,7 @@ import sakuraba.saki.player.music.ui.play.util.DividerItemDecoration
 import sakuraba.saki.player.music.util.AudioUtil
 import sakuraba.saki.player.music.util.AudioUtil.getOutputDevice
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
+import sakuraba.saki.player.music.util.BitmapUtil.loadAudioArtRaw
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.CoroutineUtil.io
@@ -171,11 +171,13 @@ class PlayActivity: BaseMediaControlActivity() {
                 @Suppress("SetTextI18n")
                 textViewSummary.text = "${audioInfo.audioArtist} - ${audioInfo.audioAlbum}"
             }
-            val byteArray = intent?.getByteArrayExtra(EXTRAS_DATA)
-            val bitmap = tryRun { BitmapFactory.decodeByteArray(byteArray, 0, byteArray!!.size) } ?: ContextCompat.getDrawable(this@PlayActivity, R.drawable.ic_music)?.toBitmap()
+            val bitmap = loadAudioArtRaw(audioInfo.audioId)
+                ?: loadAlbumArt(audioInfo.audioAlbumId)
+                ?: ContextCompat.getDrawable(this@PlayActivity, R.drawable.ic_music)!!.toBitmap()
             ui { activityPlay.imageView.setImageBitmap(bitmap) }
+            val blurredBitmap = Toolkit.blur(bitmap!!, 25)
             MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated(true)
-            activityPlay.lyricLayout.updateBitmap(Toolkit.blur(bitmap!!, 25))
+            ui { activityPlay.lyricLayout.updateBitmap(blurredBitmap) }
         }
     
         findViewById<CardView>(R.id.card_view).apply {
@@ -435,9 +437,9 @@ class PlayActivity: BaseMediaControlActivity() {
     override fun onMediaControllerMetadataChanged(metadata: MediaMetadataCompat?) {
         metadata ?: return
         io {
-            val bitmap = tryRun { loadAlbumArtRaw(metadata.getString(METADATA_KEY_ALBUM_ART_URI)) }
-                    ?: ContextCompat.getDrawable(this@PlayActivity, R.drawable.ic_music)?.toBitmap()
-            // ui { activityPlay.imageView.setImageBitmap(bitmap) }
+            val bitmap = loadAudioArtRaw(metadata.getString(METADATA_KEY_MEDIA_ID))
+                ?: loadAlbumArtRaw(metadata.getString(METADATA_KEY_ALBUM_ART_URI))
+                ?: ContextCompat.getDrawable(this@PlayActivity, R.drawable.ic_music)!!.toBitmap()
             val blurredBitmap = Toolkit.blur(bitmap!!, 25)
             ValueAnimator.ofFloat(1F, 0F).apply {
                 duration = 250
