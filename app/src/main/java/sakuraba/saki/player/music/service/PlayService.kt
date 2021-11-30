@@ -41,6 +41,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import kotlinx.coroutines.delay
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
+import lib.github1552980358.ktExtension.android.content.commit
 import lib.github1552980358.ktExtension.android.content.register
 import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
@@ -84,6 +85,7 @@ import sakuraba.saki.player.music.util.CoroutineUtil.io
 import sakuraba.saki.player.music.util.CoroutineUtil.ui
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_CREATE
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_START_COMMAND
+import sakuraba.saki.player.music.util.SettingUtil.defaultSharedPreference
 import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
 import sakuraba.saki.player.music.web.util.WebControlUtil
 
@@ -340,7 +342,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
             .addCustomAction(ACTION_REQUEST_STATUS, ACTION_REQUEST_STATUS, R.drawable.ic_launcher_foreground)
             .addCustomAction(ACTION_UPDATE_PLAY_MODE, ACTION_UPDATE_PLAY_MODE, R.drawable.ic_launcher_foreground)
             .addCustomAction(ACTION_REQUEST_AUDIO_LIST, ACTION_REQUEST_AUDIO_LIST, R.drawable.ic_launcher_foreground)
-            .setExtras(bundle { putInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST) })
+            .setExtras(bundle { putInt(EXTRAS_PLAY_MODE, defaultSharedPreference.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST)) })
             .build()
         
         mediaSession = MediaSessionCompat(this, ROOT_ID).apply {
@@ -457,6 +459,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
                 audioInfoList.forEachIndexed { index, audioInfo -> audioInfo.index = index }
                 listPos = audioInfoList.indexOf(current)
                 result.sendResult(bundle { putSerializable(EXTRAS_AUDIO_INFO_LIST, getAudioList()) })
+                defaultSharedPreference.commit(EXTRAS_PLAY_MODE, playMode)
             }
             ACTION_REQUEST_AUDIO_LIST -> result.sendResult(bundle { putSerializable(ACTION_EXTRA, getAudioList()) })
             else -> super.onCustomAction(action, extras, result)
