@@ -36,6 +36,7 @@ class AudioFilterFragment: BasePreferenceFragmentCompat() {
                     if (getBooleanSetting(R.string.key_audio_filter_duration_enable)) {
                         tryOnly { removeAll { audioInfo -> audioInfo.audioDuration < getIntSettingOrThrow(R.string.key_audio_filter_duration_value) } }
                     }
+                    sortBy { it.audioTitlePinyin }
                     forEachIndexed { index, audioInfo -> audioInfo.index = index }
                 }
                 activityInterface.hasAudioInfoListUpdated = true
@@ -66,6 +67,7 @@ class AudioFilterFragment: BasePreferenceFragmentCompat() {
                     if (newValue) {
                         tryOnly { removeAll { audioInfo -> audioInfo.audioDuration < getIntSettingOrThrow(R.string.key_audio_filter_duration_value) } }
                     }
+                    sortBy { it.audioTitlePinyin }
                     forEachIndexed { index, audioInfo -> audioInfo.index = index }
                 }
                 activityInterface.hasAudioInfoListUpdated = true
