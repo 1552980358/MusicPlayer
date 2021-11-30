@@ -105,6 +105,12 @@ object BitmapUtil {
                 file.delete()
             }
         }
+        audioArt40DpDir?.listFiles()?.forEach { file ->
+            if (file.name.startsWith(audioId)) {
+                file.delete()
+            }
+
+        }
     }
 
     val Bitmap.cutAsCube get() = when {
