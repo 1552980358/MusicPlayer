@@ -303,6 +303,7 @@ class MainActivity: BaseMediaControlActivity() {
                 io {
                     audioDatabaseHelper.clearTable(TABLE_AUDIO)
                     audioDatabaseHelper.clearTable(TABLE_AUDIO)
+                    activityInterface.clearLists()
                     initLaunchProcess()
                 }
             }
