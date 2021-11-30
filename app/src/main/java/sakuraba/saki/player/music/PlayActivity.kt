@@ -63,7 +63,6 @@ import sakuraba.saki.player.music.base.BaseMediaControlActivity
 import sakuraba.saki.player.music.databinding.ActivityPlayBinding
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.ui.play.util.RecyclerViewAdapter
-import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.Constants
 import sakuraba.saki.player.music.util.Constants.ACTION_EXTRA
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_AUDIO_LIST
@@ -172,7 +171,7 @@ class PlayActivity: BaseMediaControlActivity() {
                 textViewSummary.text = "${audioInfo.audioArtist} - ${audioInfo.audioAlbum}"
             }
             val bitmap = loadAudioArtRaw(audioInfo.audioId)
-                ?: loadAlbumArt(audioInfo.audioAlbumId)
+                ?: loadAlbumArtRaw(audioInfo.audioAlbumId)
                 ?: ContextCompat.getDrawable(this@PlayActivity, R.drawable.ic_music)!!.toBitmap()
             ui { activityPlay.imageView.setImageBitmap(bitmap) }
             val blurredBitmap = Toolkit.blur(bitmap!!, 25)
