@@ -49,6 +49,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_DRAGGIN
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HALF_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_SETTLING
+import com.google.android.renderscript.Toolkit
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
@@ -174,7 +175,7 @@ class PlayActivity: BaseMediaControlActivity() {
             val bitmap = tryRun { BitmapFactory.decodeByteArray(byteArray, 0, byteArray!!.size) } ?: ContextCompat.getDrawable(this@PlayActivity, R.drawable.ic_music)?.toBitmap()
             ui { activityPlay.imageView.setImageBitmap(bitmap) }
             MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated(true)
-            activityPlay.lyricLayout.updateBitmap(bitmap)
+            activityPlay.lyricLayout.updateBitmap(Toolkit.blur(bitmap!!, 25))
         }
     
         findViewById<CardView>(R.id.card_view).apply {
@@ -437,23 +438,29 @@ class PlayActivity: BaseMediaControlActivity() {
             val bitmap = tryRun { loadAlbumArtRaw(metadata.getString(METADATA_KEY_ALBUM_ART_URI)) }
                     ?: ContextCompat.getDrawable(this@PlayActivity, R.drawable.ic_music)?.toBitmap()
             // ui { activityPlay.imageView.setImageBitmap(bitmap) }
+            val blurredBitmap = Toolkit.blur(bitmap!!, 25)
             ValueAnimator.ofFloat(1F, 0F).apply {
                 duration = 250
-                addUpdateListener { activityPlay.imageView.alpha = animatedValue as Float }
+                addUpdateListener {
+                    activityPlay.imageView.alpha = animatedValue as Float
+                    activityPlay.lyricLayout.updateImageViewAlpha(animatedValue as Float)
+                }
                 addListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator?) {
                         activityPlay.imageView.setImageBitmap(bitmap)
+                        activityPlay.lyricLayout.updateBitmap(blurredBitmap)
                         ValueAnimator.ofFloat(0F, 1F).apply {
                             duration = 250
-                            addUpdateListener { activityPlay.imageView.alpha = animatedValue as Float }
-                            // ui { start() }
+                            addUpdateListener {
+                                activityPlay.imageView.alpha = animatedValue as Float
+                                activityPlay.lyricLayout.updateImageViewAlpha(animatedValue as Float)
+                            }
                         }.start()
                     }
                 })
                 ui { start() }
             }
             MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated(false)
-            activityPlay.lyricLayout.updateBitmap(bitmap)
         }
         viewModel.updateDuration(metadata.getLong(METADATA_KEY_DURATION))
 
