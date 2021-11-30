@@ -1,6 +1,5 @@
 package sakuraba.saki.player.music.ui.home.util
 
-import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +28,7 @@ class RecyclerViewAdapterUtil(private val fragment: Fragment, private val activi
         val background: RelativeLayout = view.findViewById(R.id.relative_layout_root)
     }
     
-    private inner class RecyclerViewAdapter(var audioInfoList: List<AudioInfo>, val bitmapMap: Map<Long, Bitmap?>, private val selection: (pos: Int) -> Unit): RecyclerView.Adapter<ViewHolder>() {
+    private inner class RecyclerViewAdapter(var audioInfoList: List<AudioInfo>, private val selection: (pos: Int) -> Unit): RecyclerView.Adapter<ViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_home_recycler_view, parent, false))
@@ -40,7 +39,11 @@ class RecyclerViewAdapterUtil(private val fragment: Fragment, private val activi
                 title.text = audioTitle
                 @Suppress("SetTextI18n")
                 summary.text = "$audioArtist - $audioAlbum"
-                image.setImageBitmap(bitmapMap[audioAlbumId] ?: ContextCompat.getDrawable(background.context, R.drawable.ic_music)?.toBitmap())
+                image.setImageBitmap(
+                    activityInterface.audioBitmapMap[audioId]
+                        ?: activityInterface.bitmapMap[audioAlbumId]
+                        ?: ContextCompat.getDrawable(background.context, R.drawable.ic_music)?.toBitmap()
+                )
             }
             background.setOnClickListener { selection(position) }
             background.setOnLongClickListener {
@@ -57,7 +60,7 @@ class RecyclerViewAdapterUtil(private val fragment: Fragment, private val activi
         
     }
     
-    private val adapter = RecyclerViewAdapter(activityInterface.audioInfoList, activityInterface.bitmapMap, selection)
+    private val adapter = RecyclerViewAdapter(activityInterface.audioInfoList, selection)
     
     fun setAdapterToRecyclerView(recyclerView: RecyclerView) {
         recyclerView.adapter = adapter
