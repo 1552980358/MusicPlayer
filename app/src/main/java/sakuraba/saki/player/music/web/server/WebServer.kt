@@ -3,18 +3,23 @@ package sakuraba.saki.player.music.web.server
 import android.content.Context
 import android.graphics.Bitmap.CompressFormat.JPEG
 import android.util.Log
+import androidx.core.content.ContextCompat
 import fi.iki.elonen.NanoHTTPD
 import fi.iki.elonen.NanoHTTPD.Response.Status.OK
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.android.graphics.getByteArray
+import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
+import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.database.AudioDatabaseHelper
 import sakuraba.saki.player.music.service.PlayService
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.service.util.startService
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
+import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
+import sakuraba.saki.player.music.util.BitmapUtil.loadAudioArtRaw
 import sakuraba.saki.player.music.util.Constants.ACTION_EXTRA
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_POS
@@ -68,8 +73,13 @@ class WebServer(port: Int, private val context: Context, private val webControlU
     }
 
     private fun albumArtResponse(session: IHTTPSession): Response {
-        val id = session.parameters["albumId"]?.first()?.toLong() ?: return defaultAlbumArtResponse
-        val byteArray = tryRun { context.loadAlbumArt(id)?.getByteArray(format = JPEG) } ?: return defaultAlbumArtResponse
+        val albumId = session.parameters["albumId"]?.first() ?: return defaultAlbumArtResponse
+        val id = session.parameters["id"]?.first() ?: return defaultAlbumArtResponse
+        val byteArray =
+            (context.loadAudioArtRaw(id)
+                ?: context.loadAlbumArtRaw(albumId)
+                ?: ContextCompat.getDrawable(context, R.drawable.ic_music)!!.toBitmap()
+                ?: return defaultAlbumArtResponse).getByteArray()!!
         return newFixedLengthResponse(OK, "image/x-icon", ByteArrayInputStream(byteArray), byteArray.size.toLong())
     }
 
