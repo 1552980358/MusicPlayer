@@ -11,13 +11,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import lib.github1552980358.ktExtension.android.graphics.getByteArray
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
-import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.database.AudioDatabaseHelper
 import sakuraba.saki.player.music.service.PlayService
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.service.util.startService
-import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
 import sakuraba.saki.player.music.util.BitmapUtil.loadAudioArtRaw
 import sakuraba.saki.player.music.util.Constants.ACTION_EXTRA
