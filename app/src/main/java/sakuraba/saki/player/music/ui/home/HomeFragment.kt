@@ -32,7 +32,7 @@ class HomeFragment: BaseMainFragment() {
 
         fragmentHome.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recyclerViewAdapter = RecyclerViewAdapterUtil(this, activityInterface) { pos ->
-            activityInterface.onFragmentListItemClick(pos, recyclerViewAdapter.audioInfoList[pos], recyclerViewAdapter.audioInfoList)
+            activityInterface.onFragmentListItemClick(pos, activityInterface.audioInfoList[pos], activityInterface.audioInfoList)
         }
         recyclerViewAdapter.setAdapterToRecyclerView(fragmentHome.recyclerView)
         fragmentHome.recyclerView.addItemDecoration(DividerItemDecoration())
