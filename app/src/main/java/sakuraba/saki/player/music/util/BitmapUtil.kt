@@ -32,7 +32,7 @@ object BitmapUtil {
     private const val ALBUM_ART_40DP_DIR = "album_art_40dp"
     private val Context.albumArt40DpDir get() = getExternalFilesDir(ALBUM_ART_40DP_DIR)
 
-    fun Bitmap.writeAlbumArt(file: File) =
+    private fun Bitmap.writeBitmap(file: File) =
             getByteArray(format = Bitmap.CompressFormat.JPEG)?.apply { file.writeBytes(this) }
 
     fun Context.readAlbumArt(albumId: Long) = tryRun {
@@ -41,7 +41,7 @@ object BitmapUtil {
     }
 
     fun Context.writeAlbumArt40Dp(albumId: Long, bitmap: Bitmap?) =
-            bitmap?.writeAlbumArt(File(albumArt40DpDir, albumId.toString()))
+            bitmap?.writeBitmap(File(albumArt40DpDir, albumId.toString()))
 
     fun Context.loadAlbumArts40Dp(bitmapMap: MutableMap<Long, Bitmap?>) {
         albumArt40DpDir?.listFiles()?.forEach { file ->
@@ -53,7 +53,7 @@ object BitmapUtil {
     private val Context.albumArtRawDir get() = getExternalFilesDir(ALBUM_ART_RAW_DIR)
 
     fun Context.writeAlbumArtRaw(albumId: Long, bitmap: Bitmap?) =
-            bitmap?.writeAlbumArt(File(albumArtRawDir, albumId.toString()))
+            bitmap?.writeBitmap(File(albumArtRawDir, albumId.toString()))
 
     fun Context.loadAlbumArtRaw(byteArrayMap: MutableMap<Long, ByteArray>) {
         albumArtRawDir?.listFiles()?.forEach { file ->
