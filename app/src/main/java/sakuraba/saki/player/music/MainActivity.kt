@@ -209,8 +209,9 @@ class MainActivity: BaseMediaControlActivity() {
                 playProgressBar.max = audioInfo.audioDuration
                 textView.text = audioInfo.audioTitle
                 imageView.setImageBitmap(
-                        activityInterface.bitmapMap[audioInfo.audioAlbumId]
-                                ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
+                    activityInterface.audioBitmapMap[audioInfo.audioId]
+                        ?: activityInterface.bitmapMap[audioInfo.audioAlbumId]
+                        ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
                 )
             }
         }
@@ -485,7 +486,10 @@ class MainActivity: BaseMediaControlActivity() {
                         }
                         textView.text = audioInfo.audioTitle
                         io {
-                            val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
+                            val bitmap =
+                                activityInterface.audioBitmapMap[audioInfo.audioId]
+                                    ?: activityInterface.bitmapMap[audioInfo.audioAlbumId]
+                                    ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
                             ui { imageView.setImageBitmap(bitmap) }
                         }
                     }
@@ -540,7 +544,9 @@ class MainActivity: BaseMediaControlActivity() {
         metadata ?: return
         io {
             val bitmap =
-                    tryRun { activityInterface.byteArrayMap[metadata.getString(METADATA_KEY_ALBUM_ART_URI).toLong()]?.toBitmap() } ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
+                activityInterface.audioBitmapMap[metadata.getString(METADATA_KEY_MEDIA_ID)]
+                        ?: activityInterface.bitmapMap[metadata.getString(METADATA_KEY_ALBUM_ART_URI).toLong()]
+                        ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
             ui { imageView.setImageBitmap(bitmap) }
         }
         textView.text = metadata.getString(METADATA_KEY_TITLE)
@@ -586,7 +592,10 @@ class MainActivity: BaseMediaControlActivity() {
                     }
                     textView.text = audioInfo.audioTitle
                     io {
-                        val bitmap = tryRun { loadAlbumArt(audioInfo.audioAlbumId) } ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
+                        val bitmap =
+                            activityInterface.audioBitmapMap[audioInfo.audioId]
+                                ?: activityInterface.bitmapMap[audioInfo.audioAlbumId]
+                                ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
                         ui { imageView.setImageBitmap(bitmap) }
                     }
                 }
