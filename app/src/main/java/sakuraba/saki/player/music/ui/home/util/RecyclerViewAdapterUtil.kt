@@ -69,7 +69,4 @@ class RecyclerViewAdapterUtil(private val fragment: Fragment, private val activi
         adapter.notifyDataSetChanged()
     }
     
-    val audioInfoList get() = adapter.audioInfoList as ArrayList
-    val bitmapMap get() = adapter.bitmapMap as MutableMap
-    
 }
