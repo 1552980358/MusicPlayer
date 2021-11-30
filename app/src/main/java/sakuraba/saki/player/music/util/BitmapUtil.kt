@@ -62,6 +62,8 @@ object BitmapUtil {
         }
     }
 
+    fun Context.loadAlbumArtRaw(albumId: Long) = loadAlbumArtRaw(albumId.toString())
+
     fun Context.loadAlbumArtRaw(albumId: String): Bitmap? {
         albumArtRawDir?.listFiles()?.forEach { file ->
             if (file.name.contains(albumId)) {
