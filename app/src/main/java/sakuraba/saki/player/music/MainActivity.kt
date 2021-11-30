@@ -443,7 +443,6 @@ class MainActivity: BaseMediaControlActivity() {
         activityInterface.audioInfoList = activityInterface.audioInfoFullList.run {
                 clear()
                 audioDatabaseHelper.queryAllAudio(this)
-                sortBy { it.audioTitlePinyin }
                 copy()
         }.apply {
             if (getBooleanSetting(R.string.key_audio_filter_size_enable)) {
@@ -452,6 +451,7 @@ class MainActivity: BaseMediaControlActivity() {
             if (getBooleanSetting(R.string.key_audio_filter_duration_enable)) {
                 tryOnly { removeAll { audioInfo -> audioInfo.audioDuration < getIntSettingOrThrow(R.string.key_audio_filter_duration_value) } }
             }
+            sortBy { it.audioTitlePinyin }
             forEachIndexed { index, audioInfo -> audioInfo.index = index }
         }
 
