@@ -12,7 +12,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.RelativeLayout
 import androidx.annotation.ColorInt
-import com.google.android.renderscript.Toolkit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -97,13 +96,11 @@ class LyricLayout: RelativeLayout {
         layoutLyric.verticalSeekbar.updateSecondaryColor(newColor)
     }
 
-    fun updateBitmap(bitmap: Bitmap?) {
-        if (bitmap == null) {
-            ui { layoutLyric.imageView.setImageBitmap(null) }
-            return
-        }
-        val blurredBitmap = Toolkit.blur(bitmap, 25)
-        ui { layoutLyric.imageView.setImageBitmap(blurredBitmap) }
+    fun updateBitmap(bitmap: Bitmap?) =
+            layoutLyric.imageView.setImageBitmap(bitmap)
+
+    fun updateImageViewAlpha(alpha: Float) {
+        layoutLyric.imageView.alpha = alpha
     }
 
     fun unregisterBroadcastReceiver() {
