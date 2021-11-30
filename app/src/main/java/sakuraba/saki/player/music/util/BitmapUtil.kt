@@ -72,5 +72,45 @@ object BitmapUtil {
         }
         return null
     }
+
+    private const val AUDIO_ART_RAW_40DP = "audio_art_40dp"
+    private val Context.audioArt40DpDir get() = getExternalFilesDir(AUDIO_ART_RAW_40DP)
+    private const val AUDIO_ART_RAW_DIR = "audio_art_raw"
+    private val Context.audioArtRawDir get() = getExternalFilesDir(AUDIO_ART_RAW_DIR)
+
+    fun Context.writeAudioArt40Dp(audioId: String, bitmap: Bitmap?) =
+        bitmap?.writeBitmap(File(audioArt40DpDir, audioId))
+
+    fun Context.writeAudioArtRaw(audioId: String, bitmap: Bitmap?) =
+        bitmap?.writeBitmap(File(audioArtRawDir, audioId))
+
+    fun Context.loadAudioArtRaw(audioId: String): Bitmap? {
+        audioArtRawDir?.listFiles()?.forEach { file ->
+            if (file.name.startsWith(audioId)) {
+                return file.readAsBitmap()
+            }
+        }
+        return null
+    }
+
+    fun Context.loadAudioArt40Dp(bitmapMap: MutableMap<String, Bitmap?>) {
+        audioArt40DpDir?.listFiles()?.forEach { file ->
+            bitmapMap[file.name] = file.readAsBitmap()
+        }
+    }
+
+    fun Context.removeAudioArtRaw(audioId: String) {
+        audioArtRawDir?.listFiles()?.forEach { file ->
+            if (file.name.startsWith(audioId)) {
+                file.delete()
+            }
+        }
+    }
+
+    val Bitmap.cutAsCube get() = when {
+        width > height -> Bitmap.createBitmap(this, (width - height) / 2, 0, height, height)
+        width < height -> Bitmap.createBitmap(this, 0, (height - width) / 2, width, width)
+        else -> this
+    }
     
 }
