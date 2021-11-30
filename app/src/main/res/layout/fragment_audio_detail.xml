@@ -8,7 +8,9 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/audio_detail_relative_layout_height">
+        android:layout_height="@dimen/audio_detail_relative_layout_height"
+        android:id="@+id/relative_layout"
+        android:background="?attr/selectableItemBackground">
         <ImageView
             android:layout_width="@dimen/audio_detail_image_view_size"
             android:layout_height="@dimen/audio_detail_image_view_size"
