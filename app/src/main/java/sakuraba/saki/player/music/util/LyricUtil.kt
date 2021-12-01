@@ -62,7 +62,7 @@ object LyricUtil {
         val indexBracket = indexOf(']')
         val time = getTimeLong(indexBracket) ?: return
         val lyric = substring(indexBracket + 1)
-        if (lyric.isNotEmpty()) {
+        if (lyric.isNotEmpty() && !lyric.startsWith('[') && !lyric.endsWith(']')) {
             lyricList.add(lyric)
             timeList.add(time)
         }
