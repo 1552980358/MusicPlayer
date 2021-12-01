@@ -92,6 +92,12 @@
     <string name="audio_detail_lyric_import_no_file_selected">No lyric file selected</string>
     <string name="audio_detail_lyric_import_cannot_open_file">Cannot open selected file: </string>
     <string name="audio_detail_lyric_import_incorrect_format">Empty or incorrect lyric format: </string>
+    <string name="audio_detail_lyric_netease">Import Lyric From NetEase Music</string>
+    <string name="audio_detail_lyric_netease_key">key_lyric_netease</string>
+    <string name="audio_detail_netease_dialog">Input share link or music id</string>
+    <string name="audio_detail_netease_dialog_ok">OK</string>
+    <string name="audio_detail_netease_dialog_cancel">Cancel</string>
+    <string name="audio_detail_netease_dialog_failed">Cannot download lyric data from NetEase Music for ID: </string>
     <string name="audio_detail_lyric_view">View Lyric</string>
     <string name="audio_detail_lyric_view_key">key_lyric_view</string>
     <string name="audio_detail_lyric_remove">Remove Lyric</string>
