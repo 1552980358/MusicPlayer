@@ -53,36 +53,52 @@ object LyricUtil {
 
     fun String.decodeLine(lyricList: ArrayList<String>, timeList: ArrayList<Long>) {
         /**
-         * Example: [00:00.00]lyric content...
+         * Example: [00:00.00]lyric content...; or
+         *          [00:00.000]lyric content...
          **/
         if (length < 11) {
             return
         }
-        val time = getTimeLong ?: return
-        val lyric = substring(10)
+        val indexBracket = indexOf(']')
+        val time = getTimeLong(indexBracket) ?: return
+        val lyric = substring(indexBracket + 1)
         if (lyric.isNotEmpty()) {
             lyricList.add(lyric)
             timeList.add(time)
         }
     }
 
-    private val String.getTimeLong get(): Long? {
-        if (!startsWith('[') || indexOf(']') != 9) {
-            return null
-        }
-        return (substring(1, 3).toLong() * 60 + substring(4, 6).toLong()) * 1000 + substring(7, 9).toLong() * 10
+    private val String.minute get() = substring(1, 3)
+    private val String.second get() = substring(4, 6)
+    private fun String.millisecond(indexBracket: Int): String {
+        val mils = substring(7, indexBracket)
+        return mils + (if (mils.length == 3) "" else '0')
     }
 
-    private val Long.withLeadingZero get() = if (this > 9) "$this" else "0$this"
+    private fun String.getTimeLong(indexBracket: Int): Long? {
+        if (!startsWith('[') || indexBracket == -1 || (indexBracket != 9 && indexBracket != 10)) {
+            return null
+        }
+        return (minute.toLong() * 60 + second.toLong()) * 1000 + millisecond(indexBracket).toLong()
+    }
 
-    val Long.timeStrWithBracket get() = "[$timeStr]"
+    private val Long.with3DigitLeadingZero get() = when (this) {
+        in (100 .. 999) -> this.toString()
+        in (10 .. 99) -> "0$this"
+        in (0 .. 9) -> "00$this"
+        else -> "000"
+    }
+
+    private val Long.with2DigitLeadingZero get() = if (this > 9) this.toString() else "0$this"
+
+    private val Long.timeStrWithBracket get() = "[$timeStr]"
 
     val Long.timeStr get(): String {
         val secMils = this % 60000
         val sec = secMils / 1000
-        return (this / 60000).withLeadingZero + ':' +
-                sec.withLeadingZero + '.' +
-                ((secMils - sec * 1000) / 10).withLeadingZero
+        return (this / 60000).with2DigitLeadingZero + ':' +
+                sec.with2DigitLeadingZero + '.' +
+                (secMils - sec * 1000).with3DigitLeadingZero
     }
 
 }
