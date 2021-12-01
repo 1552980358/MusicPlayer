@@ -1,5 +1,7 @@
 package sakuraba.saki.player.music.widget
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Context.AUDIO_SERVICE
@@ -77,9 +79,20 @@ class LyricLayout: RelativeLayout {
 
     fun updateVisibility(): Boolean {
         isShow = !isShow
+        if (isShow) {
+            visibility = VISIBLE
+        }
         (if (isShow) ValueAnimator.ofFloat(0F, 1F) else ValueAnimator.ofFloat(1F, 0F)).apply {
             duration = 500
             addUpdateListener { alpha = animatedValue as Float }
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    super.onAnimationEnd(animation)
+                    if (!isShow) {
+                        visibility = GONE
+                    }
+                }
+            })
             start()
         }
         return isShow
