@@ -40,6 +40,7 @@ import sakuraba.saki.player.music.databinding.FragmentAudioDetailBinding
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.service.util.mediaUriStr
 import sakuraba.saki.player.music.service.util.parseAsUri
+import sakuraba.saki.player.music.ui.audioDetail.netease.NetEaseDialog
 import sakuraba.saki.player.music.util.BitmapUtil.cutAsCube
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
 import sakuraba.saki.player.music.util.BitmapUtil.loadAudioArtRaw
@@ -270,6 +271,10 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                     pickLyric.launch("*/*")
                     return@setOnPreferenceClickListener true
                 }
+            }
+            preference(R.string.audio_detail_lyric_netease_key)?.setOnPreferenceClickListener {
+                NetEaseDialog(audioId, this@AudioDetailFragment).show()
+                return@setOnPreferenceClickListener true
             }
             val hasLyric = requireContext().hasLyric(audioId)
             preference(R.string.audio_detail_lyric_view_key)?.apply {
