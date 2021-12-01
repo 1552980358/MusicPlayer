@@ -304,9 +304,20 @@ class PlayActivity: BaseMediaControlActivity() {
         }
 
         activityPlay.imageButtonLyric.setOnClickListener {
-            activityPlay.imageButtonLyric.setImageResource(
-                if (activityPlay.lyricLayout.updateVisibility()) R.drawable.ic_lyric_enabled else R.drawable.ic_lyric
-            )
+            val visibility = activityPlay.lyricLayout.updateVisibility()
+            activityPlay.imageButtonLyric.setImageResource(if (visibility) R.drawable.ic_lyric_enabled else R.drawable.ic_lyric)
+            activityPlay.relativeLayoutToolbarRoot.apply {
+                if (!visibility) this.visibility = VISIBLE
+                animate().alpha(if (visibility) 0F else 1F)
+                    .setDuration(500)
+                    .setListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator?) {
+                            if (visibility) {
+                                this@apply.visibility = GONE
+                            }
+                        }
+                    }).start()
+            }
             activityPlay.imageButtonLyric.drawable?.setTint(if (viewModel.isLightBackground.value == true) BLACK else WHITE)
         }
         _recyclerView = findViewById(R.id.recycler_view)
