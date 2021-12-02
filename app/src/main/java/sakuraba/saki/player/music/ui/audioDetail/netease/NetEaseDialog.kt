@@ -16,7 +16,7 @@ import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.util.CoroutineUtil.io
 import sakuraba.saki.player.music.util.CoroutineUtil.ui
 import sakuraba.saki.player.music.util.LyricUtil.writeLyric
-import sakuraba.saki.player.music.util.NetEaseUtil.lyric
+import sakuraba.saki.player.music.util.NetEaseUtil.netEase
 import sakuraba.saki.player.music.util.PreferenceUtil.preference
 
 class NetEaseDialog(private val audioId: String, private val parentFragment: PreferenceFragmentCompat): DialogFragment() {
@@ -40,7 +40,7 @@ class NetEaseDialog(private val audioId: String, private val parentFragment: Pre
                     setPositiveButton(R.string.audio_detail_netease_dialog_ok) { _, _ ->
                         io {
                             val text = editText.text
-                            val lyric = text.toString().lyric
+                            val lyric = text.toString().netEase
                             if (lyric.size == 0) {
                                 ui {
                                     coordinatorLayout?.shortSnack(getString(R.string.audio_detail_netease_dialog_failed) + text)
