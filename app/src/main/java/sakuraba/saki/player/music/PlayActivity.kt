@@ -579,6 +579,7 @@ class PlayActivity: BaseMediaControlActivity() {
         activityPlay.imageButtonPrev.drawable.setTint(newColor)
         activityPlay.imageButtonPlayMode.drawable.setTint(newColor)
         activityPlay.imageButtonLyric.drawable.setTint(newColor)
+        activityPlay.lyricLayout.updateStrokeColor(newColor)
     }
     
     override fun getParentID() = TAG
