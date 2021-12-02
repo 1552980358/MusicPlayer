@@ -553,12 +553,12 @@ class PlayActivity: BaseMediaControlActivity() {
         ui { viewModel.setIsLightBackground(isLight) }
         if (isInit) {
             ui {
-                updateControlButtonColor(if (isLight) BLACK else WHITE)
+                updateOppositeColor(if (isLight) BLACK else WHITE)
                 viewModel.isLightBackground.observe(this@PlayActivity) { isLight ->
                     if (isLight) { ValueAnimator.ofArgb(WHITE, BLACK) } else { ValueAnimator.ofArgb(BLACK, WHITE) }.apply {
                         duration = 500
                         addUpdateListener {
-                            updateControlButtonColor(animatedValue as Int)
+                            updateOppositeColor(animatedValue as Int)
                         }
                     }.start()
                 }
@@ -574,7 +574,7 @@ class PlayActivity: BaseMediaControlActivity() {
         }
     }
     
-    private fun updateControlButtonColor(@ColorInt newColor: Int) {
+    private fun updateOppositeColor(@ColorInt newColor: Int) {
         activityPlay.imageButtonNext.drawable.setTint(newColor)
         activityPlay.imageButtonPrev.drawable.setTint(newColor)
         activityPlay.imageButtonPlayMode.drawable.setTint(newColor)
