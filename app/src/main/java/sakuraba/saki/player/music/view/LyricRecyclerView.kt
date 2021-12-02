@@ -38,7 +38,7 @@ class LyricRecyclerView: RecyclerView {
 
     private class LyricViewHolder(view: View): ViewHolder(view) {
         val relativeLayout: RelativeLayout = view.findViewById(R.id.relative_layout)
-        val textView: TextView = view.findViewById(R.id.text_view)
+        val textView: StrokeTextView = view.findViewById(R.id.text_view)
     }
 
     private inner class LyricAdapter: Adapter<LyricViewHolder>() {
