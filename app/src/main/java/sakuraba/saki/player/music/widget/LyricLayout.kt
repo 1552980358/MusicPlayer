@@ -109,6 +109,10 @@ class LyricLayout: RelativeLayout {
         layoutLyric.verticalSeekbar.updateSecondaryColor(newColor)
     }
 
+    fun updateStrokeColor(@ColorInt newColor: Int) {
+        layoutLyric.lyricView.updateStrokeColor(newColor)
+    }
+
     fun updateBitmap(bitmap: Bitmap?) =
             layoutLyric.imageView.setImageBitmap(bitmap)
 
