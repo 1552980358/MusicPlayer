@@ -3,6 +3,7 @@ package sakuraba.saki.player.music.util
 import android.content.Context
 import java.io.File
 import lib.github1552980358.ktExtension.jvm.io.writingLn
+import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 
 object LyricUtil {
 
@@ -60,11 +61,13 @@ object LyricUtil {
             return
         }
         val indexBracket = indexOf(']')
-        val time = getTimeLong(indexBracket) ?: return
-        val lyric = substring(indexBracket + 1)
-        if (lyric.isNotEmpty() && !lyric.startsWith('[') && !lyric.endsWith(']')) {
-            lyricList.add(lyric)
-            timeList.add(time)
+        tryOnly {
+            val time = getTimeLong(indexBracket) ?: return
+            val lyric = substring(indexBracket + 1)
+            if (lyric.isNotEmpty() && !lyric.startsWith('[') && !lyric.endsWith(']')) {
+                lyricList.add(lyric)
+                timeList.add(time)
+            }
         }
     }
 
