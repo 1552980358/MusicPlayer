@@ -3,6 +3,7 @@ package sakuraba.saki.player.music.view
 import android.app.Activity
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color.BLACK
 import android.graphics.Typeface.BOLD
 import android.graphics.Typeface.NORMAL
 import android.util.AttributeSet
@@ -30,6 +31,7 @@ class LyricRecyclerView: RecyclerView {
     private var lyric: Lyric? = null
     private var primaryColor: Int
     private var secondaryColor: Int
+    private var strokeColor: Int
 
     private var lastLyric = -2
     private var currentLyric = -2
@@ -50,7 +52,7 @@ class LyricRecyclerView: RecyclerView {
             }
             lyric?.let { textView.text = it.lyricList[position] }
 
-            textView.setTextColor(
+            textView.setContentColor(
                     if (position == currentLyric) {
                         textView.setTypeface(null, BOLD)
                         primaryColor
@@ -59,6 +61,8 @@ class LyricRecyclerView: RecyclerView {
                         secondaryColor
                     }
             )
+
+            textView.setStrokeColor(strokeColor)
 
             when (position) {
                 0 -> relativeLayout.setPadding(0, scrollingDistance, 0, 0)
@@ -74,6 +78,7 @@ class LyricRecyclerView: RecyclerView {
     init {
         primaryColor = getColor(R.color.black)
         secondaryColor = getColor(R.color.gray)
+        strokeColor = BLACK
         layoutManager = LinearLayoutManager(context)
         adapter = LyricAdapter()
         // padding = resources.displayMetrics.widthPixels / 2
