@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:id="@+id/relative_layout">
 
-    <TextView
+    <sakuraba.saki.player.music.view.StrokeTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/text_view"
