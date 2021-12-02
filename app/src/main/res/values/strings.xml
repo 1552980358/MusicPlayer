@@ -98,6 +98,10 @@
     <string name="audio_detail_lyric_fetch_dialog_ok">OK</string>
     <string name="audio_detail_lyric_fetch_dialog_cancel">Cancel</string>
     <string name="audio_detail_netease_dialog_failed">Cannot download lyric data from NetEase Music for ID: </string>
+    <string name="audio_detail_lyric_qqMusic">Import Lyric From QQMusic</string>
+    <string name="audio_detail_lyric_qqMusic_key">key_lyric_qqMusic</string>
+    <string name="audio_detail_qqMusic_dialog">Input share link or music id</string>
+    <string name="audio_detail_qqMusic_dialog_failed">Cannot download lyric data from QQMusic for: </string>
     <string name="audio_detail_lyric_view">View Lyric</string>
     <string name="audio_detail_lyric_view_key">key_lyric_view</string>
     <string name="audio_detail_lyric_remove">Remove Lyric</string>
