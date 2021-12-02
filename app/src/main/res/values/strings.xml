@@ -95,8 +95,8 @@
     <string name="audio_detail_lyric_netease">Import Lyric From NetEase Music</string>
     <string name="audio_detail_lyric_netease_key">key_lyric_netease</string>
     <string name="audio_detail_netease_dialog">Input share link or music id</string>
-    <string name="audio_detail_netease_dialog_ok">OK</string>
-    <string name="audio_detail_netease_dialog_cancel">Cancel</string>
+    <string name="audio_detail_lyric_fetch_dialog_ok">OK</string>
+    <string name="audio_detail_lyric_fetch_dialog_cancel">Cancel</string>
     <string name="audio_detail_netease_dialog_failed">Cannot download lyric data from NetEase Music for ID: </string>
     <string name="audio_detail_lyric_view">View Lyric</string>
     <string name="audio_detail_lyric_view_key">key_lyric_view</string>
