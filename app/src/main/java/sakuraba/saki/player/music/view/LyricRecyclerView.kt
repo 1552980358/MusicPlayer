@@ -104,6 +104,12 @@ class LyricRecyclerView: RecyclerView {
     }
 
     @Synchronized
+    fun updateStrokeColor(@ColorInt newColor: Int) {
+        strokeColor = newColor
+        lyricAdapter.notifyItemRangeChanged(0, lyric?.size ?: 0)
+    }
+
+    @Synchronized
     fun updatePosition(mils: Long) {
         if (!isUpdating) {
             val index = findPosition(mils)
