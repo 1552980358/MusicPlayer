@@ -44,6 +44,11 @@
             app:iconSpaceReserved="false" />
 
         <Preference
+            android:key="@string/audio_detail_lyric_qqMusic_key"
+            android:title="@string/audio_detail_lyric_qqMusic"
+            app:iconSpaceReserved="false" />
+
+        <Preference
             android:key="@string/audio_detail_lyric_view_key"
             android:title="@string/audio_detail_lyric_view"
             app:iconSpaceReserved="false"/>
