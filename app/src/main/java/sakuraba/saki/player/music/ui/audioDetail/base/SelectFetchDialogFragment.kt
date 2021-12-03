@@ -16,7 +16,7 @@ class SelectFetchDialogFragment(private val fm: FragmentManager, private val lis
     companion object {
         const val STORAGE = 0
         const val NET_EASE_MUSIC = 1
-        const val QQ_MUSIC = 1
+        const val QQ_MUSIC = 2
 
         private const val TAG = "SelectFetchDialogFragment"
     }
