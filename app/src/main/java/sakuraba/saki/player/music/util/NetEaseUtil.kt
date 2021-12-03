@@ -6,13 +6,15 @@ import java.net.URL
 
 object NetEaseUtil {
 
-    private const val LYRIC_PREFIX = "https://music.163.com/api/song/lyric?lv=1&id="
-    private val String.url get() = URL(LYRIC_PREFIX + this)
+    private const val API = "http://music.163.com/api/"
 
-    private val String.jsonStr get(): String? {
+    private const val LYRIC_PREFIX = "${API}song/lyric?lv=1&id="
+    private val String.lyricURL get() = URL(LYRIC_PREFIX + this)
+
+    private val String.lyricJsonStr get(): String? {
         var text: String
         try {
-            (if ("https" in this) musicId else this).url.openStream().bufferedReader().use {
+            (if ("https" in this) musicId else this).lyricURL.openStream().bufferedReader().use {
                 text = it.readText()
             }
         } catch(e: Exception) {
@@ -36,7 +38,7 @@ object NetEaseUtil {
      *      "code": 200
      * }
      **/
-    private val String.lyricStr get() = jsonStr?.run {
+    private val String.lyricStr get() = lyricJsonStr?.run {
         JsonParser.parseString(this).asJsonObject.get("lrc").asJsonObject.get("lyric").asString
     }
 
