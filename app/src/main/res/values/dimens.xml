@@ -73,5 +73,7 @@
     <dimen name="audio_detail_image_view_size">150dp</dimen>
 
     <dimen name="stroke_text_view_stroke_width">0.5dp</dimen>
+    <dimen name="lyric_recycler_view_margins">5dp</dimen>
+    <dimen name="lyric_recycler_view_text_size">15sp</dimen>
 
 </resources>
