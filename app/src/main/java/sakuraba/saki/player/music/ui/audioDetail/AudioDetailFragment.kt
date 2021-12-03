@@ -40,8 +40,10 @@ import sakuraba.saki.player.music.databinding.FragmentAudioDetailBinding
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.service.util.mediaUriStr
 import sakuraba.saki.player.music.service.util.parseAsUri
-import sakuraba.saki.player.music.ui.audioDetail.netease.NetEaseDialog
-import sakuraba.saki.player.music.ui.audioDetail.qqMusic.QQMusicDialog
+import sakuraba.saki.player.music.ui.audioDetail.base.SelectFetchDialogFragment
+import sakuraba.saki.player.music.ui.audioDetail.base.SelectFetchDialogFragment.Companion.NET_EASE_MUSIC
+import sakuraba.saki.player.music.ui.audioDetail.base.SelectFetchDialogFragment.Companion.QQ_MUSIC
+import sakuraba.saki.player.music.ui.audioDetail.base.SelectFetchDialogFragment.Companion.STORAGE
 import sakuraba.saki.player.music.util.BitmapUtil.cutAsCube
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
 import sakuraba.saki.player.music.util.BitmapUtil.loadAudioArtRaw
@@ -55,7 +57,9 @@ import sakuraba.saki.player.music.util.LyricUtil.decodeLine
 import sakuraba.saki.player.music.util.LyricUtil.hasLyric
 import sakuraba.saki.player.music.util.LyricUtil.removeLyric
 import sakuraba.saki.player.music.util.LyricUtil.writeLyric
+import sakuraba.saki.player.music.util.NetEaseUtil.netEaseLyric
 import sakuraba.saki.player.music.util.PreferenceUtil.preference
+import sakuraba.saki.player.music.util.QQMusicUtil.qqMusic
 import sakuraba.saki.player.music.util.UnitUtil.PER
 import sakuraba.saki.player.music.util.UnitUtil.UNIT_BITS
 import sakuraba.saki.player.music.util.UnitUtil.UNIT_Hertz
@@ -258,10 +262,11 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                 lines.forEach { line -> line.decodeLine(lyricList, timeList) }
                 if (lyricList.size == timeList.size && lyricList.isNotEmpty()) {
                     requireContext().writeLyric(audioId, lyricList, timeList)
-                    findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)
-                        ?.shortSnack(R.string.audio_detail_lyric_import_succeed)
-                    preference(R.string.audio_detail_lyric_view_key)?.isEnabled = true
-                    preference(R.string.audio_detail_lyric_remove_key)?.isEnabled = true
+                    ui {
+                        coordinatorLayout?.shortSnack(R.string.audio_detail_lyric_import_succeed)
+                        preference(R.string.audio_detail_lyric_view_key)?.isEnabled = true
+                        preference(R.string.audio_detail_lyric_remove_key)?.isEnabled = true
+                    }
                     return@registerForActivityResult
                 }
                 findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)
@@ -269,17 +274,31 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
             }
             preference(R.string.audio_detail_lyric_import_key)?.apply {
                 setOnPreferenceClickListener {
-                    pickLyric.launch("*/*")
+                    SelectFetchDialogFragment(parentFragmentManager) { selection, text ->
+                        io {
+                            when (selection) {
+                                STORAGE -> pickLyric.launch("*/*")
+                                NET_EASE_MUSIC -> text?.netEaseLyric?.also {
+                                    requireContext().writeLyric(audioId, it.lyricList, it.timeList)
+                                    ui {
+                                        coordinatorLayout?.shortSnack(R.string.audio_detail_lyric_import_succeed)
+                                        preference(R.string.audio_detail_lyric_view_key)?.isEnabled = true
+                                        preference(R.string.audio_detail_lyric_remove_key)?.isEnabled = true
+                                    }
+                                }
+                                QQ_MUSIC -> text?.qqMusic?.also {
+                                    requireContext().writeLyric(audioId, it.lyricList, it.timeList)
+                                    ui {
+                                        coordinatorLayout?.shortSnack(R.string.audio_detail_lyric_import_succeed)
+                                        preference(R.string.audio_detail_lyric_view_key)?.isEnabled = true
+                                        preference(R.string.audio_detail_lyric_remove_key)?.isEnabled = true
+                                    }
+                                }
+                            }
+                        }
+                    }.show()
                     return@setOnPreferenceClickListener true
                 }
-            }
-            preference(R.string.audio_detail_lyric_netease_key)?.setOnPreferenceClickListener {
-                NetEaseDialog(audioId, this@AudioDetailFragment).show()
-                return@setOnPreferenceClickListener true
-            }
-            preference(R.string.audio_detail_lyric_qqMusic_key)?.setOnPreferenceClickListener {
-                QQMusicDialog(audioId, this@AudioDetailFragment).show()
-                return@setOnPreferenceClickListener true
             }
             val hasLyric = requireContext().hasLyric(audioId)
             preference(R.string.audio_detail_lyric_view_key)?.apply {
