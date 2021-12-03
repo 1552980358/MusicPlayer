@@ -1,6 +1,9 @@
 package sakuraba.saki.player.music.util
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import com.google.gson.JsonParser
+import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import sakuraba.saki.player.music.util.LyricUtil.decodeLine
 import java.net.URL
 
@@ -54,5 +57,34 @@ object NetEaseUtil {
     }
 
     val String.netEaseLyric get() = lyric
+
+    private val String.DETAIL_STR get() = "${API}song/detail?id=$this&ids=%5B$this%5D"
+    private val String.detailURL get() = URL(DETAIL_STR)
+
+    private val String.coverJsonStr: String? get() {
+        var str: String? = null
+        tryOnly {
+            (if ("http" in this ) musicId else this).detailURL.openStream().bufferedReader().use { bufferedReader ->
+                str = bufferedReader.readText()
+            }
+        }
+        return str
+    }
+
+    private val String.coverURLStr get() = coverJsonStr?.run {
+        JsonParser.parseString(this).asJsonObject.get("songs").asJsonArray.first().asJsonObject.get("album").asJsonObject.get("picUrl").asString
+    }
+
+    private val String.netEaseCoverBitmap get() = coverURLStr?.run {
+        var bitmap: Bitmap? = null
+        tryOnly {
+            URL(this).openStream().use { inputStream ->
+                bitmap = BitmapFactory.decodeStream(inputStream)
+            }
+        }
+        bitmap
+    }
+
+    val String.netEaseCover get() = netEaseCoverBitmap
 
 }
