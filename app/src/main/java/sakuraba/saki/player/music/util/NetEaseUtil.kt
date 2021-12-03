@@ -51,6 +51,6 @@ object NetEaseUtil {
         return lyric
     }
 
-    val String.netEase get() = lyric
+    val String.netEaseLyric get() = lyric
 
 }
