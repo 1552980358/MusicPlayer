@@ -6,7 +6,7 @@ import java.net.URL
 
 object NetEaseUtil {
 
-    private const val API = "http://music.163.com/api/"
+    private const val API = "https://music.163.com/api/"
 
     private const val LYRIC_PREFIX = "${API}song/lyric?lv=1&id="
     private val String.lyricURL get() = URL(LYRIC_PREFIX + this)
