@@ -84,7 +84,7 @@ import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.CoroutineUtil.delay100ms
 import sakuraba.saki.player.music.util.CoroutineUtil.io
-import sakuraba.saki.player.music.util.CoroutineUtil.ms_100_int
+import sakuraba.saki.player.music.util.CoroutineUtil.ms_200_int
 import sakuraba.saki.player.music.util.CoroutineUtil.ui
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_BACK_PRESSED
 import sakuraba.saki.player.music.util.SystemUtil.navigationBarHeight
@@ -407,7 +407,7 @@ class PlayActivity: BaseMediaControlActivity() {
         ui { viewModel.updateProgress(currentProgress) }
         while (isPlaying) {
             delay100ms()
-            ui { viewModel.updateProgress(viewModel.progressValue + ms_100_int) }
+            ui { viewModel.updateProgress(viewModel.progressValue + ms_200_int) }
         }
     }
     
