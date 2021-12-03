@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">MusicPlayer</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
@@ -26,9 +24,6 @@
     
     <string name="main_snack_open_setting_text">Please give permission on reading external storage in system setting</string>
     <string name="main_snack_open_setting_button">Setting</string>
-    
-    <string name="home_snack_waiting_for_media_scanner">Calling system refreshing… Wait for completion…</string>
-    <string name="home_snack_scanning">Calling system refreshing… Wait for completion</string>
     
     <string name="play_bottom_sheet_queue">Queue</string>
     <string name="play_menu_details">Details</string>
@@ -63,9 +58,6 @@
     <string name="key_play_fade_out_enable">key_play_fade_out_enable</string>
 
     <string name="webservice_notification_title">Web Service</string>
-
-    <string name="lyric_empty_list">Empty Lyric List</string>
-    <string name="lyric_loading">Empty Lyric List</string>
 
     <string name="audio_detail_basics">Basics</string>
     <string name="audio_detail_title">Title</string>

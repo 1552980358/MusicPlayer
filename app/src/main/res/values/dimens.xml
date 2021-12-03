@@ -7,7 +7,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">176dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
     
     <dimen name="home_recycler_view_height">60dp</dimen>
     <dimen name="home_recycler_view_padding">10dp</dimen>
@@ -63,9 +62,6 @@
     <dimen name="search_text_view_num_size">40dp</dimen>
     <dimen name="search_text_view_num_margin_end">10dp</dimen>
     <dimen name="search_text_view_title_text_size">16sp</dimen>
-
-    <dimen name="view_lyric_primary_text_size">13sp</dimen>
-    <dimen name="view_lyric_secondary_text_size">12sp</dimen>
 
     <dimen name="layout_lyric_seekbar_width">35dp</dimen>
     <dimen name="layout_lyric_seekbar_margins">5dp</dimen>
