@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/radio_group"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/radio_button_storage"
+            android:background="@drawable/radio_button_select_fetch_background"
+            android:button="@null"
+            android:checked="true"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/audio_detail_select_fetch_storage"
+            android:textColor="@color/radio_button_select_fetch_text"
+            app:drawableLeftCompat="@drawable/ic_storage" />
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/radio_button_netease"
+            android:background="@drawable/radio_button_select_fetch_background"
+            android:button="@null"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/audio_detail_select_fetch_net_ease"
+            android:textColor="@color/radio_button_select_fetch_text"
+            app:drawableLeftCompat="@drawable/ic_netease" />
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/radio_button_qq_music"
+            android:background="@drawable/radio_button_select_fetch_background"
+            android:button="@null"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/audio_detail_select_fetch_qq_music"
+            android:textColor="@color/radio_button_select_fetch_text"
+            app:drawableLeftCompat="@drawable/ic_qqmusic" />
+    </RadioGroup>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/edit_text_layout"
+        android:hint="@string/audio_detail_select_fetch_hint">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+</LinearLayout>

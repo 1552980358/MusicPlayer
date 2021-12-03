@@ -126,6 +126,12 @@
     <string name="audio_detail_image_loading_failed">Fail to load image</string>
     <string name="audio_detail_image_loading_succeed">Succeed</string>
 
+    <string name="audio_detail_select_fetch_storage">Storage</string>
+    <string name="audio_detail_select_fetch_net_ease">NetEase Music</string>
+    <string name="audio_detail_select_fetch_qq_music">QQMusic</string>
+    <string name="audio_detail_select_fetch_hint">Paste music ID or share link</string>
+    <string name="audio_detail_select_fetch_title">Import from…</string>
+
     <string name="extension_title">Extension</string>
     <string name="web_server_title">Web Server</string>
     <string name="key_web_server">key_web_server</string>
