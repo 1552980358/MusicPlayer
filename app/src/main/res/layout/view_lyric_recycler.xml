@@ -9,9 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/text_view"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginTop="@dimen/lyric_recycler_view_margins"
+        android:layout_marginBottom="@dimen/lyric_recycler_view_margins"
         android:gravity="center"
-        android:textSize="13sp" />
+        android:textSize="@dimen/lyric_recycler_view_text_size" />
 
 </RelativeLayout>
