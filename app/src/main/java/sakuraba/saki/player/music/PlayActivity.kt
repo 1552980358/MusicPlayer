@@ -74,8 +74,6 @@ import sakuraba.saki.player.music.util.Constants.PLAY_MODE_LIST
 import sakuraba.saki.player.music.util.Constants.PLAY_MODE_RANDOM
 import sakuraba.saki.player.music.util.Constants.PLAY_MODE_SINGLE
 import sakuraba.saki.player.music.util.Constants.PLAY_MODE_SINGLE_CYCLE
-import sakuraba.saki.player.music.util.CoroutineUtil.delay1second
-import sakuraba.saki.player.music.util.CoroutineUtil.ms_1000_int
 import sakuraba.saki.player.music.util.SystemUtil.pixelHeight
 import sakuraba.saki.player.music.ui.play.util.DividerItemDecoration
 import sakuraba.saki.player.music.util.AudioUtil
@@ -84,7 +82,9 @@ import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
 import sakuraba.saki.player.music.util.BitmapUtil.loadAudioArtRaw
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
+import sakuraba.saki.player.music.util.CoroutineUtil.delay100ms
 import sakuraba.saki.player.music.util.CoroutineUtil.io
+import sakuraba.saki.player.music.util.CoroutineUtil.ms_100_int
 import sakuraba.saki.player.music.util.CoroutineUtil.ui
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_BACK_PRESSED
 import sakuraba.saki.player.music.util.SystemUtil.navigationBarHeight
@@ -406,8 +406,8 @@ class PlayActivity: BaseMediaControlActivity() {
         val currentProgress = delayForCorrection(progress)
         ui { viewModel.updateProgress(currentProgress) }
         while (isPlaying) {
-            delay1second()
-            ui { viewModel.updateProgress(viewModel.progressValue + ms_1000_int) }
+            delay100ms()
+            ui { viewModel.updateProgress(viewModel.progressValue + ms_100_int) }
         }
     }
     
