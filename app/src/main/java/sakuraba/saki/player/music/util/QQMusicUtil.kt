@@ -1,10 +1,13 @@
 package sakuraba.saki.player.music.util
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Base64
 import android.util.Base64.DEFAULT
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
+import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import sakuraba.saki.player.music.util.LyricUtil.decodeLine
 import java.net.HttpURLConnection
 import java.net.URL
@@ -94,5 +97,44 @@ object QQMusicUtil {
     }
 
     val String.qqMusicLyric get() = lyric
+
+    private val String.SONG_MID_INFO get() = "https://u.y.qq.com/cgi-bin/musicu.fcg?" +
+            "format=json&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq.json&needNewCode=0&loginUin=0&hostUin=0&g_tk=1124214810" +
+            "&data={\"comm\":{\"ct\":24,\"cv\":0},\"songinfo\":{\"method\":\"get_song_detail_yqq\",\"param\":{\"song_type\":\"0\",\"song_mid\":\"$this\"},\"module\":\"music.pf_song_detail_svr\"}}"
+
+    private val String.SONG_ID get() = "https://y.qq.com/n/ryqq/songDetail/$this?songtype=0"
+
+    private val String.COVER_URL get() = "https://y.qq.com/music/photo_new/T002R500x500M000$this.jpg"
+
+    private val String.coverLinkSongMIdJson: String? get() {
+        var json: String? = null
+        tryOnly {
+            (URL(SONG_MID_INFO).openConnection() as HttpURLConnection).apply {
+                json = inputStream.bufferedReader().use { bufferedReader -> bufferedReader.readText() }
+                disconnect()
+            }
+        }
+        return json
+    }
+
+    private val String.coverLinkSongMId: String? get() = coverLinkSongMIdJson?.run {
+        JsonParser.parseString(this).asJsonObject.get("response").asJsonObject.get("songinfo").asJsonObject.get("data").asJsonObject.get("track_info").asJsonObject.get("album").asJsonObject.get("pmid").asString
+    }
+
+    private val String.coverLinkSongHTML get() = tryRun { URL(SONG_ID).openStream().bufferedReader().use { bufferedReader -> bufferedReader.readText() }}
+
+    private val String.songIdAlbumId get() = substring(indexOf("002R300x300M000") + 15)
+
+    private val String.coverLinkSongId: String? get() {
+        val str = coverLinkSongHTML?.songIdAlbumId
+        return str?.substring(0, str.indexOf(".jpg?max_age=2592000"))
+    }
+
+    private val String.albumId: String? get() = substring(indexOf('=') + 1).run { if (startsWith("songmid=")) coverLinkSongMId else coverLinkSongId }
+
+    private val String.getCover: Bitmap? get() =
+        link.musicLocation?.musicId?.albumId?.COVER_URL?.tryRun { URL(this).openStream().use { inputStream -> BitmapFactory.decodeStream(inputStream) } }
+
+    val String.qqMusicCover get() = getCover
 
 }
