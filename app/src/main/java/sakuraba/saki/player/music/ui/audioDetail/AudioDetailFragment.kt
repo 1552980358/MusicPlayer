@@ -59,7 +59,7 @@ import sakuraba.saki.player.music.util.LyricUtil.removeLyric
 import sakuraba.saki.player.music.util.LyricUtil.writeLyric
 import sakuraba.saki.player.music.util.NetEaseUtil.netEaseLyric
 import sakuraba.saki.player.music.util.PreferenceUtil.preference
-import sakuraba.saki.player.music.util.QQMusicUtil.qqMusic
+import sakuraba.saki.player.music.util.QQMusicUtil.qqMusicLyric
 import sakuraba.saki.player.music.util.UnitUtil.PER
 import sakuraba.saki.player.music.util.UnitUtil.UNIT_BITS
 import sakuraba.saki.player.music.util.UnitUtil.UNIT_Hertz
@@ -286,7 +286,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                                         preference(R.string.audio_detail_lyric_remove_key)?.isEnabled = true
                                     }
                                 }
-                                QQ_MUSIC -> text?.qqMusic?.also {
+                                QQ_MUSIC -> text?.qqMusicLyric?.also {
                                     requireContext().writeLyric(audioId, it.lyricList, it.timeList)
                                     ui {
                                         coordinatorLayout?.shortSnack(R.string.audio_detail_lyric_import_succeed)

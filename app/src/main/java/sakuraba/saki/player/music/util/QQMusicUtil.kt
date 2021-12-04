@@ -93,6 +93,6 @@ object QQMusicUtil {
         return lyric
     }
 
-    val String.qqMusic get() = lyric
+    val String.qqMusicLyric get() = lyric
 
 }
