@@ -1,9 +1,8 @@
 package sakuraba.saki.player.music.util
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.google.gson.JsonParser
-import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
+import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import sakuraba.saki.player.music.util.LyricUtil.decodeLine
 import java.net.URL
 
@@ -14,17 +13,8 @@ object NetEaseUtil {
     private const val LYRIC_PREFIX = "${API}song/lyric?lv=1&id="
     private val String.lyricURL get() = URL(LYRIC_PREFIX + this)
 
-    private val String.lyricJsonStr get(): String? {
-        var text: String
-        try {
-            (if ("https" in this) musicId else this).lyricURL.openStream().bufferedReader().use {
-                text = it.readText()
-            }
-        } catch(e: Exception) {
-            return null
-        }
-        return text
-    }
+    private val String.lyricJsonStr get() =
+        tryRun { (if ("https" in this) musicId else this).lyricURL.openStream().bufferedReader().use { it.readText() } }
 
     private val String.musicId get() = substring(indexOf("?id=") + 4, indexOf("&"))
 
@@ -61,29 +51,15 @@ object NetEaseUtil {
     private val String.DETAIL_STR get() = "${API}song/detail?id=$this&ids=%5B$this%5D"
     private val String.detailURL get() = URL(DETAIL_STR)
 
-    private val String.coverJsonStr: String? get() {
-        var str: String? = null
-        tryOnly {
-            (if ("http" in this ) musicId else this).detailURL.openStream().bufferedReader().use { bufferedReader ->
-                str = bufferedReader.readText()
-            }
-        }
-        return str
-    }
+    private val String.coverJsonStr get() =
+        tryRun { (if ("http" in this ) musicId else this).detailURL.openStream().bufferedReader().use { it.readText()} }
 
     private val String.coverURLStr get() = coverJsonStr?.run {
         JsonParser.parseString(this).asJsonObject.get("songs").asJsonArray.first().asJsonObject.get("album").asJsonObject.get("picUrl").asString
     }
 
-    private val String.netEaseCoverBitmap get() = coverURLStr?.run {
-        var bitmap: Bitmap? = null
-        tryOnly {
-            URL(this).openStream().use { inputStream ->
-                bitmap = BitmapFactory.decodeStream(inputStream)
-            }
-        }
-        bitmap
-    }
+    private val String.netEaseCoverBitmap get() =
+        coverURLStr?.tryRun { URL(this).openStream().use { BitmapFactory.decodeStream(it) } }
 
     val String.netEaseCover get() = netEaseCoverBitmap
 
