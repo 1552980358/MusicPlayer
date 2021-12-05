@@ -10,7 +10,9 @@ import android.graphics.Color.BLACK
 import android.graphics.Color.TRANSPARENT
 import android.graphics.Color.WHITE
 import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.TransitionDrawable
 import android.media.AudioManager
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
@@ -137,6 +139,9 @@ class PlayActivity: BaseMediaControlActivity() {
         }
     }
 
+    private lateinit var lastDrawable: Drawable
+    private lateinit var lastBlurredDrawable: Drawable
+
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = TRANSPARENT
@@ -177,6 +182,8 @@ class PlayActivity: BaseMediaControlActivity() {
             val blurredBitmap = Toolkit.blur(bitmap!!, 25)
             MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated(true)
             ui { activityPlay.lyricLayout.updateBitmap(blurredBitmap) }
+            lastDrawable = BitmapDrawable(resources, bitmap)
+            lastBlurredDrawable = BitmapDrawable(resources, blurredBitmap)
         }
     
         findViewById<CardView>(R.id.card_view).apply {
@@ -451,27 +458,23 @@ class PlayActivity: BaseMediaControlActivity() {
                 ?: loadAlbumArtRaw(metadata.getString(METADATA_KEY_ALBUM_ART_URI))
                 ?: ContextCompat.getDrawable(this@PlayActivity, R.drawable.ic_music)!!.toBitmap()
             val blurredBitmap = Toolkit.blur(bitmap!!, 25)
-            ValueAnimator.ofFloat(1F, 0F).apply {
-                duration = 250
-                addUpdateListener {
-                    activityPlay.imageView.alpha = animatedValue as Float
-                    activityPlay.lyricLayout.updateImageViewAlpha(animatedValue as Float)
+            val drawable = BitmapDrawable(resources, bitmap)
+            val blurredDrawable = BitmapDrawable(resources, blurredBitmap)
+            TransitionDrawable(arrayOf(lastDrawable, drawable)).apply {
+                ui {
+                    activityPlay.imageView.setImageDrawable(this@apply)
+                    startTransition(400)
                 }
-                addListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        activityPlay.imageView.setImageBitmap(bitmap)
-                        activityPlay.lyricLayout.updateBitmap(blurredBitmap)
-                        ValueAnimator.ofFloat(0F, 1F).apply {
-                            duration = 250
-                            addUpdateListener {
-                                activityPlay.imageView.alpha = animatedValue as Float
-                                activityPlay.lyricLayout.updateImageViewAlpha(animatedValue as Float)
-                            }
-                        }.start()
-                    }
-                })
-                ui { start() }
             }
+            lastDrawable = drawable
+            TransitionDrawable(arrayOf(lastBlurredDrawable, blurredDrawable)).apply {
+                ui {
+                    activityPlay.lyricLayout.updateDrawable(this@apply)
+                    startTransition(400)
+                }
+            }
+            lastDrawable = drawable
+            lastBlurredDrawable = blurredDrawable
             MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated(false)
         }
         viewModel.updateDuration(metadata.getLong(METADATA_KEY_DURATION))
