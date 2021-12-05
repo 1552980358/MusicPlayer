@@ -98,11 +98,6 @@
     <string name="audio_detail_size_key">key_size</string>
     <string name="audio_detail_path">Path</string>
     <string name="audio_detail_path_key">key_path</string>
-    <string name="audio_detail_image_title">Cover Image</string>
-    <string name="audio_detail_image_content">Select custom image</string>
-    <string name="audio_detail_image_default">Default</string>
-    <string name="audio_detail_image_cancel">Cancel</string>
-    <string name="audio_detail_image_storage">From Storage</string>
     <string name="audio_detail_image_loading">Loading…</string>
     <string name="audio_detail_image_loading_canceled">Selection canceled</string>
     <string name="audio_detail_image_loading_failed">Fail to load image</string>
@@ -125,7 +120,5 @@
     <string name="web_server_port">Server Port</string>
     <string name="key_web_server_port">key_web_server_port</string>
     <string name="web_server_port_range">Port should be in range 1025 to 65535</string>
-
-    <string name="web_service_wifi_disconnected">Wi-Fi disconnected,\nWebService Stopped.</string>
 
 </resources>
