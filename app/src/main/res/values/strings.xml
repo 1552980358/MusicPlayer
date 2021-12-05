@@ -108,6 +108,7 @@
     <string name="audio_detail_image_loading_failed">Fail to load image</string>
     <string name="audio_detail_image_loading_succeed">Succeed</string>
 
+    <string name="audio_detail_select_fetch_default">Default</string>
     <string name="audio_detail_select_fetch_storage">Storage</string>
     <string name="audio_detail_select_fetch_net_ease">NetEase Music</string>
     <string name="audio_detail_select_fetch_qq_music">QQMusic</string>
