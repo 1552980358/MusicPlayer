@@ -412,7 +412,7 @@ class PlayActivity: BaseMediaControlActivity() {
     }
     
     private suspend fun delayForCorrection(progress: Long): Long {
-        val diff = progress % 1000
+        val diff = progress % 200
         if (diff != 0L) {
             delay(diff)
         }
