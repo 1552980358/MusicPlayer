@@ -8,12 +8,13 @@ import androidx.fragment.app.FragmentManager
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.databinding.DialogFragmentSelectFetchBinding
 
-class SelectFetchDialogFragment(private val fm: FragmentManager, private val listener: (Int, String?) -> Unit): DialogFragment() {
+class SelectFetchDialogFragment(private val fm: FragmentManager, private val hasDefault: Boolean = false, private val listener: (Int, String?) -> Unit): DialogFragment() {
 
     private var _dialogFragmentSelectFetchBinding: DialogFragmentSelectFetchBinding? = null
     private val dialogFragmentSelectFetch get() = _dialogFragmentSelectFetchBinding!!
 
     companion object {
+        const val DEFAULT = -1
         const val STORAGE = 0
         const val NET_EASE_MUSIC = 1
         const val QQ_MUSIC = 2
@@ -41,7 +42,13 @@ class SelectFetchDialogFragment(private val fm: FragmentManager, private val lis
                     listener(selection, dialogFragmentSelectFetch.editTextLayout.editText?.text?.toString())
                 }
                 .setNegativeButton(android.R.string.cancel) { _, _ -> }
-                .show()
+                .apply {
+                    if (hasDefault) {
+                        setNeutralButton(R.string.audio_detail_select_fetch_default) { _, _ ->
+                            listener(DEFAULT, dialogFragmentSelectFetch.editTextLayout.editText?.text?.toString())
+                        }
+                    }
+                }.show()
     }
 
     fun show() = show(fm, TAG)
