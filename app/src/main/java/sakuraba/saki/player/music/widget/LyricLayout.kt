@@ -6,6 +6,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Context.AUDIO_SERVICE
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.media.AudioManager
 import android.media.AudioManager.FLAG_PLAY_SOUND
 import android.media.AudioManager.STREAM_MUSIC
@@ -116,9 +117,8 @@ class LyricLayout: RelativeLayout {
     fun updateBitmap(bitmap: Bitmap?) =
             layoutLyric.imageView.setImageBitmap(bitmap)
 
-    fun updateImageViewAlpha(alpha: Float) {
-        layoutLyric.imageView.alpha = alpha
-    }
+    fun updateDrawable(drawable: Drawable) =
+        layoutLyric.imageView.setImageDrawable(drawable)
 
     fun unregisterBroadcastReceiver() {
         context.unregisterReceiver(broadcastReceiver)
