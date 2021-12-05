@@ -41,6 +41,7 @@ import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.service.util.mediaUriStr
 import sakuraba.saki.player.music.service.util.parseAsUri
 import sakuraba.saki.player.music.ui.audioDetail.base.SelectFetchDialogFragment
+import sakuraba.saki.player.music.ui.audioDetail.base.SelectFetchDialogFragment.Companion.DEFAULT
 import sakuraba.saki.player.music.ui.audioDetail.base.SelectFetchDialogFragment.Companion.NET_EASE_MUSIC
 import sakuraba.saki.player.music.ui.audioDetail.base.SelectFetchDialogFragment.Companion.QQ_MUSIC
 import sakuraba.saki.player.music.ui.audioDetail.base.SelectFetchDialogFragment.Companion.STORAGE
@@ -57,8 +58,10 @@ import sakuraba.saki.player.music.util.LyricUtil.decodeLine
 import sakuraba.saki.player.music.util.LyricUtil.hasLyric
 import sakuraba.saki.player.music.util.LyricUtil.removeLyric
 import sakuraba.saki.player.music.util.LyricUtil.writeLyric
+import sakuraba.saki.player.music.util.NetEaseUtil.netEaseCover
 import sakuraba.saki.player.music.util.NetEaseUtil.netEaseLyric
 import sakuraba.saki.player.music.util.PreferenceUtil.preference
+import sakuraba.saki.player.music.util.QQMusicUtil.qqMusicCover
 import sakuraba.saki.player.music.util.QQMusicUtil.qqMusicLyric
 import sakuraba.saki.player.music.util.UnitUtil.PER
 import sakuraba.saki.player.music.util.UnitUtil.UNIT_BITS
@@ -138,20 +141,45 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
             }
         }
         fragmentAudioDetail.relativeLayout.setOnClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle(R.string.audio_detail_image_title)
-                .setMessage(R.string.audio_detail_image_content)
-                .setNeutralButton(R.string.audio_detail_image_default) { _, _->
-                    io {
-                        requireContext().removeAudioArt(audioInfo.audioId)
-                        val bitmap = requireContext().loadAlbumArtRaw(audioInfo.audioAlbumId)
-                            ?: ContextCompat.getDrawable(requireContext(), R.drawable.ic_music)!!.toBitmap()
-                        ui { fragmentAudioDetail.imageView.setImageBitmap(bitmap) }
+            SelectFetchDialogFragment(parentFragmentManager, true) { selection, text ->
+                when (selection) {
+                    DEFAULT -> {
+                        io {
+                            requireContext().removeAudioArt(audioInfo.audioId)
+                            val bitmap = requireContext().loadAlbumArtRaw(audioInfo.audioAlbumId)
+                                ?: ContextCompat.getDrawable(requireContext(), R.drawable.ic_music)!!.toBitmap()
+                            ui { fragmentAudioDetail.imageView.setImageBitmap(bitmap) }
+                        }
                     }
-                }.setPositiveButton(R.string.audio_detail_image_storage) { _, _ ->
-                    pickImage.launch("image/*")
-                }.setNegativeButton(R.string.audio_detail_image_cancel) { _, _ -> }
-                .show()
+                    STORAGE -> pickImage.launch("image/*")
+                    NET_EASE_MUSIC -> io {
+                        val bitmap = text?.netEaseCover
+                        if (bitmap == null) {
+                            coordinatorLayout?.shortSnack(R.string.audio_detail_image_loading_failed)
+                            return@io
+                        }
+                        ui { fragmentAudioDetail.imageView.setImageBitmap(bitmap) }
+                        requireContext().writeAudioArtRaw(audioInfo.audioId, bitmap)
+                        requireContext().writeAudioArt40Dp(audioInfo.audioId, Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, Matrix().apply {
+                            (resources.getDimension(R.dimen.dp_40) / bitmap.width).apply { setScale(this, this) }
+                        }, false))
+                        ui { coordinatorLayout?.shortSnack(R.string.audio_detail_image_loading_succeed) }
+                    }
+                    QQ_MUSIC -> io {
+                        val bitmap = text?.qqMusicCover
+                        if (bitmap == null) {
+                            coordinatorLayout?.shortSnack(R.string.audio_detail_image_loading_failed)
+                            return@io
+                        }
+                        ui { fragmentAudioDetail.imageView.setImageBitmap(bitmap) }
+                        requireContext().writeAudioArtRaw(audioInfo.audioId, bitmap)
+                        requireContext().writeAudioArt40Dp(audioInfo.audioId, Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, Matrix().apply {
+                            (resources.getDimension(R.dimen.dp_40) / bitmap.width).apply { setScale(this, this) }
+                        }, false))
+                        ui { coordinatorLayout?.shortSnack(R.string.audio_detail_image_loading_succeed) }
+                    }
+                }
+            }.show()
         }
         fragmentAudioDetail.preferenceFragmentContainer.apply {
             addView(super.onCreateView(inflater, fragmentAudioDetail.preferenceFragmentContainer, savedInstanceState))
