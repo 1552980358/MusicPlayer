@@ -82,6 +82,8 @@ import sakuraba.saki.player.music.util.AudioUtil
 import sakuraba.saki.player.music.util.AudioUtil.getOutputDevice
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
 import sakuraba.saki.player.music.util.BitmapUtil.loadAudioArtRaw
+import sakuraba.saki.player.music.util.Constants.ANIMATION_DURATION_INT
+import sakuraba.saki.player.music.util.Constants.ANIMATION_DURATION_LONG
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.CoroutineUtil.delay100ms
@@ -463,14 +465,14 @@ class PlayActivity: BaseMediaControlActivity() {
             TransitionDrawable(arrayOf(lastDrawable, drawable)).apply {
                 ui {
                     activityPlay.imageView.setImageDrawable(this@apply)
-                    startTransition(400)
+                    startTransition(ANIMATION_DURATION_INT)
                 }
             }
             lastDrawable = drawable
             TransitionDrawable(arrayOf(lastBlurredDrawable, blurredDrawable)).apply {
                 ui {
                     activityPlay.lyricLayout.updateDrawable(this@apply)
-                    startTransition(400)
+                    startTransition(ANIMATION_DURATION_INT)
                 }
             }
             lastDrawable = drawable
@@ -480,7 +482,7 @@ class PlayActivity: BaseMediaControlActivity() {
         viewModel.updateDuration(metadata.getLong(METADATA_KEY_DURATION))
 
         ValueAnimator.ofArgb(BLACK, WHITE).apply {
-            duration = 400
+            duration = ANIMATION_DURATION_LONG
             addUpdateListener {
                 textViewTitle.setTextColor(animatedValue as Int)
                 textViewSummary.setTextColor(animatedValue as Int)
@@ -491,7 +493,7 @@ class PlayActivity: BaseMediaControlActivity() {
                     textViewTitle.text = metadata.getString(METADATA_KEY_TITLE)
                     textViewSummary.text = metadata.getString(METADATA_KEY_ARTIST)
                     ValueAnimator.ofArgb(WHITE, BLACK).apply {
-                        duration = 400
+                        duration = ANIMATION_DURATION_LONG
                         addUpdateListener {
                             textViewTitle.setTextColor(animatedValue as Int)
                             textViewSummary.setTextColor(animatedValue as Int)
