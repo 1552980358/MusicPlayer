@@ -27,10 +27,10 @@ class LyricEditDialogFragment(private val pos: Int,
         val CREATE_LYRIC = -1
         private const val TAG = "LyricEditDialogFragment"
 
-        val NO_CHANGE = -1
-        val CREATE = 0
-        val MODIFY = 1
-        val REMOVE = 2
+        const val NO_CHANGE = -1
+        const val CREATE = 0
+        const val MODIFY = 1
+        const val REMOVE = 2
     }
 
     private var _dialogFragmentLyricEditBinding: DialogFragmentLyricEditBinding? = null
