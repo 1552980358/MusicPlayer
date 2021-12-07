@@ -14,6 +14,9 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -46,6 +49,8 @@ import sakuraba.saki.player.music.ui.audioDetail.base.SelectFetchDialogFragment.
 import sakuraba.saki.player.music.ui.audioDetail.base.SelectFetchDialogFragment.Companion.QQ_MUSIC
 import sakuraba.saki.player.music.ui.audioDetail.base.SelectFetchDialogFragment.Companion.STORAGE
 import sakuraba.saki.player.music.util.BitmapUtil.cutAsCube
+import sakuraba.saki.player.music.util.BitmapUtil.hasAlbumArt
+import sakuraba.saki.player.music.util.BitmapUtil.hasAudioArt
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
 import sakuraba.saki.player.music.util.BitmapUtil.loadAudioArtRaw
 import sakuraba.saki.player.music.util.BitmapUtil.removeAudioArt
@@ -54,6 +59,7 @@ import sakuraba.saki.player.music.util.BitmapUtil.writeAudioArtRaw
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.CoroutineUtil.io
 import sakuraba.saki.player.music.util.CoroutineUtil.ui
+import sakuraba.saki.player.music.util.Lyric
 import sakuraba.saki.player.music.util.LyricUtil.decodeLine
 import sakuraba.saki.player.music.util.LyricUtil.hasLyric
 import sakuraba.saki.player.music.util.LyricUtil.removeLyric
@@ -203,6 +209,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                 fragmentAudioDetail.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })
+        setHasOptionsMenu(true)
         return fragmentAudioDetail.root
     }
 
@@ -307,22 +314,8 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                         io {
                             when (selection) {
                                 STORAGE -> pickLyric.launch("*/*")
-                                NET_EASE_MUSIC -> text?.netEaseLyric?.also {
-                                    requireContext().writeLyric(audioId, it.lyricList, it.timeList)
-                                    ui {
-                                        coordinatorLayout?.shortSnack(R.string.audio_detail_lyric_import_succeed)
-                                        preference(R.string.audio_detail_lyric_view_key)?.isEnabled = true
-                                        preference(R.string.audio_detail_lyric_remove_key)?.isEnabled = true
-                                    }
-                                }
-                                QQ_MUSIC -> text?.qqMusicLyric?.also {
-                                    requireContext().writeLyric(audioId, it.lyricList, it.timeList)
-                                    ui {
-                                        coordinatorLayout?.shortSnack(R.string.audio_detail_lyric_import_succeed)
-                                        preference(R.string.audio_detail_lyric_view_key)?.isEnabled = true
-                                        preference(R.string.audio_detail_lyric_remove_key)?.isEnabled = true
-                                    }
-                                }
+                                NET_EASE_MUSIC -> text?.netEaseLyric?.also { saveLyric(it) }
+                                QQ_MUSIC -> text?.qqMusicLyric?.also { saveLyric(it) }
                             }
                         }
                     }.show()
@@ -360,6 +353,65 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                 }
             }
         }
+    }
+
+    private fun saveLyric(lyric: Lyric) {
+        requireContext().writeLyric(audioInfo.audioId, lyric.lyricList, lyric.timeList)
+        ui {
+            coordinatorLayout?.shortSnack(R.string.audio_detail_lyric_import_succeed)
+            preference(R.string.audio_detail_lyric_view_key)?.isEnabled = true
+            preference(R.string.audio_detail_lyric_remove_key)?.isEnabled = true
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) =
+            inflater.inflate(R.menu.menu_audio_detail_fragment, menu)
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_import -> {
+                SelectFetchDialogFragment(parentFragmentManager, hasStorage = false) { selection, text ->
+                    val textContent = text?:return@SelectFetchDialogFragment
+                    when (selection) {
+                        NET_EASE_MUSIC -> {
+                            io {
+                                if (!requireContext().hasLyric(audioInfo.audioId)) {
+                                    textContent.netEaseLyric.also { saveLyric(it) }
+                                }
+                            }
+                            io {
+                                if (!requireContext().hasAudioArt(audioInfo.audioId) && !requireContext().hasAlbumArt(audioInfo.audioAlbumId)) {
+                                    textContent.netEaseCover?.also {
+                                        ui { fragmentAudioDetail.imageView.setImageBitmap(it) }
+                                        saveBitmap(it)
+                                        ui { coordinatorLayout?.shortSnack(R.string.audio_detail_image_loading_succeed) }
+                                    }
+                                }
+                            }
+                        }
+                        QQ_MUSIC -> {
+                            io {
+                                if (!requireContext().hasLyric(audioInfo.audioId)) {
+                                    textContent.qqMusicLyric.also {
+                                        saveLyric(it)
+                                    }
+                                }
+                            }
+                            io {
+                                if (!requireContext().hasAudioArt(audioInfo.audioId) && !requireContext().hasAlbumArt(audioInfo.audioAlbumId)) {
+                                    textContent.qqMusicCover?.also {
+                                        ui { fragmentAudioDetail.imageView.setImageBitmap(it) }
+                                        saveBitmap(it)
+                                        ui { coordinatorLayout?.shortSnack(R.string.audio_detail_image_loading_succeed) }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }.show()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun MediaFormat.readTrackFormat(key: String): Int? =
