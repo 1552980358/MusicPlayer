@@ -87,23 +87,31 @@ object LyricUtil {
         return (minute.toLong() * 60 + second.toLong()) * 1000 + millisecond(indexBracket).toLong()
     }
 
-    private val Long.with3DigitLeadingZero get() = when (this) {
+    val Long.with3DigitLeadingZero get() = when (this) {
         in (100 .. 999) -> this.toString()
         in (10 .. 99) -> "0$this"
         in (0 .. 9) -> "00$this"
         else -> "000"
     }
 
-    private val Long.with2DigitLeadingZero get() = if (this > 9) this.toString() else "0$this"
+    val Long.with2DigitLeadingZero get() = if (this > 9) this.toString() else "0$this"
 
     private val Long.timeStrWithBracket get() = "[$timeStr]"
 
+    val Long.timeMin get() = this / 6000
+
+    private val Long.timeSecRaw get() = this % 6000
+
+    val Long.timeSec get() = timeSecRaw / 1000
+
+    val Long.timeMs get() = timeSecRaw - timeSec * 1000
+
     val Long.timeStr get(): String {
-        val secMils = this % 60000
-        val sec = secMils / 1000
-        return (this / 60000).with2DigitLeadingZero + ':' +
+        val secRaw = timeSecRaw
+        val sec = secRaw / 1000
+        return timeMin.with2DigitLeadingZero + ':' +
                 sec.with2DigitLeadingZero + '.' +
-                (secMils - sec * 1000).with3DigitLeadingZero
+                (secRaw - sec * 1000).with3DigitLeadingZero
     }
 
 }
