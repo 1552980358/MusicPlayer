@@ -98,7 +98,7 @@ object LyricUtil {
 
     private val Long.timeStrWithBracket get() = "[$timeStr]"
 
-    val Long.timeMin get() = this / 6000
+    val Long.timeMin get() = this / 600000
 
     private val Long.timeSecRaw get() = this % 6000
 
