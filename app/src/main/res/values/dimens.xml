@@ -75,5 +75,6 @@
     <dimen name="stroke_text_view_stroke_width">0.5dp</dimen>
     <dimen name="lyric_recycler_view_margins">5dp</dimen>
     <dimen name="lyric_recycler_view_text_size">15sp</dimen>
+    <dimen name="lyric_edit_root_padding_top">15dp</dimen>
 
 </resources>
