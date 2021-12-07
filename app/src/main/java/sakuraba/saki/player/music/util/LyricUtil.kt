@@ -20,6 +20,8 @@ object LyricUtil {
         }
     }
 
+    fun Context.readLyric(id: String) = createLyric { readLyric(id, lyricList, timeList) }
+
     fun Context.readLyric(id: String, lyricList: ArrayList<String>, timeList: ArrayList<Long>) {
         File(lyricDirFile, id.plus(LYRIC_EXT)).apply {
             if (!exists()) {
