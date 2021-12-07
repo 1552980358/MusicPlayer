@@ -60,6 +60,7 @@ import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.CoroutineUtil.io
 import sakuraba.saki.player.music.util.CoroutineUtil.ui
 import sakuraba.saki.player.music.util.Lyric
+import sakuraba.saki.player.music.util.LyricUtil.createLyric
 import sakuraba.saki.player.music.util.LyricUtil.decodeLine
 import sakuraba.saki.player.music.util.LyricUtil.hasLyric
 import sakuraba.saki.player.music.util.LyricUtil.removeLyric
@@ -293,18 +294,19 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                 val lines: List<String>
                 inputStream.use { stream -> lines = stream.bufferedReader().readLines() }
 
-                val lyricList = arrayListOf<String>()
-                val timeList = arrayListOf<Long>()
-                lines.forEach { line -> line.decodeLine(lyricList, timeList) }
-                if (lyricList.size == timeList.size && lyricList.isNotEmpty()) {
-                    requireContext().writeLyric(audioId, lyricList, timeList)
-                    ui {
-                        coordinatorLayout?.shortSnack(R.string.audio_detail_lyric_import_succeed)
-                        preference(R.string.audio_detail_lyric_view_key)?.isEnabled = true
-                        preference(R.string.audio_detail_lyric_remove_key)?.isEnabled = true
+                createLyric {
+                    lines.forEach { line -> line.decodeLine(this) }
+                    if (isNotEmpty) {
+                        requireContext().writeLyric(audioId, this)
+                        ui {
+                            coordinatorLayout?.shortSnack(R.string.audio_detail_lyric_import_succeed)
+                            preference(R.string.audio_detail_lyric_view_key)?.isEnabled = true
+                            preference(R.string.audio_detail_lyric_remove_key)?.isEnabled = true
+                        }
+                        return@registerForActivityResult
                     }
-                    return@registerForActivityResult
                 }
+
                 findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)
                     ?.shortSnack(getString(R.string.audio_detail_lyric_import_incorrect_format) + uri.toString())
             }
@@ -356,7 +358,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
     }
 
     private fun saveLyric(lyric: Lyric) {
-        requireContext().writeLyric(audioInfo.audioId, lyric.lyricList, lyric.timeList)
+        requireContext().writeLyric(audioInfo.audioId, lyric)
         ui {
             coordinatorLayout?.shortSnack(R.string.audio_detail_lyric_import_succeed)
             preference(R.string.audio_detail_lyric_view_key)?.isEnabled = true

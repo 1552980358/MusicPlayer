@@ -24,8 +24,8 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView, private val lyric: Lyr
             RecyclerViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_lyric_view_recycler_view, parent, false))
 
         override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) = holder.bindHolder {
-            textViewTitle.text = lyric.timeList[position].timeStr
-            textViewSummary.text = lyric.lyricList[position]
+            textViewTitle.text = lyric.timeAt(position).timeStr
+            textViewSummary.text = lyric.lyricAt(position)
         }
 
         override fun getItemCount() = lyric.size

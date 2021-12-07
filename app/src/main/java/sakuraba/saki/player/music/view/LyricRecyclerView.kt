@@ -49,7 +49,7 @@ class LyricRecyclerView: RecyclerView {
             if (lyric == null || lyric!!.size < 0) {
                 return@bindHolder
             }
-            lyric?.let { textView.text = it.lyricList[position] }
+            lyric?.let { textView.text = it.lyricAt(position) }
 
             textView.setContentColor(
                     if (position == currentLyric) {
@@ -124,26 +124,23 @@ class LyricRecyclerView: RecyclerView {
     }
 
     private fun findPosition(position: Long): Int {
-        val timeList = lyric?.timeList ?: return -2
-        if (timeList.isEmpty()) {
+        val lyric = lyric
+        if (lyric == null || lyric.isEmpty) {
             return -2
         }
-        if (position == 0L) {
+        if (position == 0L || position < lyric.firstTime) {
             return 0
         }
         try {
-            for (i in 1 until timeList.lastIndex) {
-                if (position >= timeList[i - 1] && position < timeList[i]) {
+            for (i in 1 until lyric.lastIndex) {
+                if (position >= lyric.timeAt(i - 1) && position < lyric.timeAt(i)) {
                     return i - 1
                 }
             }
         } catch (e: IndexOutOfBoundsException) {
             return -2
         }
-        if (position < timeList.first()) {
-            return 0
-        }
-        return timeList.lastIndex
+        return lyric.lastIndex
     }
 
     @Synchronized

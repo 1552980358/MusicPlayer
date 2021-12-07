@@ -24,7 +24,7 @@ class LyricEditDialogFragment(private val pos: Int,
 ): DialogFragment() {
 
     companion object {
-        val CREATE_LYRIC = -1
+        const val CREATE_LYRIC = -1
         private const val TAG = "LyricEditDialogFragment"
 
         const val NO_CHANGE = -1
@@ -61,11 +61,11 @@ class LyricEditDialogFragment(private val pos: Int,
                         }
                         else -> {
                             setTitle(R.string.lyric_edit_dialog_modify)
-                            val time = lyric.timeList[pos]
+                            val time = lyric.timeAt(pos)
                             editTextMin.setText(time.timeMin.toString())
                             editTextSec.setText(time.timeSec.toString())
                             editTextMs.setText(time.timeMs.toString())
-                            editTextLyric.setText(lyric.lyricList[pos])
+                            editTextLyric.setText(lyric.lyricAt(pos))
                             setNeutralButton(R.string.lyric_edit_dialog_remove) { _, _, ->
                                 listener(REMOVE, pos, null, null)
                             }
@@ -88,7 +88,7 @@ class LyricEditDialogFragment(private val pos: Int,
         }
     }
 
-    private fun textState(text: String) = if (pos == CREATE_LYRIC) CREATE else if (lyric.lyricList[pos] == text) NO_CHANGE else MODIFY
+    private fun textState(text: String) = if (pos == CREATE_LYRIC) CREATE else if (lyric.lyricAt(pos) == text) NO_CHANGE else MODIFY
 
     private val timeLong get() = (dialogFragmentLyricEdit.textInputMin.editText?.text!!.toString().toInt() * 60 +
                 dialogFragmentLyricEdit.textInputSec.editText?.text!!.toString().toInt()) * 1000L +

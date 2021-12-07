@@ -22,8 +22,8 @@ import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.register
 import sakuraba.saki.player.music.databinding.LayoutLyricBinding
 import sakuraba.saki.player.music.util.CoroutineUtil.ui
+import sakuraba.saki.player.music.util.LyricUtil.createLyric
 import sakuraba.saki.player.music.util.LyricUtil.readLyric
-import sakuraba.saki.player.music.util.createLyric
 
 class LyricLayout: RelativeLayout {
 
@@ -127,7 +127,7 @@ class LyricLayout: RelativeLayout {
     fun updateLyric(audioId: String) {
         CoroutineScope(Dispatchers.IO).launch {
             createLyric {
-                context.readLyric(audioId, lyricList, timeList)
+                context.readLyric(audioId, this)
                 ui { layoutLyric.lyricView.updateLyric(this@createLyric) }
             }
         }

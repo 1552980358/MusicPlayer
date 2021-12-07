@@ -37,11 +37,10 @@ object NetEaseUtil {
 
     private val String.lyricList get() = lyricStr?.split('\n')?.toMutableList() as ArrayList?
 
-    private val String.lyric get(): Lyric {
+    private val String.lyric: Lyric get() {
         val lyric = Lyric()
-        val lyricList = lyricList ?: return lyric
-        lyricList.forEach { line ->
-            line.decodeLine(lyric.lyricList, lyric.timeList)
+        (lyricList ?: return lyric).forEach { line ->
+            line.decodeLine(lyric)
         }
         return lyric
     }

@@ -20,25 +20,27 @@ object LyricUtil {
         }
     }
 
-    fun Context.readLyric(id: String) = createLyric { readLyric(id, lyricList, timeList) }
+    inline fun createLyric(block: Lyric.() -> Unit) = Lyric().apply(block)
 
-    fun Context.readLyric(id: String, lyricList: ArrayList<String>, timeList: ArrayList<Long>) {
+    fun Context.readLyric(id: String) = createLyric { readLyric(id, this) }
+
+    fun Context.readLyric(id: String, lyric: Lyric) {
         File(lyricDirFile, id.plus(LYRIC_EXT)).apply {
             if (!exists()) {
                 return
             }
-            readLines().forEach { line -> line.decodeLine(lyricList, timeList) }
+            readLines().forEach { line -> line.decodeLine(lyric) }
         }
     }
 
-    fun Context.writeLyric(id: String, lyricList: ArrayList<String>, timeList: ArrayList<Long>) {
+    fun Context.writeLyric(id: String, lyric: Lyric) {
         File(lyricDirFile, id.plus(LYRIC_EXT)).apply {
             if (!exists()) {
                 createNewFile()
             }
         }.bufferedWriter().use { bufferedWriter ->
-            timeList.forEachIndexed { index, l ->
-                bufferedWriter.writingLn(l.timeStrWithBracket + lyricList[index])
+            lyric.forEach { timeLong, lyricStr ->
+                bufferedWriter.writingLn(timeLong.timeStrWithBracket + lyricStr)
             }
             bufferedWriter.flush()
         }
@@ -54,7 +56,7 @@ object LyricUtil {
 
     fun Context.hasLyric(id: String) = File(lyricDirFile, id.plus(LYRIC_EXT)).exists()
 
-    fun String.decodeLine(lyricList: ArrayList<String>, timeList: ArrayList<Long>) {
+    fun String.decodeLine(lyric: Lyric) {
         /**
          * Example: [00:00.00]lyric content...; or
          *          [00:00.000]lyric content...
@@ -64,11 +66,10 @@ object LyricUtil {
         }
         val indexBracket = indexOf(']')
         tryOnly {
-            val time = getTimeLong(indexBracket) ?: return
-            val lyric = substring(indexBracket + 1)
-            if (lyric.isNotEmpty() && !lyric.startsWith('[') && !lyric.endsWith(']')) {
-                lyricList.add(lyric)
-                timeList.add(time)
+            val timeLong = getTimeLong(indexBracket) ?: return
+            val lyricStr = substring(indexBracket + 1)
+            if (lyricStr.isNotEmpty() && !lyricStr.startsWith('[') && !lyricStr.endsWith(']')) {
+                lyric.add(timeLong, lyricStr)
             }
         }
     }

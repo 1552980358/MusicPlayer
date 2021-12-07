@@ -8,6 +8,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
+import sakuraba.saki.player.music.util.LyricUtil.createLyric
 import sakuraba.saki.player.music.util.LyricUtil.decodeLine
 import java.net.HttpURLConnection
 import java.net.URL
@@ -88,12 +89,10 @@ object QQMusicUtil {
 
     private val String.lyricStr get() = String(Base64.decode(this, DEFAULT))
 
-    private val String.lyric: Lyric get() {
-        val lyric = Lyric()
+    private val String.lyric get() = createLyric {
         link.musicLocation?.musicId?.url?.lyricResponse?.lyricJson?.lyricBase64?.lyricStr?.split('\n')?.forEach { line ->
-            line.decodeLine(lyric.lyricList, lyric.timeList)
+            line.decodeLine(this)
         }
-        return lyric
     }
 
     val String.qqMusicLyric get() = lyric
