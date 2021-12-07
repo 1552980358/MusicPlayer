@@ -159,10 +159,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                             return@io
                         }
                         ui { fragmentAudioDetail.imageView.setImageBitmap(bitmap) }
-                        requireContext().writeAudioArtRaw(audioInfo.audioId, bitmap)
-                        requireContext().writeAudioArt40Dp(audioInfo.audioId, Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, Matrix().apply {
-                            (resources.getDimension(R.dimen.dp_40) / bitmap.width).apply { setScale(this, this) }
-                        }, false))
+                        saveBitmap(bitmap)
                         ui { coordinatorLayout?.shortSnack(R.string.audio_detail_image_loading_succeed) }
                     }
                     QQ_MUSIC -> io {
@@ -172,10 +169,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                             return@io
                         }
                         ui { fragmentAudioDetail.imageView.setImageBitmap(bitmap) }
-                        requireContext().writeAudioArtRaw(audioInfo.audioId, bitmap)
-                        requireContext().writeAudioArt40Dp(audioInfo.audioId, Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, Matrix().apply {
-                            (resources.getDimension(R.dimen.dp_40) / bitmap.width).apply { setScale(this, this) }
-                        }, false))
+                        saveBitmap(bitmap)
                         ui { coordinatorLayout?.shortSnack(R.string.audio_detail_image_loading_succeed) }
                     }
                 }
@@ -210,6 +204,13 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
             }
         })
         return fragmentAudioDetail.root
+    }
+
+    private fun saveBitmap(bitmap: Bitmap) {
+        requireContext().writeAudioArtRaw(audioInfo.audioId, bitmap)
+        requireContext().writeAudioArt40Dp(audioInfo.audioId, Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, Matrix().apply {
+            (resources.getDimension(R.dimen.dp_40) / bitmap.width).apply { setScale(this, this) }
+        }, false))
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
