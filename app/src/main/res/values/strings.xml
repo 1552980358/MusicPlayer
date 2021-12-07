@@ -111,6 +111,14 @@
     <string name="audio_detail_select_fetch_title">Import from…</string>
     <string name="audio_detail_menu_import">Import Cover and Lyric…</string>
 
+    <string name="lyric_edit_dialog_add">Add lyric</string>
+    <string name="lyric_edit_dialog_modify">Modify lyric</string>
+    <string name="lyric_edit_dialog_min">Min</string>
+    <string name="lyric_edit_dialog_sec">Sec</string>
+    <string name="lyric_edit_dialog_ms">Mils</string>
+    <string name="lyric_edit_dialog_lyric">Lyric</string>
+    <string name="lyric_edit_dialog_remove">Remove</string>
+
     <string name="extension_title">Extension</string>
     <string name="web_server_title">Web Server</string>
     <string name="key_web_server">key_web_server</string>
