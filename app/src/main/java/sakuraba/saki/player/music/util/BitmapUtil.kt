@@ -19,6 +19,8 @@ object BitmapUtil {
     private const val ALBUM_ART_40DP_DIR = "album_art_40dp"
     private val Context.albumArt40DpDir get() = getExternalFilesDir(ALBUM_ART_40DP_DIR)
 
+    fun Context.hasAlbumArt(albumId: Long) = File(albumArtRawDir, albumId.toString()).exists()
+
     private fun Bitmap.writeBitmap(file: File) =
             getByteArray(format = Bitmap.CompressFormat.JPEG)?.apply { file.writeBytes(this) }
 
@@ -59,6 +61,8 @@ object BitmapUtil {
     private val Context.audioArt40DpDir get() = getExternalFilesDir(AUDIO_ART_RAW_40DP)
     private const val AUDIO_ART_RAW_DIR = "audio_art_raw"
     private val Context.audioArtRawDir get() = getExternalFilesDir(AUDIO_ART_RAW_DIR)
+
+    fun Context.hasAudioArt(audioId: String) = File(audioArtRawDir, audioId).exists()
 
     fun Context.writeAudioArt40Dp(audioId: String, bitmap: Bitmap?) =
         bitmap?.writeBitmap(File(audioArt40DpDir, audioId))
