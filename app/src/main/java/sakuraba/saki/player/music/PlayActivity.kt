@@ -82,7 +82,7 @@ import sakuraba.saki.player.music.util.AudioUtil
 import sakuraba.saki.player.music.util.AudioUtil.getOutputDevice
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
 import sakuraba.saki.player.music.util.BitmapUtil.loadAudioArtRaw
-import sakuraba.saki.player.music.util.Constants.ANIMATION_DURATION_INT
+import sakuraba.saki.player.music.util.Constants.ANIMATION_DURATION
 import sakuraba.saki.player.music.util.Constants.ANIMATION_DURATION_LONG
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
@@ -465,14 +465,14 @@ class PlayActivity: BaseMediaControlActivity() {
             TransitionDrawable(arrayOf(lastDrawable, drawable)).apply {
                 ui {
                     activityPlay.imageView.setImageDrawable(this@apply)
-                    startTransition(ANIMATION_DURATION_INT)
+                    startTransition(ANIMATION_DURATION)
                 }
             }
             lastDrawable = drawable
             TransitionDrawable(arrayOf(lastBlurredDrawable, blurredDrawable)).apply {
                 ui {
                     activityPlay.lyricLayout.updateDrawable(this@apply)
-                    startTransition(ANIMATION_DURATION_INT)
+                    startTransition(ANIMATION_DURATION)
                 }
             }
             lastDrawable = drawable

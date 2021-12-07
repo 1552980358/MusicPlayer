@@ -43,7 +43,7 @@ object Constants {
     const val EXTRA_WEBSERVER_START = 1
     const val EXTRA_WEBSERVER_STOP = 0
 
-    const val ANIMATION_DURATION_INT = 750
-    const val ANIMATION_DURATION_LONG = 750L
+    const val ANIMATION_DURATION = 500
+    const val ANIMATION_DURATION_LONG = ANIMATION_DURATION.toLong()
     
 }
