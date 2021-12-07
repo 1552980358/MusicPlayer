@@ -109,6 +109,7 @@
     <string name="audio_detail_select_fetch_qq_music">QQMusic</string>
     <string name="audio_detail_select_fetch_hint">Paste music ID or share link</string>
     <string name="audio_detail_select_fetch_title">Import from…</string>
+    <string name="audio_detail_menu_import">Import Cover and Lyric…</string>
 
     <string name="extension_title">Extension</string>
     <string name="web_server_title">Web Server</string>
