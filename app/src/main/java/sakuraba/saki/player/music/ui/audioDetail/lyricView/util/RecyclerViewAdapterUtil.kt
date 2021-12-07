@@ -7,18 +7,16 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import sakuraba.saki.player.music.R
+import sakuraba.saki.player.music.util.Lyric
 import sakuraba.saki.player.music.util.LyricUtil.timeStr
 import sakuraba.saki.player.music.util.ViewHolderUtil.bindHolder
 
-class RecyclerViewAdapterUtil(recyclerView: RecyclerView) {
+class RecyclerViewAdapterUtil(recyclerView: RecyclerView, private val lyric: Lyric) {
 
     private class RecyclerViewHolder(view: View): ViewHolder(view) {
         val textViewTitle: TextView = view.findViewById(R.id.text_view_title)
         val textViewSummary: TextView = view.findViewById(R.id.text_view_summary)
     }
-
-    val lyricList = arrayListOf<String>()
-    val timeList = arrayListOf<Long>()
 
     private inner class RecyclerViewAdapter: RecyclerView.Adapter<RecyclerViewHolder>() {
 
@@ -26,11 +24,11 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView) {
             RecyclerViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_lyric_view_recycler_view, parent, false))
 
         override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) = holder.bindHolder {
-            textViewTitle.text = timeList[position].timeStr
-            textViewSummary.text = lyricList[position]
+            textViewTitle.text = lyric.timeList[position].timeStr
+            textViewSummary.text = lyric.lyricList[position]
         }
 
-        override fun getItemCount() = lyricList.size
+        override fun getItemCount() = lyric.size
     }
 
     private val adapter = RecyclerViewAdapter()

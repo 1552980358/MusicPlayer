@@ -23,8 +23,8 @@ class LyricViewFragment: Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        recyclerViewAdapterUtil = RecyclerViewAdapterUtil(fragmentLyricView.recyclerView)
-        requireContext().readLyric(requireArguments().getString(EXTRAS_DATA)!!, recyclerViewAdapterUtil.lyricList, recyclerViewAdapterUtil.timeList)
+        recyclerViewAdapterUtil =
+                RecyclerViewAdapterUtil(fragmentLyricView.recyclerView, requireContext().readLyric(requireArguments().getString(EXTRAS_DATA)!!))
         recyclerViewAdapterUtil.notifyDataSetChanged()
     }
 
