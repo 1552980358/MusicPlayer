@@ -8,7 +8,10 @@ import androidx.fragment.app.FragmentManager
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.databinding.DialogFragmentSelectFetchBinding
 
-class SelectFetchDialogFragment(private val fm: FragmentManager, private val hasDefault: Boolean = false, private val listener: (Int, String?) -> Unit): DialogFragment() {
+class SelectFetchDialogFragment(private val fm: FragmentManager,
+                                private val hasDefault: Boolean = false,
+                                private val hasStorage: Boolean = true,
+                                private val listener: (Int, String?) -> Unit): DialogFragment() {
 
     private var _dialogFragmentSelectFetchBinding: DialogFragmentSelectFetchBinding? = null
     private val dialogFragmentSelectFetch get() = _dialogFragmentSelectFetchBinding!!
@@ -24,11 +27,15 @@ class SelectFetchDialogFragment(private val fm: FragmentManager, private val has
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _dialogFragmentSelectFetchBinding = DialogFragmentSelectFetchBinding.inflate(layoutInflater)
-        dialogFragmentSelectFetch.radioGroup.setOnCheckedChangeListener { group, checkedId ->
+        dialogFragmentSelectFetch.radioGroup.setOnCheckedChangeListener { _, checkedId ->
             dialogFragmentSelectFetch.editTextLayout.isEnabled = when (checkedId) {
                 R.id.radio_button_netease, R.id.radio_button_qq_music -> true
                 else -> false
             }
+        }
+        if (!hasStorage) {
+            dialogFragmentSelectFetch.radioGroup.removeView(dialogFragmentSelectFetch.radioButtonStorage)
+            dialogFragmentSelectFetch.radioButtonNetease.isChecked = true
         }
         return AlertDialog.Builder(requireContext())
                 .setView(dialogFragmentSelectFetch.root)
