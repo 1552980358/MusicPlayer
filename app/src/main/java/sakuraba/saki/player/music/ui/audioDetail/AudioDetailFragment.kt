@@ -141,7 +141,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
             }
         }
         fragmentAudioDetail.relativeLayout.setOnClickListener {
-            SelectFetchDialogFragment(parentFragmentManager, true) { selection, text ->
+            SelectFetchDialogFragment(parentFragmentManager, hasDefault = true) { selection, text ->
                 when (selection) {
                     DEFAULT -> {
                         io {
