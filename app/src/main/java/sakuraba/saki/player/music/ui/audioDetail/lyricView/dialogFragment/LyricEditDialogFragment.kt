@@ -20,7 +20,7 @@ import sakuraba.saki.player.music.util.LyricUtil.timeSec
 class LyricEditDialogFragment(private val pos: Int,
                               private val lyric: Lyric,
                               private val fm: FragmentManager,
-                              private val listener: (action: Int, pos: Int, time: Long?, lyric: String?) -> Unit
+                              private val listener: (action: Int, pos: Int, timeLong: Long?, lyricStr: String?) -> Unit
 ): DialogFragment() {
 
     companion object {
