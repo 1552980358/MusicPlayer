@@ -34,6 +34,9 @@ object LyricUtil {
     }
 
     fun Context.writeLyric(id: String, lyric: Lyric) {
+        if (lyric.isEmpty) {
+            return
+        }
         File(lyricDirFile, id.plus(LYRIC_EXT)).apply {
             if (!exists()) {
                 createNewFile()
