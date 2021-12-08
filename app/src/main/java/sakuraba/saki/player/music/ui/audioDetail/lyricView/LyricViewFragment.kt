@@ -23,8 +23,10 @@ class LyricViewFragment: Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        recyclerViewAdapterUtil =
-                RecyclerViewAdapterUtil(fragmentLyricView.recyclerView, requireContext().readLyric(requireArguments().getString(EXTRAS_DATA)!!))
+        val lyric = requireContext().readLyric(requireArguments().getString(EXTRAS_DATA)!!)
+        recyclerViewAdapterUtil = RecyclerViewAdapterUtil(fragmentLyricView.recyclerView, lyric) { index ->
+
+        }
         recyclerViewAdapterUtil.notifyDataSetChanged()
     }
 
