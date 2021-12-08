@@ -52,12 +52,6 @@ class LyricEditDialogFragment(private val pos: Int,
                     when (pos) {
                         CREATE_LYRIC -> {
                             setTitle(R.string.lyric_edit_dialog_add)
-                            dialogFragmentLyricEdit.textInputMin.isEnabled = true
-                            dialogFragmentLyricEdit.textInputSec.isEnabled = true
-                            dialogFragmentLyricEdit.textInputMs.isEnabled = true
-                            editTextMin.doAfterTextChanged { updatePositiveButton() }
-                            editTextSec.doAfterTextChanged { updatePositiveButton() }
-                            editTextMs.doAfterTextChanged { updatePositiveButton() }
                         }
                         else -> {
                             setTitle(R.string.lyric_edit_dialog_modify)
