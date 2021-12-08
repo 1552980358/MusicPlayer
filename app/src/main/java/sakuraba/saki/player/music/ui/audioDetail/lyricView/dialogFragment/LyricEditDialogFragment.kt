@@ -43,7 +43,7 @@ class LyricEditDialogFragment(private val pos: Int,
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _dialogFragmentLyricEditBinding = DialogFragmentLyricEditBinding.inflate(layoutInflater)
-        editTextMin = dialogFragmentLyricEdit.textInputLyric.editText as TextInputEditText
+        editTextMin = dialogFragmentLyricEdit.textInputMin.editText as TextInputEditText
         editTextSec = dialogFragmentLyricEdit.textInputSec.editText as TextInputEditText
         editTextMs = dialogFragmentLyricEdit.textInputMs.editText as TextInputEditText
         editTextLyric = dialogFragmentLyricEdit.textInputLyric.editText as TextInputEditText
