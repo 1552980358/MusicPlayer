@@ -36,9 +36,9 @@ class LyricEditDialogFragment(private val pos: Int,
     private var _dialogFragmentLyricEditBinding: DialogFragmentLyricEditBinding? = null
     private val dialogFragmentLyricEdit get() = _dialogFragmentLyricEditBinding!!
     private lateinit var editTextMin: TextInputEditText
-    private lateinit var editTextSec: EditText
-    private lateinit var editTextMs: EditText
-    private lateinit var editTextLyric: EditText
+    private lateinit var editTextSec: TextInputEditText
+    private lateinit var editTextMs: TextInputEditText
+    private lateinit var editTextLyric: TextInputEditText
     private lateinit var positiveButton: Button
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
