@@ -24,6 +24,19 @@ class Lyric {
     fun forEachIndexed(block: (index: Int, timeLong: Long, lyricStr: String) -> Unit) =
         itemList.forEachIndexed { index, lyricItem -> block(index, lyricItem.timeLong, lyricItem.lyricStr) }
 
+    fun set(index: Int, timeLong: Long? = null, lyricStr: String? = null) {
+        if (index > size) {
+            return
+        }
+        if (timeLong != null) {
+            itemList[index].timeLong = timeLong
+        }
+        if (lyricStr != null) {
+            itemList[index].lyricStr = lyricStr
+        }
+        itemList.sortBy { it.timeLong }
+    }
+
     fun timeAt(index: Int) = itemList[index].timeLong
 
     fun lyricAt(index: Int) = itemList[index].lyricStr
