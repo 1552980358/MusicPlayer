@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.navigation.findNavController
 import sakuraba.saki.player.music.databinding.ActivityAudioDetailBinding
 import sakuraba.saki.player.music.ui.audioDetail.AudioDetailFragment
+import sakuraba.saki.player.music.ui.audioDetail.lyricView.LyricViewFragment
 
 class AudioDetailActivity: AppCompatActivity() {
 
@@ -85,6 +86,12 @@ class AudioDetailActivity: AppCompatActivity() {
                             ?.onActivityBackPressed()
                     }
                 }
+            }
+            R.id.nav_lyric_view -> {
+                (supportFragmentManager.findFragmentById(R.id.fragment)
+                        ?.childFragmentManager?.fragments?.first() as LyricViewFragment?)
+                        ?.onBackPressed()
+                super.onBackPressed()
             }
             else -> super.onBackPressed()
         }
