@@ -99,20 +99,14 @@ object LyricUtil {
 
     private val Long.timeStrWithBracket get() = "[$timeStr]"
 
-    val Long.timeMin get() = this / 600000
+    val Long.timeMin get() = this / 60000
 
-    private val Long.timeSecRaw get() = this % 6000
+    val Long.timeSec get() = (this / 1000) % 60
 
-    val Long.timeSec get() = timeSecRaw / 1000
+    val Long.timeMs get() = this % 1000
 
-    val Long.timeMs get() = timeSecRaw - timeSec * 1000
-
-    val Long.timeStr get(): String {
-        val secRaw = timeSecRaw
-        val sec = secRaw / 1000
-        return timeMin.with2DigitLeadingZero + ':' +
-                sec.with2DigitLeadingZero + '.' +
-                (secRaw - sec * 1000).with3DigitLeadingZero
-    }
+    val Long.timeStr get() = timeMin.with2DigitLeadingZero + ':' +
+            timeSec.with2DigitLeadingZero + '.' +
+            timeMs.with3DigitLeadingZero
 
 }
