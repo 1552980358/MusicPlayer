@@ -71,11 +71,15 @@ class LyricEditDialogFragment(private val pos: Int,
                             }
                         }
                     }
+                    editTextMin.doAfterTextChanged { updatePositiveButton() }
+                    editTextSec.doAfterTextChanged { updatePositiveButton() }
+                    editTextMs.doAfterTextChanged { updatePositiveButton() }
                     editTextLyric.doAfterTextChanged { updatePositiveButton() }
                     setView(dialogFragmentLyricEdit.root)
                 }.setPositiveButton(android.R.string.ok) { _, _ ->
                     val text = dialogFragmentLyricEdit.textInputLyric.editText?.text!!.toString()
-                    listener(textState(text), pos, timeLong, text)
+                    val timeLong = timeLong
+                    listener(textState(timeLong, text), pos, timeLong, text)
                 }.setNegativeButton(android.R.string.cancel) { _, _ -> }
                 .create()
     }
@@ -88,7 +92,8 @@ class LyricEditDialogFragment(private val pos: Int,
         }
     }
 
-    private fun textState(text: String) = if (pos == CREATE_LYRIC) CREATE else if (lyric.lyricAt(pos) == text) NO_CHANGE else MODIFY
+    private fun textState(time: Long, text: String) =
+            if (pos == CREATE_LYRIC) CREATE else if (lyric.lyricAt(pos) == text && lyric.timeAt(pos) == time) NO_CHANGE else MODIFY
 
     private val timeLong get() = (dialogFragmentLyricEdit.textInputMin.editText?.text!!.toString().toInt() * 60 +
                 dialogFragmentLyricEdit.textInputSec.editText?.text!!.toString().toInt()) * 1000L +
