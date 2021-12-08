@@ -119,6 +119,10 @@
     <string name="lyric_edit_dialog_lyric">Lyric</string>
     <string name="lyric_edit_dialog_remove">Remove</string>
 
+    <string name="lyric_edit_add">Add lyric…</string>
+    <string name="lyric_edit_save">Save</string>
+    <string name="lyric_edit_cancel">@android:string/cancel</string>
+
     <string name="extension_title">Extension</string>
     <string name="web_server_title">Web Server</string>
     <string name="key_web_server">key_web_server</string>
