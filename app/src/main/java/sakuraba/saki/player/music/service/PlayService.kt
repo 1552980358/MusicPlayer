@@ -90,7 +90,7 @@ import sakuraba.saki.player.music.util.SettingUtil.defaultSharedPreference
 import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
 import sakuraba.saki.player.music.web.util.WebControlUtil
 
-class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player.Listener {
+class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Listener {
     
     companion object {
         private const val TAG = "PlayService"
