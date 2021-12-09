@@ -21,9 +21,11 @@ object Constants {
     const val EXTRAS_PLAY = "play"
     const val EXTRAS_PAUSE = "pause"
     const val EXTRA_INIT = "init"
-    
-    const val EXTRAS_CONFIG_KEY = "extra_config_key"
-    const val EXTRAS_CONFIG_VALUE = "extra_config_value"
+
+    const val ACTION_LOUDNESS_ENHANCER = "loudness_enhancer"
+    const val LOUDNESS_ENHANCER_DISABLE = 0
+    const val LOUDNESS_ENHANCER_ENABLE = 1
+    const val LOUDNESS_ENHANCER_SET = 2
     
     const val EXTRAS_PLAY_MODE = "play_mode"
     const val PLAY_MODE_SINGLE = 1
