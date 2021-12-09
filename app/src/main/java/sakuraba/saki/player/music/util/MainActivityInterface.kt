@@ -84,7 +84,7 @@ class MainActivityInterface(block: (Int, AudioInfo?, ArrayList<AudioInfo>?) -> U
     }
 
     private lateinit var mediaBrowserCompat: MediaBrowserCompat
-    fun setMediaControllerCompat(mediaBrowserCompat: MediaBrowserCompat) {
+    fun setMediaBrowserCompat(mediaBrowserCompat: MediaBrowserCompat) {
         this.mediaBrowserCompat = mediaBrowserCompat
     }
 
