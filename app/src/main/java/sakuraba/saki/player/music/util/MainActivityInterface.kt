@@ -1,6 +1,8 @@
 package sakuraba.saki.player.music.util
 
 import android.graphics.Bitmap
+import android.os.Bundle
+import android.support.v4.media.MediaBrowserCompat
 import sakuraba.saki.player.music.service.util.AudioInfo
 import java.io.Serializable
 
@@ -79,6 +81,18 @@ class MainActivityInterface(block: (Int, AudioInfo?, ArrayList<AudioInfo>?) -> U
         audioInfoList.clear()
         bitmapMap.clear()
         albumList.clear()
+    }
+
+    private lateinit var mediaBrowserCompat: MediaBrowserCompat
+    fun setMediaControllerCompat(mediaBrowserCompat: MediaBrowserCompat) {
+        this.mediaBrowserCompat = mediaBrowserCompat
+    }
+
+    fun sendCustomAction(action: String, bundle: Bundle?,  block: (action: String?, bundle: Bundle?, resultBundle: Bundle?) -> Unit) {
+        mediaBrowserCompat.sendCustomAction(action, bundle, object : MediaBrowserCompat.CustomActionCallback() {
+            override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) =
+                block(action, extras, resultData)
+        })
     }
 
     var hasAudioInfoListUpdated = false
