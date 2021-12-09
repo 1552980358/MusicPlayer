@@ -134,4 +134,8 @@
     <string name="key_web_server_port">key_web_server_port</string>
     <string name="web_server_port_range">Port should be in range 1025 to 65535</string>
 
+    <string name="loudness_enhancer_title">Loudness Enhance</string>
+    <string name="loudness_enhancer_enable_key">key_loudness_enhancer_enable</string>
+    <string name="loudness_enhancer_gain_key">key_loudness_enhancer</string>
+
 </resources>
