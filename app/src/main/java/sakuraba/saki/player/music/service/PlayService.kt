@@ -7,6 +7,7 @@ import android.media.AudioManager
 import android.media.AudioManager.AUDIOFOCUS_LOSS
 import android.media.AudioManager.AUDIOFOCUS_REQUEST_FAILED
 import android.media.AudioManager.STREAM_MUSIC
+import android.media.audiofx.LoudnessEnhancer
 import android.os.Bundle
 import android.os.PowerManager
 import android.os.PowerManager.PARTIAL_WAKE_LOCK
@@ -60,6 +61,7 @@ import sakuraba.saki.player.music.service.util.startService
 import sakuraba.saki.player.music.service.util.update
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
 import sakuraba.saki.player.music.util.Constants.ACTION_EXTRA
+import sakuraba.saki.player.music.util.Constants.ACTION_LOUDNESS_ENHANCER
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_AUDIO_LIST
 import sakuraba.saki.player.music.util.Constants.ACTION_UPDATE_PLAY_MODE
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO
@@ -82,12 +84,16 @@ import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_NEXT
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PAUSE
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PLAY
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PREV
+import sakuraba.saki.player.music.util.Constants.LOUDNESS_ENHANCER_DISABLE
+import sakuraba.saki.player.music.util.Constants.LOUDNESS_ENHANCER_ENABLE
+import sakuraba.saki.player.music.util.Constants.LOUDNESS_ENHANCER_SET
 import sakuraba.saki.player.music.util.CoroutineUtil.io
 import sakuraba.saki.player.music.util.CoroutineUtil.ui
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_CREATE
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_START_COMMAND
 import sakuraba.saki.player.music.util.SettingUtil.defaultSharedPreference
 import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
+import sakuraba.saki.player.music.util.SettingUtil.getIntSetting
 import sakuraba.saki.player.music.web.util.WebControlUtil
 
 class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Listener {
@@ -332,6 +338,8 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
                 .setLegacyStreamType(STREAM_MUSIC)
                 .build()
         ).build()
+
+    private lateinit var loudnessEnhancer: LoudnessEnhancer
         
     override fun onCreate() {
         Log.e(TAG, ON_CREATE)
@@ -343,6 +351,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
             .addCustomAction(ACTION_REQUEST_STATUS, ACTION_REQUEST_STATUS, R.drawable.ic_launcher_foreground)
             .addCustomAction(ACTION_UPDATE_PLAY_MODE, ACTION_UPDATE_PLAY_MODE, R.drawable.ic_launcher_foreground)
             .addCustomAction(ACTION_REQUEST_AUDIO_LIST, ACTION_REQUEST_AUDIO_LIST, R.drawable.ic_launcher_foreground)
+            .addCustomAction(ACTION_LOUDNESS_ENHANCER, ACTION_LOUDNESS_ENHANCER, R.drawable.ic_launcher_foreground)
             .setExtras(bundle { putInt(EXTRAS_PLAY_MODE, defaultSharedPreference.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST)) })
             .build()
         
@@ -373,6 +382,13 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
         wakeLock = (getSystemService(POWER_SERVICE) as PowerManager).newWakeLock(PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG)
         
         audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
+
+        loudnessEnhancer = LoudnessEnhancer(exoPlayer.audioSessionId)
+
+        if (getBooleanSetting(R.string.loudness_enhancer_enable_key)) {
+            loudnessEnhancer.enabled = true
+            loudnessEnhancer.setTargetGain(getIntSetting(R.string.loudness_enhancer_gain_key) ?: 0)
+        }
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -463,6 +479,24 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
                 defaultSharedPreference.commit(EXTRAS_PLAY_MODE, playMode)
             }
             ACTION_REQUEST_AUDIO_LIST -> result.sendResult(bundle { putSerializable(ACTION_EXTRA, getAudioList()) })
+            ACTION_LOUDNESS_ENHANCER -> {
+                when (extras?.getInt(EXTRAS_DATA)) {
+                    LOUDNESS_ENHANCER_DISABLE -> {
+                        if (loudnessEnhancer.enabled) {
+                            loudnessEnhancer.enabled = false
+                        }
+                    }
+                    LOUDNESS_ENHANCER_ENABLE -> {
+                        if (!loudnessEnhancer.enabled) {
+                            loudnessEnhancer.enabled = true
+                        }
+                    }
+                    LOUDNESS_ENHANCER_SET -> {
+                        loudnessEnhancer.setTargetGain(extras.getInt(ACTION_EXTRA, 0))
+                    }
+                }
+                result.sendResult(null)
+            }
             else -> super.onCustomAction(action, extras, result)
         }
     }
