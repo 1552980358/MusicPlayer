@@ -470,6 +470,7 @@ class MainActivity: BaseMediaControlActivity() {
         Log.e(TAG, "MediaBrowserCompat.ConnectionCallback.onConnected")
         if (mediaBrowserCompat.isConnected) {
             registerMediaController()
+            activityInterface.setMediaBrowserCompat(mediaBrowserCompat)
     
             if (behavior.state == STATE_EXPANDED) {
                 @Suppress("DuplicatedCode")
