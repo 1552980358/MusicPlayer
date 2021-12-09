@@ -38,7 +38,8 @@ import androidx.media.AudioManagerCompat
 import androidx.media.AudioManagerCompat.AUDIOFOCUS_GAIN
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.Player.Listener
+import com.google.android.exoplayer2.Player.STATE_ENDED
 import kotlinx.coroutines.delay
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.commit
@@ -284,7 +285,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
         }
     }
     
-    private lateinit var exoPlayer: Player
+    private lateinit var exoPlayer: ExoPlayer
     
     @Volatile
     private lateinit var playbackStateCompat: PlaybackStateCompat
@@ -549,7 +550,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */Player
      **/
     
     override fun onPlaybackStateChanged(playbackState: Int) {
-        if (playbackState == Player.STATE_ENDED) {
+        if (playbackState == STATE_ENDED) {
             when (playbackStateCompat.extras?.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST)) {
                 PLAY_MODE_RANDOM, PLAY_MODE_LIST -> {
                     mediaSession.controller.transportControls.skipToNext()
