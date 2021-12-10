@@ -3,15 +3,15 @@ package sakuraba.saki.player.music.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.LinearLayout
 import android.widget.SeekBar
 import androidx.annotation.MainThread
+import androidx.appcompat.widget.LinearLayoutCompat
 import lib.github1552980358.ktExtension.android.content.commit
 import lib.github1552980358.ktExtension.android.view.getString
 import sakuraba.saki.player.music.databinding.LayoutValuedSeekbarBinding
 import sakuraba.saki.player.music.util.SettingUtil.defaultSharedPreference
 
-class ValuedSeekbar: LinearLayout {
+class ValuedSeekbar: LinearLayoutCompat {
 
     constructor(context: Context): this(context, null)
     constructor(context: Context, attributeSet: AttributeSet?): super(context, attributeSet)
@@ -59,8 +59,7 @@ class ValuedSeekbar: LinearLayout {
     var saveKey = 0
 
     init {
-        _layoutValuedSeekbarBinding = LayoutValuedSeekbarBinding.inflate(LayoutInflater.from(context))
-        addView(layoutValuedSeekbar.root)
+        _layoutValuedSeekbarBinding = LayoutValuedSeekbarBinding.inflate(LayoutInflater.from(context), this, true)
         layoutValuedSeekbar.seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
