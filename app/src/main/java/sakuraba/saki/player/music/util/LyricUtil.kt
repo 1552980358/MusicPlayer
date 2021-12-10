@@ -1,6 +1,8 @@
 package sakuraba.saki.player.music.util
 
 import android.content.Context
+import android.view.View
+import androidx.fragment.app.Fragment
 import java.io.File
 import lib.github1552980358.ktExtension.jvm.io.writingLn
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
@@ -24,6 +26,8 @@ object LyricUtil {
 
     fun Context.readLyric(id: String) = createLyric { readLyric(id, this) }
 
+    fun Fragment.readLyric(id: String) = requireContext().readLyric(id)
+
     fun Context.readLyric(id: String, lyric: Lyric) {
         File(lyricDirFile, id.plus(LYRIC_EXT)).apply {
             if (!exists()) {
@@ -32,6 +36,8 @@ object LyricUtil {
             readLines().forEach { line -> line.decodeLine(lyric) }
         }
     }
+
+    fun View.readLyric(id: String, lyric: Lyric) = context.readLyric(id, lyric)
 
     fun Context.writeLyric(id: String, lyric: Lyric) {
         if (lyric.isEmpty) {
@@ -49,6 +55,8 @@ object LyricUtil {
         }
     }
 
+    fun Fragment.writeLyric(id: String, lyric: Lyric) = requireContext().writeLyric(id, lyric)
+
     fun Context.removeLyric(id: String) {
         File(lyricDirFile, id.plus(LYRIC_EXT)).apply {
             if (exists()) {
@@ -58,6 +66,8 @@ object LyricUtil {
     }
 
     fun Context.hasLyric(id: String) = File(lyricDirFile, id.plus(LYRIC_EXT)).exists()
+
+    fun Fragment.hasLyric(id: String) = requireContext().hasLyric(id)
 
     fun String.decodeLine(lyric: Lyric) {
         /**
