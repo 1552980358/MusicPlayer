@@ -20,5 +20,12 @@
             android:icon="@drawable/ic_menu_search"
             android:title="@string/menu_search" />
     </group>
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_audio_effect"
+            android:icon="@drawable/ic_audio_effect"
+            android:title="@string/menu_audio_effect" />
+    </group>
     
 </menu>
