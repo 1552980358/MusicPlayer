@@ -25,7 +25,7 @@ class ValuedSeekbar: LinearLayoutCompat {
 
     private var listener: SeekChangeListener? = null
 
-    lateinit var unit: String
+    var unit = ""
 
     var max = 0
         @MainThread
@@ -75,11 +75,11 @@ class ValuedSeekbar: LinearLayoutCompat {
             }
         })
         @Suppress("SetTextI18n")
-        layoutValuedSeekbar.textViewMax.text = "$max dB"
+        layoutValuedSeekbar.textViewMax.text = "$max $unit"
         @Suppress("SetTextI18n")
-        layoutValuedSeekbar.textViewMin.text = "$min dB"
+        layoutValuedSeekbar.textViewMin.text = "$min $unit"
         @Suppress("SetTextI18n")
-        layoutValuedSeekbar.textViewCur.text = "$cur dB"
+        layoutValuedSeekbar.textViewCur.text = "$cur $unit"
     }
 
     override fun setEnabled(enabled: Boolean) {
