@@ -26,7 +26,13 @@ object Constants {
     const val LOUDNESS_ENHANCER_DISABLE = 0
     const val LOUDNESS_ENHANCER_ENABLE = 1
     const val LOUDNESS_ENHANCER_SET = 2
-    
+
+    const val ACTION_EQUALIZER = "equalizer"
+    const val EQUALIZER_DISABLE = 0
+    const val EQUALIZER_ENABLE = 1
+    const val EQUALIZER_GET = 2
+    const val EQUALIZER_SET = 3
+
     const val EXTRAS_PLAY_MODE = "play_mode"
     const val PLAY_MODE_SINGLE = 1
     const val PLAY_MODE_SINGLE_CYCLE = 2
