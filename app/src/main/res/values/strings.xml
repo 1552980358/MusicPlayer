@@ -140,4 +140,8 @@
     <string name="loudness_enhancer_enable_key">key_loudness_enhancer_enable</string>
     <string name="loudness_enhancer_gain_key">key_loudness_enhancer</string>
 
+    <string name="equalizer_title">Equalizer</string>
+    <string name="key_equalizer_enable">key_equalizer_enable</string>
+    <string name="key_equalizer_band_level">key_equalizer_band_level</string>
+
 </resources>
