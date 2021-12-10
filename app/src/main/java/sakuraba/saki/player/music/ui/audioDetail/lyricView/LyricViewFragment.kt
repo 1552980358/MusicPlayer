@@ -41,7 +41,7 @@ class LyricViewFragment: Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        lyric = requireContext().readLyric(audioId)
+        lyric = readLyric(audioId)
         recyclerViewAdapterUtil = RecyclerViewAdapterUtil(fragmentLyricView.recyclerView, lyric) { index ->
             LyricEditDialogFragment(index, lyric, parentFragmentManager) { action, _, timeLong, lyricStr ->
                 when (action) {
@@ -63,7 +63,7 @@ class LyricViewFragment: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_cancel -> findNavController().navigateUp()
-            R.id.menu_save -> requireContext().writeLyric(audioId, lyric)
+            R.id.menu_save -> writeLyric(audioId, lyric)
             R.id.menu_add -> LyricEditDialogFragment(CREATE_LYRIC, lyric, parentFragmentManager) { action, _, timeLong, lyricStr ->
                 when (action) {
                     NO_CHANGE -> return@LyricEditDialogFragment
@@ -75,6 +75,6 @@ class LyricViewFragment: Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun onBackPressed() = requireContext().writeLyric(audioId, lyric)
+    fun onBackPressed() = writeLyric(audioId, lyric)
 
 }
