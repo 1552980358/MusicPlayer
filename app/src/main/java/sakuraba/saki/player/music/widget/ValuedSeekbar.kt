@@ -24,6 +24,7 @@ class ValuedSeekbar: LinearLayoutCompat {
     }
 
     private var listener: SeekChangeListener? = null
+    private var saveListener: SeekChangeListener? = null
 
     var unit = ""
 
@@ -48,12 +49,10 @@ class ValuedSeekbar: LinearLayoutCompat {
     var cur = 0
         @MainThread
         set(value) {
-            if (field != value) {
-                field = value
-                layoutValuedSeekbar.seekbar.progress = field + layoutValuedSeekbar.seekbar.max / 2
-                @Suppress("SetTextI18n")
-                layoutValuedSeekbar.textViewCur.text = "$value $unit"
-            }
+            field = value
+            layoutValuedSeekbar.seekbar.progress = value + (max - min) / 2
+            @Suppress("SetTextI18n")
+            layoutValuedSeekbar.textViewCur.text = "$value $unit"
         }
 
     var saveKey = 0
@@ -72,6 +71,7 @@ class ValuedSeekbar: LinearLayoutCompat {
                 if (saveKey != 0) {
                     context.defaultSharedPreference.commit(getString(saveKey), cur.toString())
                 }
+                saveListener?.onChange(cur)
             }
         })
         @Suppress("SetTextI18n")
@@ -88,6 +88,10 @@ class ValuedSeekbar: LinearLayoutCompat {
 
     fun setSeekChangeListener(block: (Int) -> Unit) {
         listener = SeekChangeListener(block)
+    }
+
+    fun setSaveListener(block: (Int) -> Unit) {
+        saveListener = SeekChangeListener(block)
     }
 
 }
