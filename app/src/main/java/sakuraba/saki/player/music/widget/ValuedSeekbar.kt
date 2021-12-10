@@ -70,7 +70,7 @@ class ValuedSeekbar: LinearLayoutCompat {
             override fun onStartTrackingTouch(seekBar: SeekBar?) = Unit
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 if (saveKey != 0) {
-                    context.defaultSharedPreference.commit(getString(saveKey), cur)
+                    context.defaultSharedPreference.commit(getString(saveKey), cur.toString())
                 }
             }
         })
