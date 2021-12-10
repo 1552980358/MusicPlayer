@@ -31,6 +31,9 @@
             app:popExitAnim="@anim/translate_pop_exit"
             app:enterAnim="@anim/translate_enter"
             app:exitAnim="@anim/translate_exit" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_audio_effect"
+            app:destination="@id/nav_audio_effect" />
     </fragment>
 
     <fragment
@@ -122,6 +125,12 @@
         android:id="@+id/nav_setting_audio_play"
         android:name="sakuraba.saki.player.music.ui.setting.fragment.AudioPlayFragment"
         android:label="@string/menu_setting_audio_play"/>
+
+    <fragment
+        android:id="@+id/nav_audio_effect"
+        android:name="sakuraba.saki.player.music.ui.audioEffect.AudioEffectFragment"
+        android:label="@string/nav_audio_effect"
+        tools:layout="@layout/fragment_audio_effect" />
 
     <fragment
         android:id="@+id/nav_setting_web_server"
