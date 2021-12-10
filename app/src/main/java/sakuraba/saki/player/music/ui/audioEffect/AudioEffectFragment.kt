@@ -29,9 +29,9 @@ class AudioEffectFragment: BaseMainFragment() {
     private var _fragmentAudioEffectBinding: FragmentAudioEffectBinding? = null
     private val fragmentAudioEffect get() = _fragmentAudioEffectBinding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _fragmentAudioEffectBinding = FragmentAudioEffectBinding.inflate(inflater)
-        return super.onCreateView(inflater, container, savedInstanceState)
+        return fragmentAudioEffect.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
