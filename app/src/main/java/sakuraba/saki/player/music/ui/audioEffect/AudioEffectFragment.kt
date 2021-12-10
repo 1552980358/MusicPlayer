@@ -10,15 +10,22 @@ import lib.github1552980358.ktExtension.android.os.bundle
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.base.BaseMainFragment
 import sakuraba.saki.player.music.databinding.FragmentAudioEffectBinding
+import sakuraba.saki.player.music.ui.audioEffect.util.RecyclerViewAdapterUtil
+import sakuraba.saki.player.music.util.Constants.ACTION_EQUALIZER
 import sakuraba.saki.player.music.util.Constants.ACTION_EXTRA
 import sakuraba.saki.player.music.util.Constants.ACTION_LOUDNESS_ENHANCER
+import sakuraba.saki.player.music.util.Constants.EQUALIZER_ENABLE
+import sakuraba.saki.player.music.util.Constants.EQUALIZER_GET
+import sakuraba.saki.player.music.util.Constants.EQUALIZER_SET
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.Constants.LOUDNESS_ENHANCER_DISABLE
 import sakuraba.saki.player.music.util.Constants.LOUDNESS_ENHANCER_ENABLE
 import sakuraba.saki.player.music.util.Constants.LOUDNESS_ENHANCER_SET
+import sakuraba.saki.player.music.util.DeviceEqualizer
 import sakuraba.saki.player.music.util.SettingUtil.defaultSharedPreference
 import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
 import sakuraba.saki.player.music.util.SettingUtil.getIntSetting
+import sakuraba.saki.player.music.util.SettingUtil.getStringSetting
 
 class AudioEffectFragment: BaseMainFragment() {
 
@@ -28,6 +35,8 @@ class AudioEffectFragment: BaseMainFragment() {
 
     private var _fragmentAudioEffectBinding: FragmentAudioEffectBinding? = null
     private val fragmentAudioEffect get() = _fragmentAudioEffectBinding!!
+
+    private lateinit var recyclerViewAdapter: RecyclerViewAdapterUtil
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _fragmentAudioEffectBinding = FragmentAudioEffectBinding.inflate(inflater)
@@ -60,6 +69,46 @@ class AudioEffectFragment: BaseMainFragment() {
                 }) { _, _, _ -> }
             }
         }
+
+        fragmentAudioEffect.switchCompatEqualizer.apply {
+            isChecked = getBooleanSetting(R.string.key_equalizer_enable)
+            setOnCheckedChangeListener { _, isChecked ->
+                defaultSharedPreference.commit(getString(R.string.key_equalizer_enable), isChecked)
+                activityInterface.sendCustomAction(ACTION_EQUALIZER, bundle {
+                    putInt(EXTRAS_DATA, if (isChecked) EQUALIZER_ENABLE else EQUALIZER_ENABLE)
+                }) { _, _, _ -> }
+                if (::recyclerViewAdapter.isInitialized) {
+                    recyclerViewAdapter.enable = isChecked
+                }
+            }
+        }
+
+        activityInterface.sendCustomAction(
+            ACTION_EQUALIZER,
+            bundle { putInt(EXTRAS_DATA, EQUALIZER_GET) }) { _, _, resultBundle ->
+            val deviceEqualizer = resultBundle?.getSerializable(EXTRAS_DATA) as DeviceEqualizer
+            val bandLevels = bandLevels(deviceEqualizer.bands)
+            recyclerViewAdapter = RecyclerViewAdapterUtil(
+                fragmentAudioEffect.recyclerView,
+                deviceEqualizer,
+                bandLevels) { band, level ->
+                activityInterface.sendCustomAction(
+                    ACTION_EQUALIZER,
+                    bundle {
+                        putInt(EXTRAS_DATA, EQUALIZER_SET)
+                        putString(ACTION_EXTRA, "$band $level")
+                    }
+                ) { _, _, _, ->}
+            }
+            recyclerViewAdapter.enable = fragmentAudioEffect.switchCompatEqualizer.isChecked
+        }
+    }
+
+    private fun bandLevels(band: Short) = ArrayList<Short>().apply {
+        (getStringSetting(R.string.key_equalizer_band_level)?.split(' ')
+            ?.toMutableList()?.apply { removeAll { it.isEmpty() } }
+            ?: ArrayList<String>().apply { (0 until band).forEach { _ -> add("0") } }
+            ).forEach { add(it.toShort()) }
     }
 
 }
