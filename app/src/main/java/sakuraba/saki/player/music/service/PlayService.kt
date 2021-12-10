@@ -7,6 +7,7 @@ import android.media.AudioManager
 import android.media.AudioManager.AUDIOFOCUS_LOSS
 import android.media.AudioManager.AUDIOFOCUS_REQUEST_FAILED
 import android.media.AudioManager.STREAM_MUSIC
+import android.media.audiofx.Equalizer
 import android.media.audiofx.LoudnessEnhancer
 import android.os.Bundle
 import android.os.PowerManager
@@ -59,11 +60,16 @@ import sakuraba.saki.player.music.service.util.parseAsUri
 import sakuraba.saki.player.music.service.util.startForeground
 import sakuraba.saki.player.music.service.util.startService
 import sakuraba.saki.player.music.service.util.update
+import sakuraba.saki.player.music.util.Constants.ACTION_EQUALIZER
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
 import sakuraba.saki.player.music.util.Constants.ACTION_EXTRA
 import sakuraba.saki.player.music.util.Constants.ACTION_LOUDNESS_ENHANCER
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_AUDIO_LIST
 import sakuraba.saki.player.music.util.Constants.ACTION_UPDATE_PLAY_MODE
+import sakuraba.saki.player.music.util.Constants.EQUALIZER_DISABLE
+import sakuraba.saki.player.music.util.Constants.EQUALIZER_ENABLE
+import sakuraba.saki.player.music.util.Constants.EQUALIZER_GET
+import sakuraba.saki.player.music.util.Constants.EQUALIZER_SET
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_POS
@@ -89,6 +95,7 @@ import sakuraba.saki.player.music.util.Constants.LOUDNESS_ENHANCER_ENABLE
 import sakuraba.saki.player.music.util.Constants.LOUDNESS_ENHANCER_SET
 import sakuraba.saki.player.music.util.CoroutineUtil.io
 import sakuraba.saki.player.music.util.CoroutineUtil.ui
+import sakuraba.saki.player.music.util.DeviceEqualizer
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_CREATE
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_START_COMMAND
 import sakuraba.saki.player.music.util.SettingUtil.defaultSharedPreference
@@ -340,6 +347,8 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
         ).build()
 
     private lateinit var loudnessEnhancer: LoudnessEnhancer
+
+    private lateinit var equalizer: Equalizer
         
     override fun onCreate() {
         Log.e(TAG, ON_CREATE)
@@ -352,6 +361,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
             .addCustomAction(ACTION_UPDATE_PLAY_MODE, ACTION_UPDATE_PLAY_MODE, R.drawable.ic_launcher_foreground)
             .addCustomAction(ACTION_REQUEST_AUDIO_LIST, ACTION_REQUEST_AUDIO_LIST, R.drawable.ic_launcher_foreground)
             .addCustomAction(ACTION_LOUDNESS_ENHANCER, ACTION_LOUDNESS_ENHANCER, R.drawable.ic_launcher_foreground)
+            .addCustomAction(ACTION_EQUALIZER, ACTION_EQUALIZER, R.drawable.ic_launcher_foreground)
             .setExtras(bundle { putInt(EXTRAS_PLAY_MODE, defaultSharedPreference.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST)) })
             .build()
         
@@ -388,6 +398,17 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
         if (getBooleanSetting(R.string.loudness_enhancer_enable_key)) {
             loudnessEnhancer.enabled = true
             loudnessEnhancer.setTargetGain(getIntSetting(R.string.loudness_enhancer_gain_key) ?: 0)
+        }
+
+        equalizer = Equalizer(0, exoPlayer.audioSessionId)
+        equalizer.enabled = true
+        Log.e("CurrentPreset", equalizer.properties.curPreset.toString())
+        Log.e("Properties", equalizer.properties.toString())
+        (0 until equalizer.numberOfBands).forEach {
+            Log.e("CenterFreq", equalizer.getCenterFreq(it.toShort()).toString())
+        }
+        (0 until equalizer.numberOfPresets).forEach {
+            Log.e("Preset", equalizer.getPresetName(it.toShort()))
         }
     }
     
@@ -493,6 +514,30 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
                     }
                     LOUDNESS_ENHANCER_SET -> {
                         loudnessEnhancer.setTargetGain(extras.getInt(ACTION_EXTRA, 0))
+                    }
+                }
+                result.sendResult(null)
+            }
+            ACTION_EQUALIZER -> {
+                when (extras?.getInt(EXTRAS_DATA)) {
+                    EQUALIZER_DISABLE -> {
+                        if (equalizer.enabled) {
+                            equalizer.enabled = false
+                        }
+                    }
+                    EQUALIZER_ENABLE -> {
+                        if (!equalizer.enabled) {
+                            equalizer.enabled = true
+                        }
+                    }
+                    EQUALIZER_GET -> {
+                        result.sendResult(bundle { putSerializable(EXTRAS_DATA, DeviceEqualizer(equalizer)) })
+                        return
+                    }
+                    EQUALIZER_SET -> {
+                        extras.getString(ACTION_EXTRA)?.split(' ')?.apply {
+                            equalizer.setBandLevel(first().toShort(), (last().toInt() * 100).toShort())
+                        }
                     }
                 }
                 result.sendResult(null)
