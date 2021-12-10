@@ -48,6 +48,10 @@ class AudioEffectFragment: BaseMainFragment() {
             unit = UNIT_MB
             saveKey = R.string.loudness_enhancer_gain_key
             max = PARAM_TARGET_GAIN_MB
+            if (max == 0) {
+                fragmentAudioEffect.switchCompat.isEnabled = false
+                isEnabled = false
+            }
             cur = requireContext().getIntSetting(R.string.loudness_enhancer_gain_key) ?: 0
             setSeekChangeListener { value ->
                 activityInterface.sendCustomAction(ACTION_LOUDNESS_ENHANCER, bundle {
