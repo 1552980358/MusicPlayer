@@ -127,7 +127,7 @@ class LyricLayout: RelativeLayout {
     fun updateLyric(audioId: String) {
         CoroutineScope(Dispatchers.IO).launch {
             createLyric {
-                context.readLyric(audioId, this)
+                readLyric(audioId, this)
                 ui { layoutLyric.lyricView.updateLyric(this@createLyric) }
             }
         }
