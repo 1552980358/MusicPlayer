@@ -297,7 +297,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                 createLyric {
                     lines.forEach { line -> line.decodeLine(this) }
                     if (isNotEmpty) {
-                        requireContext().writeLyric(audioId, this)
+                        writeLyric(audioId, this)
                         ui {
                             coordinatorLayout?.shortSnack(R.string.audio_detail_lyric_import_succeed)
                             preference(R.string.audio_detail_lyric_view_key)?.isEnabled = true
@@ -324,7 +324,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                     return@setOnPreferenceClickListener true
                 }
             }
-            val hasLyric = requireContext().hasLyric(audioId)
+            val hasLyric = hasLyric(audioId)
             preference(R.string.audio_detail_lyric_view_key)?.apply {
                 if (!hasLyric) {
                     isEnabled = false
@@ -358,7 +358,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
     }
 
     private fun saveLyric(lyric: Lyric) {
-        requireContext().writeLyric(audioInfo.audioId, lyric)
+        writeLyric(audioInfo.audioId, lyric)
         ui {
             coordinatorLayout?.shortSnack(R.string.audio_detail_lyric_import_succeed)
             preference(R.string.audio_detail_lyric_view_key)?.isEnabled = true
@@ -377,7 +377,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                     when (selection) {
                         NET_EASE_MUSIC -> {
                             io {
-                                if (!requireContext().hasLyric(audioInfo.audioId)) {
+                                if (!hasLyric(audioInfo.audioId)) {
                                     textContent.netEaseLyric.also { saveLyric(it) }
                                 }
                             }
@@ -393,7 +393,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                         }
                         QQ_MUSIC -> {
                             io {
-                                if (!requireContext().hasLyric(audioInfo.audioId)) {
+                                if (!hasLyric(audioInfo.audioId)) {
                                     textContent.qqMusicLyric.also {
                                         saveLyric(it)
                                     }
