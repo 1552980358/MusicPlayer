@@ -22,7 +22,7 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
 
     private companion object {
         const val UNIT_HZ = "Hz"
-        const val UNIT_MB = "mB"
+        const val UNIT_DB = "dB"
     }
 
     private class RecyclerViewHolder(view: View): ViewHolder(view) {
@@ -39,7 +39,7 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
             @Suppress("SetTextI18n")
             textView.text = "${deviceEqualizer.frequencies[position]} $UNIT_HZ"
             valuedSeekbar.apply {
-                unit = UNIT_MB
+                unit = UNIT_DB
                 min = deviceEqualizer.minBandLevel
                 max = deviceEqualizer.maxBandLevel
                 cur = bandLevels[position].toInt()
