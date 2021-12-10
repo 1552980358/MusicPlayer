@@ -82,6 +82,10 @@ class ValuedSeekbar: LinearLayoutCompat {
         layoutValuedSeekbar.textViewCur.text = "$cur dB"
     }
 
+    override fun setEnabled(enabled: Boolean) {
+        layoutValuedSeekbar.seekbar.isEnabled = enabled
+    }
+
     fun setSeekChangeListener(block: (Int) -> Unit) {
         listener = SeekChangeListener(block)
     }
