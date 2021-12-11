@@ -33,6 +33,7 @@
   - `Add support Android 12.0 SplashScreen`
     - Commit: [9096b6c](https://github.com/1552980358/MusicPlayer/commit/9096b6c2220c422703cc90a96db8bb49208690b2)
     - Google Document Source: [Splash screens](https://developer.android.com/guide/topics/ui/splash-screen)
+- Android SL/Sv2 (API 32) [Beta]
 
 ## Lyric format
 - Time statement before lyric text
