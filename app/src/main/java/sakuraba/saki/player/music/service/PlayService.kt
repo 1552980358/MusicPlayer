@@ -567,7 +567,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
     
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaItem>>) {
         Log.e(TAG, "onLoadChildren $parentId")
-        if (parentId == MainActivity.TAG) {
+        if (parentId == MainActivity::class.java.simpleName) {
             result.sendResult(null)
             return
         }

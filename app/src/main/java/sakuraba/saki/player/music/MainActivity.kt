@@ -105,7 +105,7 @@ import sakuraba.saki.player.music.widget.PlayProgressBar
 
 class MainActivity: BaseMediaControlActivity() {
     
-    companion object {
+    private companion object {
         const val TAG = "MainActivity"
     }
     
