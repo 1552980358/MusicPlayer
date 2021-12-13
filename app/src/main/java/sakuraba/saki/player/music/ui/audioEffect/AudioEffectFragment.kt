@@ -1,6 +1,10 @@
 package sakuraba.saki.player.music.ui.audioEffect
 
 import android.media.audiofx.LoudnessEnhancer.PARAM_TARGET_GAIN_MB
+import android.media.audiofx.Visualizer
+import android.media.audiofx.Visualizer.OnDataCaptureListener
+import android.media.audiofx.Visualizer.getCaptureSizeRange
+import android.media.audiofx.Visualizer.getMaxCaptureRate
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +15,7 @@ import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.base.BaseMainFragment
 import sakuraba.saki.player.music.databinding.FragmentAudioEffectBinding
 import sakuraba.saki.player.music.ui.audioEffect.util.RecyclerViewAdapterUtil
+import sakuraba.saki.player.music.util.Constants.ACTION_AUDIO_SESSION
 import sakuraba.saki.player.music.util.Constants.ACTION_EQUALIZER
 import sakuraba.saki.player.music.util.Constants.ACTION_EXTRA
 import sakuraba.saki.player.music.util.Constants.ACTION_LOUDNESS_ENHANCER
@@ -26,6 +31,8 @@ import sakuraba.saki.player.music.util.SettingUtil.defaultSharedPreference
 import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
 import sakuraba.saki.player.music.util.SettingUtil.getIntSetting
 import sakuraba.saki.player.music.util.SettingUtil.getStringSetting
+import kotlin.math.abs
+import kotlin.math.hypot
 
 class AudioEffectFragment: BaseMainFragment() {
 
@@ -37,6 +44,8 @@ class AudioEffectFragment: BaseMainFragment() {
     private val fragmentAudioEffect get() = _fragmentAudioEffectBinding!!
 
     private lateinit var recyclerViewAdapter: RecyclerViewAdapterUtil
+
+    private var visualizer: Visualizer? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _fragmentAudioEffectBinding = FragmentAudioEffectBinding.inflate(inflater)
@@ -102,6 +111,26 @@ class AudioEffectFragment: BaseMainFragment() {
             }
             recyclerViewAdapter.enable = fragmentAudioEffect.switchCompatEqualizer.isChecked
         }
+
+        activityInterface.sendCustomAction(ACTION_AUDIO_SESSION, null) { _, _, result ->
+            result?.getInt(EXTRAS_DATA)?.let { visualizer = Visualizer(it) }
+            visualizer?.captureSize = getCaptureSizeRange().last()
+            visualizer?.setDataCaptureListener(object: OnDataCaptureListener {
+                override fun onWaveFormDataCapture(p0: Visualizer?, p1: ByteArray?, p2: Int) = Unit
+                override fun onFftDataCapture(p0: Visualizer?, p1: ByteArray?, p2: Int) {
+                    p1?.let { byteArray ->
+                        fragmentAudioEffect.visualizerView.visibleData = FloatArray(byteArray.size / 2 + 1).apply {
+                            this[0] = abs(byteArray.first().toFloat())
+                            (2 until byteArray.size / 2 step 2).forEach { i ->
+                                this[i / 2] = hypot(byteArray[i].toFloat(), byteArray[i + 1].toFloat())
+                                this[i / 2 + 1] = abs(byteArray[i / 2 + 1].toFloat())
+                            }
+                        }
+                    }
+                }
+            }, getMaxCaptureRate() / 2, false, true)
+            visualizer?.enabled = true
+        }
     }
 
     private fun bandLevels(band: Short) = ArrayList<Short>().apply {
@@ -109,6 +138,12 @@ class AudioEffectFragment: BaseMainFragment() {
             ?.toMutableList()?.apply { removeAll { it.isEmpty() } }
             ?: ArrayList<String>().apply { (0 until band).forEach { _ -> add("0") } }
             ).forEach { add(it.toShort()) }
+    }
+
+    override fun onDestroyView() {
+        visualizer?.enabled = false
+        visualizer?.release()
+        super.onDestroyView()
     }
 
 }
