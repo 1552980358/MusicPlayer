@@ -77,4 +77,6 @@
     <dimen name="lyric_recycler_view_text_size">17sp</dimen>
     <dimen name="lyric_edit_root_padding_top">15dp</dimen>
 
+    <dimen name="audio_effect_visualizer_view_height">100dp</dimen>
+
 </resources>
