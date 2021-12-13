@@ -113,9 +113,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
         private const val PlaybackStateActions =
             ACTION_PLAY_PAUSE or ACTION_STOP or ACTION_SEEK_TO or ACTION_PLAY_FROM_MEDIA_ID or ACTION_SKIP_TO_NEXT or ACTION_SKIP_TO_PREVIOUS or ACTION_SKIP_TO_QUEUE_ITEM
     }
-    
-    // private lateinit var mediaPlayer: MediaPlayer
-    
+
     private lateinit var audioInfoList: ArrayList<AudioInfo>
     private var listPos = -1
     
@@ -142,7 +140,6 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
                 .build()
             mediaSession.setPlaybackState(playbackStateCompat)
             exoPlayer.volume = 0.2F
-            // mediaPlayer.start()
             exoPlayer.play()
             io {
                 if (getBooleanSetting(R.string.key_play_fade_in_enable)) {
@@ -175,7 +172,6 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
                     delay(100)
                 }
                 ui {
-                    // mediaPlayer.pause()
                     exoPlayer.pause()
                     playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
                         .setState(STATE_PAUSED, exoPlayer.currentPosition/*mediaPlayer.currentPosition.toLong()*/, 1F)
@@ -195,8 +191,6 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
                 .setState(STATE_STOPPED, 0, 1F)
                 .build()
             mediaSession.setPlaybackState(playbackStateCompat)
-            // mediaPlayer.pause()
-            // mediaPlayer.seekTo(0)
             exoPlayer.pause()
             exoPlayer.seekTo(0)
         }
@@ -254,13 +248,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
                 .setMediaMetadata(audioInfoList[listPos])
                 .build()
             mediaSession.setMetadata(mediaMetadataCompat)
-            
-            // mediaPlayer.syncPlayAndPrepareMediaId(this@PlayService, mediaId) {
-            //    playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
-            //        .setState(STATE_PLAYING, 0, 1F)
-            //        .build()
-            //    mediaSession.setPlaybackState(playbackStateCompat)
-            //}
+
             exoPlayer.stop()
             exoPlayer.setMediaItem(com.google.android.exoplayer2.MediaItem.fromUri(mediaId.mediaUriStr.parseAsUri))
             exoPlayer.prepare()
@@ -294,7 +282,6 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
                 .setState(playbackStateCompat.state, pos, 1F)
                 .build()
             mediaSession.setPlaybackState(playbackStateCompat)
-            // mediaPlayer.seekTo(pos.toInt())
             exoPlayer.seekTo(pos)
         }
     }
@@ -307,7 +294,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
     private lateinit var mediaMetadataCompat: MediaMetadataCompat
 
     private var webControlUtil: WebControlUtil? = null
-    
+
     private val broadcastReceiver = broadcastReceiver { _, intent, _ ->
         when (intent?.action) {
             FILTER_NOTIFICATION_PREV -> mediaSession.controller.transportControls.skipToPrevious()
@@ -316,7 +303,6 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
             FILTER_NOTIFICATION_NEXT -> mediaSession.controller.transportControls.skipToNext()
             ACTION_HEADSET_PLUG -> {
                 if (intent.getIntExtra("state", -1) == 0 && exoPlayer.isPlaying) {
-                    // mediaSession.controller.transportControls.pause()
                     exoPlayer.pause()
                     playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
                         .setState(STATE_PAUSED, exoPlayer.currentPosition/*mediaPlayer.currentPosition.toLong()*/, 1F)
@@ -372,10 +358,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
             isActive = true
         }
         sessionToken = mediaSession.sessionToken
-        
-        // mediaPlayer = MediaPlayer()
-        // mediaPlayer.setOnCompletionListener(this)
-        
+
         exoPlayer = ExoPlayer.Builder(this).build()
         exoPlayer.addListener(this)
         
@@ -403,14 +386,6 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
 
         equalizer = Equalizer(0, exoPlayer.audioSessionId)
         equalizer.enabled = true
-        Log.e("CurrentPreset", equalizer.properties.curPreset.toString())
-        Log.e("Properties", equalizer.properties.toString())
-        (0 until equalizer.numberOfBands).forEach {
-            Log.e("CenterFreq", equalizer.getCenterFreq(it.toShort()).toString())
-        }
-        (0 until equalizer.numberOfPresets).forEach {
-            Log.e("Preset", equalizer.getPresetName(it.toShort()))
-        }
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -603,32 +578,6 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
                 .build(),
             MediaItem.FLAG_PLAYABLE
         )
-    /**
-     * override fun onCompletion(mediaPlayer: MediaPlayer?) {
-     *      val playMode = playbackStateCompat.extras?.getInt(EXTRAS_PLAY_MODE, PLAY_MODE_LIST)
-     *      if (playMode == null) {
-     *          mediaSession.controller.transportControls.skipToNext()
-     *          return
-     *      }
-     *      when (playMode) {
-     *          PLAY_MODE_RANDOM, PLAY_MODE_LIST -> {
-     *              mediaSession.controller.transportControls.skipToNext()
-     *          }
-     *          PLAY_MODE_SINGLE_CYCLE -> {
-     *              playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
-     *                  .setState(STATE_PLAYING, 0, 1F)
-     *                  .build()
-     *              mediaSession.controller.transportControls.play()
-     *          }
-     *          PLAY_MODE_SINGLE -> {
-     *              mediaSession.controller.transportControls.stop()
-     *           }
-     *          else -> {
-     *              mediaSession.controller.transportControls.skipToNext()
-     *           }
-     *      }
-     * }
-     **/
     
     override fun onPlaybackStateChanged(playbackState: Int) {
         if (playbackState == STATE_ENDED) {
