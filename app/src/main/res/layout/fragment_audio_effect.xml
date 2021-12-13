@@ -9,7 +9,8 @@
     <sakuraba.saki.player.music.view.VisualizerView
         android:layout_width="match_parent"
         android:layout_height="@dimen/audio_effect_visualizer_view_height"
-        android:id="@+id/visualizer_View"/>
+        android:id="@+id/visualizer_View"
+        android:background="?android:attr/selectableItemBackground"/>
 
     <androidx.appcompat.widget.SwitchCompat
         android:layout_width="match_parent"
