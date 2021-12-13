@@ -41,16 +41,14 @@ class VisualizerView: View {
         val data = visibleData ?: return
         isDrawing = true
 
-        val xDiff = widthF / (data.size + 1)
+        val xDiff = widthF / data.size
         val yDiff = heightF / Byte.MAX_VALUE
 
-        var drawX = xDiff / 2
         var drawY: Float
 
-        data.forEach { value ->
+        data.forEachIndexed { index, value ->
             drawY = yDiff * value
-            canvas.drawRect(drawX, (height - drawY) / 2, drawX + xDiff, (height + drawY) / 2, paint)
-            drawX += (2 * xDiff)
+            canvas.drawRect(index * xDiff, (height - drawY) / 2, (index + 1) * xDiff, (height + drawY) / 2, paint)
         }
 
         isDrawing = false
