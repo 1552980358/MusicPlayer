@@ -3,6 +3,35 @@
 ## Package Name
 - `sakuraba.saki.player.music`
 
+## Maintenance period
+- In long-term
+```
+  This project is a long-term project, which has a long maintenance period,
+  in adjust the values in projects, in order to maximize the user-experience
+  during the usage of this project software. 
+  Particular components, e.g., animation, are all trying the best to provide 
+  to the user, to enhance the visual feedback.
+  Different characterics will provided related to the maintaining stage and
+  the release of beta and release of Android SDK.
+  Added, this is a totally free and open-sourced project, with all component 
+  projects, implemented dependencies, are all open-sourced. 
+  Different open-source licenses are implemented in different component
+  projects,  implemented dependencies, so for better implementation, 
+  participation, supporting, and respecting the open source movement of 
+  software, a COPYLEFT is gained by repository owner, repository creater, 
+  repository forkers, main contributor, and other contributors who 
+  contributed, are contributing and have contributed any contribution to 
+  this project and related repository, and the right of viewing, private
+  usage, commerical usage, as well as copying, sharing and editing are all 
+  provided to the public and are welcome. 
+  A GNU Gernal Public License Version 3 (GNI GPL v3) is applied in this 
+  project, with a median COPYLEFT policy.
+  As a result, all related projects and repositories, including any code 
+  usage, the source code should be provide to the public, as well as the 
+  origin owner and contributors' code name or name should be provided in
+  related open-sourced projects.
+```
+
 ## Supported API
 - Android L - 5.0 (API 21)
 - Android L_MR1 - 5.1 (API 22)
