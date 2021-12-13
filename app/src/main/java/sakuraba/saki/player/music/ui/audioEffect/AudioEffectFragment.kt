@@ -1,5 +1,8 @@
 package sakuraba.saki.player.music.ui.audioEffect
 
+import android.Manifest.permission.MODIFY_AUDIO_SETTINGS
+import android.Manifest.permission.RECORD_AUDIO
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.media.audiofx.LoudnessEnhancer.PARAM_TARGET_GAIN_MB
 import android.media.audiofx.Visualizer
 import android.media.audiofx.Visualizer.OnDataCaptureListener
@@ -9,8 +12,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat.checkSelfPermission
 import lib.github1552980358.ktExtension.android.content.commit
 import lib.github1552980358.ktExtension.android.os.bundle
+import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.shortSnack
+import lib.github1552980358.ktExtension.androidx.fragment.app.findActivityViewById
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.base.BaseMainFragment
 import sakuraba.saki.player.music.databinding.FragmentAudioEffectBinding
@@ -38,7 +47,11 @@ class AudioEffectFragment: BaseMainFragment() {
 
     companion object {
         private const val UNIT_MB = "mB"
+        @JvmStatic
+        private val AUDIO_PERMISSIONS = arrayOf(RECORD_AUDIO, MODIFY_AUDIO_SETTINGS)
     }
+
+    private lateinit var requestAudioPermissions: ActivityResultLauncher<Array<out String>>
 
     private var _fragmentAudioEffectBinding: FragmentAudioEffectBinding? = null
     private val fragmentAudioEffect get() = _fragmentAudioEffectBinding!!
@@ -112,6 +125,22 @@ class AudioEffectFragment: BaseMainFragment() {
             recyclerViewAdapter.enable = fragmentAudioEffect.switchCompatEqualizer.isChecked
         }
 
+        requestAudioPermissions = registerForActivityResult(RequestMultiplePermissions()) { result ->
+            if (result.count { !it.value } != 0) {
+                findActivityViewById<CoordinatorLayout>(R.id.coordinator_layout)
+                    ?.shortSnack(R.string.visualizer_permission_not_gained)
+                return@registerForActivityResult
+            }
+            initVisualizer()
+        }
+
+        when {
+            checkSelfPermission(requireContext(), RECORD_AUDIO) == PERMISSION_GRANTED
+                && checkSelfPermission(requireContext(), MODIFY_AUDIO_SETTINGS) == PERMISSION_GRANTED -> initVisualizer()
+            shouldShowRequestPermissionRationale(RECORD_AUDIO)
+                || shouldShowRequestPermissionRationale(MODIFY_AUDIO_SETTINGS) -> Unit
+            else -> requestAudioPermissions.launch(AUDIO_PERMISSIONS)
+        }
     }
 
     private fun initVisualizer() {
