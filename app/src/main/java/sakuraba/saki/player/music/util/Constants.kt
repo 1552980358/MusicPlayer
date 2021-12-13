@@ -33,6 +33,8 @@ object Constants {
     const val EQUALIZER_GET = 2
     const val EQUALIZER_SET = 3
 
+    const val ACTION_AUDIO_SESSION = "audio_session"
+
     const val EXTRAS_PLAY_MODE = "play_mode"
     const val PLAY_MODE_SINGLE = 1
     const val PLAY_MODE_SINGLE_CYCLE = 2
