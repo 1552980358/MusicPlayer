@@ -134,6 +134,14 @@ class AudioEffectFragment: BaseMainFragment() {
             initVisualizer()
         }
 
+        fragmentAudioEffect.visualizerView.setOnClickListener {
+            if (checkSelfPermission(requireContext(), RECORD_AUDIO) == PERMISSION_GRANTED
+                && checkSelfPermission(requireContext(), MODIFY_AUDIO_SETTINGS) == PERMISSION_GRANTED) {
+                return@setOnClickListener
+            }
+            requestAudioPermissions.launch(AUDIO_PERMISSIONS)
+        }
+
         when {
             checkSelfPermission(requireContext(), RECORD_AUDIO) == PERMISSION_GRANTED
                 && checkSelfPermission(requireContext(), MODIFY_AUDIO_SETTINGS) == PERMISSION_GRANTED -> initVisualizer()
