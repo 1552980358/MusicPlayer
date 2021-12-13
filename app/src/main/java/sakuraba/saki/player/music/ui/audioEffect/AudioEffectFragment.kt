@@ -119,11 +119,10 @@ class AudioEffectFragment: BaseMainFragment() {
                 override fun onWaveFormDataCapture(p0: Visualizer?, p1: ByteArray?, p2: Int) = Unit
                 override fun onFftDataCapture(p0: Visualizer?, p1: ByteArray?, p2: Int) {
                     p1?.let { byteArray ->
-                        fragmentAudioEffect.visualizerView.visibleData = FloatArray(byteArray.size / 2 + 1).apply {
+                        fragmentAudioEffect.visualizerView.visibleData = FloatArray(byteArray.size / 2).apply {
                             this[0] = abs(byteArray.first().toFloat())
-                            (2 until byteArray.size / 2 step 2).forEach { i ->
-                                this[i / 2] = hypot(byteArray[i].toFloat(), byteArray[i + 1].toFloat())
-                                this[i / 2 + 1] = abs(byteArray[i / 2 + 1].toFloat())
+                            (1 until byteArray.size / 2).forEach { i ->
+                                this[i] = hypot(byteArray[2 * i].toFloat(), byteArray[2 * i + 1].toFloat())
                             }
                         }
                     }
