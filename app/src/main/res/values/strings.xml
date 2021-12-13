@@ -144,4 +144,6 @@
     <string name="key_equalizer_enable">key_equalizer_enable</string>
     <string name="key_equalizer_band_level">key_equalizer_band_level</string>
 
+    <string name="visualizer_permission_not_gained">Permissions not granted.\n Click white space above Loudness Enhancer to gain again.</string>
+
 </resources>
