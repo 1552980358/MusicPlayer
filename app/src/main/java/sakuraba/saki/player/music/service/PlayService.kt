@@ -60,6 +60,7 @@ import sakuraba.saki.player.music.service.util.parseAsUri
 import sakuraba.saki.player.music.service.util.startForeground
 import sakuraba.saki.player.music.service.util.startService
 import sakuraba.saki.player.music.service.util.update
+import sakuraba.saki.player.music.util.Constants.ACTION_AUDIO_SESSION
 import sakuraba.saki.player.music.util.Constants.ACTION_EQUALIZER
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
 import sakuraba.saki.player.music.util.Constants.ACTION_EXTRA
@@ -542,6 +543,7 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
                 }
                 result.sendResult(null)
             }
+            ACTION_AUDIO_SESSION -> result.sendResult(bundle { putInt(EXTRAS_DATA, exoPlayer.audioSessionId) })
             else -> super.onCustomAction(action, extras, result)
         }
     }
