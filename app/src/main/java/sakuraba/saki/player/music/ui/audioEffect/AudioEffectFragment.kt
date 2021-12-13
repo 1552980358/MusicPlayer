@@ -112,6 +112,9 @@ class AudioEffectFragment: BaseMainFragment() {
             recyclerViewAdapter.enable = fragmentAudioEffect.switchCompatEqualizer.isChecked
         }
 
+    }
+
+    private fun initVisualizer() {
         activityInterface.sendCustomAction(ACTION_AUDIO_SESSION, null) { _, _, result ->
             result?.getInt(EXTRAS_DATA)?.let { visualizer = Visualizer(it) }
             visualizer?.captureSize = getCaptureSizeRange().last()
