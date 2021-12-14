@@ -102,6 +102,7 @@ import sakuraba.saki.player.music.util.LifeStateConstant.ON_START_COMMAND
 import sakuraba.saki.player.music.util.SettingUtil.defaultSharedPreference
 import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
 import sakuraba.saki.player.music.util.SettingUtil.getIntSetting
+import sakuraba.saki.player.music.util.SettingUtil.getStringSetting
 import sakuraba.saki.player.music.web.util.WebControlUtil
 
 class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Listener {
@@ -385,7 +386,14 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
         }
 
         equalizer = Equalizer(0, exoPlayer.audioSessionId)
-        equalizer.enabled = true
+        if (getBooleanSetting(R.string.key_equalizer_enable)) {
+            getStringSetting(R.string.key_equalizer_band_level)
+                ?.split(' ')
+                ?.toMutableList()
+                ?.apply { removeAll { it.isBlank() } }
+                ?.forEachIndexed { index, value -> equalizer.setBandLevel(index.toShort(), value.toShort())  }
+            equalizer.enabled = true
+        }
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
