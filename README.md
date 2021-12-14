@@ -11,8 +11,8 @@
   during the usage of this project software. 
   Particular components, e.g., animation, are all trying the best to provide 
   to the user, to enhance the visual feedback.
-  Different characterics will provided related to the maintaining stage and
-  the release of beta and release of Android SDK.
+  Different features will be provided with reference to the maintaining stage 
+  and the release of beta and release of Android SDK.
   Added, this is a totally free and open-sourced project, with all component 
   projects, implemented dependencies, are all open-sourced. 
   Different open-source licenses are implemented in different component
@@ -121,3 +121,13 @@
 ## IDE
 - Intellij Idea
 - Android Studio
+
+## Open-source License - [GNU GENERAL PUBLIC LICENSE Version 3](LICENSE)
+```
+                    GNU GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
+
+ Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
+```
