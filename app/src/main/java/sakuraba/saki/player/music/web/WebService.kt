@@ -27,7 +27,6 @@ import sakuraba.saki.player.music.web.util.NotificationUtil.createNotificationMa
 import sakuraba.saki.player.music.web.util.NotificationUtil.getNotification
 import sakuraba.saki.player.music.web.util.NotificationUtil.startForeground
 import sakuraba.saki.player.music.web.util.NotificationUtil.updateNotification
-import sakuraba.saki.player.music.web.util.WebControlUtil
 
 class WebService: Service() {
 
@@ -40,8 +39,6 @@ class WebService: Service() {
     private lateinit var notificationManager: NotificationManagerCompat
 
     private lateinit var connectivityManager: ConnectivityManager
-
-    private var webControlUtil = WebControlUtil()
 
     private var serverPort = DEFAULT_SERVER_PORT
 
@@ -77,7 +74,7 @@ class WebService: Service() {
                         ?.toInt() ?: DEFAULT_SERVER_PORT
                 }
 
-                webServer = WebServer(serverPort, this, webControlUtil).apply { start() }
+                webServer = WebServer(serverPort, this).apply { start() }
                 when {
                     isForegroundService -> notificationManager.updateNotification(getNotification("${connectivityManager.ipAddress}:$serverPort"))
                     else -> startForeground(getNotification("${connectivityManager.ipAddress}:$serverPort"))

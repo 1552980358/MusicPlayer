@@ -85,8 +85,6 @@ import sakuraba.saki.player.music.util.Constants.PLAY_MODE_RANDOM
 import sakuraba.saki.player.music.util.Constants.PLAY_MODE_SINGLE
 import sakuraba.saki.player.music.util.Constants.PLAY_MODE_SINGLE_CYCLE
 import sakuraba.saki.player.music.util.Constants.EXTRAS_PAUSE
-import sakuraba.saki.player.music.util.Constants.EXTRA_INIT
-import sakuraba.saki.player.music.util.Constants.EXTRA_MEDIA_ID
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_NEXT
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PAUSE
 import sakuraba.saki.player.music.util.Constants.FILTER_NOTIFICATION_PLAY
@@ -103,7 +101,6 @@ import sakuraba.saki.player.music.util.SettingUtil.defaultSharedPreference
 import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
 import sakuraba.saki.player.music.util.SettingUtil.getIntSetting
 import sakuraba.saki.player.music.util.SettingUtil.getStringSetting
-import sakuraba.saki.player.music.web.util.WebControlUtil
 
 class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Listener {
     
@@ -294,8 +291,6 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
     
     private lateinit var mediaMetadataCompat: MediaMetadataCompat
 
-    private var webControlUtil: WebControlUtil? = null
-
     private val broadcastReceiver = broadcastReceiver { _, intent, _ ->
         when (intent?.action) {
             FILTER_NOTIFICATION_PREV -> mediaSession.controller.transportControls.skipToPrevious()
@@ -399,27 +394,6 @@ class PlayService: MediaBrowserServiceCompat(), /*OnCompletionListener, */ Liste
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.e(TAG, "$ON_START_COMMAND $flags $startId")
         when (intent?.getStringExtra(ACTION_EXTRA)) {
-            EXTRA_INIT -> {
-                Log.e(TAG, "EXTRA_INIT")
-                webControlUtil = intent.getSerializableExtra(EXTRAS_DATA) as WebControlUtil
-                webControlUtil?.set {
-                    onPlay { mediaSession.controller.transportControls.play() }
-                    onPause { mediaSession.controller.transportControls.pause() }
-                    onSkipToPrevious { mediaSession.controller.transportControls.skipToPrevious() }
-                    onSkipToNext { mediaSession.controller.transportControls.skipToNext() }
-                    onPlayFromMediaId { pos, mediaId, audioInfoList ->
-                        mediaSession.controller.transportControls.playFromMediaId(mediaId, bundle {
-                            putInt(EXTRAS_AUDIO_INFO_POS, pos)
-                            putSerializable(EXTRAS_AUDIO_INFO_LIST, audioInfoList)
-                        })
-                    }
-                }
-
-                @Suppress("UNCHECKED_CAST")
-                audioInfoList = intent.getSerializableExtra(EXTRAS_AUDIO_INFO_LIST) as ArrayList<AudioInfo>
-                listPos = intent.getIntExtra(EXTRAS_AUDIO_INFO_POS, -1)
-                mediaSession.controller.transportControls.playFromMediaId(intent.getStringExtra(EXTRA_MEDIA_ID), null)
-            }
             EXTRAS_PLAY -> {
                 Log.e(TAG, "EXTRAS_PLAY")
                 notification = getNotification(audioInfoList[listPos], playbackStateCompat.state == STATE_PAUSED)

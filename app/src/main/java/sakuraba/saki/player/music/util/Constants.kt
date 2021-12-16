@@ -20,7 +20,6 @@ object Constants {
     
     const val EXTRAS_PLAY = "play"
     const val EXTRAS_PAUSE = "pause"
-    const val EXTRA_INIT = "init"
 
     const val ACTION_LOUDNESS_ENHANCER = "loudness_enhancer"
     const val LOUDNESS_ENHANCER_DISABLE = 0
