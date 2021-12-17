@@ -190,7 +190,7 @@ class MainActivity: BaseMediaControlActivity() {
     private lateinit var snackBar: Snackbar
 
     private lateinit var mediaStoreObserver: ContentObserver
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -297,22 +297,27 @@ class MainActivity: BaseMediaControlActivity() {
 
         mediaStoreObserver = object : ContentObserver(null) {
             override fun onChange(selfChange: Boolean) {
-                activityInterface.onContentChange()
+                if (audioDatabaseHelper.hasTask) {
+                    return
+                }
                 io {
-                    audioDatabaseHelper.clearTable(TABLE_AUDIO)
-                    audioDatabaseHelper.clearTable(TABLE_AUDIO)
+                    audioDatabaseHelper.clearTables(TABLE_AUDIO, TABLE_ALBUM)
                     activityInterface.clearLists()
                     initLaunchProcess()
+                    audioDatabaseHelper.writeComplete()
                 }
             }
         }
 
         activityInterface.setRequestRefreshListener {
+            if (audioDatabaseHelper.hasTask) {
+                return@setRequestRefreshListener
+            }
             io {
-                audioDatabaseHelper.clearTable(TABLE_AUDIO)
-                audioDatabaseHelper.clearTable(TABLE_ALBUM)
+                audioDatabaseHelper.clearTables(TABLE_AUDIO, TABLE_ALBUM)
                 activityInterface.clearLists()
                 initLaunchProcess()
+                audioDatabaseHelper.writeComplete()
             }
         }
 
