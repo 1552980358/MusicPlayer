@@ -35,6 +35,8 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
         private const val KEY_ALBUM_NUMBER_OF_AUDIO = "album_number_of_audio"
         
     }
+
+    private var hasTaskWorking = false
     
     override fun onCreate(sqLiteDatabase: SQLiteDatabase?) {
         sqLiteDatabase?.execSQL(
@@ -66,7 +68,11 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
     
     override fun onUpgrade(sqLiteDatabase: SQLiteDatabase?, oldVersion: Int, newVersion: Int) = Unit
     
-    fun insertAudio(table: String, audioInfoList: ArrayList<AudioInfo>) =
+    fun insertAudio(table: String, audioInfoList: ArrayList<AudioInfo>) {
+        if (hasTaskWorking) {
+            return
+        }
+        hasTaskWorking = true
         writableDatabase.apply {
             audioInfoList.forEach { audioInfo ->
                 insert(table, null, ContentValues().apply {
@@ -83,9 +89,14 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
                     put(KEY_AUDIO_PATH, audioInfo.audioPath)
                 })
             }
-        }.close()
-    
-    fun insertMediaAlbum(table: String, mediaAlbumList: ArrayList<MediaAlbum>) =
+        }
+    }
+
+    fun insertMediaAlbum(table: String, mediaAlbumList: ArrayList<MediaAlbum>) {
+        if (hasTaskWorking) {
+            return
+        }
+        hasTaskWorking = true
         writableDatabase.apply {
             mediaAlbumList.forEach { mediaAlbum ->
                 insert(table, null, ContentValues().apply {
@@ -95,38 +106,47 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
                     put(KEY_ALBUM_NUMBER_OF_AUDIO, mediaAlbum.numberOfAudio)
                 })
             }
-        }.close()
-    
-    fun clearTable(table: String) = writableDatabase.apply { delete(table, null, null) }.close()
-
-    fun queryAllAudio(arrayList: ArrayList<AudioInfo>) = queryAllAudio(arrayList) { }
-    
-    fun queryAllAudio(arrayList: ArrayList<AudioInfo>, array: (Array<String>) -> Unit) =
-        readableDatabase.rawQuery("select * from $TABLE_AUDIO where $KEY_AUDIO_SIZE>? and $KEY_AUDIO_DURATION>?", arrayOf("0", "0").apply(array))?.apply {
-        if (!moveToFirst()) {
-            return@apply
         }
-        do {
-            tryOnly {
-                arrayList.add(AudioInfo(
-                    getString(getColumnIndexOrThrow(KEY_AUDIO_ID)),
-                    getString(getColumnIndexOrThrow(KEY_AUDIO_TITLE)),
-                    getString(getColumnIndexOrThrow(KEY_AUDIO_TITLE_PINYIN)),
-                    getString(getColumnIndexOrThrow(KEY_AUDIO_ARTIST)),
-                    getString(getColumnIndexOrThrow(KEY_AUDIO_ARTIST_PINYIN)),
-                    getString(getColumnIndexOrThrow(KEY_AUDIO_ALBUM)),
-                    getString(getColumnIndexOrThrow(KEY_AUDIO_ALBUM_PINYIN)),
-                    getLong(getColumnIndexOrThrow(KEY_AUDIO_ALBUM_ID)),
-                    getLong(getColumnIndexOrThrow(KEY_AUDIO_DURATION)),
-                    getLong(getColumnIndexOrThrow(KEY_AUDIO_SIZE)),
-                    getString(getColumnIndexOrThrow(KEY_AUDIO_PATH))
-                ))
+    }
+
+    fun clearTables(vararg tables: String) {
+        if (hasTaskWorking) {
+            return
+        }
+        hasTaskWorking = true
+        writableDatabase.apply {
+            tables.forEach { table -> delete(table, null, null) }
+        }
+    }
+
+    fun queryAllAudio(arrayList: ArrayList<AudioInfo>) {
+        readableDatabase.rawQuery("select * from $TABLE_AUDIO", null)?.apply {
+            if (!moveToFirst()) {
+                return@apply
             }
-        } while (moveToNext())
-    }?.close()
+            do {
+                tryOnly {
+                    arrayList.add(AudioInfo(
+                        getString(getColumnIndexOrThrow(KEY_AUDIO_ID)),
+                        getString(getColumnIndexOrThrow(KEY_AUDIO_TITLE)),
+                        getString(getColumnIndexOrThrow(KEY_AUDIO_TITLE_PINYIN)),
+                        getString(getColumnIndexOrThrow(KEY_AUDIO_ARTIST)),
+                        getString(getColumnIndexOrThrow(KEY_AUDIO_ARTIST_PINYIN)),
+                        getString(getColumnIndexOrThrow(KEY_AUDIO_ALBUM)),
+                        getString(getColumnIndexOrThrow(KEY_AUDIO_ALBUM_PINYIN)),
+                        getLong(getColumnIndexOrThrow(KEY_AUDIO_ALBUM_ID)),
+                        getLong(getColumnIndexOrThrow(KEY_AUDIO_DURATION)),
+                        getLong(getColumnIndexOrThrow(KEY_AUDIO_SIZE)),
+                        getString(getColumnIndexOrThrow(KEY_AUDIO_PATH))
+                    ))
+                }
+            } while (moveToNext())
+            close()
+        }
+    }
     
-    fun queryMediaAlbum(arrayList: ArrayList<MediaAlbum>) =
-        readableDatabase.rawQuery("select * from $TABLE_ALBUM", null).apply {
+    fun queryMediaAlbum(arrayList: ArrayList<MediaAlbum>) {
+        readableDatabase.rawQuery("select * from $TABLE_ALBUM", null)?.apply {
             if (!moveToFirst()) {
                 return@apply
             }
@@ -142,7 +162,9 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
                     )
                 }
             } while (moveToNext())
-        }.close()
+            close()
+        }
+    }
     
     fun queryAudioForMediaAlbum(arrayList: ArrayList<AudioInfo>, albumId: Long) =
         readableDatabase.rawQuery("select * from $TABLE_AUDIO where $KEY_AUDIO_ALBUM_ID=?", arrayOf(albumId.toString())).apply {
@@ -165,5 +187,14 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
                 ))
             } while (moveToNext())
         }.close()
-    
+
+    val hasTask get() = hasTaskWorking
+
+    fun writeComplete() {
+        writableDatabase.close()
+        hasTaskWorking = false
+    }
+
+    fun readComplete() = readableDatabase.close()
+
 }
