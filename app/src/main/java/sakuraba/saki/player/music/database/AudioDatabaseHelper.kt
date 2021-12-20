@@ -36,6 +36,7 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
         
     }
 
+    @Volatile
     private var hasTaskWorking = false
     
     override fun onCreate(sqLiteDatabase: SQLiteDatabase?) {
@@ -69,9 +70,6 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
     override fun onUpgrade(sqLiteDatabase: SQLiteDatabase?, oldVersion: Int, newVersion: Int) = Unit
     
     fun insertAudio(table: String, audioInfoList: ArrayList<AudioInfo>) {
-        if (hasTaskWorking) {
-            return
-        }
         hasTaskWorking = true
         writableDatabase.apply {
             audioInfoList.forEach { audioInfo ->
@@ -93,9 +91,6 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
     }
 
     fun insertMediaAlbum(table: String, mediaAlbumList: ArrayList<MediaAlbum>) {
-        if (hasTaskWorking) {
-            return
-        }
         hasTaskWorking = true
         writableDatabase.apply {
             mediaAlbumList.forEach { mediaAlbum ->
@@ -110,9 +105,6 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
     }
 
     fun clearTables(vararg tables: String) {
-        if (hasTaskWorking) {
-            return
-        }
         hasTaskWorking = true
         writableDatabase.apply {
             tables.forEach { table -> delete(table, null, null) }
@@ -143,6 +135,29 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
             } while (moveToNext())
             close()
         }
+    }
+
+    fun queryAudioInfo(audioId: String): AudioInfo? {
+        var audioInfo: AudioInfo? = null
+        readableDatabase.rawQuery("select * from $TABLE_AUDIO where $KEY_AUDIO_ID=?", arrayOf(audioId))?.apply {
+            if (moveToFirst()) {
+                audioInfo = AudioInfo(
+                    getString(getColumnIndexOrThrow(KEY_AUDIO_ID)),
+                    getString(getColumnIndexOrThrow(KEY_AUDIO_TITLE)),
+                    getString(getColumnIndexOrThrow(KEY_AUDIO_TITLE_PINYIN)),
+                    getString(getColumnIndexOrThrow(KEY_AUDIO_ARTIST)),
+                    getString(getColumnIndexOrThrow(KEY_AUDIO_ARTIST_PINYIN)),
+                    getString(getColumnIndexOrThrow(KEY_AUDIO_ALBUM)),
+                    getString(getColumnIndexOrThrow(KEY_AUDIO_ALBUM_PINYIN)),
+                    getLong(getColumnIndexOrThrow(KEY_AUDIO_ALBUM_ID)),
+                    getLong(getColumnIndexOrThrow(KEY_AUDIO_DURATION)),
+                    getLong(getColumnIndexOrThrow(KEY_AUDIO_SIZE)),
+                    getString(getColumnIndexOrThrow(KEY_AUDIO_PATH))
+                )
+            }
+            close()
+        }
+        return audioInfo
     }
     
     fun queryMediaAlbum(arrayList: ArrayList<MediaAlbum>) {
