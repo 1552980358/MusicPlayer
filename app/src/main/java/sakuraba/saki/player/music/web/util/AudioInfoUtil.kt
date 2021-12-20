@@ -16,6 +16,7 @@ object AudioInfoUtil {
                     addProperty("album", audioInfo.audioAlbum)
                     addProperty("albumId", audioInfo.audioAlbumId.toString())
                     addProperty("duration", audioInfo.audioDuration.toString())
+                    addProperty("size", audioInfo.audioSize)
                 }
             )
         }
