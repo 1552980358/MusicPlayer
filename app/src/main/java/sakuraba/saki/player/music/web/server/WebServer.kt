@@ -165,6 +165,7 @@ class WebServer(port: Int, private val context: Context): NanoHTTPD(port) {
         endsWith("css") -> "text/css$CONTENT_TYPE_CHARSET"
         endsWith("js") -> "text/javascript$CONTENT_TYPE_CHARSET"
         endsWith("ico") -> "image/x-icon"
+        endsWith("svg") -> "image/svg+xml"
         else -> MIME_HTML
     }
 
