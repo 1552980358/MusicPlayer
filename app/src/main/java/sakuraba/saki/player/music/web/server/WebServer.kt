@@ -79,7 +79,9 @@ class WebServer(port: Int, private val context: Context): NanoHTTPD(port) {
     private fun upload(session: IHTTPSession): Response {
         Log.e(TAG, "upload")
         val fileName = session.parameters[UPLOAD_FILE_NAME]?.first()
-            ?: return newFixedLengthResponse(BAD_REQUEST, "$MIME_PLAINTEXT$CONTENT_TYPE_CHARSET", UPLOAD_NAME_NOT_SPECIFIED)
+            ?: return context.assets.open("web${separator}index.html").run {
+                newFixedLengthResponse(OK, "$MIME_HTML$CONTENT_TYPE_CHARSET", this, available().toLong()).withHeaders(session)
+            }
         return when (session.method) {
             OPTIONS -> responseCROS(session, fileName)
             POST -> {
@@ -133,7 +135,9 @@ class WebServer(port: Int, private val context: Context): NanoHTTPD(port) {
 
     private fun download(session: IHTTPSession): Response {
         Log.e(TAG, "download")
-        val audioId = session.parameters[DOWNLOAD_AUDIO_ID]?.first() ?: return newFixedLengthResponse(NO_CONTENT, MIME_PLAINTEXT, DOWNLOAD_AUDIO_ID_NOT_SPECIFIED)
+        val audioId = session.parameters[DOWNLOAD_AUDIO_ID]?.first() ?: return context.assets.open("web${separator}index.html").run {
+            newFixedLengthResponse(OK, "$MIME_HTML$CONTENT_TYPE_CHARSET", this, available().toLong()).withHeaders(session)
+        }
         if (session.method == OPTIONS) {
             return newFixedLengthResponse(OK, MIME_PLAINTEXT, audioId.DOWNLOAD_ALLOW).apply {
                 addHeader("Access-Control-Allow-Credentials", "true")
