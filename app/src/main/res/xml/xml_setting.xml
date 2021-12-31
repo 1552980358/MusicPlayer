@@ -30,4 +30,16 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="@string/other_title"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:key="@string/key_other_battery_optimization"
+            android:summary="@string/other_battery_optimization_summary"
+            android:title="@string/other_battery_optimization_title"
+            app:iconSpaceReserved="false"/>
+
+    </PreferenceCategory>
+
 </PreferenceScreen>
