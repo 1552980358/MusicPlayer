@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/web_dav_download_padding">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_view_from_title"
+        android:text="@string/web_dav_download_from"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_view_from"
+        android:maxLines="2"
+        android:ellipsize="start"
+        android:layout_below="@id/text_view_from_title"
+        android:textColor="@color/black"
+        android:textSize="@dimen/web_dav_download_text_size"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_view_to_title"
+        android:layout_below="@id/text_view_from"
+        android:text="@string/web_dav_download_to"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_view_to"
+        android:maxLines="2"
+        android:ellipsize="start"
+        android:layout_below="@id/text_view_to_title"
+        android:textColor="@color/black"
+        android:textSize="@dimen/web_dav_download_text_size" />
+
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progress_bar"
+        android:layout_below="@id/text_view_to"
+        tools:ignore="MissingConstraints"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_view_cur"
+        android:layout_below="@id/progress_bar"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_view_max"
+        android:layout_below="@id/progress_bar"
+        android:layout_alignParentEnd="true"/>
+
+</RelativeLayout>
