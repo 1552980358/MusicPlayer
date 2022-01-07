@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_view_path"
+            android:ellipsize="start"
+            android:layout_margin="@dimen/web_dav_directory_path_margin"
+            android:maxLines="2"
+            android:text="/"
+            android:textColor="@color/black"
+            android:textSize="@dimen/web_dav_directory_path_text_size"
+            tools:ignore="HardcodedText" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/web_dav_directory_relative_layout_height"
+            android:id="@+id/relative_layout"
+            android:background="?attr/selectableItemBackground">
+            <ImageView
+                android:layout_width="@dimen/web_dav_directory_icon_size"
+                android:layout_height="@dimen/web_dav_directory_icon_size"
+                android:layout_margin="@dimen/web_dav_directory_icon_margin"
+                android:id="@+id/image_view"
+                android:src="@drawable/ic_folder_disabled"
+                tools:ignore="ContentDescription" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_view_backward"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/image_view"
+                android:text=".."
+                android:textSize="@dimen/web_dav_directory_text_size"
+                android:textColor="@color/black"
+                tools:ignore="HardcodedText" />
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/recycler_view"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
