@@ -85,6 +85,8 @@ dependencies {
     implementation "org.nanohttpd:nanohttpd:$nano_httpd_version"
     implementation "org.nanohttpd:nanohttpd-websocket:$nano_httpd_version"
 
+    implementation 'com.github.thegrizzlylabs:sardine-android:v0.8'
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
