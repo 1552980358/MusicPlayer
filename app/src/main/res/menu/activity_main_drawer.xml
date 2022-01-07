@@ -27,5 +27,12 @@
             android:icon="@drawable/ic_audio_effect"
             android:title="@string/menu_audio_effect" />
     </group>
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_web_dav"
+            android:icon="@drawable/ic_cloud"
+            android:title="@string/menu_webdav" />
+    </group>
     
 </menu>
