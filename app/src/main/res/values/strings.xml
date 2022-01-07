@@ -19,6 +19,7 @@
     <string name="menu_setting_audio_filter">Audio File</string>
     <string name="menu_setting_audio_play">Audio Play</string>
     <string name="menu_setting_extension_web_server">Web Server</string>
+    <string name="menu_webdav">WebDav</string>
 
     <string name="menu_audio_detail">Audio Detail</string>
     <string name="menu_lyric_view">Lyric View</string>
@@ -150,5 +151,13 @@
     <string name="key_other_battery_optimization">key_battery_optimization</string>
     <string name="other_battery_optimization_title">Disable Battery Optimization</string>
     <string name="other_battery_optimization_summary">When this option is enabled, there is a need of disabling battery optimization policy by Android OS.</string>
+
+    <string name="web_dav_url">WebDav URL</string>
+    <string name="web_dav_username">Username</string>
+    <string name="web_dav_password">Password</string>
+    <string name="web_dav_connect">Connect</string>
+    <string name="web_dav_download_title">Downloading…</string>
+    <string name="web_dav_download_from">From</string>
+    <string name="web_dav_download_to">To</string>
 
 </resources>
