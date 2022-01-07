@@ -34,6 +34,13 @@
         <action
             android:id="@+id/action_nav_home_to_nav_audio_effect"
             app:destination="@id/nav_audio_effect" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_web_dab"
+            app:destination="@id/nav_web_dav"
+            app:popEnterAnim="@anim/translate_pop_enter"
+            app:popExitAnim="@anim/translate_pop_exit"
+            app:enterAnim="@anim/translate_enter"
+            app:exitAnim="@anim/translate_exit" />
     </fragment>
 
     <fragment
@@ -136,5 +143,27 @@
         android:id="@+id/nav_setting_web_server"
         android:name="sakuraba.saki.player.music.ui.setting.fragment.WebServerFragment"
         android:label="@string/menu_setting_extension_web_server" />
+
+    <fragment
+        android:id="@+id/nav_web_dav"
+        android:name="sakuraba.saki.player.music.ui.webDav.WebDavFragment" >
+        <action
+            android:id="@+id/action_nav_web_dav_to_nav_web_dav_directory"
+            app:destination="@id/nav_web_dav_directory" >
+            <argument
+                android:name="url"
+                app:argType="string" />
+            <argument
+                android:name="username"
+                app:argType="string" />
+            <argument
+                android:name="password"
+                app:argType="string" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_web_dav_directory"
+        android:name="sakuraba.saki.player.music.ui.webDav.webDavDirectory.WebDavDirectoryFragment" />
     
 </navigation>
