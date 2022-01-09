@@ -85,6 +85,13 @@ class WebDavDirectoryFragment: Fragment() {
             sardine.setCredentials(requireArguments().getString("username"), requireArguments().getString("password"))
             tryOnly { webDavUrl.updateDavResources(sardine.list(webDavUrl.dir)) }
         }
+
+        layout.root.setOnRefreshListener {
+            io {
+                tryOnly { webDavUrl.updateDavResources(sardine.list(webDavUrl.dir)) }
+                ui { layout.root.isRefreshing = false }
+            }
+        }
     }
 
 }
