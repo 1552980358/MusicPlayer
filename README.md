@@ -85,6 +85,9 @@
 - `android.permission.ACCESS_WIFI_STATE`
 - `android.permission.MODIFY_AUDIO_SETTINGS`
 - `android.permission.BLUETOOTH_CONNECT`
+- `android.permission.MODIFY_AUDIO_SETTINGS`
+- `android.permission.RECORD_AUDIO`
+- `android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`
 
 ## Dependencies
 - `org.jetbrains.kotlin:kotlin-stdlib`
