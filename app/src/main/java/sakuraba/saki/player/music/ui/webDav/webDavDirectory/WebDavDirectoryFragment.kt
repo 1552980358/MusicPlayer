@@ -82,11 +82,8 @@ class WebDavDirectoryFragment: Fragment() {
             if (webDavUrl.backward()) {
                 layout.root.apply { isEnabled = false; isRefreshing = true }
                 if (job == null || job?.isCompleted == true) {
-                    layout.root.isRefreshing = true
-                    job = io {
-                        tryOnly { webDavUrl.updateDavResources(sardine.list(webDavUrl.dir)) }
-                        ui { layout.root.isRefreshing = false }
-                    }
+                    layout.root.apply { isEnabled = false; isRefreshing = true }
+                    job = io { tryOnly { webDavUrl.updateDavResources(sardine.list(webDavUrl.dir)) } }
                 }
             }
         }
