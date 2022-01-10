@@ -79,6 +79,7 @@ import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.util.MainActivityInterface
 import sakuraba.saki.player.music.base.BaseMainFragment
 import sakuraba.saki.player.music.base.BasePreferenceFragmentCompat
+import sakuraba.saki.player.music.ui.webDav.webDavDirectory.WebDavDirectoryFragment
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArts40Dp
@@ -220,7 +221,7 @@ class MainActivity: BaseMediaControlActivity() {
         _activityMainMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMain.root)
         setSupportActionBar(findViewById(R.id.toolbar))
-        
+
         navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -648,8 +649,11 @@ class MainActivity: BaseMediaControlActivity() {
     }
     
     override fun onBackPressed() {
-        when (findNavController(R.id.nav_host_fragment).currentDestination?.id) {
+        when (navController.currentDestination?.id) {
             R.id.nav_home, R.id.nav_album -> startActivity(intent(ACTION_MAIN) { flags = FLAG_ACTIVITY_NEW_TASK; addCategory(CATEGORY_HOME) })
+            R.id.nav_web_dav_directory ->
+                (supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first() as WebDavDirectoryFragment)
+                    .onBackPressed()
             else -> super.onBackPressed()
         }
     }
