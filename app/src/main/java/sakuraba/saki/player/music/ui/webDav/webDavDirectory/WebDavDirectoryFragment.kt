@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import com.thegrizzlylabs.sardineandroid.Sardine
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
 import com.thegrizzlylabs.sardineandroid.impl.SardineException
@@ -29,7 +31,10 @@ class WebDavDirectoryFragment: Fragment() {
 
     private var job: Job? = null
 
+    private lateinit var navController: NavController
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        navController = findNavController()
         _fragmentWebDavDirectoryBinding = FragmentWebDavDirectoryBinding.inflate(layoutInflater)
         return layout.root
     }
@@ -96,11 +101,19 @@ class WebDavDirectoryFragment: Fragment() {
 
         layout.root.setOnRefreshListener {
             if (job == null || job?.isCompleted == true) {
-                job = io {
-                    tryOnly { webDavUrl.updateDavResources(sardine.list(webDavUrl.dir)) }
-                    ui { layout.root.isRefreshing = false }
-                }
+                job = io { tryOnly { webDavUrl.updateDavResources(sardine.list(webDavUrl.dir)) } }
             }
+        }
+    }
+
+    fun onBackPressed() {
+        when {
+            webDavUrl.backward() -> {
+                job?.cancel()
+                layout.root.apply { isEnabled = false; isRefreshing = true }
+                job = io { tryOnly { webDavUrl.updateDavResources(sardine.list(webDavUrl.dir)) } }
+            }
+            else -> navController.navigateUp()
         }
     }
 
