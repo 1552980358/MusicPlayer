@@ -3,12 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/MusicPlayer/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3769230769230769" />
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/bg_play_bottom_sheet.xml" value="0.22135416666666666" />
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/drawable_qq_music.xml" value="0.2935185185185185" />
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/drawable_select_fetch_radio_button.xml" value="0.3" />
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/ic__638518716430.xml" value="0.21481481481481482" />
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/ic__638518882513.xml" value="0.21481481481481482" />
+        <entry key="..\:/MusicPlayer/app/src/main/res/drawable/ic_audio_file.xml" value="0.3769230769230769" />
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/ic_bluetooth.xml" value="0.30462962962962964" />
+        <entry key="..\:/MusicPlayer/app/src/main/res/drawable/ic_file.xml" value="0.3769230769230769" />
+        <entry key="..\:/MusicPlayer/app/src/main/res/drawable/ic_folder.xml" value="0.3769230769230769" />
+        <entry key="..\:/MusicPlayer/app/src/main/res/drawable/ic_folder_disabled.xml" value="0.3769230769230769" />
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/ic_headset.xml" value="0.30462962962962964" />
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/ic_menu_camera.xml" value="0.22135416666666666" />
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/ic_menu_gallery.xml" value="0.22135416666666666" />
@@ -26,16 +31,23 @@
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/activity_play.xml" value="0.44074074074074077" />
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/app_bar_main.xml" value="0.17831813576494426" />
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/content_play_bottom_sheet.xml" value="0.36666666666666664" />
+        <entry key="..\:/MusicPlayer/app/src/main/res/layout/dialog_fragment_download.xml" value="0.3855291576673866" />
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/dialog_fragment_select_fetch.xml" value="0.43139678615574784" />
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/dialogfragment_select_fetch.xml" value="0.297554347826087" />
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/fragment_audio_detail.xml" value="0.36666666666666664" />
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/fragment_home.xml" value="0.36666666666666664" />
+        <entry key="..\:/MusicPlayer/app/src/main/res/layout/fragment_web_dav.xml" value="0.4810606060606061" />
+        <entry key="..\:/MusicPlayer/app/src/main/res/layout/fragment_web_dav_directory.xml" value="0.4677716390423573" />
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/layout_home_recycler_view.xml" value="0.36666666666666664" />
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/layout_lyric.xml" value="0.17831813576494426" />
+        <entry key="..\:/MusicPlayer/app/src/main/res/layout/layout_web_dav_directory_item.xml" value="0.5152129817444219" />
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/preference_album.xml" value="0.17831813576494426" />
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/view_lyric_recycler.xml" value="0.17831813576494426" />
+        <entry key="..\:/MusicPlayer/app/src/main/res/menu/activity_main_drawer.xml" value="0.36102564102564105" />
+        <entry key="..\:/MusicPlayer/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.3769230769230769" />
         <entry key="..\:/MusicPlayer/app/src/main/res/xml/xml_audio_detail.xml" value="0.39280774550484093" />
         <entry key="..\:/MusicPlayer/app/src/main/res/xml/xml_audio_filter.xml" value="0.36666666666666664" />
+        <entry key="..\:/MusicPlayer/app/src/main/res/xml/xml_audio_play.xml" value="0.17831813576494426" />
         <entry key="..\:/MusicPlayer/app/src/main/res/xml/xml_setting.xml" value="0.5" />
         <entry key="..\:/MusicPlayer/app/src/main/res/xml/xml_web_server.xml" value="0.36666666666666664" />
         <entry key="..\:/Projects/MusicPlayer/app/src/main/res/layout/fragment_audio_effect.xml" value="0.4466666666666667" />
