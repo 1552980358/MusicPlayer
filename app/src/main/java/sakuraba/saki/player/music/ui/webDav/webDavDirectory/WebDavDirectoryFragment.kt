@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.thegrizzlylabs.sardineandroid.Sardine
 import com.thegrizzlylabs.sardineandroid.impl.OkHttpSardine
 import com.thegrizzlylabs.sardineandroid.impl.SardineException
+import kotlinx.coroutines.Job
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.databinding.FragmentWebDavDirectoryBinding
@@ -26,6 +27,8 @@ class WebDavDirectoryFragment: Fragment() {
     private lateinit var sardine: Sardine
     private lateinit var webDavUrl: WebDavUrl
 
+    private var job: Job? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _fragmentWebDavDirectoryBinding = FragmentWebDavDirectoryBinding.inflate(layoutInflater)
         return layout.root
@@ -36,13 +39,15 @@ class WebDavDirectoryFragment: Fragment() {
             when {
                 webDavUrl.forward(index) -> {
                     layout.root.apply { isEnabled = false; isRefreshing = true }
-                    io {
-                        try {
-                            @Suppress("BlockingMethodInNonBlockingContext")
-                            webDavUrl.updateDavResources(sardine.list(webDavUrl.dir))
-                        } catch (e: SardineException) {
-                            webDavUrl.backward()
-                            ui { layout.root.apply { isEnabled = true; isRefreshing = false } }
+                    if (job == null || job?.isCompleted == true) {
+                        job = io {
+                            try {
+                                @Suppress("BlockingMethodInNonBlockingContext")
+                                webDavUrl.updateDavResources(sardine.list(webDavUrl.dir))
+                            } catch (e: SardineException) {
+                                webDavUrl.backward()
+                                ui { layout.root.apply { isEnabled = true; isRefreshing = false } }
+                            }
                         }
                     }
                 }
@@ -76,20 +81,28 @@ class WebDavDirectoryFragment: Fragment() {
         layout.relativeLayout.setOnClickListener {
             if (webDavUrl.backward()) {
                 layout.root.apply { isEnabled = false; isRefreshing = true }
-                io { tryOnly { webDavUrl.updateDavResources(sardine.list(webDavUrl.dir)) } }
+                if (job == null || job?.isCompleted == true) {
+                    layout.root.isRefreshing = true
+                    job = io {
+                        tryOnly { webDavUrl.updateDavResources(sardine.list(webDavUrl.dir)) }
+                        ui { layout.root.isRefreshing = false }
+                    }
+                }
             }
         }
 
-        io {
+        job = io {
             sardine = OkHttpSardine()
             sardine.setCredentials(requireArguments().getString("username"), requireArguments().getString("password"))
             tryOnly { webDavUrl.updateDavResources(sardine.list(webDavUrl.dir)) }
         }
 
         layout.root.setOnRefreshListener {
-            io {
-                tryOnly { webDavUrl.updateDavResources(sardine.list(webDavUrl.dir)) }
-                ui { layout.root.isRefreshing = false }
+            if (job == null || job?.isCompleted == true) {
+                job = io {
+                    tryOnly { webDavUrl.updateDavResources(sardine.list(webDavUrl.dir)) }
+                    ui { layout.root.isRefreshing = false }
+                }
             }
         }
     }
