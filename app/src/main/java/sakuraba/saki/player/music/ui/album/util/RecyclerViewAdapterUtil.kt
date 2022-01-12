@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import lib.github1552980358.ktExtension.android.kotlin.toBitmap
+import lib.github1552980358.ktExtension.kotlin.asBitmap
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.util.CoroutineUtil.io
 import sakuraba.saki.player.music.util.CoroutineUtil.ui
@@ -49,7 +49,7 @@ class RecyclerViewAdapterUtil(data: MainActivityInterface, listener: (imageView:
             val byteArray = bitmapMap[mediaAlbumList[position].albumId]
             if (byteArray != null) {
                 io {
-                    val bitmap = byteArray.toBitmap()
+                    val bitmap = byteArray.asBitmap
                     ui { holder.imageView.setImageBitmap(bitmap) }
                 }
             }

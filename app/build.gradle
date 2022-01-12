@@ -46,8 +46,8 @@ dependencies {
 
     //noinspection GradleDependency,DifferentStdlibGradleVersion
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0'
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.core:core-splashscreen:1.0.0-alpha02'
@@ -72,8 +72,8 @@ dependencies {
 
     implementation 'com.github.promeg:tinypinyin:2.0.3'
 
-    implementation 'com.github.1552980358:KtExtension:1.1'
-    implementation 'com.github.1552980358:KtExtensionAndroid:1.1.7'
+    implementation 'com.github.1552980358:KtExtension:1.2.0'
+    implementation 'com.github.1552980358:KtExtensionAndroid:1.2.2'
 
     implementation 'com.github.mkaflowski:Media-Style-Palette:1.3'
 
