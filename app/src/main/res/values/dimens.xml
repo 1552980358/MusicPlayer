@@ -95,4 +95,14 @@
     <dimen name="web_dav_download_padding">10dp</dimen>
     <dimen name="web_dav_download_text_size">16sp</dimen>
 
+    <dimen name="web_dav_bottom_sheet_height">100dp</dimen>
+    <dimen name="web_dav_dialog_margin_top">15dp</dimen>
+    <dimen name="web_dav_card_view_margins">15dp</dimen>
+    <dimen name="web_dav_card_view_radius">5dp</dimen>
+    <dimen name="web_dav_card_view_add_height">50dp</dimen>
+    <dimen name="web_dav_layout_root">50dp</dimen>
+    <dimen name="web_dav_layout_text_view_size">40dp</dimen>
+    <dimen name="web_dav_layout_image_button_size">40dp</dimen>
+    <dimen name="web_dav_layout_linear_layout_margins">10dp</dimen>
+
 </resources>
