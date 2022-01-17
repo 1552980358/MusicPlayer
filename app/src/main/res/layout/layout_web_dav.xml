@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/web_dav_layout_root"
+    android:id="@+id/relative_layout"
+    android:background="?attr/selectableItemBackground">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_view_no"
+        android:layout_width="@dimen/web_dav_layout_text_view_size"
+        android:layout_height="@dimen/web_dav_layout_text_view_size"
+        android:layout_centerVertical="true"
+        android:gravity="center" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:layout_width="@dimen/web_dav_layout_image_button_size"
+        android:layout_height="@dimen/web_dav_layout_image_button_size"
+        android:id="@+id/image_button"
+        android:background="?attr/selectableItemBackground"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_more" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/web_dav_layout_linear_layout_margins"
+        android:layout_marginEnd="@dimen/web_dav_layout_linear_layout_margins"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@id/image_button"
+        android:layout_toEndOf="@id/text_view_no"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_view_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textColor="@color/black" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_view_username_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</RelativeLayout>
