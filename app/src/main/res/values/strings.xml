@@ -152,10 +152,15 @@
     <string name="other_battery_optimization_title">Disable Battery Optimization</string>
     <string name="other_battery_optimization_summary">When this option is enabled, there is a need of disabling battery optimization policy by Android OS.</string>
 
+    <string name="web_dav_name">Host Name</string>
     <string name="web_dav_url">WebDav URL</string>
     <string name="web_dav_username">Username</string>
     <string name="web_dav_password">Password</string>
     <string name="web_dav_connect">Connect</string>
+    <string name="web_dav_add">Add WebDav host</string>
+    <string name="web_dav_dialog_add">Add</string>
+    <string name="web_dav_dialog_cancel">@android:string/cancel</string>
+    <string name="web_dav_dialog_remove">Remove</string>
     <string name="web_dav_download_title">Downloading…</string>
     <string name="web_dav_download_from">From</string>
     <string name="web_dav_download_to">To</string>
