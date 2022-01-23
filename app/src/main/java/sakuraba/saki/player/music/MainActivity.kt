@@ -45,8 +45,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
-import androidx.core.database.getLongOrNull
-import androidx.core.database.getStringOrNull
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
@@ -70,12 +68,9 @@ import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.makeSn
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import lib.github1552980358.ktExtension.jvm.util.addInstance
-import lib.github1552980358.ktExtension.jvm.util.copy
 import sakuraba.saki.player.music.BuildConfig.APPLICATION_ID
 import sakuraba.saki.player.music.base.BaseMediaControlActivity
 import sakuraba.saki.player.music.database.AudioDatabaseHelper
-import sakuraba.saki.player.music.database.AudioDatabaseHelper.Companion.TABLE_ALBUM
-import sakuraba.saki.player.music.database.AudioDatabaseHelper.Companion.TABLE_AUDIO
 import sakuraba.saki.player.music.databinding.ActivityMainBinding
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.util.MainActivityInterface
@@ -86,6 +81,8 @@ import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArts40Dp
 import sakuraba.saki.player.music.util.BitmapUtil.loadAudioArt40Dp
+import sakuraba.saki.player.music.util.BitmapUtil.removeAlbumArts
+import sakuraba.saki.player.music.util.BitmapUtil.removeAudioArt
 import sakuraba.saki.player.music.util.BitmapUtil.writeAlbumArt40Dp
 import sakuraba.saki.player.music.util.BitmapUtil.writeAlbumArtRaw
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
@@ -303,7 +300,11 @@ class MainActivity: BaseMediaControlActivity() {
                 if (audioDatabaseHelper.hasTask) {
                     return
                 }
-
+                io {
+                    compareDatabase()
+                    activityInterface.clearLists()
+                    launchProcess()
+                }
             }
         }
 
@@ -312,7 +313,9 @@ class MainActivity: BaseMediaControlActivity() {
                 return@setRequestRefreshListener
             }
             io {
-
+                compareDatabase()
+                activityInterface.clearLists()
+                launchProcess()
             }
         }
 
@@ -429,7 +432,111 @@ class MainActivity: BaseMediaControlActivity() {
         loadAlbumArtRaw(activityInterface.byteArrayMap)
         audioDatabaseHelper.queryMediaAlbum(activityInterface.albumList)
     }
-    
+
+    private fun compareAudioList() {
+        val audioInfoListSystem = scanSystemDatabase()
+        var audioInfoList = queryDatabase()
+        // 如果系统数据库没有, 而本地数据库有, 那么文件就可能被删除了, 所以这里需要从数据库删除
+        // If not exists in system database, but in local database, the file might be removed,
+        // so sync with system
+        val removeList = compareAudioID(audioInfoList, audioInfoListSystem)
+        audioDatabaseHelper.removeAudio(removeList)
+        removeList.forEach { removeAudioArt(it.audioId) }
+        // 跟上方相反, 如果本地数据库没有, 系统数据库有, 那么就是新添加的文件, 所以这里需要更新到本地数据库
+        // Opposite to above, exists in system database, but not in local database, the file might
+        // be newly stored, so sync with system
+        audioDatabaseHelper.insertAudio(compareAudioID(audioInfoListSystem, audioInfoList))
+
+        // 刷新本地列表
+        audioInfoList = queryDatabase()
+        audioDatabaseHelper.updateAudio(compareAudioInfo(audioInfoListSystem, audioInfoList))
+    }
+
+    private fun compareMediaAlbum() {
+        val mediaAlbumList = analyzeMediaAlbum(queryDatabase())
+        var mediaAlbumListOrigin = arrayListOf<MediaAlbum>().apply {
+            audioDatabaseHelper.queryMediaAlbum(this)
+        }
+
+        var list = compareAlbumId(mediaAlbumListOrigin, mediaAlbumList)
+        audioDatabaseHelper.removeMediaAlbum(list)
+        list.forEach { mediaAlbum -> removeAlbumArts(mediaAlbum.albumId.toString()) }
+
+        list = compareAlbumId(mediaAlbumList, mediaAlbumListOrigin)
+        audioDatabaseHelper.insertMediaAlbum(list)
+
+        var bitmap: Bitmap
+        val matrix = Matrix()
+        val bitmapSize = resources.getDimensionPixelSize(R.dimen.home_recycler_view_image_view_size)
+        for (mediaAlbum in list) {
+            bitmap = tryRun { loadAlbumArt(mediaAlbum.albumId) } ?: continue
+            writeAlbumArtRaw(mediaAlbum.albumId, bitmap)
+            matrix.apply { setScale(bitmapSize / bitmap.widthF, bitmapSize / bitmap.heightF) }
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, false)
+            writeAlbumArt40Dp(mediaAlbum.albumId, bitmap)
+        }
+
+        mediaAlbumListOrigin = arrayListOf<MediaAlbum>().apply {
+            audioDatabaseHelper.queryMediaAlbum(this)
+        }
+        list = compareMediaAlbum(mediaAlbumList, mediaAlbumListOrigin)
+        audioDatabaseHelper.updateAlbum(list)
+    }
+
+    private fun compareDatabase() {
+        compareAudioList()
+        compareMediaAlbum()
+        audioDatabaseHelper.writeComplete()
+    }
+
+    private fun compareAudioID(list0: ArrayList<AudioInfo>, list1: ArrayList<AudioInfo>) = arrayListOf<AudioInfo>().apply {
+        list0.forEach { audioInfo ->
+            if (list1.indexOfFirst { it.audioId == audioInfo.audioId } == -1) {
+                add(audioInfo)
+            }
+        }
+    }
+
+    private fun compareAudioInfo(audioInfoListSystem: ArrayList<AudioInfo>, audioInfoList: ArrayList<AudioInfo>) = arrayListOf<AudioInfo>().apply {
+        audioInfoListSystem.forEach { audioInfo ->
+            audioInfoList.find { it.audioId == audioInfo.audioId }?.let {
+                if (compareAudioInfo(audioInfo, it)) {
+                    add(audioInfo)
+                }
+            }
+        }
+    }
+
+    private fun compareAudioInfo(audioInfo0: AudioInfo, audioInfo1: AudioInfo) =
+        audioInfo0.audioTitle != audioInfo1.audioTitle ||
+            audioInfo0.audioAlbum != audioInfo1.audioAlbum ||
+            audioInfo0.audioAlbumId != audioInfo1.audioAlbumId ||
+            audioInfo0.audioArtist != audioInfo1.audioArtist ||
+            audioInfo0.audioDuration != audioInfo1.audioDuration ||
+            audioInfo0.audioSize != audioInfo1.audioSize ||
+            audioInfo0.audioPath != audioInfo1.audioPath
+
+    private fun compareAlbumId(list0: ArrayList<MediaAlbum>, list1: ArrayList<MediaAlbum>) = arrayListOf<MediaAlbum>().apply {
+        list0.forEach { audioInfo ->
+            if (list1.indexOfFirst { it.albumId == audioInfo.albumId } == -1) {
+                add(audioInfo)
+            }
+        }
+    }
+
+    private fun compareMediaAlbum(list0: ArrayList<MediaAlbum>, list1: ArrayList<MediaAlbum>) = arrayListOf<MediaAlbum>().apply {
+        list0.forEach { mediaAlbum ->
+            list1.find { it.albumId == mediaAlbum.albumId }?.let {
+                if (compareMediaAlbum(mediaAlbum, it)) {
+                    add(mediaAlbum)
+                }
+            }
+        }
+    }
+
+    private fun compareMediaAlbum(mediaAlbum0: MediaAlbum, mediaAlbum1: MediaAlbum) =
+        mediaAlbum0.title != mediaAlbum1.title || mediaAlbum0.numberOfAudio != mediaAlbum1.numberOfAudio
+
     override fun onMediaBrowserConnected() {
         Log.e(TAG, "MediaBrowserCompat.ConnectionCallback.onConnected")
         if (mediaBrowserCompat.isConnected) {
