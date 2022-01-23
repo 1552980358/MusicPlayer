@@ -68,6 +68,8 @@ import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.android.view.getDimensionPixelSize
 import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.makeSnack
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
+import lib.github1552980358.ktExtension.jvm.keyword.tryRun
+import lib.github1552980358.ktExtension.jvm.util.addInstance
 import lib.github1552980358.ktExtension.jvm.util.copy
 import sakuraba.saki.player.music.BuildConfig.APPLICATION_ID
 import sakuraba.saki.player.music.base.BaseMediaControlActivity
@@ -301,12 +303,7 @@ class MainActivity: BaseMediaControlActivity() {
                 if (audioDatabaseHelper.hasTask) {
                     return
                 }
-                io {
-                    audioDatabaseHelper.clearTables(TABLE_AUDIO, TABLE_ALBUM)
-                    activityInterface.clearLists()
-                    initLaunchProcess()
-                    audioDatabaseHelper.writeComplete()
-                }
+
             }
         }
 
@@ -315,10 +312,7 @@ class MainActivity: BaseMediaControlActivity() {
                 return@setRequestRefreshListener
             }
             io {
-                audioDatabaseHelper.clearTables(TABLE_AUDIO, TABLE_ALBUM)
-                activityInterface.clearLists()
-                initLaunchProcess()
-                audioDatabaseHelper.writeComplete()
+
             }
         }
 
@@ -331,7 +325,7 @@ class MainActivity: BaseMediaControlActivity() {
 
         requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             when {
-                it -> io { initLaunchProcess() }
+                it -> io { initialApplication() }
                 else -> snackBar.show()
             }
         }
@@ -343,105 +337,65 @@ class MainActivity: BaseMediaControlActivity() {
         io { launchProcess() }
     }
 
-    private fun initLaunchProcess() {
-        contentResolver.query(
-            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-            null,
-            null,
-            null,
-            MediaStore.Audio.AudioColumns.IS_MUSIC
-        )?.apply {
-            var id: String?
-            var title: String?
-            var artist: String?
-            var album: String?
-            var albumId: Long?
-            var duration: Long?
-            var size: Long?
-            var data: String?
+    private fun scanSystemDatabase() = arrayListOf<AudioInfo>().apply {
+        contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null, MediaStore.Audio.AudioColumns.IS_MUSIC)?.apply {
             while (moveToNext()) {
-                id = getStringOrNull(getColumnIndex(MediaStore.Audio.AudioColumns._ID))
-                title = getStringOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.TITLE))
-                @Suppress("InlinedApi")
-                artist = getStringOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST))
-                @Suppress("InlinedApi")
-                album = getStringOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM))
-                albumId = getLongOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM_ID))
-                @Suppress("InlinedApi")
-                duration = getLongOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.DURATION))
-                size = getLongOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.SIZE))
-                @Suppress("DEPRECATION")
-                data = getStringOrNull(getColumnIndex(MediaStore.Audio.AudioColumns.DATA))
-                if (id != null && title != null && artist != null && album != null && albumId != null && duration != null && size != null && data != null) {
-                    activityInterface.audioInfoFullList.add(
-                        AudioInfo(
-                            id,
-                            title,
-                            artist,
-                            album,
-                            albumId,
-                            duration,
-                            size,
-                            data
-                        )
+                tryOnly {
+                    addInstance(
+                        getString(getColumnIndexOrThrow(MediaStore.Audio.AudioColumns._ID)),
+                        getString(getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.TITLE)),
+                        getString(getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ARTIST)),
+                        getString(getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM)),
+                        getLong(getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM_ID)),
+                        getLong(getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DURATION)),
+                        getLong(getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.SIZE)),
+                        getLong(getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA))
                     )
                 }
             }
             close()
         }
+        sortBy { it.audioId }
+    }
 
-        if (activityInterface.audioInfoFullList.isNotEmpty()) {
-            activityInterface.audioInfoFullList.forEach { Log.e("TAG", it.audioTitle) }
-            activityInterface.audioInfoFullList.sortBy { it.audioId }
-            audioDatabaseHelper.insertAudio(TABLE_AUDIO, activityInterface.audioInfoFullList)
-            activityInterface.audioInfoFullList.forEach { audioInfo ->
-                when (val index =
-                        activityInterface.albumList.indexOfFirst { mediaAlbum -> mediaAlbum.albumId == audioInfo.audioAlbumId }) {
-                    -1 -> activityInterface.albumList.add(
-                        MediaAlbum(
-                            audioInfo.audioAlbumId,
-                            audioInfo.audioAlbum,
-                            audioInfo.audioAlbumPinyin
-                        )
-                    )
-                    else -> activityInterface.albumList[index].numberOfAudio++
-                }
-            }
-            activityInterface.albumList.sortBy { mediaAlbum -> mediaAlbum.albumId }
-            audioDatabaseHelper.insertMediaAlbum(TABLE_ALBUM, activityInterface.albumList)
-
-            activityInterface.audioInfoList = activityInterface.audioInfoFullList.copy().apply {
-                if (getBooleanSetting(R.string.key_audio_filter_size_enable)) {
-                    tryOnly { removeAll { audioInfo -> audioInfo.audioSize < getIntSettingOrThrow(R.string.key_audio_filter_size_value) } }
-                }
-                if (getBooleanSetting(R.string.key_audio_filter_duration_enable)) {
-                    tryOnly { removeAll { audioInfo -> audioInfo.audioDuration < getIntSettingOrThrow(R.string.key_audio_filter_duration_value) } }
-                }
-                sortBy { it.audioTitlePinyin }
-                forEachIndexed { index, audioInfo -> audioInfo.index = index }
-            }
+    private fun initialDatabase() {
+        val audioInfoList = scanSystemDatabase().apply {
+            audioDatabaseHelper.insertAudio(TABLE_AUDIO, this)
+            activityInterface.audioInfoFullList.addAll(this)
+            activityInterface.audioInfoList.addAll(this)
+            activityInterface.audioInfoList.sortBy { it.audioTitlePinyin }
             ui { activityInterface.onLoadStageChange() }
-
-            var bitmap: Bitmap?
-            val matrix = Matrix()
-            val bitmapSize = resources.getDimensionPixelSize(R.dimen.home_recycler_view_image_view_size)
-            activityInterface.audioInfoFullList.forEach { audioInfo ->
-                if (!activityInterface.bitmapMap.containsKey(audioInfo.audioAlbumId)) {
-                    tryOnly {
-                        bitmap = null
-                        bitmap = loadAlbumArt(audioInfo.audioAlbumId)
-                        activityInterface.byteArrayMap[audioInfo.audioAlbumId] = writeAlbumArtRaw(audioInfo.audioAlbumId, bitmap)!!
-                        matrix.apply {
-                            setScale(bitmapSize / bitmap!!.widthF, bitmapSize / bitmap!!.heightF)
-                        }
-                        bitmap = Bitmap.createBitmap(bitmap!!, 0, 0, bitmap!!.width, bitmap!!.height, matrix, false)
-                        writeAlbumArt40Dp(audioInfo.audioAlbumId, bitmap)
-                        activityInterface.bitmapMap[audioInfo.audioAlbumId] = bitmap
-                    }
-                }
+        }
+        val albumList = arrayListOf<MediaAlbum>()
+        audioInfoList.forEach { audioInfo ->
+            when (val index = activityInterface.albumList.indexOfFirst { mediaAlbum -> mediaAlbum.albumId == audioInfo.audioAlbumId }) {
+                -1 -> albumList.addInstance(audioInfo.audioAlbumId, audioInfo.audioAlbum, audioInfo.audioAlbumPinyin)
+                else -> activityInterface.albumList[index].numberOfAudio++
             }
         }
-        loadAudioArt40Dp(activityInterface.audioBitmapMap)
+        albumList.sortBy { mediaAlbum -> mediaAlbum.albumId }
+        audioDatabaseHelper.insertMediaAlbum(TABLE_ALBUM, albumList)
+        audioDatabaseHelper.writeComplete()
+        activityInterface.albumList.addAll(albumList)
+    }
+
+    private fun initialCoverImage(albumList: ArrayList<MediaAlbum>) {
+        var bitmap: Bitmap?
+        val matrix = Matrix()
+        val bitmapSize = resources.getDimensionPixelSize(R.dimen.home_recycler_view_image_view_size)
+        for (mediaAlbum in albumList) {
+            bitmap = tryRun { loadAlbumArt(mediaAlbum.albumId) } ?: continue
+            activityInterface.byteArrayMap[mediaAlbum.albumId] = writeAlbumArtRaw(mediaAlbum.albumId, bitmap)!!
+            matrix.apply { setScale(bitmapSize / bitmap!!.widthF, bitmapSize / bitmap!!.heightF) }
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, false)
+            writeAlbumArt40Dp(mediaAlbum.albumId, bitmap)
+            activityInterface.bitmapMap[mediaAlbum.albumId] = bitmap
+        }
+    }
+
+    private fun initialApplication() {
+        initialDatabase()
+        initialCoverImage(activityInterface.albumList)
         ui { activityInterface.onCompleteLoading() }
     }
 
