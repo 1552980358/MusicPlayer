@@ -358,6 +358,16 @@ class MainActivity: BaseMediaControlActivity() {
         sortBy { it.audioId }
     }
 
+    private fun analyzeMediaAlbum(audioInfoList: ArrayList<AudioInfo>) = arrayListOf<MediaAlbum>().apply {
+        audioInfoList.forEach { audioInfo ->
+            when (val index = activityInterface.albumList.indexOfFirst { mediaAlbum -> mediaAlbum.albumId == audioInfo.audioAlbumId }) {
+                -1 -> addInstance(audioInfo.audioAlbumId, audioInfo.audioAlbum, audioInfo.audioAlbumPinyin)
+                else -> activityInterface.albumList[index].numberOfAudio++
+            }
+        }
+        sortBy { mediaAlbum -> mediaAlbum.albumId }
+    }
+
     private fun initialDatabase() {
         val audioInfoList = scanSystemDatabase().apply {
             audioDatabaseHelper.insertAudio(TABLE_AUDIO, this)
@@ -366,14 +376,7 @@ class MainActivity: BaseMediaControlActivity() {
             activityInterface.audioInfoList.sortBy { it.audioTitlePinyin }
             ui { activityInterface.onLoadStageChange() }
         }
-        val albumList = arrayListOf<MediaAlbum>()
-        audioInfoList.forEach { audioInfo ->
-            when (val index = activityInterface.albumList.indexOfFirst { mediaAlbum -> mediaAlbum.albumId == audioInfo.audioAlbumId }) {
-                -1 -> albumList.addInstance(audioInfo.audioAlbumId, audioInfo.audioAlbum, audioInfo.audioAlbumPinyin)
-                else -> activityInterface.albumList[index].numberOfAudio++
-            }
-        }
-        albumList.sortBy { mediaAlbum -> mediaAlbum.albumId }
+        val albumList = analyzeMediaAlbum(audioInfoList)
         audioDatabaseHelper.insertMediaAlbum(TABLE_ALBUM, albumList)
         audioDatabaseHelper.writeComplete()
         activityInterface.albumList.addAll(albumList)
