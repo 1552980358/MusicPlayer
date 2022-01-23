@@ -81,6 +81,7 @@ class MainActivityInterface(block: (Int, AudioInfo?, ArrayList<AudioInfo>?) -> U
         audioInfoList.clear()
         bitmapMap.clear()
         albumList.clear()
+        audioBitmapMap.clear()
     }
 
     private lateinit var mediaBrowserCompat: MediaBrowserCompat
