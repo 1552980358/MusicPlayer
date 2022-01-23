@@ -1,6 +1,6 @@
 package sakuraba.saki.player.music.service.util
 
-import com.github.promeg.pinyinhelper.Pinyin
+import projekt.cloud.piece.c2pinyin.pinyin
 import java.io.Serializable
 
 class AudioInfo(
@@ -20,11 +20,11 @@ class AudioInfo(
         this(
             audioId,
             audioTitle,
-            Pinyin.toPinyin(audioTitle, ""),
+            audioTitle.pinyin,
             audioArtist,
-            Pinyin.toPinyin(audioArtist, ""),
+            audioArtist.pinyin,
             audioAlbum,
-            Pinyin.toPinyin(audioAlbum, ""),
+            audioAlbum.pinyin,
             audioAlbumId,
             audioDuration,
             audioSize,
