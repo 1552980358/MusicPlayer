@@ -402,12 +402,13 @@ class MainActivity: BaseMediaControlActivity() {
         ui { activityInterface.onCompleteLoading() }
     }
 
+    private fun queryDatabase() = arrayListOf<AudioInfo>().apply {
+        audioDatabaseHelper.queryAllAudio(this)
+    }
+
     private fun launchProcess() {
-        activityInterface.audioInfoList = activityInterface.audioInfoFullList.run {
-                clear()
-                audioDatabaseHelper.queryAllAudio(this)
-                copy()
-        }.apply {
+        activityInterface.audioInfoList = queryDatabase().apply {
+            activityInterface.audioInfoFullList.addAll(this)
             if (getBooleanSetting(R.string.key_audio_filter_size_enable)) {
                 tryOnly { removeAll { audioInfo -> audioInfo.audioSize < getIntSettingOrThrow(R.string.key_audio_filter_size_value) } }
             }
