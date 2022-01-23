@@ -69,11 +69,11 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
     
     override fun onUpgrade(sqLiteDatabase: SQLiteDatabase?, oldVersion: Int, newVersion: Int) = Unit
     
-    fun insertAudio(table: String, audioInfoList: ArrayList<AudioInfo>) {
+    fun insertAudio(audioInfoList: ArrayList<AudioInfo>) {
         hasTaskWorking = true
         writableDatabase.apply {
             audioInfoList.forEach { audioInfo ->
-                insert(table, null, ContentValues().apply {
+                insert(TABLE_AUDIO, null, ContentValues().apply {
                     put(KEY_AUDIO_ID, audioInfo.audioId)
                     put(KEY_AUDIO_TITLE, audioInfo.audioTitle)
                     put(KEY_AUDIO_TITLE_PINYIN, audioInfo.audioTitlePinyin)
@@ -90,11 +90,11 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
         }
     }
 
-    fun insertMediaAlbum(table: String, mediaAlbumList: ArrayList<MediaAlbum>) {
+    fun insertMediaAlbum(mediaAlbumList: ArrayList<MediaAlbum>) {
         hasTaskWorking = true
         writableDatabase.apply {
             mediaAlbumList.forEach { mediaAlbum ->
-                insert(table, null, ContentValues().apply {
+                insert(TABLE_ALBUM, null, ContentValues().apply {
                     put(KEY_ALBUM_ID, mediaAlbum.albumId)
                     put(KEY_ALBUM_TITLE, mediaAlbum.title)
                     put(KEY_ALBUM_TITLE_PINYIN, mediaAlbum.titlePinyin)
