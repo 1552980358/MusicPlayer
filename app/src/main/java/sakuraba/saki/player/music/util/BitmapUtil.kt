@@ -88,24 +88,19 @@ object BitmapUtil {
         return null
     }
 
+    fun Context.removeAudioArtRaw(audioId: String) = audioArtRawDir?.listFiles()?.find { it.name == audioId }?.delete()
+
     fun Context.loadAudioArt40Dp(bitmapMap: MutableMap<String, Bitmap?>) {
         audioArt40DpDir?.listFiles()?.forEach { file ->
             bitmapMap[file.name] = file.readAsBitmap()
         }
     }
 
-    fun Context.removeAudioArt(audioId: String) {
-        audioArtRawDir?.listFiles()?.forEach { file ->
-            if (file.name.startsWith(audioId)) {
-                file.delete()
-            }
-        }
-        audioArt40DpDir?.listFiles()?.forEach { file ->
-            if (file.name.startsWith(audioId)) {
-                file.delete()
-            }
+    fun Context.removeAudioArt40Dp(audioId: String) = audioArt40DpDir?.listFiles()?.find { it.name == audioId }?.delete()
 
-        }
+    fun Context.removeAudioArt(audioId: String) {
+        removeAudioArtRaw(audioId)
+        removeAudioArt40Dp(audioId)
     }
 
     val Bitmap.cutAsCube get(): Bitmap = when {
