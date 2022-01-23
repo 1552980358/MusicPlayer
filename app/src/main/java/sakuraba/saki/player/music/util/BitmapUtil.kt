@@ -33,6 +33,8 @@ object BitmapUtil {
         }
     }
 
+    fun Context.removeAlbumArt40Dp(albumId: String) = albumArt40DpDir?.listFiles()?.find { it.name == albumId }?.delete()
+
     private const val ALBUM_ART_RAW_DIR = "album_art_raw"
     private val Context.albumArtRawDir get() = getExternalFilesDir(ALBUM_ART_RAW_DIR)
 
@@ -55,6 +57,13 @@ object BitmapUtil {
             }
         }
         return null
+    }
+
+    fun Context.removeAlbumArtRaw(albumId: String) = albumArtRawDir?.listFiles()?.find { it.name == albumId }?.delete()
+
+    fun Context.removeAlbumArts(albumId: String) {
+        removeAlbumArtRaw(albumId)
+        removeAlbumArt40Dp(albumId)
     }
 
     private const val AUDIO_ART_RAW_40DP = "audio_art_40dp"
