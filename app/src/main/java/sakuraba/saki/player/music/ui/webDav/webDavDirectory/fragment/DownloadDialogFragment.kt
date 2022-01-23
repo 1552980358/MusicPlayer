@@ -34,26 +34,25 @@ class DownloadDialogFragment(private val sardine: Sardine, private val url: Stri
                 val byteArray = ByteArray(1024)
                 val output = File(Environment.getExternalStoragePublicDirectory(DIRECTORY_MUSIC), name)
                 ui { layout.textViewTo.text = output.path }
-                if (output.exists()) {
-                    output.delete()
-                }
-                output.outputStream().use { fileOutputStream ->
-                    var len = 0
-                    var writeLen = 0
-                    while (len != -1) {
-                        runCatching {
-                            len = inputStream.read(byteArray)
-                            if (len != -1) {
-                                fileOutputStream.write(byteArray, 0, len)
-                                writeLen += len
-                                ui {
-                                    layout.textViewCur.text = writeLen.toString()
-                                    layout.progressBar.progress = writeLen
+                if (!output.exists()) {
+                    output.outputStream().use { fileOutputStream ->
+                        var len = 0
+                        var writeLen = 0
+                        while (len != -1) {
+                            runCatching {
+                                len = inputStream.read(byteArray)
+                                if (len != -1) {
+                                    fileOutputStream.write(byteArray, 0, len)
+                                    writeLen += len
+                                    ui {
+                                        layout.textViewCur.text = writeLen.toString()
+                                        layout.progressBar.progress = writeLen
+                                    }
                                 }
                             }
                         }
+                        tryOnly { fileOutputStream.flush() }
                     }
-                    tryOnly { fileOutputStream.flush() }
                 }
             }
             ui { dismiss() }
