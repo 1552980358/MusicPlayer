@@ -104,10 +104,54 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
         }
     }
 
-    fun clearTables(vararg tables: String) {
+    fun removeAudio(audioInfoList: ArrayList<AudioInfo>) {
         hasTaskWorking = true
         writableDatabase.apply {
-            tables.forEach { table -> delete(table, null, null) }
+            audioInfoList.forEach { audioInfo ->
+                delete(TABLE_AUDIO, "${KEY_AUDIO_ID}=?", arrayOf(audioInfo.audioId))
+            }
+        }
+    }
+
+    fun removeMediaAlbum(mediaAlbumList: ArrayList<MediaAlbum>) {
+        hasTaskWorking = true
+        writableDatabase.apply {
+            mediaAlbumList.forEach { mediaAlbum ->
+                delete(TABLE_ALBUM, "${KEY_ALBUM_ID}=?", arrayOf(mediaAlbum.albumId.toString()))
+            }
+        }
+    }
+
+    fun updateAudio(audioInfoList: ArrayList<AudioInfo>) {
+        hasTaskWorking = true
+        writableDatabase.apply {
+            audioInfoList.forEach { audioInfo ->
+                update(TABLE_AUDIO, ContentValues().apply {
+                    put(KEY_AUDIO_TITLE, audioInfo.audioTitle)
+                    put(KEY_AUDIO_TITLE_PINYIN, audioInfo.audioTitlePinyin)
+                    put(KEY_AUDIO_ARTIST, audioInfo.audioArtist)
+                    put(KEY_AUDIO_ARTIST_PINYIN, audioInfo.audioArtistPinyin)
+                    put(KEY_AUDIO_ALBUM, audioInfo.audioAlbum)
+                    put(KEY_AUDIO_ALBUM_PINYIN, audioInfo.audioAlbumPinyin)
+                    put(KEY_AUDIO_ALBUM_ID, audioInfo.audioAlbumId)
+                    put(KEY_AUDIO_DURATION, audioInfo.audioDuration)
+                    put(KEY_AUDIO_SIZE, audioInfo.audioSize)
+                    put(KEY_AUDIO_PATH, audioInfo.audioPath)
+                }, "${KEY_AUDIO_ID}=?", arrayOf(audioInfo.audioId))
+            }
+        }
+    }
+
+    fun updateAlbum(mediaAlbumList: ArrayList<MediaAlbum>) {
+        hasTaskWorking = true
+        writableDatabase.apply {
+            mediaAlbumList.forEach { mediaAlbum ->
+                update(TABLE_ALBUM, ContentValues().apply {
+                    put(KEY_ALBUM_TITLE, mediaAlbum.title)
+                    put(KEY_ALBUM_TITLE_PINYIN, mediaAlbum.titlePinyin)
+                    put(KEY_ALBUM_NUMBER_OF_AUDIO, mediaAlbum.numberOfAudio)
+                }, "${KEY_ALBUM_ID}=?", arrayOf(mediaAlbum.albumId.toString()))
+            }
         }
     }
 
