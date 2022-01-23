@@ -370,14 +370,14 @@ class MainActivity: BaseMediaControlActivity() {
 
     private fun initialDatabase() {
         val audioInfoList = scanSystemDatabase().apply {
-            audioDatabaseHelper.insertAudio(TABLE_AUDIO, this)
+            audioDatabaseHelper.insertAudio(this)
             activityInterface.audioInfoFullList.addAll(this)
             activityInterface.audioInfoList.addAll(this)
             activityInterface.audioInfoList.sortBy { it.audioTitlePinyin }
             ui { activityInterface.onLoadStageChange() }
         }
         val albumList = analyzeMediaAlbum(audioInfoList)
-        audioDatabaseHelper.insertMediaAlbum(TABLE_ALBUM, albumList)
+        audioDatabaseHelper.insertMediaAlbum(albumList)
         audioDatabaseHelper.writeComplete()
         activityInterface.albumList.addAll(albumList)
     }
