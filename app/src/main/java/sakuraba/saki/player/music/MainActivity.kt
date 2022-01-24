@@ -216,7 +216,7 @@ class MainActivity: BaseMediaControlActivity() {
             }
         }
         
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         _activityMainMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMain.root)
         setSupportActionBar(findViewById(R.id.toolbar))
