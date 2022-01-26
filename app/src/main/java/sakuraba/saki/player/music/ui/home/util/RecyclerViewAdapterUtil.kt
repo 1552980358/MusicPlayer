@@ -28,7 +28,7 @@ class RecyclerViewAdapterUtil(private val fragment: Fragment, private val activi
         val background: RelativeLayout = view.findViewById(R.id.relative_layout_root)
     }
     
-    private inner class RecyclerViewAdapter(var audioInfoList: List<AudioInfo>, private val selection: (pos: Int) -> Unit): RecyclerView.Adapter<ViewHolder>() {
+    private inner class RecyclerViewAdapter(private val audioInfoList: List<AudioInfo>, private val selection: (pos: Int) -> Unit): RecyclerView.Adapter<ViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_home_recycler_view, parent, false))
