@@ -116,7 +116,7 @@
 - `com.github.mkaflowski:Media-Style-Palette`
 - `org.nanohttpd:nanohttpd`
 - `org.nanohttpd:nanohttpd-websocket`
-- Dependencies detail can be found here [build.gradle](build.gradle) and [build.gradle](app/build.gradle)
+- Dependencies detail can be found here [build.gradle.kts](build.gradle.kts) and [build.gradle.kts](app/build.gradle.kts)
 
 ## Maintenance Language
 - Kotlin
