@@ -29,16 +29,22 @@ class AudioFilterFragment: BasePreferenceFragmentCompat() {
             setPreferenceEnabled(R.string.key_audio_filter_size_value, isChecked)
             setOnPreferenceChangeListener { _, newValue ->
                 setPreferenceEnabled(R.string.key_audio_filter_size_value, newValue as Boolean)
-                activityInterface.audioInfoList = activityInterface.audioInfoFullList.copy().apply {
-                    if (newValue) {
-                        tryOnly { removeAll { audioInfo -> audioInfo.audioSize < getIntSettingOrThrow(R.string.key_audio_filter_size_value) } }
+                activityInterface.audioInfoList.apply {
+                    if (isNotEmpty()) {
+                        clear()
                     }
-                    if (getBooleanSetting(R.string.key_audio_filter_duration_enable)) {
-                        tryOnly { removeAll { audioInfo -> audioInfo.audioDuration < getIntSettingOrThrow(R.string.key_audio_filter_duration_value) } }
+                }.addAll(
+                    activityInterface.audioInfoFullList.copy().apply {
+                        if (newValue) {
+                            tryOnly { removeAll { audioInfo -> audioInfo.audioSize < getIntSettingOrThrow(R.string.key_audio_filter_size_value) } }
+                        }
+                        if (getBooleanSetting(R.string.key_audio_filter_duration_enable)) {
+                            tryOnly { removeAll { audioInfo -> audioInfo.audioDuration < getIntSettingOrThrow(R.string.key_audio_filter_duration_value) } }
+                        }
+                        sortBy { it.audioTitlePinyin }
+                        forEachIndexed { index, audioInfo -> audioInfo.index = index }
                     }
-                    sortBy { it.audioTitlePinyin }
-                    forEachIndexed { index, audioInfo -> audioInfo.index = index }
-                }
+                )
                 activityInterface.hasAudioInfoListUpdated = true
                 return@setOnPreferenceChangeListener true
             }
@@ -60,16 +66,22 @@ class AudioFilterFragment: BasePreferenceFragmentCompat() {
             setPreferenceEnabled(R.string.key_audio_filter_duration_value, isChecked)
             setOnPreferenceChangeListener { _, newValue ->
                 setPreferenceEnabled(R.string.key_audio_filter_duration_value, newValue as Boolean)
-                activityInterface.audioInfoList = activityInterface.audioInfoFullList.copy().apply {
-                    if (getBooleanSetting(R.string.key_audio_filter_size_enable)) {
-                        tryOnly { removeAll { audioInfo -> audioInfo.audioSize < getIntSettingOrThrow(R.string.key_audio_filter_size_value) } }
+                activityInterface.audioInfoList.apply {
+                    if (isNotEmpty()) {
+                        clear()
                     }
-                    if (newValue) {
-                        tryOnly { removeAll { audioInfo -> audioInfo.audioDuration < getIntSettingOrThrow(R.string.key_audio_filter_duration_value) } }
+                }.addAll(
+                    activityInterface.audioInfoFullList.copy().apply {
+                        if (getBooleanSetting(R.string.key_audio_filter_size_enable)) {
+                            tryOnly { removeAll { audioInfo -> audioInfo.audioSize < getIntSettingOrThrow(R.string.key_audio_filter_size_value) } }
+                        }
+                        if (newValue) {
+                            tryOnly { removeAll { audioInfo -> audioInfo.audioDuration < getIntSettingOrThrow(R.string.key_audio_filter_duration_value) } }
+                        }
+                        sortBy { it.audioTitlePinyin }
+                        forEachIndexed { index, audioInfo -> audioInfo.index = index }
                     }
-                    sortBy { it.audioTitlePinyin }
-                    forEachIndexed { index, audioInfo -> audioInfo.index = index }
-                }
+                )
                 activityInterface.hasAudioInfoListUpdated = true
                 return@setOnPreferenceChangeListener true
             }
