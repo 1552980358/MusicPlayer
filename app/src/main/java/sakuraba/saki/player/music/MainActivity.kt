@@ -375,8 +375,10 @@ class MainActivity: BaseMediaControlActivity() {
         val audioInfoList = scanSystemDatabase().apply {
             audioDatabaseHelper.insertAudio(this)
             activityInterface.audioInfoFullList.addAll(this)
-            activityInterface.audioInfoList.addAll(this)
-            activityInterface.audioInfoList.sortBy { it.audioTitlePinyin }
+            activityInterface.audioInfoList.also { arrayList ->
+                arrayList.addAll(this)
+                arrayList.sortBy { it.audioTitlePinyin }
+            }
             ui { activityInterface.onLoadStageChange() }
         }
         val albumList = analyzeMediaAlbum(audioInfoList)
@@ -420,6 +422,12 @@ class MainActivity: BaseMediaControlActivity() {
             }
             sortBy { it.audioTitlePinyin }
             forEachIndexed { index, audioInfo -> audioInfo.index = index }
+            activityInterface.audioInfoList.apply {
+                if (isNotEmpty()) {
+                    clear()
+                }
+                addAll(this)
+            }
         }
 
         ui { activityInterface.onLoadStageChange() }
