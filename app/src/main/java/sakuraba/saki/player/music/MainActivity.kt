@@ -412,6 +412,9 @@ class MainActivity: BaseMediaControlActivity() {
 
     private fun launchProcess() {
         queryDatabase().apply {
+            forEach {
+                Log.e("TAG", it.audioTitle)
+            }
             activityInterface.audioInfoFullList.addAll(this)
             if (getBooleanSetting(R.string.key_audio_filter_size_enable)) {
                 tryOnly { removeAll { audioInfo -> audioInfo.audioSize < getIntSettingOrThrow(R.string.key_audio_filter_size_value) } }
@@ -421,11 +424,11 @@ class MainActivity: BaseMediaControlActivity() {
             }
             sortBy { it.audioTitlePinyin }
             forEachIndexed { index, audioInfo -> audioInfo.index = index }
-            activityInterface.audioInfoList.apply {
+            activityInterface.audioInfoList.also {
                 if (isNotEmpty()) {
-                    clear()
+                    it.clear()
                 }
-                addAll(this)
+                it.addAll(this)
             }
         }
 
