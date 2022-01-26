@@ -67,9 +67,6 @@ class RecyclerViewAdapterUtil(private val fragment: Fragment, private val activi
     }
 
     @Suppress("NotifyDataSetChanged")
-    fun notifyDataSetChanged() {
-        adapter.audioInfoList = activityInterface.audioInfoList
-        adapter.notifyDataSetChanged()
-    }
+    fun notifyDataSetChanged() = adapter.notifyDataSetChanged()
     
 }
