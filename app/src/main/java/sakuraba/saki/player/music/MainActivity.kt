@@ -333,11 +333,10 @@ class MainActivity: BaseMediaControlActivity() {
             }
         }
 
-        if (ActivityCompat.checkSelfPermission(this@MainActivity, READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
-            requestPermission.launch(READ_EXTERNAL_STORAGE)
-            return
+        when (ActivityCompat.checkSelfPermission(this@MainActivity, READ_EXTERNAL_STORAGE)) {
+            PERMISSION_GRANTED -> io { launchProcess() }
+            else -> requestPermission.launch(READ_EXTERNAL_STORAGE)
         }
-        io { launchProcess() }
     }
 
     private fun scanSystemDatabase() = arrayListOf<AudioInfo>().apply {
@@ -412,7 +411,7 @@ class MainActivity: BaseMediaControlActivity() {
     }
 
     private fun launchProcess() {
-        activityInterface.audioInfoList = queryDatabase().apply {
+        queryDatabase().apply {
             activityInterface.audioInfoFullList.addAll(this)
             if (getBooleanSetting(R.string.key_audio_filter_size_enable)) {
                 tryOnly { removeAll { audioInfo -> audioInfo.audioSize < getIntSettingOrThrow(R.string.key_audio_filter_size_value) } }
