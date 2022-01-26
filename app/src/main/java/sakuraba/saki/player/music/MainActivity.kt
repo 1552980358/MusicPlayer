@@ -352,7 +352,7 @@ class MainActivity: BaseMediaControlActivity() {
                         getLong(getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM_ID)),
                         getLong(getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DURATION)),
                         getLong(getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.SIZE)),
-                        getLong(getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA))
+                        getString(getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA))
                     )
                 }
             }
