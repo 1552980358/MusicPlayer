@@ -37,7 +37,7 @@ android {
         jvmTarget = '11'
     }
     buildFeatures.viewBinding = true
-    lintOptions {
+    lint {
         abortOnError false
     }
 }
