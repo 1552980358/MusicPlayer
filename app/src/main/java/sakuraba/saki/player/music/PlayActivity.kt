@@ -33,7 +33,6 @@ import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
@@ -110,7 +109,7 @@ class PlayActivity: BaseMediaControlActivity() {
     private var _textViewSummary: TextView? = null
     private val textViewSummary get() = _textViewSummary!!
     
-    private lateinit var behavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var behavior: BottomSheetBehavior<CardView>
     
     private var isPlaying = false
     private var job: Job? = null
