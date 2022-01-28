@@ -50,6 +50,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPS
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_DRAGGING
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HALF_EXPANDED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_SETTLING
 import com.google.android.renderscript.Toolkit
 import kotlinx.coroutines.Job
@@ -200,8 +201,8 @@ class PlayActivity: BaseMediaControlActivity() {
             pixelHeight - resources.displayMetrics.widthPixels -
                 resources.getDimensionPixelSize(R.dimen.play_controller_height) -
                 resources.getDimensionPixelSize(R.dimen.play_controller_seekbar_height)
-        behavior.isHideable = false
-        behavior.state = STATE_COLLAPSED
+        behavior.isHideable = true
+        behavior.state = STATE_HIDDEN
         
         viewModel.progress.observe(this) { newProgress ->
             if (!activityPlay.playSeekBar.isUserTouched) {
@@ -588,6 +589,17 @@ class PlayActivity: BaseMediaControlActivity() {
     }
     
     override fun getParentID() = TAG
+
+    override fun onStart() {
+        super.onStart()
+        io {
+            delay(250)
+            ui {
+                behavior.state = STATE_COLLAPSED
+                behavior.isHideable = false
+            }
+        }
+    }
     
     override fun onPause() {
         isPlaying = false
