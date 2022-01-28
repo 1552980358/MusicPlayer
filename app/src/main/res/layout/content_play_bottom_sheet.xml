@@ -47,8 +47,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/play_bottom_sheet_text_view_title_text_size"
-                    android:transitionName="text_view"/>
+                    android:textSize="@dimen/play_bottom_sheet_text_view_title_text_size"/>
             
                 <TextView
                     android:layout_width="match_parent"
