@@ -187,15 +187,15 @@ class PlayActivity: BaseMediaControlActivity() {
             lastDrawable = BitmapDrawable(resources, bitmap)
             lastBlurredDrawable = BitmapDrawable(resources, blurredBitmap)
         }
-    
-        findViewById<CardView>(R.id.card_view).apply {
-            layoutParams = layoutParams.apply {
-                height = pixelHeight - getStatusBarHeight()
+
+        behavior = BottomSheetBehavior.from(
+            findViewById<CardView>(R.id.card_view).apply {
+                layoutParams = layoutParams.apply {
+                    height = pixelHeight - getStatusBarHeight()
+                }
+                setContentPadding(0, 0, 0, navigationBarHeight)
             }
-            setContentPadding(0, 0, 0, navigationBarHeight)
-        }
-        
-        behavior = BottomSheetBehavior.from(findViewById(R.id.card_view))
+        )
         behavior.peekHeight =
             pixelHeight - resources.displayMetrics.widthPixels -
                 resources.getDimensionPixelSize(R.dimen.play_controller_height) -
