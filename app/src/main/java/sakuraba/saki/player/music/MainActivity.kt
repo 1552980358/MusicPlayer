@@ -274,7 +274,7 @@ class MainActivity: BaseMediaControlActivity() {
                         putExtra(EXTRAS_DATA, activityInterface.byteArrayMap[audioInfo.audioAlbumId])
                         putExtra(EXTRAS_AUDIO_INFO, audioInfo)
                     },
-                    ActivityOptionsCompat.makeSceneTransitionAnimation(this, Pair(imageView, TRANSITION_IMAGE_VIEW), Pair(textView, TRANSITION_TEXT_VIEW)).toBundle()
+                    ActivityOptionsCompat.makeSceneTransitionAnimation(this, imageView, TRANSITION_IMAGE_VIEW).toBundle()
                 )
             }
         }
