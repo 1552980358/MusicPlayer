@@ -52,8 +52,7 @@
             android:textColor="@color/black"
             android:layout_toEndOf="@id/image_view"
             android:layout_toStartOf="@id/image_button"
-            android:layout_centerVertical="true"
-            android:transitionName="text_view"/>
+            android:layout_centerVertical="true"/>
         
     </RelativeLayout>
     
