@@ -40,6 +40,11 @@
             android:title="@string/other_battery_optimization_title"
             app:iconSpaceReserved="false"/>
 
+        <Preference
+            android:key="@string/key_other_codec"
+            android:title="@string/other_codec_title"
+            app:iconSpaceReserved="false" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
