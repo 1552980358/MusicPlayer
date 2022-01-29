@@ -121,6 +121,13 @@
             app:popExitAnim="@anim/translate_pop_exit"
             app:enterAnim="@anim/translate_enter"
             app:exitAnim="@anim/translate_exit" />
+        <action
+            android:id="@+id/action_nav_setting_to_nav_setting_codec"
+            app:destination="@id/nav_setting_codec"
+            app:popEnterAnim="@anim/translate_pop_enter"
+            app:popExitAnim="@anim/translate_pop_exit"
+            app:enterAnim="@anim/translate_enter"
+            app:exitAnim="@anim/translate_exit" />
     </fragment>
     
     <fragment
@@ -165,5 +172,9 @@
     <fragment
         android:id="@+id/nav_web_dav_directory"
         android:name="sakuraba.saki.player.music.ui.webDav.webDavDirectory.WebDavDirectoryFragment" />
+
+    <fragment
+        android:id="@+id/nav_setting_codec"
+        android:name="sakuraba.saki.player.music.ui.setting.fragment.CodecFragment" />
     
 </navigation>
