@@ -151,6 +151,8 @@
     <string name="key_other_battery_optimization">key_battery_optimization</string>
     <string name="other_battery_optimization_title">Disable Battery Optimization</string>
     <string name="other_battery_optimization_summary">When this option is enabled, there is a need of disabling battery optimization policy by Android OS.</string>
+    <string name="key_other_codec">key_codec</string>
+    <string name="other_codec_title">Codec Information</string>
 
     <string name="web_dav_name">Host Name</string>
     <string name="web_dav_url">WebDav URL</string>
