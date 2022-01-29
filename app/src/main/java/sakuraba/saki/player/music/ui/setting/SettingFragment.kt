@@ -37,16 +37,16 @@ class SettingFragment: PreferenceFragmentCompat() {
         navController = findNavController()
         
         preference(key_audio)?.setOnPreferenceClickListener {
-            findNavController().navigate(SettingFragmentDirections.actionNavSettingToNavSettingAudioFilter())
+            navController.navigate(SettingFragmentDirections.actionNavSettingToNavSettingAudioFilter())
             return@setOnPreferenceClickListener true
         }
         preference(key_play)?.setOnPreferenceClickListener {
-            findNavController().navigate(SettingFragmentDirections.actionNavSettingToNavSettingAudioPlay())
+            navController.navigate(SettingFragmentDirections.actionNavSettingToNavSettingAudioPlay())
             return@setOnPreferenceClickListener true
         }
 
         preference(key_web_server)?.setOnPreferenceClickListener {
-            findNavController().navigate(SettingFragmentDirections.actionNavSettingToNavSettingWebServer())
+            navController.navigate(SettingFragmentDirections.actionNavSettingToNavSettingWebServer())
             return@setOnPreferenceClickListener true
         }
 
