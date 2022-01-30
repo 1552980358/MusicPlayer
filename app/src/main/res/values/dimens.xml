@@ -104,5 +104,7 @@
     <dimen name="web_dav_layout_text_view_size">40dp</dimen>
     <dimen name="web_dav_layout_image_button_size">40dp</dimen>
     <dimen name="web_dav_layout_linear_layout_margins">10dp</dimen>
+    
+    <dimen name="codec_margin_top">10dp</dimen>
 
 </resources>
