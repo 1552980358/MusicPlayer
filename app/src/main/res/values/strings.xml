@@ -153,6 +153,20 @@
     <string name="other_battery_optimization_summary">When this option is enabled, there is a need of disabling battery optimization policy by Android OS.</string>
     <string name="key_other_codec">key_codec</string>
     <string name="other_codec_title">Codec Information</string>
+    <string name="codec_type">Codec Type</string>
+    <string name="codec_type_encoder">Encoder</string>
+    <string name="codec_type_decoder">Decoder</string>
+    <string name="codec_supported_method">Supported Method</string>
+    <string name="codec_supported_method_software">Software Codec</string>
+    <string name="codec_supported_method_hardware">Hardware Codec</string>
+    <string name="codec_hardware_acceleration">Hardware Acceleration</string>
+    <string name="codec_require_sdk_29">This Property Require SDK 29</string>
+    <string name="codec_hardware_acceleration_supported">Supported</string>
+    <string name="codec_hardware_acceleration_not_supported">Not Supported</string>
+    <string name="codec_vendor">Vendor</string>
+    <string name="codec_vendor_android">Android Platform</string>
+    <string name="codec_vendor_vendor">Device Manufacturer</string>
+    <string name="codec_supported_mime">Supported MIME</string>
 
     <string name="web_dav_name">Host Name</string>
     <string name="web_dav_url">WebDav URL</string>
