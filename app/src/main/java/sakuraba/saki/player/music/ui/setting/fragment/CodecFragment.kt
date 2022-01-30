@@ -25,7 +25,11 @@ class CodecFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         io {
             MediaCodecList(ALL_CODECS).codecInfos.let {
-                ui { RecyclerViewAdapterUtil(it, layout.recyclerView) }
+                ui {
+                    RecyclerViewAdapterUtil(it, layout.recyclerView) { index ->
+                        CodecInfoDialogFragment(it[index]).show(parentFragmentManager)
+                    }
+                }
             }
         }
     }
