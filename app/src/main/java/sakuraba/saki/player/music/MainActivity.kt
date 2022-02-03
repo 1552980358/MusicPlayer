@@ -11,6 +11,8 @@ import android.database.ContentObserver
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.TransitionDrawable
 import android.net.Uri.fromParts
 import android.os.Bundle
 import android.provider.MediaStore
@@ -46,7 +48,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -61,6 +62,7 @@ import kotlinx.coroutines.delay
 import lib.github1552980358.ktExtension.android.content.intent
 import lib.github1552980358.ktExtension.android.graphics.heightF
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
+import lib.github1552980358.ktExtension.android.graphics.toDrawable
 import lib.github1552980358.ktExtension.android.graphics.widthF
 import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.android.view.getDimensionPixelSize
@@ -86,6 +88,7 @@ import sakuraba.saki.player.music.util.BitmapUtil.removeAudioArt
 import sakuraba.saki.player.music.util.BitmapUtil.writeAlbumArt40Dp
 import sakuraba.saki.player.music.util.BitmapUtil.writeAlbumArtRaw
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
+import sakuraba.saki.player.music.util.Constants.ANIMATION_DURATION
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_POS
@@ -93,7 +96,6 @@ import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.Constants.EXTRAS_PROGRESS
 import sakuraba.saki.player.music.util.Constants.EXTRAS_STATUS
 import sakuraba.saki.player.music.util.Constants.TRANSITION_IMAGE_VIEW
-import sakuraba.saki.player.music.util.Constants.TRANSITION_TEXT_VIEW
 import sakuraba.saki.player.music.util.CoroutineUtil.delay1second
 import sakuraba.saki.player.music.util.CoroutineUtil.io
 import sakuraba.saki.player.music.util.CoroutineUtil.ms_1000_int
@@ -191,6 +193,8 @@ class MainActivity: BaseMediaControlActivity() {
 
     private lateinit var mediaStoreObserver: ContentObserver
 
+    private var lastDrawable: Drawable? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -199,20 +203,14 @@ class MainActivity: BaseMediaControlActivity() {
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
         
         activityInterface = MainActivityInterface { pos, audioInfo, audioInfoList ->
-            mediaControllerCompat.transportControls.playFromMediaId(audioInfo?.audioId, bundle {
-                putInt(EXTRAS_AUDIO_INFO_POS, pos)
-                putSerializable(EXTRAS_AUDIO_INFO, audioInfo)
-                putSerializable(EXTRAS_AUDIO_INFO_LIST, audioInfoList)
-            })
-            if (audioInfo != null) {
-                this.audioInfo = audioInfo
-                playProgressBar.max = audioInfo.audioDuration
-                textView.text = audioInfo.audioTitle
-                imageView.setImageBitmap(
-                    activityInterface.audioBitmapMap[audioInfo.audioId]
-                        ?: activityInterface.bitmapMap[audioInfo.audioAlbumId]
-                        ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
-                )
+            audioInfo?.let { info ->
+                this.audioInfo = info
+                playProgressBar.max = info.audioDuration
+                mediaControllerCompat.transportControls.playFromMediaId(info.audioId, bundle {
+                    putInt(EXTRAS_AUDIO_INFO_POS, pos)
+                    putSerializable(EXTRAS_AUDIO_INFO, info)
+                    putSerializable(EXTRAS_AUDIO_INFO_LIST, audioInfoList)
+                })
             }
         }
         
@@ -575,11 +573,23 @@ class MainActivity: BaseMediaControlActivity() {
                         }
                         textView.text = audioInfo.audioTitle
                         io {
-                            val bitmap =
-                                activityInterface.audioBitmapMap[audioInfo.audioId]
-                                    ?: activityInterface.bitmapMap[audioInfo.audioAlbumId]
-                                    ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
-                            ui { imageView.setImageBitmap(bitmap) }
+                            var drawable =
+                                activityInterface.audioBitmapMap[audioInfo.audioId].toDrawable(this@MainActivity)
+                                    ?: activityInterface.bitmapMap[audioInfo.audioAlbumId].toDrawable(this@MainActivity)
+                                    ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)!!.toBitmap().toDrawable(this@MainActivity) as Drawable
+                            if (lastDrawable != null) {
+                                drawable = TransitionDrawable(arrayOf(lastDrawable, drawable))
+                            }
+                            ui {
+                                imageView.setImageDrawable(drawable)
+                                lastDrawable = when (drawable) {
+                                    is TransitionDrawable -> {
+                                        drawable.startTransition(ANIMATION_DURATION)
+                                        drawable.getDrawable(1)
+                                    }
+                                    else -> drawable
+                                }
+                            }
                         }
                     }
                 })
@@ -632,11 +642,23 @@ class MainActivity: BaseMediaControlActivity() {
     override fun onMediaControllerMetadataChanged(metadata: MediaMetadataCompat?) {
         metadata ?: return
         io {
-            val bitmap =
-                activityInterface.audioBitmapMap[metadata.getString(METADATA_KEY_MEDIA_ID)]
-                        ?: activityInterface.bitmapMap[metadata.getString(METADATA_KEY_ALBUM_ART_URI).toLong()]
-                        ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
-            ui { imageView.setImageBitmap(bitmap) }
+            var drawable =
+                activityInterface.audioBitmapMap[metadata.getString(METADATA_KEY_MEDIA_ID)].toDrawable(this@MainActivity)
+                    ?: activityInterface.bitmapMap[metadata.getString(METADATA_KEY_ALBUM_ART_URI).toLong()].toDrawable(this@MainActivity)
+                    ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)!!.toBitmap().toDrawable(this@MainActivity) as Drawable
+            if (lastDrawable != null) {
+                drawable = TransitionDrawable(arrayOf(lastDrawable, drawable))
+            }
+            ui {
+                imageView.setImageDrawable(drawable)
+                lastDrawable = when (drawable) {
+                    is TransitionDrawable -> {
+                        drawable.startTransition(ANIMATION_DURATION)
+                        drawable.getDrawable(1)
+                    }
+                    else -> drawable
+                }
+            }
         }
         textView.text = metadata.getString(METADATA_KEY_TITLE)
         playProgressBar.max = metadata.getLong(METADATA_KEY_DURATION)
@@ -681,11 +703,23 @@ class MainActivity: BaseMediaControlActivity() {
                     }
                     textView.text = audioInfo.audioTitle
                     io {
-                        val bitmap =
-                            activityInterface.audioBitmapMap[audioInfo.audioId]
-                                ?: activityInterface.bitmapMap[audioInfo.audioAlbumId]
-                                ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)?.toBitmap()
-                        ui { imageView.setImageBitmap(bitmap) }
+                        var drawable =
+                            activityInterface.audioBitmapMap[audioInfo.audioId].toDrawable(this@MainActivity)
+                                ?: activityInterface.bitmapMap[audioInfo.audioAlbumId].toDrawable(this@MainActivity)
+                                ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)!!.toBitmap().toDrawable(this@MainActivity) as Drawable
+                        if (lastDrawable != null) {
+                            drawable = TransitionDrawable(arrayOf(lastDrawable, drawable))
+                        }
+                        ui {
+                            imageView.setImageDrawable(drawable)
+                            lastDrawable = when (drawable) {
+                                is TransitionDrawable -> {
+                                    drawable.startTransition(ANIMATION_DURATION)
+                                    drawable.getDrawable(1)
+                                }
+                                else -> drawable
+                            }
+                        }
                     }
                 }
             })
