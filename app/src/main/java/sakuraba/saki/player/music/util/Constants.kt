@@ -41,7 +41,6 @@ object Constants {
     const val PLAY_MODE_RANDOM = 8
     
     const val TRANSITION_IMAGE_VIEW = "image_view"
-    const val TRANSITION_TEXT_VIEW = "text_view"
     
     const val FILTER_NOTIFICATION_PREV = "${BuildConfig.APPLICATION_ID}.NotificationBroadcast.Prev"
     const val FILTER_NOTIFICATION_PLAY = "${BuildConfig.APPLICATION_ID}.NotificationBroadcast.Play"
