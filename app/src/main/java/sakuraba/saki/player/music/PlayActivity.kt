@@ -251,7 +251,7 @@ class PlayActivity: BaseMediaControlActivity() {
                     activityPlay.relativeLayoutToolbarRoot.apply {
                         animate()
                             .alpha(1F)
-                            .setDuration(500)
+                            .setDuration(ANIMATION_DURATION_LONG)
                             .setListener(object : AnimatorListenerAdapter() {
                                 override fun onAnimationStart(p0: Animator?) {
                                     alpha = 0F
@@ -264,7 +264,7 @@ class PlayActivity: BaseMediaControlActivity() {
                 VISIBLE -> {
                     activityPlay.relativeLayoutToolbarRoot.animate()
                         .alpha(0F)
-                        .setDuration(500)
+                        .setDuration(ANIMATION_DURATION_LONG)
                         .setListener(object : AnimatorListenerAdapter() {
                             override fun onAnimationEnd(animation: Animator?) {
                                 activityPlay.relativeLayoutToolbarRoot.visibility = GONE
@@ -318,7 +318,7 @@ class PlayActivity: BaseMediaControlActivity() {
             activityPlay.relativeLayoutToolbarRoot.apply {
                 if (!visibility) this.visibility = VISIBLE
                 animate().alpha(if (visibility) 0F else 1F)
-                    .setDuration(500)
+                    .setDuration(ANIMATION_DURATION_LONG)
                     .setListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator?) {
                             if (visibility) {
@@ -522,7 +522,7 @@ class PlayActivity: BaseMediaControlActivity() {
     private fun MediaNotificationProcessor.getColorUpdated(isInit: Boolean) {
         if (activityBackgroundColor != backgroundColor) {
             ValueAnimator.ofArgb(activityBackgroundColor, backgroundColor).apply {
-                duration = 500
+                duration = ANIMATION_DURATION_LONG
                 addUpdateListener {
                     activityPlay.root.setBackgroundColor(animatedValue as Int)
                 }
@@ -532,7 +532,7 @@ class PlayActivity: BaseMediaControlActivity() {
         }
         if (seekbarBackgroundColor != primaryTextColor) {
             ValueAnimator.ofArgb(seekbarBackgroundColor, primaryTextColor).apply {
-                duration = 500
+                duration = ANIMATION_DURATION_LONG
                 addUpdateListener {
                     activityPlay.playSeekBar.setProgressColor(animatedValue as Int)
                     activityPlay.durationViewProgress.updateTextColor(animatedValue as Int)
@@ -544,7 +544,7 @@ class PlayActivity: BaseMediaControlActivity() {
         }
         if (progressColor != secondaryTextColor) {
             ValueAnimator.ofArgb(progressColor, secondaryTextColor).apply {
-                duration = 500
+                duration = ANIMATION_DURATION_LONG
                 addUpdateListener {
                     activityPlay.playSeekBar.setRemainColor(animatedValue as Int)
                     activityPlay.durationViewDuration.updateTextColor(animatedValue as Int)
@@ -560,7 +560,7 @@ class PlayActivity: BaseMediaControlActivity() {
                 updateOppositeColor(if (isLight) BLACK else WHITE)
                 viewModel.isLightBackground.observe(this@PlayActivity) { isLight ->
                     if (isLight) { ValueAnimator.ofArgb(WHITE, BLACK) } else { ValueAnimator.ofArgb(BLACK, WHITE) }.apply {
-                        duration = 500
+                        duration = ANIMATION_DURATION_LONG
                         addUpdateListener {
                             updateOppositeColor(animatedValue as Int)
                         }
