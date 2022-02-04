@@ -1,6 +1,9 @@
 package sakuraba.saki.player.music
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_MAIN
@@ -9,6 +12,8 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.database.ContentObserver
 import android.graphics.Bitmap
+import android.graphics.Color.BLACK
+import android.graphics.Color.WHITE
 import android.graphics.Matrix
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
@@ -89,6 +94,7 @@ import sakuraba.saki.player.music.util.BitmapUtil.writeAlbumArt40Dp
 import sakuraba.saki.player.music.util.BitmapUtil.writeAlbumArtRaw
 import sakuraba.saki.player.music.util.Constants.ACTION_REQUEST_STATUS
 import sakuraba.saki.player.music.util.Constants.ANIMATION_DURATION
+import sakuraba.saki.player.music.util.Constants.ANIMATION_DURATION_LONG
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_POS
@@ -571,7 +577,6 @@ class MainActivity: BaseMediaControlActivity() {
                             }
                             STATE_PAUSED -> imageButton.setImageResource(R.drawable.ic_play)
                         }
-                        textView.text = audioInfo.audioTitle
                         io {
                             var drawable =
                                 activityInterface.audioBitmapMap[audioInfo.audioId].toDrawable(this@MainActivity)
@@ -591,6 +596,19 @@ class MainActivity: BaseMediaControlActivity() {
                                 }
                             }
                         }
+                        ValueAnimator.ofArgb(BLACK, WHITE).apply {
+                            duration = ANIMATION_DURATION_LONG / 2
+                            addUpdateListener { textView.setTextColor(animatedValue as Int) }
+                            addListener(object : AnimatorListenerAdapter() {
+                                override fun onAnimationEnd(animation: Animator?) {
+                                    textView.text = audioInfo.audioTitle
+                                    ValueAnimator.ofArgb(WHITE, BLACK).apply {
+                                        duration = ANIMATION_DURATION_LONG / 2
+                                        addUpdateListener { textView.setTextColor(animatedValue as Int) }
+                                    }.start()
+                                }
+                            })
+                        }.start()
                     }
                 })
             }
@@ -660,7 +678,26 @@ class MainActivity: BaseMediaControlActivity() {
                 }
             }
         }
-        textView.text = metadata.getString(METADATA_KEY_TITLE)
+        when {
+            textView.text.isNullOrBlank() -> {
+                textView.text = metadata.getString(METADATA_KEY_TITLE)
+            }
+            else -> {
+                ValueAnimator.ofArgb(BLACK, WHITE).apply {
+                    duration = ANIMATION_DURATION_LONG / 2
+                    addUpdateListener { textView.setTextColor(animatedValue as Int) }
+                    addListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator?) {
+                            textView.text = metadata.getString(METADATA_KEY_TITLE)
+                            ValueAnimator.ofArgb(WHITE, BLACK).apply {
+                                duration = ANIMATION_DURATION_LONG / 2
+                                addUpdateListener { textView.setTextColor(animatedValue as Int) }
+                            }.start()
+                        }
+                    })
+                }.start()
+            }
+        }
         playProgressBar.max = metadata.getLong(METADATA_KEY_DURATION)
     }
     
@@ -701,7 +738,6 @@ class MainActivity: BaseMediaControlActivity() {
                         }
                         STATE_PAUSED -> imageButton.setImageResource(R.drawable.ic_play)
                     }
-                    textView.text = audioInfo.audioTitle
                     io {
                         var drawable =
                             activityInterface.audioBitmapMap[audioInfo.audioId].toDrawable(this@MainActivity)
@@ -721,6 +757,19 @@ class MainActivity: BaseMediaControlActivity() {
                             }
                         }
                     }
+                    ValueAnimator.ofArgb(BLACK, WHITE).apply {
+                        duration = ANIMATION_DURATION_LONG / 2
+                        addUpdateListener { textView.setTextColor(animatedValue as Int) }
+                        addListener(object : AnimatorListenerAdapter() {
+                            override fun onAnimationEnd(animation: Animator?) {
+                                textView.text = audioInfo.audioTitle
+                                ValueAnimator.ofArgb(WHITE, BLACK).apply {
+                                    duration = ANIMATION_DURATION_LONG / 2
+                                    addUpdateListener { textView.setTextColor(animatedValue as Int) }
+                                }.start()
+                            }
+                        })
+                    }.start()
                 }
             })
         }
