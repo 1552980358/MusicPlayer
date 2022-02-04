@@ -468,7 +468,6 @@ class PlayActivity: BaseMediaControlActivity() {
                     startTransition(ANIMATION_DURATION)
                 }
             }
-            lastDrawable = drawable
             TransitionDrawable(arrayOf(lastBlurredDrawable, blurredDrawable)).apply {
                 ui {
                     activityPlay.lyricLayout.updateDrawable(this@apply)
