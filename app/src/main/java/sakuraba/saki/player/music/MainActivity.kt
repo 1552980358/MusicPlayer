@@ -219,6 +219,16 @@ class MainActivity: BaseMediaControlActivity() {
                 })
             }
         }
+
+        activityInterface.setOnArtUpdate { audioInfo ->
+            io {
+                when (val bitmap = tryRun { loadAudioArt40Dp(audioInfo.audioId) }) {
+                    null -> activityInterface.audioBitmapMap.remove(audioInfo.audioId)
+                    else -> activityInterface.audioBitmapMap[audioInfo.audioId] = bitmap
+                }
+                ui { activityInterface.onCompleteLoading() }
+            }
+        }
         
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         _activityMainMainBinding = ActivityMainBinding.inflate(layoutInflater)
