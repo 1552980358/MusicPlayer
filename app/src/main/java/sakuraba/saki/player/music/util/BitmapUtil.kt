@@ -96,6 +96,9 @@ object BitmapUtil {
         }
     }
 
+    fun Context.loadAudioArt40Dp(audioId: String) =
+        audioArt40DpDir?.listFiles()?.find { it.name == audioId }?.readAsBitmap()
+
     fun Context.removeAudioArt40Dp(audioId: String) = audioArt40DpDir?.listFiles()?.find { it.name == audioId }?.delete()
 
     fun Context.removeAudioArt(audioId: String) {
