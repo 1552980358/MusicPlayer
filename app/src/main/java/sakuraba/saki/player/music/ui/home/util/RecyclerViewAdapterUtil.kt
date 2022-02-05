@@ -10,17 +10,16 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import lib.github1552980358.ktExtension.android.content.intent
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
-import sakuraba.saki.player.music.AudioDetailActivity
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.util.MainActivityInterface
-import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.ViewHolderUtil.bindHolder
 
 class RecyclerViewAdapterUtil(private val fragment: Fragment, private val activityInterface: MainActivityInterface, selection: (pos: Int) -> Unit) {
-    
+
+    private lateinit var listener: (AudioInfo, ActivityOptionsCompat) -> Unit
+
     private class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val image: ImageView = view.findViewById(R.id.image_view)
         val title: TextView = view.findViewById(R.id.text_view_title)
@@ -48,9 +47,9 @@ class RecyclerViewAdapterUtil(private val fragment: Fragment, private val activi
             background.setOnClickListener { selection(position) }
             background.setOnLongClickListener {
                 image.transitionName = "${audioInfo.audioId}_image"
-                fragment.startActivity(
-                    intent(fragment.requireContext(), AudioDetailActivity::class.java) { putExtra(EXTRAS_DATA, audioInfo) },
-                    ActivityOptionsCompat.makeSceneTransitionAnimation(fragment.requireActivity(), image, image.transitionName).toBundle()
+                listener(
+                    audioInfo,
+                    ActivityOptionsCompat.makeSceneTransitionAnimation(fragment.requireActivity(), image, image.transitionName)
                 )
                 return@setOnLongClickListener true
             }
@@ -68,5 +67,9 @@ class RecyclerViewAdapterUtil(private val fragment: Fragment, private val activi
 
     @Suppress("NotifyDataSetChanged")
     fun notifyDataSetChanged() = adapter.notifyDataSetChanged()
+
+    fun setLongClickListener(listener: (AudioInfo, ActivityOptionsCompat) -> Unit) {
+        this.listener = listener
+    }
     
 }
