@@ -76,6 +76,12 @@ class MainActivityInterface(block: (Int, AudioInfo?, ArrayList<AudioInfo>?) -> U
 
     fun onContentChange() = contentChangeRefreshListener?.onContentChange()
 
+    private lateinit var artUpdate: (AudioInfo) -> Unit
+    fun setOnArtUpdate(block: (AudioInfo) -> Unit) {
+        artUpdate = block
+    }
+    fun onArtUpdate(audioInfo: AudioInfo) = artUpdate(audioInfo)
+
     fun clearLists() {
         audioInfoFullList.clear()
         audioInfoList.clear()
