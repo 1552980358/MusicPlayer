@@ -1,5 +1,6 @@
 package sakuraba.saki.player.music.ui.audioDetail
 
+import android.app.Activity.RESULT_OK
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -35,6 +36,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_INDEFI
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import lib.github1552980358.ktExtension.android.content.intent
 import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.makeSnack
 import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.shortSnack
 import lib.github1552980358.ktExtension.androidx.fragment.app.findActivityViewById
@@ -145,6 +147,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                     snackBar?.dismiss()
                     coordinatorLayout?.shortSnack(R.string.audio_detail_image_loading_succeed)
                 }
+                requireActivity().setResult(RESULT_OK, intent { putExtra(EXTRAS_DATA, audioInfo) })
             }
         }
         fragmentAudioDetail.relativeLayout.setOnClickListener {
@@ -156,6 +159,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                             val bitmap = requireContext().loadAlbumArtRaw(audioInfo.audioAlbumId)
                                 ?: ContextCompat.getDrawable(requireContext(), R.drawable.ic_music)!!.toBitmap()
                             ui { fragmentAudioDetail.imageView.setImageBitmap(bitmap) }
+                            requireActivity().setResult(RESULT_OK, intent { putExtra(EXTRAS_DATA, audioInfo) })
                         }
                     }
                     STORAGE -> pickImage.launch("image/*")
@@ -168,6 +172,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                         ui { fragmentAudioDetail.imageView.setImageBitmap(bitmap) }
                         saveBitmap(bitmap)
                         ui { coordinatorLayout?.shortSnack(R.string.audio_detail_image_loading_succeed) }
+                        requireActivity().setResult(RESULT_OK, intent { putExtra(EXTRAS_DATA, audioInfo) })
                     }
                     QQ_MUSIC -> io {
                         val bitmap = text?.qqMusicCover
@@ -178,6 +183,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                         ui { fragmentAudioDetail.imageView.setImageBitmap(bitmap) }
                         saveBitmap(bitmap)
                         ui { coordinatorLayout?.shortSnack(R.string.audio_detail_image_loading_succeed) }
+                        requireActivity().setResult(RESULT_OK, intent { putExtra(EXTRAS_DATA, audioInfo) })
                     }
                 }
             }.show()
