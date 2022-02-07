@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.app.Instrumentation
 import android.bluetooth.BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED
+import android.content.Intent
 import android.content.Intent.ACTION_HEADSET_PLUG
 import android.graphics.Color.BLACK
 import android.graphics.Color.TRANSPARENT
@@ -35,6 +36,8 @@ import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.annotation.ColorInt
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -143,6 +146,8 @@ class PlayActivity: BaseMediaControlActivity() {
 
     private lateinit var lastDrawable: Drawable
     private lateinit var lastBlurredDrawable: Drawable
+
+    private lateinit var audioDetailActivityLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -349,6 +354,13 @@ class PlayActivity: BaseMediaControlActivity() {
 
         updateAudioDeviceIcon()
         broadcastReceiver.register(this, ACTION_HEADSET_PLUG, ACTION_CONNECTION_STATE_CHANGED)
+
+        audioDetailActivityLauncher = registerForActivityResult(StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                setResult(RESULT_OK)
+                io { updateImage(audioInfo.audioId, audioInfo.audioAlbumId.toString()) }
+            }
+        }
     }
 
     private fun updateAudioDeviceIcon() = imageViewDevice.run {
@@ -392,11 +404,9 @@ class PlayActivity: BaseMediaControlActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_details -> {
-                startActivity(intent(this, AudioDetailActivity::class.java) {
+                audioDetailActivityLauncher.launch(intent(this, AudioDetailActivity::class.java) {
                     putExtra(EXTRAS_DATA, audioInfo)
-                    this@PlayActivity::class.java.simpleName.apply {
-                        putExtra(this, this)
-                    }
+                    this@PlayActivity::class.simpleName.apply { putExtra(this, this) }
                 })
                 overridePendingTransition(R.anim.translate_up_enter, R.anim.translate_up_exit)
             }
