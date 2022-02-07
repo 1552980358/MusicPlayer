@@ -360,6 +360,30 @@ class PlayActivity: BaseMediaControlActivity() {
         }
     }
 
+    private fun updateImage(audioId: String, albumId: String) {
+        val bitmap = loadAudioArtRaw(audioId)
+            ?: loadAlbumArtRaw(albumId)
+            ?: ContextCompat.getDrawable(this@PlayActivity, R.drawable.ic_music)!!.toBitmap()
+        val blurredBitmap = Toolkit.blur(bitmap!!, 25)
+        val drawable = BitmapDrawable(resources, bitmap)
+        val blurredDrawable = BitmapDrawable(resources, blurredBitmap)
+        TransitionDrawable(arrayOf(lastDrawable, drawable)).apply {
+            ui {
+                activityPlay.imageView.setImageDrawable(this@apply)
+                startTransition(ANIMATION_DURATION)
+            }
+        }
+        TransitionDrawable(arrayOf(lastBlurredDrawable, blurredDrawable)).apply {
+            ui {
+                activityPlay.lyricLayout.updateDrawable(this@apply)
+                startTransition(ANIMATION_DURATION)
+            }
+        }
+        lastDrawable = drawable
+        lastBlurredDrawable = blurredDrawable
+        MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated(false)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_play, menu)
         return true
@@ -455,29 +479,7 @@ class PlayActivity: BaseMediaControlActivity() {
     
     override fun onMediaControllerMetadataChanged(metadata: MediaMetadataCompat?) {
         metadata ?: return
-        io {
-            val bitmap = loadAudioArtRaw(metadata.getString(METADATA_KEY_MEDIA_ID))
-                ?: loadAlbumArtRaw(metadata.getString(METADATA_KEY_ALBUM_ART_URI))
-                ?: ContextCompat.getDrawable(this@PlayActivity, R.drawable.ic_music)!!.toBitmap()
-            val blurredBitmap = Toolkit.blur(bitmap!!, 25)
-            val drawable = BitmapDrawable(resources, bitmap)
-            val blurredDrawable = BitmapDrawable(resources, blurredBitmap)
-            TransitionDrawable(arrayOf(lastDrawable, drawable)).apply {
-                ui {
-                    activityPlay.imageView.setImageDrawable(this@apply)
-                    startTransition(ANIMATION_DURATION)
-                }
-            }
-            TransitionDrawable(arrayOf(lastBlurredDrawable, blurredDrawable)).apply {
-                ui {
-                    activityPlay.lyricLayout.updateDrawable(this@apply)
-                    startTransition(ANIMATION_DURATION)
-                }
-            }
-            lastDrawable = drawable
-            lastBlurredDrawable = blurredDrawable
-            MediaNotificationProcessor(this@PlayActivity, bitmap).getColorUpdated(false)
-        }
+        io { updateImage(metadata.getString(METADATA_KEY_MEDIA_ID), metadata.getString(METADATA_KEY_ALBUM_ART_URI)) }
         viewModel.updateDuration(metadata.getLong(METADATA_KEY_DURATION))
 
         ValueAnimator.ofArgb(BLACK, WHITE).apply {
