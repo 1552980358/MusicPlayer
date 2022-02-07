@@ -42,6 +42,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -279,16 +280,24 @@ class MainActivity: BaseMediaControlActivity() {
         viewModel.progress.observe(this) { progress ->
             playProgressBar.progress = progress
         }
-        
+        val playActivityLauncher = registerForActivityResult(StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                io {
+                    loadAudioArt40Dp(activityInterface.audioBitmapMap)
+                    loadAlbumArts40Dp(activityInterface.bitmapMap)
+                    ui { activityInterface.onCompleteLoading() }
+                }
+            }
+        }
         findViewById<RelativeLayout>(R.id.relative_layout).setOnClickListener {
             if (bottomSheetClickLock) {
                 bottomSheetClickLock = false
-                startActivity(
+                playActivityLauncher.launch(
                     intent(this, PlayActivity::class.java) {
                         putExtra(EXTRAS_DATA, activityInterface.byteArrayMap[audioInfo.audioAlbumId])
                         putExtra(EXTRAS_AUDIO_INFO, audioInfo)
                     },
-                    ActivityOptionsCompat.makeSceneTransitionAnimation(this, imageView, TRANSITION_IMAGE_VIEW).toBundle()
+                    ActivityOptionsCompat.makeSceneTransitionAnimation(this, imageView, TRANSITION_IMAGE_VIEW)
                 )
             }
         }
