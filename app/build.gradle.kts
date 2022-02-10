@@ -51,9 +51,9 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")
     implementation("androidx.navigation:navigation-fragment-ktx:${rootProject.extra["nav_version"]}")
     implementation("androidx.navigation:navigation-ui-ktx:${rootProject.extra["nav_version"]}")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
-    implementation("androidx.media:media:1.4.3")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
+    implementation("androidx.media:media:1.5.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
     implementation("androidx.preference:preference-ktx:1.2.0")
     kapt("androidx.databinding:databinding-compiler-common:${rootProject.extra["gradle_version"]}")
@@ -62,7 +62,7 @@ dependencies {
     val exoPlayerVersion = "2.16.1"
     implementation("com.google.android.exoplayer:exoplayer-core:$exoPlayerVersion")
     implementation("com.google.android.exoplayer:exoplayer-hls:$exoPlayerVersion")
-    implementation("com.google.code.gson:gson:2.8.8")
+    implementation("com.google.code.gson:gson:2.8.9")
 
     implementation("com.github.android:renderscript-intrinsics-replacement-toolkit:b6363490c3")
 
