@@ -15,6 +15,8 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.media.AudioManager
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.Q
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -32,7 +34,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.INVISIBLE
+import android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 import android.view.View.VISIBLE
+import android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -152,7 +156,7 @@ class PlayActivity: BaseMediaControlActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = TRANSPARENT
-        
+        setLightNavigationBar()
         super.onCreate(savedInstanceState)
         
         viewModel = ViewModelProvider(this).get(PlayViewModel::class.java)
@@ -361,6 +365,15 @@ class PlayActivity: BaseMediaControlActivity() {
                 io { updateImage(audioInfo.audioId, audioInfo.audioAlbumId.toString()) }
             }
         }
+    }
+
+    private fun setLightNavigationBar() {
+        when  {
+            SDK_INT > Q -> window.decorView.windowInsetsController?.setSystemBarsAppearance(APPEARANCE_LIGHT_NAVIGATION_BARS, APPEARANCE_LIGHT_NAVIGATION_BARS)
+            else -> @Suppress("DEPRECATION", "InlinedApi")
+                    window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or window.decorView.systemUiVisibility
+        }
+        window.navigationBarColor = TRANSPARENT
     }
 
     private fun updateAudioDeviceIcon() = imageViewDevice.run {
