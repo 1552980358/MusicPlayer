@@ -121,7 +121,7 @@ class PlaySeekbar: View {
         if (drawX > radius) {
             canvas.drawRect(radius - 1, 0F, drawX + 1, heightF, paintProgress)
         }
-        canvas.drawArc(drawX - radius - 1, 0F, drawX + heightF - radius, heightF, -90F, 180F, true, paintProgress)
+        canvas.drawArc(drawX - radius - 1, 0F, drawX + radius, heightF, -90F, 180F, true, paintProgress)
         canvas.drawCircle(drawX, height / 2F, radius / 2, paintCircle)
     }
     
