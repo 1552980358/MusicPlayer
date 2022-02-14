@@ -3,6 +3,8 @@ package sakuraba.saki.player.music.widget
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Paint.Style.FILL
+import android.graphics.Paint.Style.STROKE
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
@@ -26,11 +28,11 @@ class PlaySeekbar: View {
     
     private val paintProgress = Paint().apply {
         isAntiAlias = true
-        style = Paint.Style.FILL
+        style = FILL
     }
     private val paintCircle = Paint().apply {
         isAntiAlias = true
-        style = Paint.Style.STROKE
+        style = STROKE
     }
 
     private val radius by lazy { heightF / 2 }
