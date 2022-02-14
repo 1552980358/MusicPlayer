@@ -2,7 +2,6 @@ package sakuraba.saki.player.music.widget
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.util.Log
@@ -15,7 +14,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
 import lib.github1552980358.ktExtension.android.view.heightF
 import lib.github1552980358.ktExtension.android.view.widthF
-import sakuraba.saki.player.music.R
 
 class PlaySeekbar: View {
     
@@ -26,8 +24,16 @@ class PlaySeekbar: View {
     constructor(context: Context): this(context, null)
     constructor(context: Context, attributeSet: AttributeSet?): super(context, attributeSet)
     
-    private val paint = Paint().apply { isAntiAlias = true }
-    private val paintRemain = Paint().apply { isAntiAlias = true }
+    private val paintProgress = Paint().apply {
+        isAntiAlias = true
+        style = Paint.Style.FILL
+    }
+    private val paintCircle = Paint().apply {
+        isAntiAlias = true
+        style = Paint.Style.STROKE
+    }
+
+    private val radius by lazy { heightF / 2 }
     
     var isUserTouched = false
     var isReleased = true
@@ -54,10 +60,11 @@ class PlaySeekbar: View {
             }
             return@setOnTouchListener true
         }
-        paint.strokeWidth = resources.getDimension(R.dimen.play_seek_bar_indicator_thick)
-        paint.style = Paint.Style.STROKE
-        paintRemain.strokeWidth = resources.getDimension(R.dimen.play_seek_bar_indicator_thick)
-        paintRemain.style = Paint.Style.STROKE
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        paintCircle.strokeWidth = MeasureSpec.getSize(heightMeasureSpec) / 6F
     }
     
     var progress = 1L
@@ -76,20 +83,20 @@ class PlaySeekbar: View {
         }
     
     fun setProgressColor(@ColorInt colorInt: Int) {
-        paint.color = colorInt
+        paintProgress.color = colorInt
         invalidate()
     }
 
-    fun setRemainColor(@ColorInt colorInt: Int) {
-        paintRemain.color = colorInt
+    fun setCircleColor(@ColorInt colorInt: Int) {
+        paintCircle.color = colorInt
         invalidate()
     }
     
     private fun updateProgress(motionEvent: MotionEvent) {
         progress = when {
             motionEvent.x < 0 -> 0
-            motionEvent.x > width -> max
-            else -> (motionEvent.x / widthF * max).toLong()
+            motionEvent.x > width - heightF -> max
+            else -> (motionEvent.x / (widthF - heightF) * max).toLong()
         }
     }
     
@@ -102,16 +109,18 @@ class PlaySeekbar: View {
         canvas ?: return
         
         // Draw
-        var drawX = progress * widthF / max
+        var drawX = progress * (widthF - heightF) / max + radius
         when {
-            drawX < paint.strokeWidth / 2 -> drawX = paint.strokeWidth / 2
-            drawX >= width -> drawX = widthF - paint.strokeWidth / 2
+            drawX < radius -> drawX = radius
+            drawX > width - radius -> drawX = width - radius
         }
 
-        val lineY = height / 2F
-        canvas.drawLine(drawX, lineY, widthF, lineY, paintRemain)
-        canvas.drawLine(0F, lineY, drawX, lineY, paint)
-        canvas.drawLine(drawX, 0F, drawX, heightF, paint)
+        canvas.drawArc(0F, 0F, heightF, heightF, 90F, 180F, true, paintProgress)
+        if (drawX > radius) {
+            canvas.drawRect(radius - 1, 0F, drawX + 1, heightF, paintProgress)
+        }
+        canvas.drawArc(drawX - radius - 1, 0F, drawX + heightF - radius, heightF, -90F, 180F, true, paintProgress)
+        canvas.drawCircle(drawX, height / 2F, radius / 2, paintCircle)
     }
     
 }
