@@ -123,7 +123,7 @@ class PlayActivity: BaseMediaControlActivity() {
     private var seekbarBackgroundColor = TRANSPARENT
     @Volatile
     private var progressColor = TRANSPARENT
-    
+
     private lateinit var playModeListCycle: Drawable
     private val playModeSingleCycle by lazy { ContextCompat.getDrawable(this, R.drawable.ic_single_cycle) }
     private val playModeRandom by lazy { ContextCompat.getDrawable(this, R.drawable.ic_random) }
@@ -558,7 +558,6 @@ class PlayActivity: BaseMediaControlActivity() {
             ValueAnimator.ofArgb(progressColor, secondaryTextColor).apply {
                 duration = ANIMATION_DURATION_LONG
                 addUpdateListener {
-                    activityPlay.playSeekBar.setRemainColor(animatedValue as Int)
                     activityPlay.durationViewDuration.updateTextColor(animatedValue as Int)
                     activityPlay.lyricLayout.updateSecondaryColor(animatedValue as Int)
                 }
@@ -569,8 +568,8 @@ class PlayActivity: BaseMediaControlActivity() {
         ui { viewModel.setIsLightBackground(isLight) }
         if (isInit) {
             ui {
-                updateOppositeColor(if (isLight) BLACK else WHITE)
                 viewModel.isLightBackground.observe(this@PlayActivity) { isLight ->
+                    activityPlay.playSeekBar.setCircleColor(if (isLight) WHITE else BLACK)
                     if (isLight) { ValueAnimator.ofArgb(WHITE, BLACK) } else { ValueAnimator.ofArgb(BLACK, WHITE) }.apply {
                         duration = ANIMATION_DURATION_LONG
                         addUpdateListener {
