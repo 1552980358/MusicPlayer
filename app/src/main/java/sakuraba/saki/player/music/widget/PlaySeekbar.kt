@@ -16,6 +16,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.MainThread
 import lib.github1552980358.ktExtension.android.view.heightF
 import lib.github1552980358.ktExtension.android.view.widthF
+import sakuraba.saki.player.music.R
 
 class PlaySeekbar: View {
     
@@ -34,8 +35,12 @@ class PlaySeekbar: View {
         isAntiAlias = true
         style = STROKE
     }
+    private val paintRemain = Paint().apply {
+        isAntiAlias = true
+    }
 
     private val radius by lazy { heightF / 2 }
+    private val lineRadius by lazy { resources.getDimension(R.dimen.play_seek_bar_indicator_thick) }
     
     var isUserTouched = false
     var isReleased = true
@@ -62,6 +67,7 @@ class PlaySeekbar: View {
             }
             return@setOnTouchListener true
         }
+        paintRemain.strokeWidth = lineRadius
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -93,6 +99,11 @@ class PlaySeekbar: View {
         paintCircle.color = colorInt
         invalidate()
     }
+
+    fun setRemainColor(@ColorInt colorInt: Int) {
+        paintRemain.color = colorInt
+        invalidate()
+    }
     
     private fun updateProgress(motionEvent: MotionEvent) {
         progress = when {
@@ -116,6 +127,11 @@ class PlaySeekbar: View {
             drawX < radius -> drawX = radius
             drawX > width - radius -> drawX = width - radius
         }
+
+        paintRemain.style = STROKE
+        canvas.drawLine(0F, height / 2F, width - radius - lineRadius, height / 2F, paintRemain)
+        paintRemain.style = FILL
+        canvas.drawArc(width - radius - lineRadius * 2, (height - lineRadius) / 2, width - radius, (height + lineRadius) / 2, -90F, 180F, true, paintRemain)
 
         canvas.drawArc(0F, 0F, heightF, heightF, 90F, 180F, true, paintProgress)
         if (drawX > radius) {
