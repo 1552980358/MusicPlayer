@@ -558,6 +558,7 @@ class PlayActivity: BaseMediaControlActivity() {
             ValueAnimator.ofArgb(progressColor, secondaryTextColor).apply {
                 duration = ANIMATION_DURATION_LONG
                 addUpdateListener {
+                    activityPlay.playSeekBar.setRemainColor(animatedValue as Int)
                     activityPlay.durationViewDuration.updateTextColor(animatedValue as Int)
                     activityPlay.lyricLayout.updateSecondaryColor(animatedValue as Int)
                 }
