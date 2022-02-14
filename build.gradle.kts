@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     extra.apply {
-        set("gradle_version", "7.1.0")
+        set("gradle_version", "7.1.1")
         set("kotlin_version", "1.6.10")
         set("nav_version", "2.3.5")
     }
