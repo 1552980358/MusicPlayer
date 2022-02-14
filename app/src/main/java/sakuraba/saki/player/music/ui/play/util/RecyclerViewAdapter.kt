@@ -88,6 +88,7 @@ class RecyclerViewAdapter(private val recyclerView: RecyclerView, private val li
                 }
                 if (mediaItemList.size > 1) {
                     if (mediaItemList[mediaItemList.lastIndex - 1].mediaId == newList.last().audioId) {
+                        notifyItemRemoved(mediaItemList.lastIndex)
                         notifyItemInserted(0)
                         notifyItemRangeChanged(0, newList.size)
                         recyclerView.scrollToPosition(0)
@@ -108,6 +109,7 @@ class RecyclerViewAdapter(private val recyclerView: RecyclerView, private val li
                 }
                 if (audioInfoList.size > 1) {
                     if (audioInfoList[audioInfoList.lastIndex - 1].audioId == newList.last().audioId) {
+                        notifyItemRemoved(audioInfoList.lastIndex)
                         notifyItemInserted(0)
                         notifyItemRangeChanged(0, newList.size)
                         recyclerView.scrollToPosition(0)
