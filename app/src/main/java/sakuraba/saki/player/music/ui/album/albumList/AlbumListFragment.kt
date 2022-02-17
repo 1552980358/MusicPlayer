@@ -29,6 +29,8 @@ class AlbumListFragment: BaseMainFragment() {
     private lateinit var behavior: BottomSheetBehavior<RecyclerView>
     private lateinit var recyclerViewAdapter: RecyclerViewAdapterUtil
     private lateinit var mediaAlbum: MediaAlbum
+
+    private var isResized = false
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _fragmentAlbumListBinding = FragmentAlbumListBinding.inflate(inflater)
@@ -50,7 +52,10 @@ class AlbumListFragment: BaseMainFragment() {
         behavior = BottomSheetBehavior.from(fragmentAlbumList.recyclerView)
         
         recyclerViewAdapter = RecyclerViewAdapterUtil(fragmentAlbumList.recyclerView) { pos ->
-            behavior.peekHeight -= resources.getDimensionPixelSize(R.dimen.home_bottom_sheet_height)
+            if (!isResized) {
+                behavior.peekHeight -= resources.getDimensionPixelSize(R.dimen.home_bottom_sheet_height)
+                isResized = true
+            }
             activityInterface.onFragmentListItemClick(pos, recyclerViewAdapter.audioInfoList[pos], recyclerViewAdapter.audioInfoList)
         }
         
