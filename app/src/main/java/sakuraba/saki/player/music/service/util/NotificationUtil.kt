@@ -43,6 +43,7 @@ val NotificationManagerCompat.createChannel get(): NotificationManagerCompat = a
                 // Remove vibration with SDK >= 26
                 enableVibration(false)
                 vibrationPattern = longArrayOf(0)
+                setSound(null, null)
             }
         )
     }
@@ -97,5 +98,7 @@ fun Context.getNotification(audioInfo: AudioInfo, isPaused: Boolean = false) =
         setContentIntent(getActivity(this@getNotification, 0, intent(this@getNotification, MainActivity::class.java) {
             addFlags(FLAG_ACTIVITY_NEW_TASK)
         }, pendingIntentFlag))
+
+        setSilent(true)
 
     }.build()
