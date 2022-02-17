@@ -50,6 +50,7 @@ class AlbumListFragment: BaseMainFragment() {
         behavior = BottomSheetBehavior.from(fragmentAlbumList.recyclerView)
         
         recyclerViewAdapter = RecyclerViewAdapterUtil(fragmentAlbumList.recyclerView) { pos ->
+            behavior.peekHeight -= resources.getDimensionPixelSize(R.dimen.home_bottom_sheet_height)
             activityInterface.onFragmentListItemClick(pos, recyclerViewAdapter.audioInfoList[pos], recyclerViewAdapter.audioInfoList)
         }
         
