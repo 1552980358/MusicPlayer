@@ -133,10 +133,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                 return@registerForActivityResult
             }
             io {
-                var bitmap: Bitmap
-                fileDescriptor.use {
-                    bitmap = BitmapFactory.decodeFileDescriptor(it.fileDescriptor).cutAsCube
-                }
+                var bitmap: Bitmap = fileDescriptor.use { BitmapFactory.decodeFileDescriptor(it.fileDescriptor).cutAsCube }
                 ui { fragmentAudioDetail.imageView.setImageBitmap(bitmap) }
                 requireContext().writeAudioArtRaw(audioInfo.audioId, bitmap)
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, Matrix().apply {
@@ -297,8 +294,7 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
                         ?.shortSnack(getString(R.string.audio_detail_lyric_import_cannot_open_file) + uri.toString())
                     return@registerForActivityResult
                 }
-                val lines: List<String>
-                inputStream.use { stream -> lines = stream.bufferedReader().readLines() }
+                val lines = inputStream.use { stream -> stream.bufferedReader().readLines() }
 
                 createLyric {
                     lines.forEach { line -> line.decodeLine(this) }

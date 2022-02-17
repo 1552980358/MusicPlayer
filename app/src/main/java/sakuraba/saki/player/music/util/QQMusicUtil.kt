@@ -64,9 +64,7 @@ object QQMusicUtil {
                 setRequestProperty("Referer", "https://y.qq.com/portal/player.html")
                 setRequestProperty("Accept-Language", "zh-CN,zh;q=0.8")
                 setRequestProperty("Host", "c.y.qq.com")
-                inputStream.bufferedReader().use {
-                    response = it.readText()
-                }
+                response = inputStream.bufferedReader().use { it.readText() }
             }.disconnect()
         }
         return response
