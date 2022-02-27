@@ -3,7 +3,7 @@ buildscript {
     extra.apply {
         set("gradle_version", "7.1.2")
         set("kotlin_version", "1.6.10")
-        set("nav_version", "2.3.5")
+        set("nav_version", "2.4.1")
     }
     // ext.and_server_version = "2.1.9"
     repositories {
