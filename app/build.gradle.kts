@@ -62,7 +62,7 @@ dependencies {
     val exoPlayerVersion = "2.16.1"
     implementation("com.google.android.exoplayer:exoplayer-core:$exoPlayerVersion")
     implementation("com.google.android.exoplayer:exoplayer-hls:$exoPlayerVersion")
-    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("com.google.code.gson:gson:2.9.0")
 
     implementation("com.github.android:renderscript-intrinsics-replacement-toolkit:b6363490c3")
 
