@@ -5,17 +5,23 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
+import lib.github1552980358.ktExtension.jvm.util.addInstance
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.util.MediaAlbum
+import sakuraba.saki.player.music.util.Playlist
 
 class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     
     companion object {
         private const val DATABASE_NAME = "AudioDatabase.db"
         private const val DATABASE_VERSION = 1
+
+        private const val COUNT_SIZE = "size"
         
         const val TABLE_AUDIO = "AudioTable"
         const val TABLE_ALBUM = "AlbumTable"
+        const val TABLE_PLAYLIST = "PlaylistTable"
+        const val TABLE_PLAYLIST_CONTENT = "PlaylistContentTable"
         
         private const val KEY_AUDIO_ID = "audio_id"
         private const val KEY_AUDIO_TITLE = "audio_title"
@@ -33,7 +39,14 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
         private const val KEY_ALBUM_TITLE = "album_title"
         private const val KEY_ALBUM_TITLE_PINYIN = "album_title_pinyin"
         private const val KEY_ALBUM_NUMBER_OF_AUDIO = "album_number_of_audio"
-        
+
+        private const val KEY_PLAYLIST_TITLE = "playlist_title"
+        private const val KEY_PLAYLIST_TITLE_PINYIN = "playlist_title_pinyin"
+        private const val KEY_PLAYLIST_DESCRIPTION = "playlist_description"
+
+        private const val KEY_PLAYLIST_CONTENT_PLAYLIST_TITLE = "playlist_title"
+        private const val KEY_PLAYLIST_CONTENT_AUDIO_ID = "audio_id"
+
     }
 
     @Volatile
@@ -63,6 +76,19 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
                 "$KEY_ALBUM_TITLE_PINYIN text, " +
                 "$KEY_ALBUM_NUMBER_OF_AUDIO int," +
                 "primary key ( $KEY_ALBUM_ID )" +
+                ")"
+        )
+        sqLiteDatabase?.execSQL(
+            "create table if not exists $TABLE_PLAYLIST (" +
+                "$KEY_PLAYLIST_TITLE text not null primary key, " +
+                "$KEY_PLAYLIST_TITLE_PINYIN text not null, " +
+                "$KEY_PLAYLIST_DESCRIPTION text" +
+                ")"
+        )
+        sqLiteDatabase?.execSQL(
+            "create table if not exists $TABLE_PLAYLIST_CONTENT ( " +
+                "$KEY_PLAYLIST_CONTENT_AUDIO_ID text not null, " +
+                "foreign key ( $KEY_PLAYLIST_TITLE ) references $TABLE_PLAYLIST ( $KEY_PLAYLIST_TITLE )" +
                 ")"
         )
     }
@@ -255,5 +281,68 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
     }
 
     fun readComplete() = readableDatabase.close()
+
+    fun createPlaylist(playlist: Playlist) {
+        hasTaskWorking = true
+        writableDatabase.execSQL("insert into $TABLE_PLAYLIST values ( ${playlist.title} , ${playlist.titlePinyin} , \"\" ) ;")
+    }
+
+    fun updatePlaylist(originTitle: String, playlist: Playlist) {
+        hasTaskWorking = true
+        StringBuilder("update $TABLE_PLAYLIST set").apply {
+            if (originTitle != playlist.title) {
+                append("$KEY_PLAYLIST_TITLE=${playlist.title} , ")
+                append("$KEY_PLAYLIST_TITLE_PINYIN=${playlist.titlePinyin} , ")
+            }
+            append("$KEY_PLAYLIST_DESCRIPTION=${playlist.description}")
+            append("where $KEY_PLAYLIST_TITLE=$originTitle ; ")
+
+            writableDatabase.execSQL(toString())
+        }
+    }
+
+    fun removePlaylist(playlist: Playlist) {
+        hasTaskWorking = true
+        writableDatabase.execSQL("delete from $TABLE_PLAYLIST_CONTENT where $KEY_PLAYLIST_CONTENT_PLAYLIST_TITLE=${playlist.title} ;")
+        writableDatabase.execSQL("delete from $TABLE_PLAYLIST where $KEY_PLAYLIST_TITLE=${playlist.title} ;")
+    }
+
+    fun addPlaylistContent(playlist: Playlist, audioInfo: AudioInfo) {
+        hasTaskWorking = true
+        writableDatabase.execSQL("insert into $TABLE_PLAYLIST_CONTENT values ( ${playlist.title} , ${audioInfo.audioId} ) ;")
+    }
+
+    fun removePlaylistContent(playlist: Playlist, audioId: String) {
+        hasTaskWorking = true
+        writableDatabase.execSQL("delete from $TABLE_PLAYLIST_CONTENT where $KEY_PLAYLIST_CONTENT_PLAYLIST_TITLE=${playlist.title} and $KEY_PLAYLIST_CONTENT_AUDIO_ID=$audioId ;")
+    }
+
+    fun queryAllPlaylist(playlists: ArrayList<Playlist>) {
+        readableDatabase.rawQuery("select * from $TABLE_PLAYLIST", null).apply {
+            if (!moveToFirst()) {
+                return@apply
+            }
+            do {
+                playlists.addInstance(
+                    getString(getColumnIndexOrThrow(KEY_PLAYLIST_TITLE)),
+                    getString(getColumnIndexOrThrow(KEY_PLAYLIST_TITLE_PINYIN)),
+                    getString(getColumnIndexOrThrow(KEY_PLAYLIST_DESCRIPTION))
+                )
+            } while (moveToNext())
+        }.close()
+    }
+
+    fun queryPlaylistContent(playlist: Playlist, audioInfoList: ArrayList<AudioInfo>) {
+        readableDatabase.rawQuery("select * from $TABLE_PLAYLIST_CONTENT where $KEY_PLAYLIST_CONTENT_PLAYLIST_TITLE=?", arrayOf(playlist.title)).apply {
+            if (!moveToFirst()) {
+                return@apply
+            }
+            do {
+                getString(getColumnIndexOrThrow(KEY_PLAYLIST_CONTENT_AUDIO_ID)).also { id ->
+                    audioInfoList.find { it.audioId == id }?.let { playlist += it }
+                }
+            } while (moveToNext())
+        }.close()
+    }
 
 }
