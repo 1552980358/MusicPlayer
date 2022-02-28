@@ -41,6 +41,13 @@
             app:popExitAnim="@anim/translate_pop_exit"
             app:enterAnim="@anim/translate_enter"
             app:exitAnim="@anim/translate_exit" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_playlist"
+            app:destination="@id/nav_playlist"
+            app:popEnterAnim="@anim/translate_pop_enter"
+            app:popExitAnim="@anim/translate_pop_exit"
+            app:enterAnim="@anim/translate_enter"
+            app:exitAnim="@anim/translate_exit" />
     </fragment>
 
     <fragment
@@ -176,5 +183,10 @@
     <fragment
         android:id="@+id/nav_setting_codec"
         android:name="sakuraba.saki.player.music.ui.setting.fragment.CodecFragment" />
+
+    <fragment
+        android:id="@+id/nav_playlist"
+        android:name="sakuraba.saki.player.music.ui.playlist.PlaylistFragment"
+        tools:layout="@layout/fragment_playlist"/>
     
 </navigation>
