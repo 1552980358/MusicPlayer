@@ -9,6 +9,10 @@
             android:icon="@drawable/ic_nav_music"
             android:title="@string/menu_home" />
         <item
+            android:id="@+id/nav_playlist"
+            android:icon="@drawable/ic_playlist"
+            android:title="@string/menu_playlist"/>
+        <item
             android:id="@+id/nav_album"
             android:icon="@drawable/ic_nav_album"
             android:title="@string/menu_album" />
