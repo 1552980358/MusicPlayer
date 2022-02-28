@@ -107,6 +107,11 @@
     
     <dimen name="codec_margin_top">10dp</dimen>
 
+    <dimen name="add_playlist_root_height">60dp</dimen>
+    <dimen name="add_playlist_root_padding">10dp</dimen>
+    <dimen name="add_playlist_root_margin_end">10dp</dimen>
+    <dimen name="add_playlist_text_view_text_size">15sp</dimen>
+    <dimen name="add_playlist_image_view_size">40dp</dimen>
     <dimen name="add_playlist_padding_top">10dp</dimen>
 
 </resources>
