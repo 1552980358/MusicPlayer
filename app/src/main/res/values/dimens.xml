@@ -107,4 +107,6 @@
     
     <dimen name="codec_margin_top">10dp</dimen>
 
+    <dimen name="add_playlist_padding_top">10dp</dimen>
+
 </resources>
