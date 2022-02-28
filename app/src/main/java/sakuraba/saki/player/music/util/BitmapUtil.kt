@@ -7,6 +7,8 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import lib.github1552980358.ktExtension.android.graphics.getByteArray
 import lib.github1552980358.ktExtension.android.java.readAsBitmap
+import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
+import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import java.io.File
 
 object BitmapUtil {
@@ -105,6 +107,15 @@ object BitmapUtil {
         removeAudioArtRaw(audioId)
         removeAudioArt40Dp(audioId)
     }
+
+    private const val PLAYLIST_RAW_DIR = "playlist_raw"
+    private const val PLAYLIST_40Dp_DIR = "playlist_40dp"
+    private val Context.playlistRawDir get() = getExternalFilesDir(PLAYLIST_RAW_DIR)
+    fun Context.loadPlaylistRaw(title: String) = File(playlistRawDir, title).tryRun { readAsBitmap() }
+
+    private val Context.playlist40DpDir get() = getExternalFilesDir(PLAYLIST_40Dp_DIR)
+    fun Context.loadPlaylist40Dp(bitmapMap: MutableMap<String, Bitmap?>) =
+        tryOnly { playlist40DpDir?.listFiles()?.forEach { bitmapMap[it.name] = it.readAsBitmap() } }
 
     val Bitmap.cutAsCube get(): Bitmap = when {
         width > height -> Bitmap.createBitmap(this, (width - height) / 2, 0, height, height)
