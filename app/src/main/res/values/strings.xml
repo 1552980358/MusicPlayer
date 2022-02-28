@@ -12,6 +12,7 @@
     <string name="dialog_default">Default</string>
     
     <string name="menu_home">Home</string>
+    <string name="menu_playlist">Playlist</string>
     <string name="menu_album">Album</string>
     <string name="menu_search">Search</string>
     <string name="menu_setting">Setting</string>
@@ -180,5 +181,12 @@
     <string name="web_dav_download_title">Downloading…</string>
     <string name="web_dav_download_from">From</string>
     <string name="web_dav_download_to">To</string>
+
+    <string name="playlist_add">Add</string>
+    <string name="add_playlist_title">Add Playlist…</string>
+    <string name="add_playlist_ok">@android:string/ok</string>
+    <string name="add_playlist_cancel">@android:string/cancel</string>
+    <string name="add_playlist_content_title">Title</string>
+    <string name="add_playlist_content_description">Description</string>
 
 </resources>
