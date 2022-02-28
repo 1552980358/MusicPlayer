@@ -83,13 +83,13 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
                 "$KEY_PLAYLIST_TITLE text not null primary key, " +
                 "$KEY_PLAYLIST_TITLE_PINYIN text not null, " +
                 "$KEY_PLAYLIST_DESCRIPTION text" +
-                ")"
+                ") ;"
         )
         sqLiteDatabase?.execSQL(
             "create table if not exists $TABLE_PLAYLIST_CONTENT ( " +
-                "$KEY_PLAYLIST_CONTENT_AUDIO_ID text not null, " +
-                "foreign key ( $KEY_PLAYLIST_TITLE ) references $TABLE_PLAYLIST ( $KEY_PLAYLIST_TITLE )" +
-                ")"
+                "$KEY_PLAYLIST_CONTENT_PLAYLIST_TITLE text not null, " +
+                "$KEY_PLAYLIST_CONTENT_AUDIO_ID text not null " +
+                ") ;"
         )
     }
     
@@ -284,7 +284,7 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
 
     fun createPlaylist(playlist: Playlist) {
         hasTaskWorking = true
-        writableDatabase.execSQL("insert into $TABLE_PLAYLIST values ( ${playlist.title} , ${playlist.titlePinyin} , \"\" ) ;")
+        writableDatabase.execSQL("insert into $TABLE_PLAYLIST values ( '${playlist.title}' , '${playlist.titlePinyin}' , \"\" ) ;")
     }
 
     fun updatePlaylist(originTitle: String, playlist: Playlist) {
@@ -303,18 +303,18 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
 
     fun removePlaylist(playlist: Playlist) {
         hasTaskWorking = true
-        writableDatabase.execSQL("delete from $TABLE_PLAYLIST_CONTENT where $KEY_PLAYLIST_CONTENT_PLAYLIST_TITLE=${playlist.title} ;")
-        writableDatabase.execSQL("delete from $TABLE_PLAYLIST where $KEY_PLAYLIST_TITLE=${playlist.title} ;")
+        writableDatabase.execSQL("delete from $TABLE_PLAYLIST_CONTENT where $KEY_PLAYLIST_CONTENT_PLAYLIST_TITLE='${playlist.title}' ;")
+        writableDatabase.execSQL("delete from $TABLE_PLAYLIST where $KEY_PLAYLIST_TITLE='${playlist.title}' ;")
     }
 
     fun addPlaylistContent(playlist: Playlist, audioInfo: AudioInfo) {
         hasTaskWorking = true
-        writableDatabase.execSQL("insert into $TABLE_PLAYLIST_CONTENT values ( ${playlist.title} , ${audioInfo.audioId} ) ;")
+        writableDatabase.execSQL("insert into $TABLE_PLAYLIST_CONTENT values ( '${playlist.title}' , '${audioInfo.audioId}' ) ;")
     }
 
     fun removePlaylistContent(playlist: Playlist, audioId: String) {
         hasTaskWorking = true
-        writableDatabase.execSQL("delete from $TABLE_PLAYLIST_CONTENT where $KEY_PLAYLIST_CONTENT_PLAYLIST_TITLE=${playlist.title} and $KEY_PLAYLIST_CONTENT_AUDIO_ID=$audioId ;")
+        writableDatabase.execSQL("delete from $TABLE_PLAYLIST_CONTENT where $KEY_PLAYLIST_CONTENT_PLAYLIST_TITLE='${playlist.title}' and $KEY_PLAYLIST_CONTENT_AUDIO_ID='$audioId' ;")
     }
 
     fun queryAllPlaylist(playlists: ArrayList<Playlist>) {
@@ -332,14 +332,14 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
         }.close()
     }
 
-    fun queryPlaylistContent(playlist: Playlist, audioInfoList: ArrayList<AudioInfo>) {
+    fun queryPlaylistContent(playlist: Playlist) {
         readableDatabase.rawQuery("select * from $TABLE_PLAYLIST_CONTENT where $KEY_PLAYLIST_CONTENT_PLAYLIST_TITLE=?", arrayOf(playlist.title)).apply {
             if (!moveToFirst()) {
                 return@apply
             }
             do {
                 getString(getColumnIndexOrThrow(KEY_PLAYLIST_CONTENT_AUDIO_ID)).also { id ->
-                    audioInfoList.find { it.audioId == id }?.let { playlist += it }
+                    playlist.audioInfoList.find { it.audioId == id }?.let { playlist += it }
                 }
             } while (moveToNext())
         }.close()
