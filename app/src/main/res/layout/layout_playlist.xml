@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/add_playlist_root_height"
+    android:background="?android:attr/selectableItemBackground"
+    android:maxHeight="@dimen/add_playlist_root_height"
+    android:padding="@dimen/add_playlist_root_padding">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="@dimen/add_playlist_image_view_size"
+        android:layout_height="@dimen/add_playlist_image_view_size"
+        android:id="@+id/image_view"
+        android:layout_marginEnd="@dimen/add_playlist_root_margin_end" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/image_view"
+        android:layout_centerVertical="true"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_view_title"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/black"
+            android:textSize="@dimen/add_playlist_text_view_text_size" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_view_size" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</RelativeLayout>
