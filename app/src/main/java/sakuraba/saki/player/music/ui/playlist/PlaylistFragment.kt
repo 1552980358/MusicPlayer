@@ -8,20 +8,20 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.async
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import lib.github1552980358.ktExtension.androidx.fragment.app.show
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import sakuraba.saki.player.music.databinding.FragmentPlaylistBinding
 import sakuraba.saki.player.music.R
+import sakuraba.saki.player.music.base.BaseMainFragment
 import sakuraba.saki.player.music.database.AudioDatabaseHelper
 import sakuraba.saki.player.music.ui.playlist.dialog.AddPlaylistDialogFragment
 import sakuraba.saki.player.music.ui.playlist.util.RecyclerViewAdapterUtil
 import sakuraba.saki.player.music.util.BitmapUtil.loadPlaylist40Dp
 import sakuraba.saki.player.music.util.CoroutineUtil.ui
 
-class PlaylistFragment: Fragment() {
+class PlaylistFragment: BaseMainFragment() {
 
     private var _fragmentPlaylistBinding: FragmentPlaylistBinding? = null
     private val layout get() = _fragmentPlaylistBinding!!
@@ -32,15 +32,21 @@ class PlaylistFragment: Fragment() {
 
     private lateinit var audioDatabaseHelper: AudioDatabaseHelper
 
+    private lateinit var navController: NavController
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _fragmentPlaylistBinding = FragmentPlaylistBinding.inflate(layoutInflater)
         setHasOptionsMenu(true)
+        navController = findNavController()
         return layout.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        recyclerViewAdapterUtil = RecyclerViewAdapterUtil(layout.recyclerView) {
-
+        recyclerViewAdapterUtil = RecyclerViewAdapterUtil(activityInterface, layout.recyclerView) { position, extra ->
+            navController.navigate(
+                PlaylistFragmentDirections.actionNavPlaylistToNavPlaylistContent(playlistList[position]),
+                extra
+            )
         }
         layout.root.apply {
             isEnabled = false
