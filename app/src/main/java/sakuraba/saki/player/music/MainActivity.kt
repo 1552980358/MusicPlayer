@@ -64,6 +64,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDE
 import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_INDEFINITE
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import lib.github1552980358.ktExtension.android.content.intent
 import lib.github1552980358.ktExtension.android.graphics.heightF
@@ -76,6 +77,7 @@ import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.makeSn
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import lib.github1552980358.ktExtension.jvm.util.addInstance
+import lib.github1552980358.ktExtension.kotlinx.coroutines.ioScope
 import sakuraba.saki.player.music.BuildConfig.APPLICATION_ID
 import sakuraba.saki.player.music.base.BaseMediaControlActivity
 import sakuraba.saki.player.music.database.AudioDatabaseHelper
@@ -89,6 +91,7 @@ import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArts40Dp
 import sakuraba.saki.player.music.util.BitmapUtil.loadAudioArt40Dp
+import sakuraba.saki.player.music.util.BitmapUtil.loadPlaylist40Dp
 import sakuraba.saki.player.music.util.BitmapUtil.removeAlbumArts
 import sakuraba.saki.player.music.util.BitmapUtil.removeAudioArt
 import sakuraba.saki.player.music.util.BitmapUtil.writeAlbumArt40Dp
@@ -433,7 +436,17 @@ class MainActivity: BaseMediaControlActivity() {
         audioDatabaseHelper.queryAllAudio(this)
     }
 
-    private fun launchProcess() {
+    private suspend fun launchProcess() {
+
+        val loadAudioArt40Dp = ioScope.async { loadAudioArt40Dp(activityInterface.audioBitmapMap) }
+        loadAudioArt40Dp.start()
+
+        val loadAlbumArts40Dp = ioScope.async { loadAlbumArts40Dp(activityInterface.bitmapMap) }
+        loadAlbumArts40Dp.start()
+
+        val loadPlaylist40Dp = ioScope.async { loadPlaylist40Dp(activityInterface.playlistMap) }
+        loadPlaylist40Dp.start()
+
         queryDatabase().apply {
             forEach {
                 Log.e("TAG", it.audioTitle)
@@ -457,8 +470,13 @@ class MainActivity: BaseMediaControlActivity() {
 
         ui { activityInterface.onLoadStageChange() }
 
-        loadAudioArt40Dp(activityInterface.audioBitmapMap)
-        loadAlbumArts40Dp(activityInterface.bitmapMap)
+        audioDatabaseHelper.queryAllPlaylist(activityInterface.playlistList)
+        activityInterface.playlistList.forEach { audioDatabaseHelper.queryPlaylistContent(it) }
+
+        loadAudioArt40Dp.await()
+        loadAlbumArts40Dp.await()
+        loadPlaylist40Dp.await()
+
         ui { activityInterface.onCompleteLoading() }
         activityInterface.refreshCompleted = true
 
