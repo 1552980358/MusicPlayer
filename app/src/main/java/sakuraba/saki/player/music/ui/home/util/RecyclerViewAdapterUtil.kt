@@ -6,9 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import sakuraba.saki.player.music.R
@@ -25,6 +23,7 @@ class RecyclerViewAdapterUtil(private val activityInterface: MainActivityInterfa
         val title: TextView = view.findViewById(R.id.text_view_title)
         val summary: TextView = view.findViewById(R.id.text_view_summary)
         val background: RelativeLayout = view.findViewById(R.id.relative_layout_root)
+        val relativeLayout: RelativeLayout = view.findViewById(R.id.relative_layout)
     }
     
     private inner class RecyclerViewAdapter(private val audioInfoList: List<AudioInfo>, private val selection: (pos: Int) -> Unit): RecyclerView.Adapter<ViewHolder>() {
@@ -50,6 +49,7 @@ class RecyclerViewAdapterUtil(private val activityInterface: MainActivityInterfa
                 listener(position, relativeLayout, image)
                 return@setOnLongClickListener true
             }
+            relativeLayout.setOnClickListener { listener(position, relativeLayout, image) }
         }
         
         override fun getItemCount() = audioInfoList.size
