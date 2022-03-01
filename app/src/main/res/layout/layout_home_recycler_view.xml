@@ -5,39 +5,60 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/home_recycler_view_height"
     android:id="@+id/relative_layout_root"
-    android:background="?attr/selectableItemBackground"
-    android:padding="@dimen/home_recycler_view_padding">
+    android:background="?attr/selectableItemBackground">
+
+    <RelativeLayout
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:id="@+id/relative_layout"
+        android:background="?attr/selectableItemBackground"
+        android:layout_alignParentEnd="true">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_option"
+            tools:ignore="ContentDescription" />
+
+    </RelativeLayout>
     
-    <ImageView
-        android:layout_width="@dimen/home_recycler_view_image_view_size"
-        android:layout_height="@dimen/home_recycler_view_image_view_size"
-        android:id="@+id/image_view"
-        tools:ignore="ContentDescription"
-        android:layout_marginEnd="@dimen/home_recycler_view_image_view_margin_end"/>
-    
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/image_view"
-        android:orientation="vertical">
-        
-        <TextView
+        android:layout_height="match_parent"
+        android:layout_toStartOf="@id/relative_layout"
+        android:padding="@dimen/home_recycler_view_padding">
+        <ImageView
+            android:layout_width="@dimen/home_recycler_view_image_view_size"
+            android:layout_height="@dimen/home_recycler_view_image_view_size"
+            android:id="@+id/image_view"
+            tools:ignore="ContentDescription"
+            android:layout_marginEnd="@dimen/home_recycler_view_image_view_margin_end"/>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/text_view_title"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/black"
-            android:textSize="@dimen/home_recycler_view_text_size" />
-    
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/text_view_summary"
-            android:ellipsize="end"
-            android:maxLines="1" />
-        
-    </LinearLayout>
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/image_view"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_view_title"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textSize="@dimen/home_recycler_view_text_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_view_summary"
+                android:ellipsize="end"
+                android:maxLines="1" />
+
+        </LinearLayout>
+    </RelativeLayout>
     
 </RelativeLayout>
