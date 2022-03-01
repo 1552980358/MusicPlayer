@@ -32,6 +32,8 @@ class HomeFragment: BaseMainFragment() {
     private val fragmentHome get() = _fragmentHomeBinding!!
 
     private lateinit var recyclerViewAdapter: RecyclerViewAdapterUtil
+
+    private val audioInfoList get() = activityInterface.audioInfoList
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         
