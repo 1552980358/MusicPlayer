@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/playlist_content_relative_layout_root_height"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:padding="@dimen/playlist_content_relative_layout_root_padding">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/image_view"
+            android:layout_width="@dimen/playlist_content_image_view_size"
+            android:layout_height="@dimen/playlist_content_image_view_size"
+            android:layout_marginEnd="@dimen/playlist_content_image_view_margin_end" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/image_view"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_view_title"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/black"
+                android:textSize="@dimen/playlist_content_text_view_title_text_size" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_view_description"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ellipsize="end" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        
+    </RelativeLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linear_layout"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        android:orientation="vertical"
+        android:background="@color/white">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_view"
+            android:background="?android:attr/selectableItemBackground"
+            android:drawableStart="@drawable/ic_playlist_play"
+            android:gravity="start|center_vertical"
+            android:text="@string/playlist_content_play_randomly"
+            android:textColor="@color/black"
+            android:padding="@dimen/playlist_content_random_padding" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/recycler_view"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
