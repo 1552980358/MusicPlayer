@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/menu_group_title">
+        <item
+            android:id="@+id/menu_title"
+            android:title=""
+            android:checked="true" />
+    </group>
+
+    <group android:id="@+id/menu_group_action">
+        <item
+            android:id="@+id/menu_detail"
+            android:title="@string/home_option_menu_audio_detail" />
+
+        <item
+            android:id="@+id/menu_add_to_playlist"
+            android:title="@string/home_option_menu_add_to_playlist" />
+    </group>
+
+</menu>
