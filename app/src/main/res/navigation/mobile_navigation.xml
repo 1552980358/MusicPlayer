@@ -73,6 +73,7 @@
     
     <fragment
         android:id="@+id/nav_album"
+        android:label="@string/menu_album"
         android:name="sakuraba.saki.player.music.ui.album.AlbumFragment"
         tools:layout="@layout/fragment_album" >
         <action
@@ -96,6 +97,7 @@
     
     <fragment
         android:id="@+id/nav_album_list"
+        android:label="@string/menu_album"
         android:name="sakuraba.saki.player.music.ui.album.albumList.AlbumListFragment"
         tools:layout="@layout/fragment_album_list">
         <argument
@@ -186,6 +188,7 @@
 
     <fragment
         android:id="@+id/nav_playlist"
+        android:label="@string/menu_playlist"
         android:name="sakuraba.saki.player.music.ui.playlist.PlaylistFragment"
         tools:layout="@layout/fragment_playlist">
         <action
@@ -199,6 +202,7 @@
 
     <fragment
         android:id="@+id/nav_playlist_content"
+        android:label="@string/menu_playlist"
         android:name="sakuraba.saki.player.music.ui.playlist.playlistContent.PlaylistContentFragment"
         tools:layout="@layout/fragment_playlist_content" />
     
