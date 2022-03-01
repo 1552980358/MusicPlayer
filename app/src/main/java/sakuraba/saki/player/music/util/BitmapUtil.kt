@@ -111,7 +111,7 @@ object BitmapUtil {
     private const val PLAYLIST_RAW_DIR = "playlist_raw"
     private const val PLAYLIST_40Dp_DIR = "playlist_40dp"
     private val Context.playlistRawDir get() = getExternalFilesDir(PLAYLIST_RAW_DIR)
-    fun Context.loadPlaylistRaw(title: String) = File(playlistRawDir, title).tryRun { readAsBitmap() }
+    fun Context.loadPlaylistRaw(titlePinyin: String) = File(playlistRawDir, titlePinyin).tryRun { readAsBitmap() }
 
     private val Context.playlist40DpDir get() = getExternalFilesDir(PLAYLIST_40Dp_DIR)
     fun Context.loadPlaylist40Dp(bitmapMap: MutableMap<String, Bitmap?>) =
