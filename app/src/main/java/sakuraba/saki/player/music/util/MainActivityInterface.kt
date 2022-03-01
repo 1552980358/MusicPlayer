@@ -39,6 +39,9 @@ class MainActivityInterface(block: (Int, AudioInfo?, ArrayList<AudioInfo>?) -> U
     val byteArrayMap = mutableMapOf<Long, ByteArray>()
     val audioBitmapMap = mutableMapOf<String, Bitmap?>()
 
+    val playlistList = arrayListOf<Playlist>()
+    val playlistMap = mutableMapOf<String, Bitmap?>()
+
     val audioInfoList = arrayListOf<AudioInfo>()
 
     var refreshCompleted = false
