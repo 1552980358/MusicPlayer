@@ -190,4 +190,7 @@
     <string name="add_playlist_content_description">Description</string>
     <string name="playlist_content_play_randomly">Play Randomly</string>
 
+    <string name="home_option_menu_audio_detail">Detail</string>
+    <string name="home_option_menu_add_to_playlist">Add to Playlist…</string>
+
 </resources>
