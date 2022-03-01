@@ -188,5 +188,6 @@
     <string name="add_playlist_cancel">@android:string/cancel</string>
     <string name="add_playlist_content_title">Title</string>
     <string name="add_playlist_content_description">Description</string>
+    <string name="playlist_content_play_randomly">Play Randomly</string>
 
 </resources>
