@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import lib.github1552980358.ktExtension.androidx.fragment.app.show
-import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import sakuraba.saki.player.music.databinding.FragmentPlaylistBinding
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.base.BaseMainFragment
@@ -48,17 +47,8 @@ class PlaylistFragment: BaseMainFragment() {
                 extra
             )
         }
-        layout.root.apply {
-            isEnabled = false
-            isRefreshing = true
-        }
+        layout.root.isEnabled = false
         audioDatabaseHelper = AudioDatabaseHelper(requireContext())
-        io {
-            val loadImage = async(IO) { requireContext().loadPlaylist40Dp(bitmapMap) }
-            loadImage.start()
-
-            audioDatabaseHelper.queryAllPlaylist(playlistList)
-            playlistList.forEach { audioDatabaseHelper.queryPlaylistContent(it) }
 
             loadImage.await()
 
