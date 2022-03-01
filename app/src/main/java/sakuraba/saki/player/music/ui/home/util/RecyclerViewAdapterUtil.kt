@@ -16,9 +16,9 @@ import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.util.MainActivityInterface
 import sakuraba.saki.player.music.util.ViewHolderUtil.bindHolder
 
-class RecyclerViewAdapterUtil(private val fragment: Fragment, private val activityInterface: MainActivityInterface, selection: (pos: Int) -> Unit) {
+class RecyclerViewAdapterUtil(private val activityInterface: MainActivityInterface, selection: (pos: Int) -> Unit) {
 
-    private lateinit var listener: (AudioInfo, ActivityOptionsCompat) -> Unit
+    private lateinit var listener: (Int, RelativeLayout, ImageView) -> Unit
 
     private class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val image: ImageView = view.findViewById(R.id.image_view)
@@ -43,14 +43,11 @@ class RecyclerViewAdapterUtil(private val fragment: Fragment, private val activi
                         ?: activityInterface.bitmapMap[audioAlbumId]
                         ?: ContextCompat.getDrawable(background.context, R.drawable.ic_music)?.toBitmap()
                 )
+                image.transitionName = "${audioId}_image"
             }
             background.setOnClickListener { selection(position) }
             background.setOnLongClickListener {
-                image.transitionName = "${audioInfo.audioId}_image"
-                listener(
-                    audioInfo,
-                    ActivityOptionsCompat.makeSceneTransitionAnimation(fragment.requireActivity(), image, image.transitionName)
-                )
+                listener(position, relativeLayout, image)
                 return@setOnLongClickListener true
             }
         }
@@ -68,7 +65,7 @@ class RecyclerViewAdapterUtil(private val fragment: Fragment, private val activi
     @Suppress("NotifyDataSetChanged")
     fun notifyDataSetChanged() = adapter.notifyDataSetChanged()
 
-    fun setLongClickListener(listener: (AudioInfo, ActivityOptionsCompat) -> Unit) {
+    fun setLongClickListener(listener: (Int, RelativeLayout, ImageView) -> Unit) {
         this.listener = listener
     }
     
