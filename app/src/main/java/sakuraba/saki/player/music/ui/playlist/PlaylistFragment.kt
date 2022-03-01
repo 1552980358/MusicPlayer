@@ -2,6 +2,7 @@ package sakuraba.saki.player.music.ui.playlist
 
 import android.graphics.Color.WHITE
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -17,8 +18,8 @@ import sakuraba.saki.player.music.base.BaseMainFragment
 import sakuraba.saki.player.music.database.AudioDatabaseHelper
 import sakuraba.saki.player.music.ui.playlist.dialog.AddPlaylistDialogFragment
 import sakuraba.saki.player.music.ui.playlist.util.RecyclerViewAdapterUtil
-import sakuraba.saki.player.music.util.BitmapUtil.loadPlaylist40Dp
-import sakuraba.saki.player.music.util.CoroutineUtil.ui
+import sakuraba.saki.player.music.util.Constants.ANIMATION_DURATION_LONG
+import java.util.concurrent.TimeUnit
 
 class PlaylistFragment: BaseMainFragment() {
 
@@ -50,13 +51,8 @@ class PlaylistFragment: BaseMainFragment() {
         layout.root.isEnabled = false
         audioDatabaseHelper = AudioDatabaseHelper(requireContext())
 
-            loadImage.await()
-
-            ui {
-                recyclerViewAdapterUtil.notifyDataSetChanged()
-                layout.root.isRefreshing = false
-            }
-        }
+        sharedElementReturnTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        postponeEnterTransition(ANIMATION_DURATION_LONG / 2, TimeUnit.MILLISECONDS)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
