@@ -187,6 +187,19 @@
     <fragment
         android:id="@+id/nav_playlist"
         android:name="sakuraba.saki.player.music.ui.playlist.PlaylistFragment"
-        tools:layout="@layout/fragment_playlist"/>
+        tools:layout="@layout/fragment_playlist">
+        <action
+            android:id="@+id/action_nav_playlist_to_nav_playlist_content"
+            app:destination="@id/nav_playlist_content" >
+            <argument
+                android:name="playlist"
+                app:argType="sakuraba.saki.player.music.util.Playlist" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_playlist_content"
+        android:name="sakuraba.saki.player.music.ui.playlist.playlistContent.PlaylistContentFragment"
+        tools:layout="@layout/fragment_playlist_content" />
     
 </navigation>
