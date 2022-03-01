@@ -9,6 +9,9 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.appcompat.widget.PopupMenu
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.view.MenuCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import lib.github1552980358.ktExtension.android.content.getSerializableOf
@@ -40,7 +43,7 @@ class HomeFragment: BaseMainFragment() {
         _fragmentHomeBinding = FragmentHomeBinding.inflate(inflater)
 
         fragmentHome.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        recyclerViewAdapter = RecyclerViewAdapterUtil(this, activityInterface) { pos ->
+        recyclerViewAdapter = RecyclerViewAdapterUtil(activityInterface) { pos ->
             activityInterface.onFragmentListItemClick(pos, activityInterface.audioInfoList[pos], activityInterface.audioInfoList)
         }
         val audioDetailActivityLauncher = registerForActivityResult(StartActivityForResult()) {
@@ -50,14 +53,27 @@ class HomeFragment: BaseMainFragment() {
                 }
             }
         }
-        recyclerViewAdapter.setLongClickListener { audioInfo, activityOptionsCompat ->
-            audioDetailActivityLauncher.launch(
-                intent(requireContext(), AudioDetailActivity::class.java) {
-                    putExtra(EXTRAS_DATA, audioInfo)
-                },
-                activityOptionsCompat
-            )
+
+        recyclerViewAdapter.setLongClickListener { position, relativeLayout, imageView ->
+            PopupMenu(requireContext(), relativeLayout).apply {
+                inflate(R.menu.menu_option_home)
+                menu.getItem(0).title = audioInfoList[position].audioTitle
+                MenuCompat.setGroupDividerEnabled(menu, true)
+                setOnMenuItemClickListener {
+                    when (it.itemId) {
+                        R.id.menu_detail -> audioDetailActivityLauncher.launch(
+                            intent(requireContext(), AudioDetailActivity::class.java) {
+                                putExtra(EXTRAS_DATA, audioInfoList[position])
+                            },
+                            ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity(), imageView, imageView.transitionName)
+                        )
+                        R.id.menu_add_to_playlist -> {}
+                    }
+                    return@setOnMenuItemClickListener true
+                }
+            }.show()
         }
+
         recyclerViewAdapter.setAdapterToRecyclerView(fragmentHome.recyclerView)
         fragmentHome.recyclerView.addItemDecoration(DividerItemDecoration())
 
