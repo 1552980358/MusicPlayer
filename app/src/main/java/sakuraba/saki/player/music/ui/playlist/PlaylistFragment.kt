@@ -30,7 +30,7 @@ class PlaylistFragment: BaseMainFragment() {
     private val playlistList get() = recyclerViewAdapterUtil.playlistList
     private val bitmapMap get() = recyclerViewAdapterUtil.bitmapMap
 
-    private lateinit var audioDatabaseHelper: AudioDatabaseHelper
+    private val audioDatabaseHelper get() = activityInterface.audioDatabaseHelper
 
     private lateinit var navController: NavController
 
@@ -49,7 +49,6 @@ class PlaylistFragment: BaseMainFragment() {
             )
         }
         layout.root.isEnabled = false
-        audioDatabaseHelper = AudioDatabaseHelper(requireContext())
 
         sharedElementReturnTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
         postponeEnterTransition(ANIMATION_DURATION_LONG / 2, TimeUnit.MILLISECONDS)
