@@ -54,6 +54,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -87,6 +88,7 @@ import sakuraba.saki.player.music.util.MainActivityInterface
 import sakuraba.saki.player.music.base.BaseMainFragment
 import sakuraba.saki.player.music.base.BasePreferenceFragmentCompat
 import sakuraba.saki.player.music.ui.webDav.webDavDirectory.WebDavDirectoryFragment
+import sakuraba.saki.player.music.util.ActivityUtil.setLightNavigationBar
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArts40Dp
@@ -205,7 +207,12 @@ class MainActivity: BaseMediaControlActivity() {
 
     private var lastDrawable: Drawable? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        setLightNavigationBar()
+        window.navigationBarColor = WHITE
+
         super.onCreate(savedInstanceState)
 
         installSplashScreen()
