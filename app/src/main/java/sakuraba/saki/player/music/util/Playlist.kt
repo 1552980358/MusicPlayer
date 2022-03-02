@@ -14,8 +14,8 @@ data class Playlist(var title: String, var titlePinyin: String, var description:
     fun forEach(forEachBlock: (AudioInfo) -> Unit) = audioInfoList.forEach(forEachBlock)
 
     operator fun plusAssign(audioInfo: AudioInfo) {
-        if (!audioInfoList.contains(audioInfo)) {
-            audioInfoList.add(audioInfo)
+        if (!audioInfoList.contains(audioInfo) && audioInfoList.add(audioInfo)) {
+            size = audioInfoList.size
         }
     }
 
