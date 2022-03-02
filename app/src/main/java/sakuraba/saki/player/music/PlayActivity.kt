@@ -85,6 +85,7 @@ import sakuraba.saki.player.music.util.Constants.PLAY_MODE_SINGLE
 import sakuraba.saki.player.music.util.Constants.PLAY_MODE_SINGLE_CYCLE
 import sakuraba.saki.player.music.util.SystemUtil.pixelHeight
 import sakuraba.saki.player.music.ui.play.util.DividerItemDecoration
+import sakuraba.saki.player.music.util.ActivityUtil.setLightNavigationBar
 import sakuraba.saki.player.music.util.AudioUtil
 import sakuraba.saki.player.music.util.AudioUtil.getOutputDevice
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
@@ -157,6 +158,8 @@ class PlayActivity: BaseMediaControlActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = TRANSPARENT
         setLightNavigationBar()
+        window.navigationBarColor = TRANSPARENT
+
         super.onCreate(savedInstanceState)
         
         viewModel = ViewModelProvider(this).get(PlayViewModel::class.java)
@@ -365,15 +368,6 @@ class PlayActivity: BaseMediaControlActivity() {
                 io { updateImage(audioInfo.audioId, audioInfo.audioAlbumId.toString()) }
             }
         }
-    }
-
-    private fun setLightNavigationBar() {
-        when  {
-            SDK_INT > Q -> window.decorView.windowInsetsController?.setSystemBarsAppearance(APPEARANCE_LIGHT_NAVIGATION_BARS, APPEARANCE_LIGHT_NAVIGATION_BARS)
-            else -> @Suppress("DEPRECATION", "InlinedApi")
-                    window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR or window.decorView.systemUiVisibility
-        }
-        window.navigationBarColor = TRANSPARENT
     }
 
     private fun updateAudioDeviceIcon() = imageViewDevice.run {
