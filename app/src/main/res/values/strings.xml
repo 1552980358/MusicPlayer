@@ -193,4 +193,7 @@
     <string name="home_option_menu_audio_detail">Detail</string>
     <string name="home_option_menu_add_to_playlist">Add to Playlist…</string>
 
+    <string name="add_to_playlist_title">Add to Playlist…</string>
+    <string name="add_to_playlist_cancel">@android:string/cancel</string>
+
 </resources>
