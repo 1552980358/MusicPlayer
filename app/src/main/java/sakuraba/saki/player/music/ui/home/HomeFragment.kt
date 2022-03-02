@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import lib.github1552980358.ktExtension.android.content.getSerializableOf
 import lib.github1552980358.ktExtension.android.content.intent
+import lib.github1552980358.ktExtension.androidx.fragment.app.show
 import sakuraba.saki.player.music.AudioDetailActivity
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.databinding.FragmentHomeBinding
@@ -23,6 +24,7 @@ import sakuraba.saki.player.music.ui.home.util.DividerItemDecoration
 import sakuraba.saki.player.music.ui.home.util.RecyclerViewAdapterUtil
 import sakuraba.saki.player.music.base.BaseMainFragment
 import sakuraba.saki.player.music.service.util.AudioInfo
+import sakuraba.saki.player.music.ui.common.addToPlaylist.AddToPlaylistDialogFragment
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 
 class HomeFragment: BaseMainFragment() {
@@ -37,6 +39,7 @@ class HomeFragment: BaseMainFragment() {
     private lateinit var recyclerViewAdapter: RecyclerViewAdapterUtil
 
     private val audioInfoList get() = activityInterface.audioInfoList
+    private val audioDatabaseHelper get() = activityInterface.audioDatabaseHelper
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         
@@ -67,7 +70,14 @@ class HomeFragment: BaseMainFragment() {
                             },
                             ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity(), imageView, imageView.transitionName)
                         )
-                        R.id.menu_add_to_playlist -> {}
+                        R.id.menu_add_to_playlist ->
+                            AddToPlaylistDialogFragment(activityInterface.playlistList, activityInterface.playlistMap) { playlist ->
+                                audioInfoList[position].apply {
+                                    playlist += this
+                                    audioDatabaseHelper.addPlaylistContent(playlist, this)
+                                    audioDatabaseHelper.writeComplete()
+                                }
+                            }.show(this@HomeFragment)
                     }
                     return@setOnMenuItemClickListener true
                 }
