@@ -1,14 +1,13 @@
 package sakuraba.saki.player.music.ui.playlist.playlistContent
 
+import android.graphics.BitmapFactory.decodeResource
 import android.os.Bundle
 import android.transition.TransitionInflater
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.androidx.fragment.app.pixelSizeOf
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import sakuraba.saki.player.music.R
@@ -37,14 +36,11 @@ class PlaylistContentFragment: BaseMainFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _fragmentPlaylistContent = FragmentPlaylistContentBinding.inflate(inflater)
-        return layout.root
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         playlist = requireArguments().getSerializable(ARGUMENT_PLAYLIST) as Playlist
         layout.imageView.apply {
             transitionName = playlist.titlePinyin
-            setImageBitmap(requireContext().loadPlaylistRaw(playlist.titlePinyin) ?: ContextCompat.getDrawable(requireContext(), R.drawable.ic_playlist)?.toBitmap())
+            setImageBitmap(requireContext().loadPlaylistRaw(playlist.titlePinyin) ?: decodeResource(resources, R.drawable.ic_playlist_bitmap))
         }
         recyclerViewAdapterUtil = RecyclerViewAdapterUtil(layout.recyclerView, playlist, activityInterface) {
             activityInterface.onFragmentListItemClick(it, audioInfoList[it], audioInfoList)
@@ -63,6 +59,8 @@ class PlaylistContentFragment: BaseMainFragment() {
 
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
         postponeEnterTransition(ANIMATION_DURATION_LONG / 2, TimeUnit.MILLISECONDS)
+
+        return layout.root
     }
 
 }
