@@ -2,11 +2,13 @@ package sakuraba.saki.player.music.ui.common.addToPlaylist
 
 import android.app.Dialog
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import sakuraba.saki.player.music.R
+import sakuraba.saki.player.music.R.drawable
 import sakuraba.saki.player.music.databinding.DialogFragmentAddToPlaylistBinding
 import sakuraba.saki.player.music.ui.common.addToPlaylist.util.RecyclerViewAdapterUtil
 import sakuraba.saki.player.music.util.Playlist
@@ -38,7 +40,14 @@ class AddToPlaylistDialogFragment(private val playlistList: List<Playlist>,
             .setNegativeButton(R.string.add_to_playlist_cancel) { _, _ -> }
             .create()
 
-        recyclerViewAdapterUtil = RecyclerViewAdapterUtil(layout.recyclerView, playlistList, bitmapMap, selection, alertDialog)
+        recyclerViewAdapterUtil = RecyclerViewAdapterUtil(
+            layout.recyclerView,
+            playlistList,
+            bitmapMap,
+            selection,
+            alertDialog,
+            BitmapFactory.decodeResource(resources, drawable.ic_playlist_bitmap)
+        )
 
         return alertDialog
     }

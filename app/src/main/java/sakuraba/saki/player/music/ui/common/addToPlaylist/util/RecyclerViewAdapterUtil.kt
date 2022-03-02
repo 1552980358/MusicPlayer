@@ -11,7 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.android.view.createViewHolder
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.util.Playlist
@@ -21,7 +20,8 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
                               private val playlistList: List<Playlist>,
                               private val bitmapMap: Map<String, Bitmap?>,
                               private val selection: (Playlist) -> Unit,
-                              private val alertDialog: AlertDialog) {
+                              private val alertDialog: AlertDialog,
+                              private val playlistImage: Bitmap) {
 
     private class RecyclerViewHolder(view: View): ViewHolder(view) {
         val relativeLayout = view as RelativeLayout
@@ -39,9 +39,7 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
             playlistList[position].apply {
                 textViewTitle.text = title
                 textViewSubtitle.text = size.toString()
-                imageView.setImageBitmap(
-                    bitmapMap[titlePinyin] ?: ContextCompat.getDrawable(imageView.context, R.drawable.ic_playlist)?.toBitmap()
-                )
+                imageView.setImageBitmap(bitmapMap[titlePinyin] ?: playlistImage)
                 relativeLayout.setOnClickListener {
                     selection(this)
                     alertDialog.dismiss()
