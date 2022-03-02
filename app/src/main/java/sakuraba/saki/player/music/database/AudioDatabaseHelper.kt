@@ -332,14 +332,18 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
         }.close()
     }
 
-    fun queryPlaylistContent(playlist: Playlist) {
-        readableDatabase.rawQuery("select * from $TABLE_PLAYLIST_CONTENT where $KEY_PLAYLIST_CONTENT_PLAYLIST_TITLE=?", arrayOf(playlist.title)).apply {
+    fun queryPlaylistContent(playlist: Playlist, audioInfoList: ArrayList<AudioInfo>) {
+        readableDatabase.rawQuery("select * from $TABLE_PLAYLIST_CONTENT where $KEY_PLAYLIST_CONTENT_PLAYLIST_TITLE=?", arrayOf(playlist.titlePinyin)).apply {
             if (!moveToFirst()) {
                 return@apply
             }
             do {
                 getString(getColumnIndexOrThrow(KEY_PLAYLIST_CONTENT_AUDIO_ID)).also { id ->
-                    playlist.audioInfoList.find { it.audioId == id }?.let { playlist += it }
+                    audioInfoList.find { it.audioId == id }?.let {
+                        if (!playlist.contains(it)) {
+                            playlist += it
+                        }
+                    }
                 }
             } while (moveToNext())
         }.close()

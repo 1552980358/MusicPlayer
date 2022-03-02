@@ -471,7 +471,7 @@ class MainActivity: BaseMediaControlActivity() {
         ui { activityInterface.onLoadStageChange() }
 
         audioDatabaseHelper.queryAllPlaylist(activityInterface.playlistList)
-        activityInterface.playlistList.forEach { audioDatabaseHelper.queryPlaylistContent(it) }
+        activityInterface.playlistList.forEach { audioDatabaseHelper.queryPlaylistContent(it, activityInterface.audioInfoList) }
 
         loadAudioArt40Dp.await()
         loadAlbumArts40Dp.await()
