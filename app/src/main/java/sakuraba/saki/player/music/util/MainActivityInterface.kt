@@ -3,6 +3,7 @@ package sakuraba.saki.player.music.util
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
+import sakuraba.saki.player.music.database.AudioDatabaseHelper
 import sakuraba.saki.player.music.service.util.AudioInfo
 import java.io.Serializable
 
@@ -50,6 +51,8 @@ class MainActivityInterface(block: (Int, AudioInfo?, ArrayList<AudioInfo>?) -> U
     private var completeLoadingListener: CompleteLoadingListener? = null
     private var requestRefreshListener: RequestRefreshListener? = null
     private var contentChangeRefreshListener: ContentChangeRefreshListener? = null
+
+    lateinit var audioDatabaseHelper: AudioDatabaseHelper
 
     fun setLoadingStageChangeListener(block: () -> Unit) {
         loadingStageChangeListener = LoadingStageChangeListener(block)

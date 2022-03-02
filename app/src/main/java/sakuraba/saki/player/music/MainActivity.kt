@@ -197,7 +197,7 @@ class MainActivity: BaseMediaControlActivity() {
 
     private lateinit var requestPermission: ActivityResultLauncher<String>
 
-    private lateinit var audioDatabaseHelper: AudioDatabaseHelper
+    private val audioDatabaseHelper get() = activityInterface.audioDatabaseHelper
 
     private lateinit var snackBar: Snackbar
 
@@ -314,7 +314,7 @@ class MainActivity: BaseMediaControlActivity() {
 
         _coordinatorLayout = findViewById(R.id.coordinator_layout)
 
-        audioDatabaseHelper = AudioDatabaseHelper(this)
+        activityInterface.audioDatabaseHelper = AudioDatabaseHelper(this)
 
         snackBar = coordinatorLayout.makeSnack(R.string.main_snack_open_setting_text, LENGTH_INDEFINITE)
             .setAction(R.string.main_snack_open_setting_button) {
