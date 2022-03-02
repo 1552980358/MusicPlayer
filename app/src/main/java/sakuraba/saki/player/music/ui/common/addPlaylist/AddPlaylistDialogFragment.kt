@@ -1,4 +1,4 @@
-package sakuraba.saki.player.music.ui.playlist.dialog
+package sakuraba.saki.player.music.ui.common.addPlaylist
 
 import android.app.Dialog
 import android.content.DialogInterface.BUTTON_POSITIVE

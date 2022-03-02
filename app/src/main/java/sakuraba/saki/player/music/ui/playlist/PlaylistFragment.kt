@@ -16,7 +16,7 @@ import sakuraba.saki.player.music.databinding.FragmentPlaylistBinding
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.base.BaseMainFragment
 import sakuraba.saki.player.music.database.AudioDatabaseHelper
-import sakuraba.saki.player.music.ui.playlist.dialog.AddPlaylistDialogFragment
+import sakuraba.saki.player.music.ui.common.addPlaylist.AddPlaylistDialogFragment
 import sakuraba.saki.player.music.ui.playlist.util.RecyclerViewAdapterUtil
 import sakuraba.saki.player.music.util.Constants.ANIMATION_DURATION_LONG
 import java.util.concurrent.TimeUnit
