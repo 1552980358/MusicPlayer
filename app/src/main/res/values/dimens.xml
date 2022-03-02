@@ -125,4 +125,11 @@
     <dimen name="playlist_content_layout_image_view_margin_end">10dp</dimen>
     <dimen name="playlist_content_layout_text_view_text_size">15sp</dimen>
 
+    <dimen name="add_to_playlist_padding_top">10dp</dimen>
+    <dimen name="add_to_playlist_layout_padding">10dp</dimen>
+    <dimen name="add_to_playlist_layout_height">60dp</dimen>
+    <dimen name="add_to_playlist_layout_image_view_size">40dp</dimen>
+    <dimen name="add_to_playlist_layout_image_view_margin_end">@dimen/add_to_playlist_layout_padding</dimen>
+    <dimen name="add_to_playlist_layout_text_view_text_size">15sp</dimen>
+
 </resources>
