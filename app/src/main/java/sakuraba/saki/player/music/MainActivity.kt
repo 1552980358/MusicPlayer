@@ -845,7 +845,7 @@ class MainActivity: BaseMediaControlActivity() {
     
     override fun onBackPressed() {
         when (navController.currentDestination?.id) {
-            R.id.nav_home, R.id.nav_album -> startActivity(intent(ACTION_MAIN) { flags = FLAG_ACTIVITY_NEW_TASK; addCategory(CATEGORY_HOME) })
+            R.id.nav_home, R.id.nav_album, R.id.nav_playlist -> startActivity(intent(ACTION_MAIN) { flags = FLAG_ACTIVITY_NEW_TASK; addCategory(CATEGORY_HOME) })
             R.id.nav_web_dav_directory ->
                 (supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first() as WebDavDirectoryFragment)
                     .onBackPressed()
