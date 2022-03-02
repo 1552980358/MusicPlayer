@@ -1,5 +1,6 @@
 package sakuraba.saki.player.music.ui.playlist
 
+import android.graphics.BitmapFactory.decodeResource
 import android.graphics.Color.WHITE
 import android.os.Bundle
 import android.transition.TransitionInflater
@@ -15,7 +16,6 @@ import lib.github1552980358.ktExtension.androidx.fragment.app.show
 import sakuraba.saki.player.music.databinding.FragmentPlaylistBinding
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.base.BaseMainFragment
-import sakuraba.saki.player.music.database.AudioDatabaseHelper
 import sakuraba.saki.player.music.ui.common.addPlaylist.AddPlaylistDialogFragment
 import sakuraba.saki.player.music.ui.playlist.util.RecyclerViewAdapterUtil
 import sakuraba.saki.player.music.util.Constants.ANIMATION_DURATION_LONG
@@ -42,7 +42,9 @@ class PlaylistFragment: BaseMainFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        recyclerViewAdapterUtil = RecyclerViewAdapterUtil(activityInterface, layout.recyclerView) { position, extra ->
+        recyclerViewAdapterUtil = RecyclerViewAdapterUtil(layout.recyclerView,
+            activityInterface,
+            decodeResource(resources, R.drawable.ic_playlist_bitmap)) { position, extra ->
             navController.navigate(
                 PlaylistFragmentDirections.actionNavPlaylistToNavPlaylistContent(playlistList[position]),
                 extra

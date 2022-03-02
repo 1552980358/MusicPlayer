@@ -1,22 +1,24 @@
 package sakuraba.saki.player.music.ui.playlist.util
 
+import android.graphics.Bitmap
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.FragmentNavigator.Extras
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.android.view.createViewHolder
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.util.MainActivityInterface
 import sakuraba.saki.player.music.util.ViewHolderUtil.bindHolder
 
-class RecyclerViewAdapterUtil(private val activityInterface: MainActivityInterface, recyclerView: RecyclerView, private val listener: (Int, Extras) -> Unit) {
+class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
+                              private val activityInterface: MainActivityInterface,
+                              private val defaultBitmap: Bitmap,
+                              private val listener: (Int, Extras) -> Unit) {
 
     val playlistList get() = activityInterface.playlistList
     val bitmapMap get() = activityInterface.playlistMap
@@ -41,7 +43,7 @@ class RecyclerViewAdapterUtil(private val activityInterface: MainActivityInterfa
                 imageView.transitionName = titlePinyin
                 textViewTitle.text = title
                 textViewSize.text = size.toString()
-                imageView.setImageBitmap(bitmapMap[titlePinyin] ?: ContextCompat.getDrawable(imageView.context, R.drawable.ic_playlist)?.toBitmap())
+                imageView.setImageBitmap(bitmapMap[titlePinyin] ?: defaultBitmap)
             }
         }
 
