@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/playlist_content_layout_height"
     android:padding="@dimen/playlist_content_layout_padding"
+    android:background="?android:attr/selectableItemBackground"
     android:id="@+id/relative_layout">
 
     <androidx.appcompat.widget.AppCompatImageView
