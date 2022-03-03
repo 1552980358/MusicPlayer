@@ -4,36 +4,56 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/add_playlist_root_height"
     android:background="?android:attr/selectableItemBackground"
-    android:maxHeight="@dimen/add_playlist_root_height"
-    android:padding="@dimen/add_playlist_root_padding">
+    android:maxHeight="@dimen/add_playlist_root_height">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="@dimen/add_playlist_image_view_size"
-        android:layout_height="@dimen/add_playlist_image_view_size"
-        android:id="@+id/image_view"
-        android:layout_marginEnd="@dimen/add_playlist_root_margin_end" />
+    <RelativeLayout
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:id="@+id/relative_layout"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_alignParentEnd="true">
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_option"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/image_view"
-        android:layout_centerVertical="true"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:layout_toStartOf="@id/relative_layout"
+        android:padding="@dimen/add_playlist_root_padding">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="@dimen/add_playlist_image_view_size"
+            android:layout_height="@dimen/add_playlist_image_view_size"
+            android:id="@+id/image_view"
+            android:layout_marginEnd="@dimen/add_playlist_root_margin_end" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/text_view_title"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:textColor="@color/black"
-            android:textSize="@dimen/add_playlist_text_view_text_size" />
+            android:layout_toEndOf="@id/image_view"
+            android:layout_centerVertical="true"
+            android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/text_view_size" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_view_title"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/black"
+                android:textSize="@dimen/add_playlist_text_view_text_size" />
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_view_size" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </RelativeLayout>
 
 </RelativeLayout>
