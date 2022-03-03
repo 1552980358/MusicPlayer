@@ -289,13 +289,13 @@ class AudioDatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_
 
     fun updatePlaylist(originTitle: String, playlist: Playlist) {
         hasTaskWorking = true
-        StringBuilder("update $TABLE_PLAYLIST set").apply {
+        StringBuilder("update $TABLE_PLAYLIST set ").apply {
             if (originTitle != playlist.title) {
-                append("$KEY_PLAYLIST_TITLE=${playlist.title} , ")
-                append("$KEY_PLAYLIST_TITLE_PINYIN=${playlist.titlePinyin} , ")
+                append("$KEY_PLAYLIST_TITLE='${playlist.title}' , ")
+                append("$KEY_PLAYLIST_TITLE_PINYIN='${playlist.titlePinyin}' , ")
             }
-            append("$KEY_PLAYLIST_DESCRIPTION=${playlist.description}")
-            append("where $KEY_PLAYLIST_TITLE=$originTitle ; ")
+            append("$KEY_PLAYLIST_DESCRIPTION='${playlist.description}' ")
+            append("where $KEY_PLAYLIST_TITLE='$originTitle' ; ")
 
             writableDatabase.execSQL(toString())
         }
