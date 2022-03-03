@@ -183,6 +183,9 @@
     <string name="web_dav_download_to">To</string>
 
     <string name="playlist_add">Add</string>
+    <string name="playlist_menu_edit">Edit Playlist Detail…</string>
+    <string name="playlist_menu_edit_title">Title</string>
+    <string name="playlist_menu_edit_description">Description</string>
     <string name="add_playlist_title">Add Playlist…</string>
     <string name="add_playlist_ok">@android:string/ok</string>
     <string name="add_playlist_cancel">@android:string/cancel</string>
@@ -195,5 +198,9 @@
 
     <string name="add_to_playlist_title">Add to Playlist…</string>
     <string name="add_to_playlist_cancel">@android:string/cancel</string>
+
+    <string name="text_input_positive">@android:string/ok</string>
+    <string name="text_input_negative">@android:string/cancel</string>
+    <string name="text_input_default">Remove Image</string>
 
 </resources>
