@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import lib.github1552980358.ktExtension.android.graphics.getByteArray
 import lib.github1552980358.ktExtension.android.java.readAsBitmap
+import lib.github1552980358.ktExtension.android.java.writeBitmap
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import java.io.File
@@ -112,10 +113,18 @@ object BitmapUtil {
     private const val PLAYLIST_40Dp_DIR = "playlist_40dp"
     private val Context.playlistRawDir get() = getExternalFilesDir(PLAYLIST_RAW_DIR)
     fun Context.loadPlaylistRaw(titlePinyin: String) = File(playlistRawDir, titlePinyin).tryRun { readAsBitmap() }
+    fun Context.writePlaylistRaw(titlePinyin: String, bitmap: Bitmap) =
+        tryOnly { File(playlistRawDir, titlePinyin).writeBitmap(bitmap) }
+    fun Context.removePlaylistRaw(titlePinyin: String) =
+        tryOnly { File(playlistRawDir, titlePinyin).delete() }
 
     private val Context.playlist40DpDir get() = getExternalFilesDir(PLAYLIST_40Dp_DIR)
     fun Context.loadPlaylist40Dp(bitmapMap: MutableMap<String, Bitmap?>) =
         tryOnly { playlist40DpDir?.listFiles()?.forEach { bitmapMap[it.name] = it.readAsBitmap() } }
+    fun Context.writePlaylist40Dp(titlePinyin: String, bitmap: Bitmap) =
+        tryOnly { File(playlist40DpDir, titlePinyin).writeBitmap(bitmap) }
+    fun Context.removePlaylist40Dp(titlePinyin: String) =
+        tryOnly { File(playlist40DpDir, titlePinyin).delete() }
 
     val Bitmap.cutAsCube get(): Bitmap = when {
         width > height -> Bitmap.createBitmap(this, (width - height) / 2, 0, height, height)
