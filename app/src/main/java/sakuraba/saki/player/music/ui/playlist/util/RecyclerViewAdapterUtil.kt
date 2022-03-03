@@ -3,6 +3,7 @@ package sakuraba.saki.player.music.ui.playlist.util
 import android.graphics.Bitmap
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.navigation.fragment.FragmentNavigator.Extras
@@ -13,18 +14,21 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import lib.github1552980358.ktExtension.android.view.createViewHolder
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.util.MainActivityInterface
+import sakuraba.saki.player.music.util.Playlist
 import sakuraba.saki.player.music.util.ViewHolderUtil.bindHolder
 
 class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
                               private val activityInterface: MainActivityInterface,
                               private val defaultBitmap: Bitmap,
-                              private val listener: (Int, Extras) -> Unit) {
+                              private val rootClickListener: (Playlist, Extras) -> Unit,
+                              private val optionButtonClickListener: (Playlist, RelativeLayout) -> Unit) {
 
     val playlistList get() = activityInterface.playlistList
     val bitmapMap get() = activityInterface.playlistMap
 
     private class RecyclerViewHolder(view: View): ViewHolder(view) {
-        val linearLayout = view
+        val root = view
+        val relativeLayout: RelativeLayout = view.findViewById(R.id.relative_layout)
         val imageView: AppCompatImageView = view.findViewById(R.id.image_view)
         val textViewTitle: AppCompatTextView = view.findViewById(R.id.text_view_title)
         val textViewSize: AppCompatTextView = view.findViewById(R.id.text_view_size)
@@ -36,14 +40,15 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
             parent.createViewHolder(R.layout.layout_playlist)
 
         override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) = holder.bindHolder {
-            linearLayout.setOnClickListener {
-                listener(position, FragmentNavigatorExtras(imageView to imageView.transitionName))
-            }
             playlistList[position].apply {
                 imageView.transitionName = titlePinyin
                 textViewTitle.text = title
                 textViewSize.text = size.toString()
                 imageView.setImageBitmap(bitmapMap[titlePinyin] ?: defaultBitmap)
+                root.setOnClickListener {
+                    rootClickListener(this, FragmentNavigatorExtras(imageView to imageView.transitionName))
+                }
+                relativeLayout.setOnClickListener { optionButtonClickListener(this, relativeLayout) }
             }
         }
 
