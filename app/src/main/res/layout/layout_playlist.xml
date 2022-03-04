@@ -44,7 +44,7 @@
                 android:id="@+id/text_view_title"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:textColor="@color/black"
+                android:textColor="@color/color_title"
                 android:textSize="@dimen/add_playlist_text_view_text_size" />
 
             <androidx.appcompat.widget.AppCompatTextView

@@ -11,6 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/text_view"
-        android:textColor="@color/black"/>
+        android:textColor="@color/color_title"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

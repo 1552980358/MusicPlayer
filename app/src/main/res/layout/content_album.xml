@@ -30,7 +30,7 @@
             android:id="@+id/text_view"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/black"
+            android:textColor="@color/color_title"
             android:layout_margin="@dimen/album_text_margin"/>
         
     </LinearLayout>

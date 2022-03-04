@@ -22,7 +22,7 @@
         android:id="@+id/text_view"
         android:layout_toEndOf="@id/image_view"
         android:maxLines="2"
-        android:textColor="@color/black"
+        android:textColor="@color/color_title"
         android:textSize="@dimen/web_dav_directory_item_text_size"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/web_dav_directory_item_text_margin_end"/>

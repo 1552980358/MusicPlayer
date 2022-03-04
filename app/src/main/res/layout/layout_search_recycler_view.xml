@@ -15,7 +15,7 @@
         android:ellipsize="end"
         android:gravity="center"
         android:layout_marginEnd="@dimen/search_text_view_num_margin_end"
-        android:textColor="@color/black" />
+        android:textColor="@color/color_title" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/text_view_title"
             android:ellipsize="end"
-            android:textColor="@color/black"
+            android:textColor="@color/color_title"
             android:textSize="@dimen/search_text_view_title_text_size"
             android:maxLines="1" />
 

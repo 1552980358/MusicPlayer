@@ -48,7 +48,7 @@
                 android:id="@+id/text_view_title"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/black"
+                android:textColor="@color/color_title"
                 android:textSize="@dimen/home_recycler_view_text_size" />
 
             <TextView

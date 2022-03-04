@@ -26,11 +26,11 @@
             android:padding="@dimen/play_bottom_sheet_relative_layout_padding">
 
             <ImageView
+                android:id="@+id/image_view_device"
                 android:layout_width="@dimen/play_bottom_sheet_image_view_size"
                 android:layout_height="@dimen/play_bottom_sheet_image_view_size"
-                android:id="@+id/image_view_device"
-                android:padding="@dimen/play_bottom_sheet_image_view_padding"
                 android:layout_marginEnd="@dimen/play_bottom_sheet_image_view_margin_end"
+                android:padding="@dimen/play_bottom_sheet_image_view_padding"
                 tools:ignore="ContentDescription" />
         
             <LinearLayout
@@ -46,7 +46,7 @@
                     android:id="@+id/text_view_title"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:textColor="@color/black"
+                    android:textColor="@color/color_title"
                     android:textSize="@dimen/play_bottom_sheet_text_view_title_text_size"/>
             
                 <TextView
@@ -69,7 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/play_bottom_sheet_queue"
-            android:textColor="@color/purple_500"
+            android:textColor="@color/purple_200"
             android:layout_marginStart="@dimen/play_bottom_sheet_text_view_queue_margin_start_end"
             android:layout_marginEnd="@dimen/play_bottom_sheet_text_view_queue_margin_start_end"
             android:layout_marginTop="@dimen/play_bottom_sheet_text_view_queue_margin_top_bottom"

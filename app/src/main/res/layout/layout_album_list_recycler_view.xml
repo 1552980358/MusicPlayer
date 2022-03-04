@@ -7,14 +7,14 @@
     android:maxHeight="@dimen/album_list_recycler_view_content_height"
     android:minHeight="@dimen/album_list_recycler_view_content_height"
     android:background="?attr/selectableItemBackground">
-    
+
     <TextView
+        android:id="@+id/text_view_num"
         android:layout_width="@dimen/album_list_recycler_view_content_text_view_num_size"
         android:layout_height="@dimen/album_list_recycler_view_content_text_view_num_size"
-        android:id="@+id/text_view_num"
-        android:gravity="center"
         android:layout_margin="@dimen/album_list_recycler_view_content_text_view_num_margin"
-        android:textColor="@color/black"/>
+        android:gravity="center"
+        android:textColor="@color/color_title" />
     
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
             android:id="@+id/text_view_title"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/black"
+            android:textColor="@color/color_title"
             android:textSize="@dimen/album_list_recycler_view_content_text_view_title_text_size" />
         
         <TextView

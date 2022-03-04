@@ -11,4 +11,11 @@
     <color name="divider_color">#EAEAEA</color>
     <color name="gray">#FFE1E1E1</color>
 
+    <color name="color_background">@color/white</color>
+    <color name="color_title">@color/black</color>
+
+    <color name="color_visualizer">@color/black</color>
+
+    <color name="color_vector_image">@color/black</color>
+
 </resources>

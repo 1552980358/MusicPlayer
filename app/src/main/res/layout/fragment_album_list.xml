@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/recycler_view"
-        android:background="@color/white"
+        android:background="@color/color_background"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:showIn="@layout/fragment_album_list" />

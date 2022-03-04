@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/text_view_title"
-            android:textColor="@color/black"
+            android:textColor="@color/color_title"
             android:textSize="@dimen/add_to_playlist_layout_text_view_text_size" />
 
         <androidx.appcompat.widget.AppCompatTextView

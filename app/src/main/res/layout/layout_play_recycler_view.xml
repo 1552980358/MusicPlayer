@@ -13,7 +13,7 @@
         android:id="@+id/text_view_num"
         android:gravity="center"
         android:layout_marginEnd="@dimen/play_recycler_view_text_view_num_margin_end"
-        android:textColor="@color/black"
+        android:textColor="@color/color_title"
         android:textSize="@dimen/play_recycler_view_text_view_num_text_size" />
     
     <LinearLayout
@@ -29,7 +29,7 @@
             android:id="@+id/text_view_title"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/black"
+            android:textColor="@color/color_title"
             android:textSize="@dimen/play_recycler_view_text_view_title_size" />
         
         <TextView
