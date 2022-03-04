@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import lib.github1552980358.ktExtension.android.content.commit
+import lib.github1552980358.ktExtension.android.view.createViewHolder
 import lib.github1552980358.ktExtension.android.view.getString
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.util.DeviceEqualizer
@@ -33,7 +34,7 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
     private inner class RecyclerViewAdapter: Adapter<RecyclerViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            RecyclerViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_audio_effect_band, parent, false))
+            parent.createViewHolder<RecyclerViewHolder>(R.layout.layout_audio_effect_band)
 
         override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) = holder.bindHolder {
             @Suppress("SetTextI18n")
