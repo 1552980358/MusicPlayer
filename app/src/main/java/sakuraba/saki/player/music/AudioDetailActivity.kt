@@ -8,7 +8,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.navigation.findNavController
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import sakuraba.saki.player.music.databinding.ActivityAudioDetailBinding
 import sakuraba.saki.player.music.ui.audioDetail.AudioDetailFragment
 import sakuraba.saki.player.music.ui.audioDetail.lyricView.LyricViewFragment
@@ -19,6 +20,10 @@ class AudioDetailActivity: AppCompatActivity() {
     private val activityAudioDetail get() = _activityAudioDetailBinding!!
     
     private var needBackPressedAnim = false
+
+    private lateinit var navController: NavController
+
+    private val navHostFragment get() = activityAudioDetail.fragmentContainerView.getFragment<NavHostFragment>()
 
     private val fragmentLifecycleCallbacks =  object : FragmentManager.FragmentLifecycleCallbacks() {
         override fun onFragmentAttached(fm: FragmentManager, f: Fragment, context: Context) {
@@ -65,6 +70,7 @@ class AudioDetailActivity: AppCompatActivity() {
         if (needBackPressedAnim) {
             supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_up)
         }
+        navController = navHostFragment.navController
     }
 
     override fun onStop() {
@@ -73,7 +79,7 @@ class AudioDetailActivity: AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        when (findNavController(R.id.fragment).currentDestination?.id) {
+        when (navController.currentDestination?.id) {
             R.id.nav_audio_detail -> {
                 when {
                     needBackPressedAnim -> {
@@ -81,15 +87,13 @@ class AudioDetailActivity: AppCompatActivity() {
                         overridePendingTransition(R.anim.translate_up_pop_enter, R.anim.translate_up_pop_exit)
                     }
                     else -> {
-                        (supportFragmentManager.findFragmentById(R.id.fragment)
-                            ?.childFragmentManager?.fragments?.first() as AudioDetailFragment?)
+                        (navHostFragment.childFragmentManager.fragments.first() as AudioDetailFragment?)
                             ?.onActivityBackPressed()
                     }
                 }
             }
             R.id.nav_lyric_view -> {
-                (supportFragmentManager.findFragmentById(R.id.fragment)
-                        ?.childFragmentManager?.fragments?.first() as LyricViewFragment?)
+                (navHostFragment.childFragmentManager.fragments.first() as LyricViewFragment?)
                         ?.onBackPressed()
                 super.onBackPressed()
             }
