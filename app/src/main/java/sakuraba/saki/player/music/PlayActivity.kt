@@ -495,29 +495,28 @@ class PlayActivity: BaseMediaControlActivity() {
         io { updateImage(metadata.getString(METADATA_KEY_MEDIA_ID), metadata.getString(METADATA_KEY_ALBUM_ART_URI)) }
         viewModel.updateDuration(metadata.getLong(METADATA_KEY_DURATION))
 
-        ValueAnimator.ofArgb(BLACK, WHITE).apply {
+        ValueAnimator.ofFloat(1F, 0F).apply {
             duration = ANIMATION_DURATION_LONG
             addUpdateListener {
-                textViewTitle.setTextColor(animatedValue as Int)
-                textViewSummary.setTextColor(animatedValue as Int)
+                textViewTitle.alpha = animatedValue as Float
+                textViewSummary.alpha = animatedValue as Float
             }
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
                     super.onAnimationEnd(animation)
                     textViewTitle.text = metadata.getString(METADATA_KEY_TITLE)
                     textViewSummary.text = metadata.getString(METADATA_KEY_ARTIST)
-                    ValueAnimator.ofArgb(WHITE, BLACK).apply {
+                    ValueAnimator.ofFloat(0F, 1F).apply {
                         duration = ANIMATION_DURATION_LONG
                         addUpdateListener {
-                            textViewTitle.setTextColor(animatedValue as Int)
-                            textViewSummary.setTextColor(animatedValue as Int)
+                            textViewTitle.alpha = animatedValue as Float
+                            textViewSummary.alpha = animatedValue as Float
                         }
-                        start()
-                    }
+                    }.start()
                 }
             })
-            start()
-        }
+        }.start()
+
         mediaBrowserCompat.sendCustomAction(ACTION_REQUEST_AUDIO_LIST, null, object : MediaBrowserCompat.CustomActionCallback() {
             override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
                 resultData ?: return
