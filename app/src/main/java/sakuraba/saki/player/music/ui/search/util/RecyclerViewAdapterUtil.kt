@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import lib.github1552980358.ktExtension.android.view.createViewHolder
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.util.ViewHolderUtil.bindHolder
@@ -25,8 +26,8 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView, private val listener: 
 
         val list = arrayListOf<AudioInfo>()
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
-            = RecyclerViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_search_recycler_view, parent, false))
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+            parent.createViewHolder<RecyclerViewHolder>(R.layout.layout_search_recycler_view)
 
         override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) = holder.bindHolder {
             relativeLayout.setOnClickListener { listener(list[position]) }
