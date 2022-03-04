@@ -187,7 +187,6 @@ class AudioDetailFragment: PreferenceFragmentCompat() {
         }
         fragmentAudioDetail.preferenceFragmentContainer.apply {
             addView(super.onCreateView(inflater, fragmentAudioDetail.preferenceFragmentContainer, savedInstanceState))
-            setBackgroundColor(Color.WHITE)
         }
         behavior = BottomSheetBehavior.from(fragmentAudioDetail.preferenceFragmentContainer)
         behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
