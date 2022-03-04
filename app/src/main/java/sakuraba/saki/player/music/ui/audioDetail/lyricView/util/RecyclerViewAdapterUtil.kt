@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import lib.github1552980358.ktExtension.android.view.createViewHolder
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.util.Lyric
 import sakuraba.saki.player.music.util.LyricUtil.timeStr
@@ -23,7 +24,7 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView, private val lyric: Lyr
     private inner class RecyclerViewAdapter: RecyclerView.Adapter<RecyclerViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            RecyclerViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_lyric_view_recycler_view, parent, false))
+            parent.createViewHolder<RecyclerViewHolder>(R.layout.layout_lyric_view_recycler_view)
 
         override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) = holder.bindHolder {
             textViewTitle.text = lyric.timeAt(position).timeStr
