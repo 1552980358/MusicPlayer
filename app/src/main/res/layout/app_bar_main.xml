@@ -22,8 +22,12 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <include
+        android:id="@+id/content_main"
+        layout="@layout/content_main" />
     
-    <include layout="@layout/content_bottom_sheet" />
+    <include
+        android:id="@+id/content_bottom_sheet"
+        layout="@layout/content_bottom_sheet" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -36,19 +36,13 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.util.Log
 import android.view.Menu
 import android.view.View
-import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
-import androidx.appcompat.widget.Toolbar
-import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
@@ -59,6 +53,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
@@ -115,7 +110,6 @@ import sakuraba.saki.player.music.util.CoroutineUtil.ui
 import sakuraba.saki.player.music.util.MediaAlbum
 import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
 import sakuraba.saki.player.music.util.SettingUtil.getIntSettingOrThrow
-import sakuraba.saki.player.music.widget.PlayProgressBar
 
 class MainActivity: BaseMediaControlActivity() {
     
@@ -134,17 +128,19 @@ class MainActivity: BaseMediaControlActivity() {
     private lateinit var activityInterface: MainActivityInterface
     
     private var isOnPaused = false
-    
-    private var _imageView: ImageView? = null
-    private val imageView get() = _imageView!!
-    private var _imageButton: ImageButton? = null
-    private val imageButton get() = _imageButton!!
-    private var _textView: TextView? = null
-    private val textView get() = _textView!!
-    private var _playProgressBar: PlayProgressBar? = null
-    private val playProgressBar get() = _playProgressBar!!
-    private var _coordinatorLayout: CoordinatorLayout? = null
-    private val coordinatorLayout get() = _coordinatorLayout!!
+
+    private val appBarMain get() = activityMain.appBarMain
+    private val contentMain get() = activityMain.appBarMain.contentMain
+    private val contentBottomSheet get() = appBarMain.contentBottomSheet
+
+    private val toolbar get() = appBarMain.toolbar
+
+    private val imageView get() = contentBottomSheet.imageView
+    private val imageButton get() = contentBottomSheet.imageButton
+    private val textView get() = contentBottomSheet.textView
+    private val playProgressBar get() = contentBottomSheet.playProgressBar
+
+    private val relativeLayout get() = contentBottomSheet.relativeLayout
     
     private var bottomSheetClickLock = true
     
@@ -244,19 +240,19 @@ class MainActivity: BaseMediaControlActivity() {
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         _activityMainMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMain.root)
-        setSupportActionBar(findViewById(R.id.toolbar))
+        setSupportActionBar(toolbar)
 
         /**
          * Token from { @link https://stackoverflow.com/a/59275182/11685230 }
          **/
-        navController = activityMain.appBarMain.contentMain.navHostFragment.getFragment<NavHostFragment>().navController
+        navController = contentMain.navHostFragment.getFragment<NavHostFragment>().navController
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_home, R.id.nav_playlist, R.id.nav_album), activityMain.drawerLayout)
-        activityMain.root.findViewById<Toolbar>(R.id.toolbar)?.setupWithNavController(navController, appBarConfiguration)
+        toolbar.setupWithNavController(navController, appBarConfiguration)
         activityMain.navView.setupWithNavController(navController)
         
-        behavior = BottomSheetBehavior.from(findViewById(R.id.relative_layout_root))
+        behavior = BottomSheetBehavior.from(contentBottomSheet.root)
         behavior.peekHeight = 0
         behavior.state = STATE_COLLAPSED
         behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -267,29 +263,22 @@ class MainActivity: BaseMediaControlActivity() {
                 Log.e(TAG, "BottomSheetBehavior.BottomSheetCallback.onSlide $slideOffset")
             }
         })
-        
-        _textView = findViewById(R.id.text_view)
-        
-        _imageView = findViewById(R.id.image_view)
-        
-        _imageButton = findViewById<ImageButton>(R.id.image_button).apply {
-            setOnClickListener {
-                when (mediaControllerCompat.playbackState.state) {
-                    STATE_PLAYING -> mediaControllerCompat.transportControls.pause()
-                    STATE_PAUSED -> mediaControllerCompat.transportControls.play()
-                    STATE_NONE -> {
-                        when (viewModel.stateValue) {
-                            STATE_PLAYING -> mediaControllerCompat.transportControls.pause()
-                            STATE_PAUSED -> mediaControllerCompat.transportControls.play()
-                            else -> Unit
-                        }
+
+        imageButton.setOnClickListener {
+            when (mediaControllerCompat.playbackState.state) {
+                STATE_PLAYING -> mediaControllerCompat.transportControls.pause()
+                STATE_PAUSED -> mediaControllerCompat.transportControls.play()
+                STATE_NONE -> {
+                    when (viewModel.stateValue) {
+                        STATE_PLAYING -> mediaControllerCompat.transportControls.pause()
+                        STATE_PAUSED -> mediaControllerCompat.transportControls.play()
+                        else -> Unit
                     }
-                    else -> Unit
                 }
+                else -> Unit
             }
         }
-    
-        _playProgressBar = findViewById(R.id.play_progress_bar)
+
         viewModel.progress.observe(this) { progress ->
             playProgressBar.progress = progress
         }
@@ -302,7 +291,8 @@ class MainActivity: BaseMediaControlActivity() {
                 }
             }
         }
-        findViewById<RelativeLayout>(R.id.relative_layout).setOnClickListener {
+
+        relativeLayout.setOnClickListener {
             if (bottomSheetClickLock) {
                 bottomSheetClickLock = false
                 playActivityLauncher.launch(
@@ -322,11 +312,9 @@ class MainActivity: BaseMediaControlActivity() {
             }
         }
 
-        _coordinatorLayout = findViewById(R.id.coordinator_layout)
-
         activityInterface.audioDatabaseHelper = AudioDatabaseHelper(this)
 
-        snackBar = coordinatorLayout.makeSnack(R.string.main_snack_open_setting_text, LENGTH_INDEFINITE)
+        snackBar = activityMain.appBarMain.root.makeSnack(R.string.main_snack_open_setting_text, LENGTH_INDEFINITE)
             .setAction(R.string.main_snack_open_setting_button) {
                 startActivity(Intent(ACTION_APPLICATION_DETAILS_SETTINGS, fromParts("package", APPLICATION_ID, null)))
             }
@@ -684,7 +672,7 @@ class MainActivity: BaseMediaControlActivity() {
                 if (behavior.state == STATE_COLLAPSED) {
                     behavior.state = STATE_EXPANDED
                     behavior.isDraggable = false
-                    findViewById<ConstraintLayout>(R.id.constraint_layout).apply {
+                    contentMain.root.apply {
                         layoutParams = (layoutParams as CoordinatorLayout.LayoutParams).apply {
                             setMargins(0, 0, 0, getDimensionPixelSize(R.dimen.home_bottom_sheet_height))
                         }
