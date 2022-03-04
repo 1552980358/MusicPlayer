@@ -9,7 +9,7 @@
     tools:showIn="@layout/app_bar_main"
     android:id="@+id/constraint_layout">
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:layout_height="match_parent"
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -18,6 +18,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:defaultNavHost="true"
-        app:navGraph="@navigation/mobile_navigation"
-    />
+        app:navGraph="@navigation/mobile_navigation" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

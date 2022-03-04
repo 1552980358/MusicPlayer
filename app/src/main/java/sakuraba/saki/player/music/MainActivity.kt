@@ -246,7 +246,10 @@ class MainActivity: BaseMediaControlActivity() {
         setContentView(activityMain.root)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-        navController = findNavController(R.id.nav_host_fragment)
+        /**
+         * Token from { @link https://stackoverflow.com/a/59275182/11685230 }
+         **/
+        navController = activityMain.appBarMain.contentMain.navHostFragment.getFragment<NavHostFragment>().navController
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_home, R.id.nav_playlist, R.id.nav_album), activityMain.drawerLayout)
