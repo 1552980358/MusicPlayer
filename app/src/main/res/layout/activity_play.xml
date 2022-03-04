@@ -154,6 +154,8 @@
 
     </LinearLayout>
     
-    <include layout="@layout/content_play_bottom_sheet" />
+    <include
+        android:id="@+id/content_play_bottom_sheet"
+        layout="@layout/content_play_bottom_sheet" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

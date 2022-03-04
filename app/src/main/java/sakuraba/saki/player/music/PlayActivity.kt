@@ -106,12 +106,11 @@ class PlayActivity: BaseMediaControlActivity() {
     private var _activityPlayBinding: ActivityPlayBinding? = null
     private val activityPlay get() = _activityPlayBinding!!
     private lateinit var viewModel: PlayViewModel
-    
-    private var _textViewTitle: TextView? = null
-    private val textViewTitle get() = _textViewTitle!!
-    
-    private var _textViewSummary: TextView? = null
-    private val textViewSummary get() = _textViewSummary!!
+
+    private val contentPlayBottomSheet get() = activityPlay.contentPlayBottomSheet
+
+    private val textViewTitle get() = contentPlayBottomSheet.textViewTitle
+    private val textViewSummary get() = contentPlayBottomSheet.textViewSummary
     
     private lateinit var behavior: BottomSheetBehavior<CardView>
     
@@ -129,11 +128,11 @@ class PlayActivity: BaseMediaControlActivity() {
     private val playModeSingleCycle by lazy { ContextCompat.getDrawable(this, R.drawable.ic_single_cycle) }
     private val playModeRandom by lazy { ContextCompat.getDrawable(this, R.drawable.ic_random) }
     private val playModeSingle by lazy { ContextCompat.getDrawable(this, R.drawable.ic_single) }
-    
-    private var _recyclerView: RecyclerView? = null
-    private val recyclerView get() = _recyclerView!!
-    private var _imageViewDevice: ImageView? = null
-    private val imageViewDevice get() = _imageViewDevice!!
+
+    private val recyclerView get() = contentPlayBottomSheet.recyclerView
+    private val imageViewDevice get() = contentPlayBottomSheet.imageViewDevice
+
+    private val relativeLayoutAudioInfo get() = contentPlayBottomSheet.relativeLayoutAudioInfo
 
     private lateinit var audioInfo: AudioInfo
 
@@ -171,10 +170,7 @@ class PlayActivity: BaseMediaControlActivity() {
         activityPlay.lyricLayout.apply {
             layoutParams = layoutParams.apply { height = resources.displayMetrics.widthPixels }
         }
-        
-        _textViewTitle = findViewById(R.id.text_view_title)
-        _textViewSummary = findViewById(R.id.text_view_summary)
-    
+
         playModeListCycle = activityPlay.imageButtonPlayMode.drawable
         viewModel.updatePlayMode(PLAY_MODE_LIST)
 
@@ -197,7 +193,7 @@ class PlayActivity: BaseMediaControlActivity() {
         }
 
         behavior = BottomSheetBehavior.from(
-            findViewById<CardView>(R.id.card_view).apply {
+            activityPlay.contentPlayBottomSheet.root.apply {
                 layoutParams = layoutParams.apply {
                     height = pixelHeight - getStatusBarHeight()
                 }
@@ -337,7 +333,7 @@ class PlayActivity: BaseMediaControlActivity() {
             }
             activityPlay.imageButtonLyric.drawable?.setTint(if (viewModel.isLightBackground.value == true) BLACK else WHITE)
         }
-        _recyclerView = findViewById(R.id.recycler_view)
+
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.layoutManager = LinearLayoutManager(this, VERTICAL, false)
         recyclerView.adapter = RecyclerViewAdapter(recyclerView) { pos ->
@@ -345,15 +341,13 @@ class PlayActivity: BaseMediaControlActivity() {
         }
         recyclerView.addItemDecoration(DividerItemDecoration())
         
-        findViewById<RelativeLayout>(R.id.relative_layout_audio_info).setOnClickListener {
+        relativeLayoutAudioInfo.setOnClickListener {
             if (behavior.state != STATE_EXPANDED) {
                 behavior.state = STATE_EXPANDED
             }
         }
 
         audioManager = (getSystemService(AUDIO_SERVICE) as AudioManager)
-
-        _imageViewDevice = findViewById(R.id.image_view_device)
 
         updateAudioDeviceIcon()
         broadcastReceiver.register(this, ACTION_HEADSET_PLUG, ACTION_CONNECTION_STATE_CHANGED)
