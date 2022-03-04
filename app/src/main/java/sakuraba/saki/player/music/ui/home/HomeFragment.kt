@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.MenuCompat
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import lib.github1552980358.ktExtension.android.content.getSerializableOf
@@ -40,6 +41,8 @@ class HomeFragment: BaseMainFragment() {
 
     private val audioInfoList get() = activityInterface.audioInfoList
     private val audioDatabaseHelper get() = activityInterface.audioDatabaseHelper
+    
+    private lateinit var navController: NavController
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         
@@ -108,6 +111,8 @@ class HomeFragment: BaseMainFragment() {
             fragmentHome.root.isRefreshing = false
         }
 
+        navController = findNavController()
+
         return fragmentHome.root
     }
     
@@ -118,8 +123,8 @@ class HomeFragment: BaseMainFragment() {
     
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_settings -> findNavController().navigate(HomeFragmentDirections.actionNavHomeToNavSetting())
-            R.id.action_search -> findNavController().navigate(HomeFragmentDirections.actionNavHomeToNavSearch())
+            R.id.action_settings -> navController.navigate(HomeFragmentDirections.actionNavHomeToNavSetting())
+            R.id.action_search -> navController.navigate(HomeFragmentDirections.actionNavHomeToNavSearch())
             R.id.action_refresh -> {
                 fragmentHome.root.isRefreshing = true
                 activityInterface.onRequestRefresh()
