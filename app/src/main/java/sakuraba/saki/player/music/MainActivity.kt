@@ -230,20 +230,6 @@ class MainActivity: BaseMediaControlActivity() {
         super.onCreate(savedInstanceState)
 
         installSplashScreen()
-        
-        supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
-        
-        activityInterface = MainActivityInterface { pos, audioInfo, audioInfoList ->
-            audioInfo?.let { info ->
-                this.audioInfo = info
-                playProgressBar.max = info.audioDuration
-                mediaControllerCompat.transportControls.playFromMediaId(info.audioId, bundle {
-                    putInt(EXTRAS_AUDIO_INFO_POS, pos)
-                    putSerializable(EXTRAS_AUDIO_INFO, info)
-                    putSerializable(EXTRAS_AUDIO_INFO_LIST, audioInfoList)
-                })
-            }
-        }
 
         activityInterface.setOnArtUpdate { audioInfo ->
             io {
