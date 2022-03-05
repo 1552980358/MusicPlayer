@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
@@ -14,7 +13,7 @@ import sakuraba.saki.player.music.databinding.ActivityAudioDetailBinding
 import sakuraba.saki.player.music.ui.audioDetail.AudioDetailFragment
 import sakuraba.saki.player.music.ui.audioDetail.lyricView.LyricViewFragment
 
-class AudioDetailActivity: AppCompatActivity() {
+class AudioDetailActivity: BaseThemeAppCompatActivity() {
 
     private var _activityAudioDetailBinding: ActivityAudioDetailBinding? = null
     private val activityAudioDetail get() = _activityAudioDetailBinding!!
