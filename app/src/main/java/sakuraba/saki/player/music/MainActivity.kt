@@ -648,6 +648,14 @@ class MainActivity: BaseMediaControlActivity() {
                                 }
                             }
                         }
+                        if (behavior.isDraggable) {
+                            behavior.isDraggable = false
+                            contentMain.root.apply {
+                                layoutParams = (layoutParams as CoordinatorLayout.LayoutParams).apply {
+                                    setMargins(0, 0, 0, getDimensionPixelSize(R.dimen.home_bottom_sheet_height))
+                                }
+                            }
+                        }
                         ValueAnimator.ofArgb(BLACK, WHITE).apply {
                             duration = ANIMATION_DURATION_LONG / 2
                             addUpdateListener { textView.setTextColor(animatedValue as Int) }
