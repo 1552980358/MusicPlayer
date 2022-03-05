@@ -162,7 +162,7 @@ class PlayActivity: BaseMediaControlActivity() {
 
         super.onCreate(savedInstanceState)
         
-        viewModel = ViewModelProvider(this).get(PlayViewModel::class.java)
+        viewModel = ViewModelProvider(this)[PlayViewModel::class.java]
         _activityPlayBinding = ActivityPlayBinding.inflate(layoutInflater)
         setContentView(activityPlay.root)
         
