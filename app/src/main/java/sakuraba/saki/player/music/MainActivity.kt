@@ -203,7 +203,7 @@ class MainActivity: BaseMediaControlActivity() {
 
     private var lastDrawable: Drawable? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {WindowCompat.setDecorFitsSystemWindows(window, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setLightNavigationBar()
