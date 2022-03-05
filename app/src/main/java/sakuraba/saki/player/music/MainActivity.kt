@@ -255,14 +255,6 @@ class MainActivity: BaseMediaControlActivity() {
         behavior = BottomSheetBehavior.from(contentBottomSheet.root)
         behavior.peekHeight = 0
         behavior.state = STATE_COLLAPSED
-        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                Log.e(TAG, "BottomSheetBehavior.BottomSheetCallback.onStateChanged $newState")
-            }
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                Log.e(TAG, "BottomSheetBehavior.BottomSheetCallback.onSlide $slideOffset")
-            }
-        })
 
         imageButton.setOnClickListener {
             when (mediaControllerCompat.playbackState.state) {
