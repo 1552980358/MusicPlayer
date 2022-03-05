@@ -67,7 +67,7 @@ dependencies {
     implementation("com.github.android:renderscript-intrinsics-replacement-toolkit:b6363490c3")
 
     implementation("com.github.1552980358:KtExtension:1.2.5")
-    implementation("com.github.1552980358:KtExtensionAndroid:1.2.8")
+    implementation("com.github.1552980358:KtExtensionAndroid:1.2.10")
     implementation("com.github.1552980358:C2Pinyin:1.0.0")
 
     implementation("com.github.mkaflowski:Media-Style-Palette:1.3")
