@@ -10,7 +10,6 @@ import android.content.Intent.ACTION_MAIN
 import android.content.Intent.CATEGORY_HOME
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.content.res.Configuration
 import android.database.ContentObserver
 import android.graphics.Bitmap
 import android.graphics.Color.BLACK
@@ -838,11 +837,6 @@ class MainActivity: BaseMediaControlActivity() {
             delay(diff)
         }
         return progress + diff
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        recreate()
     }
     
     override fun onPause() {
