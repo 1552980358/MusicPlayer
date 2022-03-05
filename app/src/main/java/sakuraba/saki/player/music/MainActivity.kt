@@ -209,9 +209,6 @@ class MainActivity: BaseMediaControlActivity() {
         setLightNavigationBar()
         window.navigationBarColor = WHITE
 
-        delegate.installViewFactory()
-        delegate.onCreate(savedInstanceState)
-
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
 
         activityInterface = MainActivityInterface { pos, audioInfo, audioInfoList ->
