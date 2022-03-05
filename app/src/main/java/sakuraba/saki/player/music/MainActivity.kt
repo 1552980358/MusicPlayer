@@ -681,7 +681,7 @@ class MainActivity: BaseMediaControlActivity() {
                 }
                 isPlaying = true
                 job = getProgressSyncJob(state.position)
-                if (behavior.state == STATE_COLLAPSED) {
+                if (behavior.isDraggable) {
                     behavior.state = STATE_EXPANDED
                     behavior.isDraggable = false
                     contentMain.root.apply {
