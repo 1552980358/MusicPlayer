@@ -6,10 +6,10 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import androidx.appcompat.app.AppCompatActivity
+import sakuraba.saki.player.music.BaseThemeAppCompatActivity
 import sakuraba.saki.player.music.service.PlayService
 
-abstract class BaseMediaControlActivity: AppCompatActivity() {
+abstract class BaseMediaControlActivity: BaseThemeAppCompatActivity() {
     
     protected lateinit var mediaBrowserCompat: MediaBrowserCompat
     private lateinit var connectionCallback: MediaBrowserCompat.ConnectionCallback
