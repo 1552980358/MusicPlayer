@@ -54,7 +54,7 @@
         
         <activity
             android:name=".PlayActivity"
-            android:theme="@style/Theme.MusicPlayer.NoActionBar.Translucent"
+            android:theme="@style/Theme.MusicPlayer.NoActionBar.Translucent.PlayActivity"
             android:launchMode="singleTask" />
 
         <activity

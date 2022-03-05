@@ -2,7 +2,7 @@
 <resources>
 
     <style name="Theme.MusicPlayer.NoActionBar.Translucent.PlayActivity" parent="Theme.MusicPlayer.NoActionBar.Translucent">
-        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowLightNavigationBar">false</item>
         <item name="android:enforceNavigationBarContrast">false</item>
     </style>
 
