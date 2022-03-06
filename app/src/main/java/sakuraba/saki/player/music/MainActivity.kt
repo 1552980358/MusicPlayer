@@ -203,6 +203,8 @@ class MainActivity: BaseMediaControlActivity() {
 
     private var lastDrawable: Drawable? = null
 
+    private lateinit var defaultCoverDrawable: Drawable
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -353,6 +355,10 @@ class MainActivity: BaseMediaControlActivity() {
             PERMISSION_GRANTED -> io { launchProcess() }
             else -> requestPermission.launch(READ_EXTERNAL_STORAGE)
         }
+
+        defaultCoverDrawable =
+            ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)!!.toBitmap()
+                .toDrawable(this@MainActivity)!!
     }
 
     private fun scanSystemDatabase() = arrayListOf<AudioInfo>().apply {
@@ -608,7 +614,7 @@ class MainActivity: BaseMediaControlActivity() {
                             var drawable =
                                 activityInterface.audioBitmapMap[audioInfo.audioId].toDrawable(this@MainActivity)
                                     ?: activityInterface.bitmapMap[audioInfo.audioAlbumId].toDrawable(this@MainActivity)
-                                    ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)!!.toBitmap().toDrawable(this@MainActivity) as Drawable
+                                    ?: defaultCoverDrawable
                             if (lastDrawable != null) {
                                 drawable = TransitionDrawable(arrayOf(lastDrawable, drawable))
                             }
@@ -698,7 +704,7 @@ class MainActivity: BaseMediaControlActivity() {
             var drawable =
                 activityInterface.audioBitmapMap[metadata.getString(METADATA_KEY_MEDIA_ID)].toDrawable(this@MainActivity)
                     ?: activityInterface.bitmapMap[metadata.getString(METADATA_KEY_ALBUM_ART_URI).toLong()].toDrawable(this@MainActivity)
-                    ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)!!.toBitmap().toDrawable(this@MainActivity) as Drawable
+                    ?: defaultCoverDrawable
             if (lastDrawable != null) {
                 drawable = TransitionDrawable(arrayOf(lastDrawable, drawable))
             }
@@ -777,7 +783,7 @@ class MainActivity: BaseMediaControlActivity() {
                         var drawable =
                             activityInterface.audioBitmapMap[audioInfo.audioId].toDrawable(this@MainActivity)
                                 ?: activityInterface.bitmapMap[audioInfo.audioAlbumId].toDrawable(this@MainActivity)
-                                ?: ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)!!.toBitmap().toDrawable(this@MainActivity) as Drawable
+                                ?: defaultCoverDrawable
                         if (lastDrawable != null) {
                             drawable = TransitionDrawable(arrayOf(lastDrawable, drawable))
                         }
