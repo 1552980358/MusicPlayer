@@ -74,6 +74,7 @@ class MainActivityInterface(private val fragmentListItem: (Int, AudioInfo?, Arra
         bitmapMap.clear()
         albumList.clear()
         audioBitmapMap.clear()
+        playlistMap.clear()
     }
 
     private lateinit var mediaBrowserCompat: MediaBrowserCompat
