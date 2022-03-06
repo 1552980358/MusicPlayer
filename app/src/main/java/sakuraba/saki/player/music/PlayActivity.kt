@@ -86,6 +86,7 @@ import sakuraba.saki.player.music.util.AudioUtil
 import sakuraba.saki.player.music.util.AudioUtil.getOutputDevice
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArtRaw
 import sakuraba.saki.player.music.util.BitmapUtil.loadAudioArtRaw
+import sakuraba.saki.player.music.util.ColorUtil.isLight
 import sakuraba.saki.player.music.util.Constants.ANIMATION_DURATION
 import sakuraba.saki.player.music.util.Constants.ANIMATION_DURATION_LONG
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
@@ -567,16 +568,17 @@ class PlayActivity: BaseMediaControlActivity() {
             }
             progressColor = secondaryTextColor
         }
-        ui { viewModel.setIsLightBackground(isLight) }
+        ui { viewModel.setIsLightBackground(backgroundColor.isLight) }
         if (isInit) {
             ui {
                 viewModel.isLightBackground.observe(this@PlayActivity) { isLight ->
-                    activityPlay.playSeekBar.setCircleColor(if (isLight) WHITE else BLACK)
+                    if (isLight) { ValueAnimator.ofArgb(BLACK, WHITE) } else { ValueAnimator.ofArgb(WHITE, BLACK) }.apply {
+                        duration = ANIMATION_DURATION_LONG
+                        addUpdateListener { activityPlay.playSeekBar.setCircleColor(animatedValue as Int) }
+                    }.start()
                     if (isLight) { ValueAnimator.ofArgb(WHITE, BLACK) } else { ValueAnimator.ofArgb(BLACK, WHITE) }.apply {
                         duration = ANIMATION_DURATION_LONG
-                        addUpdateListener {
-                            updateOppositeColor(animatedValue as Int)
-                        }
+                        addUpdateListener { updateOppositeColor(animatedValue as Int) }
                     }.start()
                 }
             }
