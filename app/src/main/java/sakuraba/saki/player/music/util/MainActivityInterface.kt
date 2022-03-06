@@ -7,32 +7,10 @@ import sakuraba.saki.player.music.database.AudioDatabaseHelper
 import sakuraba.saki.player.music.service.util.AudioInfo
 import java.io.Serializable
 
-class MainActivityInterface(block: (Int, AudioInfo?, ArrayList<AudioInfo>?) -> Unit) : Serializable {
-    
-    private fun interface OnFragmentListItemClickListener: Serializable {
-        fun onItemClicked(pos: Int, audioInfo: AudioInfo?, arrayList: ArrayList<AudioInfo>?)
-    }
-
-    private fun interface LoadingStageChangeListener {
-        fun onLoading()
-    }
-
-    private fun interface CompleteLoadingListener {
-        fun onComplete()
-    }
-
-    private fun interface RequestRefreshListener {
-        fun onRequestRefresh()
-    }
-
-    private fun interface ContentChangeRefreshListener {
-        fun onContentChange()
-    }
-    
-    private var fragmentListItemClickListener: OnFragmentListItemClickListener? = null
+class MainActivityInterface(private val fragmentListItem: (Int, AudioInfo?, ArrayList<AudioInfo>?) -> Unit) : Serializable {
 
     fun onFragmentListItemClick(pos: Int, audioInfo: AudioInfo?, audioInfoList: ArrayList<AudioInfo>?) =
-        fragmentListItemClickListener?.onItemClicked(pos, audioInfo, audioInfoList)
+        fragmentListItem(pos, audioInfo, audioInfoList)
 
     val audioInfoFullList = arrayListOf<AudioInfo>()
     val bitmapMap = mutableMapOf<Long, Bitmap?>()
@@ -47,40 +25,42 @@ class MainActivityInterface(block: (Int, AudioInfo?, ArrayList<AudioInfo>?) -> U
 
     var refreshCompleted = false
 
-    private var loadingStageChangeListener: LoadingStageChangeListener? = null
-    private var completeLoadingListener: CompleteLoadingListener? = null
-    private var requestRefreshListener: RequestRefreshListener? = null
-    private var contentChangeRefreshListener: ContentChangeRefreshListener? = null
+    var hasAudioInfoListUpdated = false
+
+    private lateinit var loadingStageChange: () -> Unit
+    private var completeLoading: (() -> Unit)? = null
+    private lateinit var requestRefresh: () -> Unit
+    private lateinit var contentChangeRefresh: () -> Unit
 
     lateinit var audioDatabaseHelper: AudioDatabaseHelper
 
     fun setLoadingStageChangeListener(block: () -> Unit) {
-        loadingStageChangeListener = LoadingStageChangeListener(block)
+        loadingStageChange = block
     }
 
     fun setCompleteLoadingListener(block: () -> Unit) {
-        completeLoadingListener = CompleteLoadingListener(block)
+        completeLoading = block
     }
 
     fun setRequestRefreshListener(block: () -> Unit) {
-        requestRefreshListener = RequestRefreshListener(block)
+        requestRefresh = block
     }
 
     fun setContentChangeRefreshListener(block: () -> Unit) {
-        contentChangeRefreshListener = ContentChangeRefreshListener(block)
+        contentChangeRefresh = block
     }
 
     fun removeContentChangeRefreshListener() {
-        completeLoadingListener = null
+        completeLoading = null
     }
 
-    fun onLoadStageChange() = loadingStageChangeListener?.onLoading()
+    fun onLoadStageChange() = loadingStageChange()
 
-    fun onCompleteLoading() = completeLoadingListener?.onComplete()
+    fun onCompleteLoading() = completeLoading?.let { it() }
 
-    fun onRequestRefresh() = requestRefreshListener?.onRequestRefresh()
+    fun onRequestRefresh() = requestRefresh()
 
-    fun onContentChange() = contentChangeRefreshListener?.onContentChange()
+    fun onContentChange() = contentChangeRefresh()
 
     private lateinit var artUpdate: (AudioInfo) -> Unit
     fun setOnArtUpdate(block: (AudioInfo) -> Unit) {
@@ -106,12 +86,6 @@ class MainActivityInterface(block: (Int, AudioInfo?, ArrayList<AudioInfo>?) -> U
             override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) =
                 block(action, extras, resultData)
         })
-    }
-
-    var hasAudioInfoListUpdated = false
-
-    init {
-        fragmentListItemClickListener = OnFragmentListItemClickListener(block)
     }
 
 }
