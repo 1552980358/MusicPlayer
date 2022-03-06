@@ -11,12 +11,14 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import lib.github1552980358.ktExtension.android.content.getSerializableOf
 import lib.github1552980358.ktExtension.android.content.intent
+import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.androidx.fragment.app.show
 import sakuraba.saki.player.music.AudioDetailActivity
 import sakuraba.saki.player.music.R
@@ -49,7 +51,8 @@ class HomeFragment: BaseMainFragment() {
         _fragmentHomeBinding = FragmentHomeBinding.inflate(inflater)
 
         fragmentHome.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        recyclerViewAdapter = RecyclerViewAdapterUtil(activityInterface) { pos ->
+        recyclerViewAdapter = RecyclerViewAdapterUtil(ContextCompat.getDrawable(requireContext(), R.drawable.ic_music)!!.toBitmap()!!,
+            activityInterface) { pos ->
             activityInterface.onFragmentListItemClick(pos, activityInterface.audioInfoList[pos], activityInterface.audioInfoList)
         }
         val audioDetailActivityLauncher = registerForActivityResult(StartActivityForResult()) {

@@ -1,20 +1,19 @@
 package sakuraba.saki.player.music.ui.home.util
 
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import sakuraba.saki.player.music.R
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.util.MainActivityInterface
 import sakuraba.saki.player.music.util.ViewHolderUtil.bindHolder
 
-class RecyclerViewAdapterUtil(private val activityInterface: MainActivityInterface, selection: (pos: Int) -> Unit) {
+class RecyclerViewAdapterUtil(private val defaultBitmap: Bitmap, private val activityInterface: MainActivityInterface, selection: (pos: Int) -> Unit) {
 
     private lateinit var listener: (Int, RelativeLayout, ImageView) -> Unit
 
@@ -38,9 +37,7 @@ class RecyclerViewAdapterUtil(private val activityInterface: MainActivityInterfa
                 @Suppress("SetTextI18n")
                 summary.text = "$audioArtist - $audioAlbum"
                 image.setImageBitmap(
-                    activityInterface.audioBitmapMap[audioId]
-                        ?: activityInterface.bitmapMap[audioAlbumId]
-                        ?: ContextCompat.getDrawable(background.context, R.drawable.ic_music)?.toBitmap()
+                    activityInterface.audioBitmapMap[audioId] ?: activityInterface.bitmapMap[audioAlbumId] ?: defaultBitmap
                 )
                 image.transitionName = "${audioId}_image"
             }
