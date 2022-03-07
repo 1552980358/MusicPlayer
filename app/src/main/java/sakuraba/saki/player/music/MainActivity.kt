@@ -60,8 +60,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDE
 import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_INDEFINITE
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import lib.github1552980358.ktExtension.android.content.intent
 import lib.github1552980358.ktExtension.android.graphics.heightF
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
@@ -73,7 +74,6 @@ import lib.github1552980358.ktExtension.androidx.coordinatorlayout.widget.makeSn
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import lib.github1552980358.ktExtension.jvm.util.addInstance
-import lib.github1552980358.ktExtension.kotlinx.coroutines.ioScope
 import sakuraba.saki.player.music.BuildConfig.APPLICATION_ID
 import sakuraba.saki.player.music.base.BaseMediaControlActivity
 import sakuraba.saki.player.music.database.AudioDatabaseHelper
@@ -318,11 +318,7 @@ class MainActivity: BaseMediaControlActivity() {
                 if (audioDatabaseHelper.hasTask) {
                     return
                 }
-                io {
-                    compareDatabase()
-                    activityInterface.clearLists()
-                    launchProcess()
-                }
+                compareAndReload()
             }
         }
 
@@ -330,11 +326,7 @@ class MainActivity: BaseMediaControlActivity() {
             if (audioDatabaseHelper.hasTask) {
                 return@setRequestRefreshListener
             }
-            io {
-                compareDatabase()
-                activityInterface.clearLists()
-                launchProcess()
-            }
+            compareAndReload()
         }
 
         contentResolver.apply {
@@ -352,7 +344,7 @@ class MainActivity: BaseMediaControlActivity() {
         }
 
         when (ActivityCompat.checkSelfPermission(this@MainActivity, READ_EXTERNAL_STORAGE)) {
-            PERMISSION_GRANTED -> io { launchProcess() }
+            PERMISSION_GRANTED -> launchLoad()
             else -> requestPermission.launch(READ_EXTERNAL_STORAGE)
         }
 
@@ -432,21 +424,30 @@ class MainActivity: BaseMediaControlActivity() {
         audioDatabaseHelper.queryAllAudio(this)
     }
 
-    private suspend fun launchProcess() {
+    private fun compareAndReload() = io {
+        activityInterface.clearLists()
+        compareDatabase()
+        load()
+    }
 
-        val loadAudioArt40Dp = ioScope.async { loadAudioArt40Dp(activityInterface.audioBitmapMap) }
-        loadAudioArt40Dp.start()
+    private fun launchLoad() = io { load() }
 
-        val loadAlbumArts40Dp = ioScope.async { loadAlbumArts40Dp(activityInterface.bitmapMap) }
-        loadAlbumArts40Dp.start()
-
-        val loadPlaylist40Dp = ioScope.async { loadPlaylist40Dp(activityInterface.playlistMap) }
-        loadPlaylist40Dp.start()
-
-        queryDatabase().apply {
-            forEach {
-                Log.e("TAG", it.audioTitle)
+    private fun load() {
+        runBlocking {
+            launch {
+                loadImage()
+                loadDatabase()
+                ui { activityInterface.onLoadStageChange() }
             }
+            launch { loadPlaylist() }
+            launch { loadAlbum() }
+        }
+        ui { activityInterface.onCompleteLoading() }
+    }
+
+    private fun loadDatabase() {
+        Log.e(TAG, "loadDatabase")
+        queryDatabase().apply {
             activityInterface.audioInfoFullList.addAll(this)
             if (getBooleanSetting(R.string.key_audio_filter_size_enable)) {
                 tryOnly { removeAll { audioInfo -> audioInfo.audioSize < getIntSettingOrThrow(R.string.key_audio_filter_size_value) } }
@@ -463,19 +464,23 @@ class MainActivity: BaseMediaControlActivity() {
                 it.addAll(this)
             }
         }
+    }
 
-        ui { activityInterface.onLoadStageChange() }
+    private fun loadImage() = runBlocking {
+        Log.e(TAG, "loadImage")
+        launch { loadAudioArt40Dp(activityInterface.audioBitmapMap) }
+        launch { loadAlbumArts40Dp(activityInterface.bitmapMap) }
+        launch { loadPlaylist40Dp(activityInterface.playlistMap) }
+    }
 
+    private fun loadPlaylist() {
+        Log.e(TAG, "loadPlaylist")
         audioDatabaseHelper.queryAllPlaylist(activityInterface.playlistList)
         activityInterface.playlistList.forEach { audioDatabaseHelper.queryPlaylistContent(it, activityInterface.audioInfoList) }
+    }
 
-        loadAudioArt40Dp.await()
-        loadAlbumArts40Dp.await()
-        loadPlaylist40Dp.await()
-
-        ui { activityInterface.onCompleteLoading() }
-        activityInterface.refreshCompleted = true
-
+    private fun loadAlbum() {
+        Log.e(TAG, "loadAlbum")
         loadAlbumArtRaw(activityInterface.byteArrayMap)
         audioDatabaseHelper.queryMediaAlbum(activityInterface.albumList)
     }
