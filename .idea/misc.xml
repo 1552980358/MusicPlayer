@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3769230769230769" />
+        <entry key="..\:/MusicPlayer/app/src/main/res/drawable/activity_play_filter.xml" value="0.2375" />
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/bg_play_bottom_sheet.xml" value="0.22135416666666666" />
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/drawable_qq_music.xml" value="0.2935185185185185" />
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/drawable_select_fetch_radio_button.xml" value="0.3" />
@@ -17,6 +18,7 @@
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/ic_headset.xml" value="0.30462962962962964" />
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/ic_menu_camera.xml" value="0.22135416666666666" />
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/ic_menu_gallery.xml" value="0.22135416666666666" />
+        <entry key="..\:/MusicPlayer/app/src/main/res/drawable/ic_music.xml" value="0.2375" />
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/ic_netease.xml" value="0.2935185185185185" />
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/ic_option.xml" value="0.243" />
         <entry key="..\:/MusicPlayer/app/src/main/res/drawable/ic_pause.xml" value="0.2405" />
@@ -38,6 +40,7 @@
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/app_bar_main.xml" value="0.17831813576494426" />
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/content_album.xml" value="0.36666666666666664" />
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/content_bottom_sheet.xml" value="0.17831813576494426" />
+        <entry key="..\:/MusicPlayer/app/src/main/res/layout/content_main.xml" value="0.17831813576494426" />
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/content_play_bottom_sheet.xml" value="0.36666666666666664" />
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/dialog_fragment_add_playlist.xml" value="0.19927536231884058" />
         <entry key="..\:/MusicPlayer/app/src/main/res/layout/dialog_fragment_add_to_playlist.xml" value="0.36666666666666664" />
