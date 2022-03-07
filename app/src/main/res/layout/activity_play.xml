@@ -1,161 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/coordinator_layout"
-    tools:context=".PlayActivity">
-    
-    <LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="androidx.databinding.adapters.Converters"/>
+        <variable
+            name="backgroundColor"
+            type="Integer" />
+        <variable
+            name="controlButtonTintColor"
+            type="Integer" />
+        <variable
+            name="duration"
+            type="Long" />
+        <variable
+            name="progress"
+            type="Long" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?android:attr/selectableItemBackground">
-        
-        <RelativeLayout
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent">
-    
-            <ImageView
-                android:layout_height="wrap_content"
-                android:id="@+id/image_view"
-                android:layout_width="match_parent"
-                android:transitionName="image_view"
-                tools:ignore="ContentDescription" />
+        app:backgroundColor="@{backgroundColor}"
+        tools:context=".PlayActivity">
 
-            <sakuraba.saki.player.music.widget.LyricLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/lyric_layout"
-                android:visibility="gone"/>
-    
-            <RelativeLayout
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:fitsSystemWindows="true"
-                android:id="@+id/relative_layout_toolbar_root"
-                android:background="@drawable/activity_play_filter">
-
-                <androidx.appcompat.widget.Toolbar
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:id="@+id/toolbar"
-                    app:menu="@menu/menu_play"
-                    android:theme="@style/Theme.MusicPlayer.AppBarOverlay"
-                    app:popupTheme="@style/Theme.MusicPlayer.PopupOverlay"/>
-            </RelativeLayout>
-        </RelativeLayout>
-    
-        <RelativeLayout
-            android:layout_height="@dimen/play_controller_seekbar_height"
-            android:layout_width="match_parent"
-            android:id="@+id/relative_layout">
-            
-            <sakuraba.saki.player.music.view.DurationView
-                android:layout_width="40dp"
-                android:layout_height="match_parent"
-                android:id="@+id/durationView_progress" />
-    
-            <sakuraba.saki.player.music.view.DurationView
-                android:layout_width="40dp"
-                android:layout_height="match_parent"
-                android:id="@+id/durationView_duration"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true" />
-
-            <sakuraba.saki.player.music.widget.PlaySeekbar
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:id="@+id/play_seek_bar"
-                android:layout_toEndOf="@id/durationView_progress"
-                android:layout_toStartOf="@+id/durationView_duration"/>
-    
-        </RelativeLayout>
-        
         <LinearLayout
-            android:layout_height="@dimen/play_controller_height"
+            android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:baselineAligned="false">
-            
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground">
+
             <RelativeLayout
-                android:layout_height="match_parent"
-                android:layout_width="0dp"
-                android:layout_weight="2">
-                
-                <ImageButton
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent">
+
+                <ImageView
                     android:layout_height="wrap_content"
-                    android:id="@+id/image_button_play_mode"
-                    android:layout_width="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_list_cycle"
+                    android:id="@+id/image_view"
+                    android:layout_width="match_parent"
+                    android:transitionName="image_view"
                     tools:ignore="ContentDescription" />
 
-            </RelativeLayout>
-            
-            <RelativeLayout
-                android:layout_height="match_parent"
-                android:layout_width="0dp"
-                android:layout_weight="3">
-                
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:layout_width="wrap_content"
+                <sakuraba.saki.player.music.widget.LyricLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/floating_action_button"
-                    android:backgroundTint="@color/white"
-                    app:borderWidth="0dp"
-                    android:layout_centerInParent="true"
-                    android:layout_margin="15dp"
-                    tools:ignore="ContentDescription" />
-                
-                <ImageButton
-                    android:layout_height="24dp"
-                    android:id="@+id/image_button_prev"
-                    android:layout_width="24dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:layout_toStartOf="@id/floating_action_button"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_prev"
-                    tools:ignore="ContentDescription" />
-    
-                <ImageButton
-                    android:layout_height="24dp"
-                    android:id="@+id/image_button_next"
-                    android:layout_width="24dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:layout_toEndOf="@id/floating_action_button"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_next"
-                    tools:ignore="ContentDescription" />
-            </RelativeLayout>
-    
-            <RelativeLayout
-                android:layout_height="match_parent"
-                android:layout_width="0dp"
-                android:layout_weight="2">
+                    android:id="@+id/lyric_layout"
+                    android:visibility="gone"
+                    app:progress="@{progress}"/>
 
-                <ImageButton
-                    android:id="@+id/image_button_lyric"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_lyric"
-                    tools:ignore="ContentDescription" />
-    
+                    android:layout_width="match_parent"
+                    android:fitsSystemWindows="true"
+                    android:id="@+id/relative_layout_toolbar_root"
+                    android:background="@drawable/activity_play_filter">
+
+                    <androidx.appcompat.widget.Toolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:theme="@style/Theme.MusicPlayer.AppBarOverlay"
+                        app:menu="@menu/menu_play"
+                        app:popupTheme="@style/Theme.MusicPlayer.PopupOverlay" />
+                </RelativeLayout>
             </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_height="@dimen/play_controller_seekbar_height"
+                android:layout_width="match_parent"
+                android:id="@+id/relative_layout">
+
+                <sakuraba.saki.player.music.view.DurationView
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/durationView_progress"
+                    app:duration="@{progress}"/>
+
+                <sakuraba.saki.player.music.view.DurationView
+                    android:id="@+id/durationView_duration"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    app:duration="@{duration}"/>
+
+                <sakuraba.saki.player.music.widget.PlaySeekbar
+                    android:id="@+id/play_seek_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toStartOf="@+id/durationView_duration"
+                    android:layout_toEndOf="@id/durationView_progress"
+                    app:max="@{duration}"
+                    app:progress="@{progress}" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_height="@dimen/play_controller_height"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
+
+                <RelativeLayout
+                    android:layout_height="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight="2">
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/image_button_play_mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_list_cycle"
+                        app:tintColor="@{controlButtonTintColor}"
+                        tools:ignore="ContentDescription" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_height="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight="3">
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/floating_action_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:backgroundTint="@color/white"
+                        app:borderWidth="0dp"
+                        tools:ignore="ContentDescription" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/image_button_prev"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/floating_action_button"
+                        android:background="?attr/selectableItemBackground"
+                        android:src="@drawable/ic_prev"
+                        app:tintColor="@{controlButtonTintColor}"
+                        tools:ignore="ContentDescription" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/image_button_next"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@id/floating_action_button"
+                        android:background="?attr/selectableItemBackground"
+                        android:src="@drawable/ic_next"
+                        app:tintColor="@{controlButtonTintColor}"
+                        tools:ignore="ContentDescription" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_height="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight="2">
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/image_button_lyric"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_lyric"
+                        app:tintColor="@{controlButtonTintColor}"
+                        tools:ignore="ContentDescription" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
-    
-    <include
-        android:id="@+id/content_play_bottom_sheet"
-        layout="@layout/content_play_bottom_sheet" />
+        <include
+            android:id="@+id/content_play_bottom_sheet"
+            layout="@layout/content_play_bottom_sheet" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

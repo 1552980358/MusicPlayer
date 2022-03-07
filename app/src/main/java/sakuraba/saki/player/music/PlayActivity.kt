@@ -43,6 +43,7 @@ import androidx.annotation.ColorInt
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -91,9 +92,10 @@ import sakuraba.saki.player.music.util.Constants.ANIMATION_DURATION
 import sakuraba.saki.player.music.util.Constants.ANIMATION_DURATION_LONG
 import sakuraba.saki.player.music.util.Constants.EXTRAS_AUDIO_INFO_LIST
 import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
-import sakuraba.saki.player.music.util.CoroutineUtil.delay100ms
+import sakuraba.saki.player.music.util.CoroutineUtil.delay500ms
 import sakuraba.saki.player.music.util.CoroutineUtil.io
-import sakuraba.saki.player.music.util.CoroutineUtil.ms_200_int
+import sakuraba.saki.player.music.util.CoroutineUtil.ms_500_int
+import sakuraba.saki.player.music.util.CoroutineUtil.ms_500_long
 import sakuraba.saki.player.music.util.CoroutineUtil.ui
 import sakuraba.saki.player.music.util.LifeStateConstant.ON_BACK_PRESSED
 import sakuraba.saki.player.music.util.SystemUtil.navigationBarHeight
@@ -103,9 +105,8 @@ class PlayActivity: BaseMediaControlActivity() {
     companion object {
         private const val TAG = "PlayActivity"
     }
-    
-    private var _activityPlayBinding: ActivityPlayBinding? = null
-    private val activityPlay get() = _activityPlayBinding!!
+
+    private lateinit var activityPlay: ActivityPlayBinding
     private lateinit var viewModel: PlayViewModel
 
     private val contentPlayBottomSheet get() = activityPlay.contentPlayBottomSheet
@@ -164,8 +165,7 @@ class PlayActivity: BaseMediaControlActivity() {
         super.onCreate(savedInstanceState)
         
         viewModel = ViewModelProvider(this)[PlayViewModel::class.java]
-        _activityPlayBinding = ActivityPlayBinding.inflate(layoutInflater)
-        setContentView(activityPlay.root)
+        activityPlay = DataBindingUtil.setContentView(this, R.layout.activity_play)
         
         setSupportActionBar(activityPlay.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -212,17 +212,7 @@ class PlayActivity: BaseMediaControlActivity() {
                 resources.getDimensionPixelSize(R.dimen.play_controller_seekbar_height)
         behavior.isHideable = true
         behavior.state = STATE_HIDDEN
-        
-        viewModel.progress.observe(this) { newProgress ->
-            if (!activityPlay.playSeekBar.isUserTouched) {
-                activityPlay.playSeekBar.progress = newProgress
-            }
-            activityPlay.lyricLayout.updatePosition(newProgress)
-        }
-        viewModel.duration.observe(this) { newDuration ->
-            activityPlay.playSeekBar.max = newDuration
-            activityPlay.durationViewDuration.duration = newDuration
-        }
+
         viewModel.state.observe(this) { newState ->
             activityPlay.floatingActionButton.apply {
                 when (newState) {
@@ -429,8 +419,8 @@ class PlayActivity: BaseMediaControlActivity() {
                         job?.cancel()
                         audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
                         activityPlay.lyricLayout.updateLyric(audioInfo.audioId)
-                        viewModel.updateDuration(audioInfo.audioDuration)
-                        viewModel.updateProgress(resultData.getLong(Constants.EXTRAS_PROGRESS))
+                        activityPlay.duration = audioInfo.audioDuration
+                        activityPlay.progress = resultData.getLong(Constants.EXTRAS_PROGRESS)
                         viewModel.updateState(resultData.getInt(EXTRAS_STATUS))
                         viewModel.updatePlayMode(resultData.getInt(EXTRAS_PLAY_MODE))
                         when (viewModel.stateValue) {
@@ -449,16 +439,16 @@ class PlayActivity: BaseMediaControlActivity() {
     
     @Suppress("DuplicatedCode")
     private fun getProgressSyncJob(progress: Long) = io {
-        val currentProgress = delayForCorrection(progress)
-        ui { viewModel.updateProgress(currentProgress) }
-        while (isPlaying) {
-            delay100ms()
-            ui { viewModel.updateProgress(viewModel.progressValue + ms_200_int) }
-        }
+        var currentProgress = delayForCorrection(progress)
+        do {
+            ui { activityPlay.progress = currentProgress }
+            delay500ms()
+            currentProgress += ms_500_long
+        } while (isPlaying)
     }
     
     private suspend fun delayForCorrection(progress: Long): Long {
-        val diff = progress % 200
+        val diff = progress % ms_500_int
         if (diff != 0L) {
             delay(diff)
         }
@@ -493,8 +483,7 @@ class PlayActivity: BaseMediaControlActivity() {
     override fun onMediaControllerMetadataChanged(metadata: MediaMetadataCompat?) {
         metadata ?: return
         io { updateImage(metadata.getString(METADATA_KEY_MEDIA_ID), metadata.getString(METADATA_KEY_ALBUM_ART_URI)) }
-        viewModel.updateDuration(metadata.getLong(METADATA_KEY_DURATION))
-
+        activityPlay.duration = metadata.getLong(METADATA_KEY_DURATION)
         ValueAnimator.ofFloat(1F, 0F).apply {
             duration = ANIMATION_DURATION_LONG
             addUpdateListener {
@@ -538,7 +527,7 @@ class PlayActivity: BaseMediaControlActivity() {
             ValueAnimator.ofArgb(activityBackgroundColor, backgroundColor).apply {
                 duration = ANIMATION_DURATION_LONG
                 addUpdateListener {
-                    activityPlay.root.setBackgroundColor(animatedValue as Int)
+                    activityPlay.backgroundColor = animatedValue as Int
                 }
                 ui { start() }
             }
@@ -594,10 +583,11 @@ class PlayActivity: BaseMediaControlActivity() {
     }
     
     private fun updateOppositeColor(@ColorInt newColor: Int) {
-        activityPlay.imageButtonNext.drawable.setTint(newColor)
-        activityPlay.imageButtonPrev.drawable.setTint(newColor)
-        activityPlay.imageButtonPlayMode.drawable.setTint(newColor)
-        activityPlay.imageButtonLyric.drawable.setTint(newColor)
+        // activityPlay.imageButtonNext.drawable.setTint(newColor)
+        // activityPlay.imageButtonPrev.drawable.setTint(newColor)
+        // activityPlay.imageButtonPlayMode.drawable.setTint(newColor)
+        // activityPlay.imageButtonLyric.drawable.setTint(newColor)
+        activityPlay.controlButtonTintColor = newColor
         activityPlay.lyricLayout.updateStrokeColor(newColor)
     }
     
@@ -641,8 +631,8 @@ class PlayActivity: BaseMediaControlActivity() {
                     job?.cancel()
                     audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
                     activityPlay.lyricLayout.updateLyric(audioInfo.audioId)
-                    viewModel.updateDuration(audioInfo.audioDuration)
-                    viewModel.updateProgress(resultData.getLong(Constants.EXTRAS_PROGRESS))
+                    activityPlay.duration = audioInfo.audioDuration
+                    activityPlay.progress = resultData.getLong(Constants.EXTRAS_PROGRESS)
                     viewModel.updateState(resultData.getInt(EXTRAS_STATUS))
                     when (viewModel.stateValue) {
                         STATE_PLAYING -> {
@@ -661,7 +651,6 @@ class PlayActivity: BaseMediaControlActivity() {
         unregisterReceiver(broadcastReceiver)
         activityPlay.lyricLayout.unregisterBroadcastReceiver()
         super.onDestroy()
-        _activityPlayBinding = null
     }
     
 }
