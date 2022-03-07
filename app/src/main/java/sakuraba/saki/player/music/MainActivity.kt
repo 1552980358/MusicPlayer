@@ -49,6 +49,7 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -77,11 +78,11 @@ import lib.github1552980358.ktExtension.jvm.util.addInstance
 import sakuraba.saki.player.music.BuildConfig.APPLICATION_ID
 import sakuraba.saki.player.music.base.BaseMediaControlActivity
 import sakuraba.saki.player.music.database.AudioDatabaseHelper
-import sakuraba.saki.player.music.databinding.ActivityMainBinding
 import sakuraba.saki.player.music.service.util.AudioInfo
 import sakuraba.saki.player.music.util.MainActivityInterface
 import sakuraba.saki.player.music.base.BaseMainFragment
 import sakuraba.saki.player.music.base.BasePreferenceFragmentCompat
+import sakuraba.saki.player.music.databinding.ActivityMainBinding
 import sakuraba.saki.player.music.ui.webDav.webDavDirectory.WebDavDirectoryFragment
 import sakuraba.saki.player.music.util.ActivityUtil.setLightNavigationBar
 import sakuraba.saki.player.music.util.BitmapUtil.loadAlbumArt
@@ -622,7 +623,7 @@ class MainActivity: BaseMediaControlActivity() {
                                 drawable = TransitionDrawable(arrayOf(lastDrawable, drawable))
                             }
                             ui {
-                                imageView.setImageDrawable(drawable)
+                                contentBottomSheet.imageViewDrawable = drawable
                                 lastDrawable = when (drawable) {
                                     is TransitionDrawable -> {
                                         drawable.startTransition(ANIMATION_DURATION)
@@ -712,7 +713,7 @@ class MainActivity: BaseMediaControlActivity() {
                 drawable = TransitionDrawable(arrayOf(lastDrawable, drawable))
             }
             ui {
-                imageView.setImageDrawable(drawable)
+                contentBottomSheet.imageViewDrawable = drawable
                 lastDrawable = when (drawable) {
                     is TransitionDrawable -> {
                         drawable.startTransition(ANIMATION_DURATION)
@@ -791,7 +792,7 @@ class MainActivity: BaseMediaControlActivity() {
                             drawable = TransitionDrawable(arrayOf(lastDrawable, drawable))
                         }
                         ui {
-                            imageView.setImageDrawable(drawable)
+                            contentBottomSheet.imageViewDrawable = drawable
                             lastDrawable = when (drawable) {
                                 is TransitionDrawable -> {
                                     drawable.startTransition(ANIMATION_DURATION)
