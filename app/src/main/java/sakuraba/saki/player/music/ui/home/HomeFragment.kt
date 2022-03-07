@@ -110,9 +110,7 @@ class HomeFragment: BaseMainFragment() {
             }
         }
 
-        if (activityInterface.refreshCompleted) {
-            fragmentHome.root.isRefreshing = false
-        }
+        fragmentHome.root.isRefreshing = true
 
         navController = findNavController()
 
