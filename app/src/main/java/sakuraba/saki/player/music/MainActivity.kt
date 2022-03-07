@@ -118,9 +118,8 @@ class MainActivity: BaseMediaControlActivity() {
     }
     
     private lateinit var appBarConfiguration: AppBarConfiguration
-    
-    private var _activityMainMainBinding: ActivityMainBinding? = null
-    private val activityMain get() = _activityMainMainBinding!!
+
+    private lateinit var activityMain: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
     
     private lateinit var behavior: BottomSheetBehavior<RelativeLayout>
@@ -240,8 +239,7 @@ class MainActivity: BaseMediaControlActivity() {
         }
         
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        _activityMainMainBinding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(activityMain.root)
+        activityMain = DataBindingUtil.setContentView(this, R.layout.activity_main) // ActivityMainBinding.inflate(layoutInflater)
         setSupportActionBar(toolbar)
 
         /**
@@ -849,7 +847,6 @@ class MainActivity: BaseMediaControlActivity() {
     override fun onDestroy() {
         supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks)
         super.onDestroy()
-        _activityMainMainBinding = null
     }
     
     override fun onBackPressed() {
