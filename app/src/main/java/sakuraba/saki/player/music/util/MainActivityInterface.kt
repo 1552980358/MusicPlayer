@@ -23,8 +23,6 @@ class MainActivityInterface(private val fragmentListItem: (Int, AudioInfo?, Arra
 
     val audioInfoList = arrayListOf<AudioInfo>()
 
-    var refreshCompleted = false
-
     var hasAudioInfoListUpdated = false
 
     private lateinit var loadingStageChange: () -> Unit
