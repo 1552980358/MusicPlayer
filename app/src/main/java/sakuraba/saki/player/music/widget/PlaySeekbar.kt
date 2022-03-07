@@ -140,5 +140,11 @@ class PlaySeekbar: View {
         canvas.drawArc(drawX - radius - 1, 0F, drawX + radius, heightF, -90F, 180F, true, paintProgress)
         canvas.drawCircle(drawX, height / 2F, radius / 2, paintCircle)
     }
+
+    fun updateProgressDataBinding(progress: Long) {
+        if (!isUserTouched) {
+            this.progress = progress
+        }
+    }
     
 }
