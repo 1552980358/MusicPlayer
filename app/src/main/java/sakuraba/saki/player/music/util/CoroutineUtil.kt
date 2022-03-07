@@ -11,9 +11,9 @@ object CoroutineUtil {
     const val ms_1000_int = 1000
     suspend fun delay1second() = delay(ms_1000_long)
 
-    const val ms_200_long = 200L
-    const val ms_200_int = 200
-    suspend fun delay100ms() = delay(ms_200_long)
+    const val ms_500_long = 500L
+    const val ms_500_int = 500
+    suspend fun delay500ms() = delay(ms_500_long)
 
     val ioDispatcher get() = CoroutineScope(IO)
 
