@@ -1,58 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/home_bottom_sheet_height"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-    android:background="@color/white"
-    android:elevation="5dp"
-    tools:showIn="@layout/app_bar_main">
-    
-    <sakuraba.saki.player.music.widget.PlayProgressBar
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:id="@+id/play_progress_bar"
-        style="?android:attr/progressBarStyleHorizontal" />
-    
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="imageViewDrawable"
+            type="android.graphics.drawable.Drawable" />
+    </data>
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/relative_layout"
-        android:background="?attr/selectableItemBackground"
-        android:padding="10dp">
-        
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:id="@+id/image_view"
-            android:layout_marginEnd="10dp"
-            android:transitionName="image_view"
-            tools:ignore="ContentDescription" />
-    
-        <ImageButton
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:id="@+id/image_button"
-            android:background="?attr/selectableItemBackground"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="10dp"
-            tools:ignore="ContentDescription" />
-    
-        <TextView
+        android:layout_height="@dimen/home_bottom_sheet_height"
+        android:id="@+id/root"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        android:background="@color/white"
+        android:elevation="5dp"
+        tools:showIn="@layout/app_bar_main">
+
+        <sakuraba.saki.player.music.widget.PlayProgressBar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/text_view"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textSize="15sp"
-            android:textColor="@color/black"
-            android:layout_toEndOf="@id/image_view"
-            android:layout_toStartOf="@id/image_button"
-            android:layout_centerVertical="true"/>
-        
+            android:layout_height="5dp"
+            android:id="@+id/play_progress_bar"
+            style="?android:attr/progressBarStyleHorizontal" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/relative_layout"
+            android:background="?attr/selectableItemBackground"
+            android:padding="10dp">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@{imageViewDrawable}"
+                android:id="@+id/image_view"
+                android:layout_marginEnd="10dp"
+                android:transitionName="image_view"
+                tools:ignore="ContentDescription" />
+
+            <ImageButton
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:id="@+id/image_button"
+                android:background="?attr/selectableItemBackground"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_view"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:layout_toEndOf="@id/image_view"
+                android:layout_toStartOf="@id/image_button"
+                android:layout_centerVertical="true"/>
+
+        </RelativeLayout>
+
     </RelativeLayout>
-    
-</RelativeLayout>
+
+</layout>
