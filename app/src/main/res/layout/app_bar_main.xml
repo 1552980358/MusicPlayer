@@ -18,7 +18,7 @@
             android:layout_height="?attr/actionBarSize"
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:background="?attr/colorPrimary"
+            android:background="@color/color_toolbar"
             app:popupTheme="@style/Theme.MusicPlayer.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>
