@@ -6,37 +6,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_nav_music"
+            android:icon="@drawable/ic_menu_camera"
             android:title="@string/menu_home" />
-        <item
-            android:id="@+id/nav_playlist"
-            android:icon="@drawable/ic_playlist"
-            android:title="@string/menu_playlist"/>
-        <item
-            android:id="@+id/nav_album"
-            android:icon="@drawable/ic_nav_album"
-            android:title="@string/menu_album" />
     </group>
-
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_search"
-            android:icon="@drawable/ic_menu_search"
-            android:title="@string/menu_search" />
-    </group>
-
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_audio_effect"
-            android:icon="@drawable/ic_audio_effect"
-            android:title="@string/menu_audio_effect" />
-    </group>
-
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_web_dav"
-            android:icon="@drawable/ic_cloud"
-            android:title="@string/menu_webdav" />
-    </group>
-    
 </menu>

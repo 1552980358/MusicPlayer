@@ -1,23 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="@dimen/nav_header_height"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/nav_header_start"
+    android:layout_height="@dimen/nav_header_height"
+    android:background="@drawable/side_nav_bar"
+    android:gravity="bottom"
+    android:orientation="vertical"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
-    
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/relative_layout"
-        android:background="?android:attr/selectableItemBackground">
-    
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/nav_header_icon_size"
-            android:layout_height="@dimen/nav_header_icon_size"
-            android:layout_centerInParent="true"
-            android:src="@drawable/ic_nav_icon" />
 
-    </RelativeLayout>
-    
-</RelativeLayout>
+
+
+</LinearLayout>

@@ -9,7 +9,7 @@ android {
     compileSdk = 32
 
     defaultConfig {
-        applicationId = "sakuraba.saki.player.music"
+        applicationId = "projekt.cloud.piece.music.player"
         minSdk = 21
         targetSdk = 32
         versionCode = 1
