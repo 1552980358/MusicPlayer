@@ -6,6 +6,7 @@ import androidx.appcompat.widget.AppCompatImageButton
 import androidx.databinding.BindingAdapter
 import sakuraba.saki.player.music.view.DurationView
 import sakuraba.saki.player.music.widget.LyricLayout
+import sakuraba.saki.player.music.widget.PlayProgressBar
 import sakuraba.saki.player.music.widget.PlaySeekbar
 
 object DataBindingUtil {
@@ -44,6 +45,12 @@ object DataBindingUtil {
     @BindingAdapter("app:progress")
     fun LyricLayout.updateProgress(progress: Long) {
         updatePosition(progress)
+    }
+
+    @JvmStatic
+    @BindingAdapter("app:progress")
+    fun PlayProgressBar.updateProgress(progress: Long) {
+        this.progress = progress
     }
 
 }
