@@ -6,14 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class MainViewModel: ViewModel() {
-    
-    private val _progress = MutableLiveData<Long>()
-    fun updateProgress(newProgress: Long) {
-        _progress.value = newProgress
-    }
-    val progress get() = _progress as LiveData<Long>
-    val progressValue get() = _progress.value!!
-    
+
     private val _state = MutableLiveData<Int>()
     fun updateNewState(newState: Int) {
         if (newState != STATE_BUFFERING && _state.value != newState) {
