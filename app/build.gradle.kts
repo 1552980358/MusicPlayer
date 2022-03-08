@@ -60,6 +60,11 @@ dependencies {
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
     implementation("androidx.preference:preference-ktx:1.2.0")
     kapt("androidx.databinding:databinding-compiler-common:${rootProject.extra["gradle_version"]}")
+    val roomVersion = "2.4.2"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+    // To use Kotlin annotation processing tool (kapt)
+    kapt("androidx.room:room-compiler:$roomVersion")
 
     implementation("com.google.android.material:material:1.5.0")
     val exoPlayerVersion = "2.16.1"
