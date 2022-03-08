@@ -65,6 +65,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import lib.github1552980358.ktExtension.android.content.intent
+import lib.github1552980358.ktExtension.android.content.isSystemDarkMode
 import lib.github1552980358.ktExtension.android.graphics.heightF
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.android.graphics.toDrawable
@@ -76,6 +77,8 @@ import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import lib.github1552980358.ktExtension.jvm.util.addInstance
 import sakuraba.saki.player.music.BuildConfig.APPLICATION_ID
+import sakuraba.saki.player.music.ThemeTransitionActivity.Companion.EXTRA_IS_NIGHT
+import sakuraba.saki.player.music.ThemeTransitionActivity.Companion.setScreenshot
 import sakuraba.saki.player.music.base.BaseMediaControlActivity
 import sakuraba.saki.player.music.database.AudioDatabaseHelper
 import sakuraba.saki.player.music.service.util.AudioInfo
@@ -111,11 +114,23 @@ import sakuraba.saki.player.music.util.CoroutineUtil.ui
 import sakuraba.saki.player.music.util.MediaAlbum
 import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
 import sakuraba.saki.player.music.util.SettingUtil.getIntSettingOrThrow
+import sakuraba.saki.player.music.util.ViewUtil.screenshot
 
 class MainActivity: BaseMediaControlActivity() {
     
     private companion object {
         const val TAG = "MainActivity"
+
+        var _isDarkMode: Boolean? = null
+        fun initialIsDarkMode(isDarkMode: Boolean) {
+            if (_isDarkMode == null) {
+                _isDarkMode = isDarkMode
+            }
+        }
+        fun updateDarkMode() {
+            _isDarkMode = !_isDarkMode!!
+        }
+        val isDarkMode get() = _isDarkMode!!
     }
     
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -209,7 +224,6 @@ class MainActivity: BaseMediaControlActivity() {
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setLightNavigationBar()
-        window.navigationBarColor = WHITE
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
 
@@ -350,6 +364,19 @@ class MainActivity: BaseMediaControlActivity() {
         defaultCoverDrawable =
             ContextCompat.getDrawable(this@MainActivity, R.drawable.ic_music)!!.toBitmap()
                 .toDrawable(this@MainActivity)!!
+
+        initialIsDarkMode(isSystemDarkMode)
+
+        activityMain.navView.getHeaderView(0).findViewById<RelativeLayout>(R.id.relative_layout).setOnClickListener {
+            updateDarkMode()
+            activityMain.root.screenshot(window) { bitmap ->
+                setScreenshot(bitmap)
+                startActivity(intent(this@MainActivity, ThemeTransitionActivity::class.java) {
+                    putExtra(EXTRA_IS_NIGHT, isDarkMode)
+                })
+                overridePendingTransition(0, 0)
+            }
+        }
     }
 
     private fun scanSystemDatabase() = arrayListOf<AudioInfo>().apply {
