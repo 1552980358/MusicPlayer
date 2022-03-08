@@ -1,4 +1,4 @@
-package sakuraba.saki.player.music
+package sakuraba.saki.player.music.base
 
 import android.os.Bundle
 import android.os.PersistableBundle

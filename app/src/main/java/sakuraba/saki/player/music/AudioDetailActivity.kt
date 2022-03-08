@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import sakuraba.saki.player.music.base.BaseThemeAppCompatActivity
 import sakuraba.saki.player.music.databinding.ActivityAudioDetailBinding
 import sakuraba.saki.player.music.ui.audioDetail.AudioDetailFragment
 import sakuraba.saki.player.music.ui.audioDetail.lyricView.LyricViewFragment
