@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.MusicPlayer.NoActionBar.MainActivity" parent="Theme.MusicPlayer.NoActionBar">
-
         <item name="android:windowSplashScreenBackground">@color/purple_500</item>
-
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-
+        <item name="android:navigationBarColor">@color/white</item>
     </style>
 
 </resources>
