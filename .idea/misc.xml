@@ -15,6 +15,10 @@
         <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/layout/nav_header_main.xml" value="0.18802083333333333" />
         <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/menu/activity_main_drawer.xml" value="0.18802083333333333" />
         <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/menu/main.xml" value="0.18802083333333333" />
+        <entry key="..\:/Projects/Cloud-Piece/MusicPlayer/app/src/main/res/drawable/ic_music.xml" value="0.1" />
+        <entry key="..\:/Projects/Cloud-Piece/MusicPlayer/app/src/main/res/drawable/ic_option_menu.xml" value="0.1" />
+        <entry key="..\:/Projects/Cloud-Piece/MusicPlayer/app/src/main/res/layout/fragment_home.xml" value="0.21666666666666667" />
+        <entry key="..\:/Projects/Cloud-Piece/MusicPlayer/app/src/main/res/layout/layout_home_recycler_view.xml" value="0.6" />
       </map>
     </option>
   </component>
