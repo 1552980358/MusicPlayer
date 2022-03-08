@@ -1,8 +1,10 @@
 package projekt.cloud.piece.music.player
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.content.Context
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Bitmap
+import android.graphics.Bitmap.createBitmap
 import android.graphics.Matrix
 import android.os.Bundle
 import android.provider.MediaStore
@@ -16,7 +18,9 @@ import android.provider.MediaStore.Audio.AudioColumns.SIZE
 import android.provider.MediaStore.Audio.AudioColumns.TITLE
 import android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 import android.provider.MediaStore.MediaColumns.DURATION
+import android.util.Log
 import android.view.Menu
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -30,10 +34,14 @@ import androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.room.Room.databaseBuilder
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import lib.github1552980358.ktExtension.android.graphics.heightF
 import lib.github1552980358.ktExtension.android.graphics.widthF
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
+import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
+import projekt.cloud.piece.music.player.base.BaseMainFragment
 import projekt.cloud.piece.music.player.database.AudioDatabase
 import projekt.cloud.piece.music.player.database.AudioDatabase.Companion.DATABASE_NAME
 import projekt.cloud.piece.music.player.database.item.AlbumItem
@@ -41,6 +49,9 @@ import projekt.cloud.piece.music.player.database.item.ArtistItem
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.ActivityMainBinding
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArt
+import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArts40Dp
+import projekt.cloud.piece.music.player.util.ImageUtil.loadAudioArt40Dp
+import projekt.cloud.piece.music.player.util.ImageUtil.loadPlaylist40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.writeAlbumArt40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.writeAlbumArtRaw
 import projekt.cloud.piece.music.player.util.MainActivityInterface
@@ -54,8 +65,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
 
     private lateinit var activityInterface: MainActivityInterface
-    private val albumByteArrayRawMap get() = activityInterface.albumByteArrayRawMap
     private val albumBitmap40DpMap get() = activityInterface.albumBitmap40DpMap
+    private val audioBitmap40DpMap = activityInterface.audioBitmap40DpMap
+    private val playlistBitmap40DpMap = activityInterface.playlistBitmap40DpMap
 
     private lateinit var audioDatabase: AudioDatabase
 
@@ -132,7 +144,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         when (checkSelfPermission(this, READ_EXTERNAL_STORAGE)) {
-            PERMISSION_GRANTED -> {}
+            PERMISSION_GRANTED -> launchApplication()
             else -> requestPermission.launch(READ_EXTERNAL_STORAGE)
         }
 
@@ -146,9 +158,7 @@ class MainActivity : AppCompatActivity() {
         initialImage(albumList)
     }
 
-    private fun launchApplication() = io {
-        loadDatabase()
-    }
+    private fun launchApplication() = io { loadContent() }
 
     private fun loadFromDatabase(audioList: ArrayList<AudioItem>, albumList: ArrayList<AlbumItem>, artistList: ArrayList<ArtistItem>) {
         querySystemDatabase(audioList, albumList, artistList)
@@ -163,10 +173,14 @@ class MainActivity : AppCompatActivity() {
         val bitmapSize = resources.getDimensionPixelSize(R.dimen.dp_40)
         for (albumItem in albumList) {
             bitmap = tryRun { loadAlbumArt(albumItem.id) } ?: continue
-            albumByteArrayRawMap[albumItem.id] = writeAlbumArtRaw(albumItem.id, bitmap)
+            // albumByteArrayRawMap[albumItem.id] = writeAlbumArtRaw(albumItem.id, bitmap)
+            writeAlbumArtRaw(albumItem.id, bitmap)
             matrix.apply { setScale(bitmapSize / bitmap.widthF, bitmapSize / bitmap.heightF) }
-            writeAlbumArt40Dp(albumItem.id, bitmap)
-            albumBitmap40DpMap[albumItem.id] = bitmap
+            createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, false).apply {
+                writeAlbumArt40Dp(albumItem.id, this)
+                albumBitmap40DpMap[albumItem.id] = this
+            }
+            bitmap.recycle()
         }
     }
 
@@ -204,10 +218,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadDatabase() {
-        activityInterface.audioList = audioDatabase.audio.query()
-        // activityInterface.artistList = audioDatabase.artist.query()
-        activityInterface.albumList = audioDatabase.album.query()
+    private fun loadContent() {
+        runBlocking {
+            launch { activityInterface.audioList = audioDatabase.audio.query() }
+            launch { activityInterface.albumList = audioDatabase.album.query() }
+            launch { activityInterface.artistList = audioDatabase.artist.query() }
+        }
+        ui { activityInterface.refreshStageChanged() }
+        runBlocking {
+            launch { loadBitmap() }
+            launch { activityInterface.playlistList = audioDatabase.playlist.query() }
+        }
+        ui { activityInterface.refreshCompleted() }
+    }
+
+    private fun loadBitmap() {
+        io { loadAudioArt40Dp(audioBitmap40DpMap) }
+        io { loadAlbumArts40Dp(albumBitmap40DpMap) }
+        loadPlaylist40Dp(playlistBitmap40DpMap)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
