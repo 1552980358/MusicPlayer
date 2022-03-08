@@ -58,7 +58,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        activityInterface = MainActivityInterface()
+        activityInterface = MainActivityInterface(
+            itemClick = {
+
+            },
+            requestRefresh = {
+
+            }
+        )
 
         super.onCreate(savedInstanceState)
 
