@@ -4,6 +4,7 @@
 
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="nav_header_icon_size">72dp</dimen>
     
     <dimen name="home_recycler_view_height">60dp</dimen>
     <dimen name="home_recycler_view_padding">10dp</dimen>
