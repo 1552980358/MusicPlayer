@@ -8,6 +8,9 @@
         <variable
             name="imageViewDrawable"
             type="android.graphics.drawable.Drawable" />
+        <variable
+            name="progress"
+            type="Long" />
     </data>
 
     <RelativeLayout
@@ -23,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="5dp"
             android:id="@+id/play_progress_bar"
+            app:progress="@{progress}"
             style="?android:attr/progressBarStyleHorizontal" />
 
         <RelativeLayout
