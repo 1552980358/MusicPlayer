@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="color_background">@color/black</color>
+    <color name="color_background">@color/dark_on_primary</color>
     <color name="color_title">@color/white</color>
 
     <color name="color_visualizer">@color/white</color>
