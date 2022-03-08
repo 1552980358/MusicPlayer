@@ -1,4 +1,7 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="nav_header_height">176dp</dimen>
+
+    <dimen name="dp_40">40dp</dimen>
+
 </resources>
