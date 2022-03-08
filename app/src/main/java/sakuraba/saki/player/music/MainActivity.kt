@@ -107,9 +107,9 @@ import sakuraba.saki.player.music.util.Constants.EXTRAS_DATA
 import sakuraba.saki.player.music.util.Constants.EXTRAS_PROGRESS
 import sakuraba.saki.player.music.util.Constants.EXTRAS_STATUS
 import sakuraba.saki.player.music.util.Constants.TRANSITION_IMAGE_VIEW
-import sakuraba.saki.player.music.util.CoroutineUtil.delay1second
+import sakuraba.saki.player.music.util.CoroutineUtil.delay500ms
 import sakuraba.saki.player.music.util.CoroutineUtil.io
-import sakuraba.saki.player.music.util.CoroutineUtil.ms_1000_int
+import sakuraba.saki.player.music.util.CoroutineUtil.ms_500_long
 import sakuraba.saki.player.music.util.CoroutineUtil.ui
 import sakuraba.saki.player.music.util.MediaAlbum
 import sakuraba.saki.player.music.util.SettingUtil.getBooleanSetting
@@ -286,9 +286,6 @@ class MainActivity: BaseMediaControlActivity() {
             }
         }
 
-        viewModel.progress.observe(this) { progress ->
-            playProgressBar.progress = progress
-        }
         val playActivityLauncher = registerForActivityResult(StartActivityForResult()) {
             if (it.resultCode == RESULT_OK) {
                 io {
@@ -630,7 +627,7 @@ class MainActivity: BaseMediaControlActivity() {
                         audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
                         val progress = resultData.getLong(EXTRAS_PROGRESS)
                         playProgressBar.max = audioInfo.audioDuration
-                        viewModel.updateProgress(progress)
+                        contentBottomSheet.progress = progress
                         // playBackState = resultData.getInt(EXTRAS_STATUS)
                         viewModel.updateNewState(resultData.getInt(EXTRAS_STATUS))
                         when (viewModel.stateValue) {
@@ -799,7 +796,7 @@ class MainActivity: BaseMediaControlActivity() {
                     audioInfo = (resultData.getSerializable(EXTRAS_AUDIO_INFO) as AudioInfo?) ?: return
                     val progress = resultData.getLong(EXTRAS_PROGRESS)
                     playProgressBar.max = audioInfo.audioDuration
-                    viewModel.updateProgress(progress)
+                    contentBottomSheet.progress = progress
                     // playBackState = resultData.getInt(EXTRAS_STATUS)
                     viewModel.updateNewState(resultData.getInt(EXTRAS_STATUS))
                     when (viewModel.stateValue) {
@@ -849,12 +846,12 @@ class MainActivity: BaseMediaControlActivity() {
     
     @Suppress("DuplicatedCode")
     private fun getProgressSyncJob(progress: Long) = io {
-        val currentProgress = delayForCorrection(progress)
-        ui { viewModel.updateProgress(currentProgress) }
-        while (isPlaying) {
-            delay1second()
-            ui { viewModel.updateProgress(viewModel.progressValue + ms_1000_int) }
-        }
+        var currentProgress = delayForCorrection(progress)
+        do {
+            ui { contentBottomSheet.progress = currentProgress }
+            delay500ms()
+            currentProgress += ms_500_long
+        } while (isPlaying)
     }
     
     private suspend fun delayForCorrection(progress: Long): Long {
