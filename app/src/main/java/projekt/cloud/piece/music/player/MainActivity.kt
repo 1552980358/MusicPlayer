@@ -24,6 +24,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.room.Room.databaseBuilder
@@ -56,6 +59,44 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var audioDatabase: AudioDatabase
 
+    private val fragmentLifecycleCallbacks =  object : FragmentLifecycleCallbacks() {
+        override fun onFragmentAttached(fm: FragmentManager, f: Fragment, context: Context) {
+            Log.e(f::class.java.simpleName, "onFragmentAttached")
+        }
+        override fun onFragmentPreCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
+            when (f) {
+                is BaseMainFragment -> f.setInterface(activityInterface)
+            }
+        }
+        override fun onFragmentCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
+            Log.e(f::class.java.simpleName, "onFragmentCreated")
+        }
+        override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
+            Log.e(f::class.java.simpleName, "onFragmentViewCreated")
+        }
+        override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
+            Log.e(f::class.java.simpleName, "onFragmentStarted")
+        }
+        override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
+            Log.e(f::class.java.simpleName, "onFragmentResumed")
+        }
+        override fun onFragmentPaused(fm: FragmentManager, f: Fragment) {
+            Log.e(f::class.java.simpleName, "onFragmentPaused")
+        }
+        override fun onFragmentStopped(fm: FragmentManager, f: Fragment) {
+            Log.e(f::class.java.simpleName, "onFragmentStopped")
+        }
+        override fun onFragmentViewDestroyed(fm: FragmentManager, f: Fragment) {
+            Log.e(f::class.java.simpleName, "onFragmentViewDestroyed")
+        }
+        override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
+            Log.e(f::class.java.simpleName, "onFragmentDestroyed")
+        }
+        override fun onFragmentDetached(fm: FragmentManager, f: Fragment) {
+            Log.e(f::class.java.simpleName, "onFragmentDetached")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         activityInterface = MainActivityInterface(
@@ -68,6 +109,8 @@ class MainActivity : AppCompatActivity() {
         )
 
         super.onCreate(savedInstanceState)
+
+        supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -174,5 +217,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp() =
         navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+
+    override fun onDestroy() {
+        supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks)
+        super.onDestroy()
+    }
 
 }
