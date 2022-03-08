@@ -60,6 +60,10 @@
             android:name=".AudioDetailActivity"
             android:theme="@style/Theme.MusicPlayer.NoActionBar" />
         
+        <activity
+            android:name=".ThemeTransitionActivity"
+            android:theme="@style/Theme.MusicPlayer.NoActionBar.Translucent.ThemeTransitionActivity" />
+        
     </application>
 
 </manifest>
