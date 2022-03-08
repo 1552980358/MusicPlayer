@@ -33,9 +33,9 @@ object ImageUtil {
     fun Context.writeAlbumArt40Dp(albumId: String, bitmap: Bitmap?) =
         bitmap?.writeBitmap(File(albumArt40DpDir, albumId))
 
-    fun Context.loadAlbumArts40Dp(bitmapMap: MutableMap<String, Bitmap?>) {
+    fun Context.loadAlbumArts40Dp(bitmapMap: MutableMap<String, Bitmap>) {
         albumArt40DpDir?.listFiles()?.forEach { file ->
-            bitmapMap[file.name] = file.readAsBitmap()
+            file.readAsBitmap()?.let { bitmap -> bitmapMap[file.name] = bitmap }
         }
     }
 
@@ -93,9 +93,9 @@ object ImageUtil {
 
     fun Context.removeAudioArtRaw(audioId: String) = audioArtRawDir?.listFiles()?.find { it.name == audioId }?.delete()
 
-    fun Context.loadAudioArt40Dp(bitmapMap: MutableMap<String, Bitmap?>) {
+    fun Context.loadAudioArt40Dp(bitmapMap: MutableMap<String, Bitmap>) {
         audioArt40DpDir?.listFiles()?.forEach { file ->
-            bitmapMap[file.name] = file.readAsBitmap()
+            file.readAsBitmap()?.let { bitmap -> bitmapMap[file.name] = bitmap }
         }
     }
 
@@ -119,8 +119,8 @@ object ImageUtil {
         tryOnly { File(playlistRawDir, titlePinyin).delete() }
 
     private val Context.playlist40DpDir get() = getExternalFilesDir(PLAYLIST_40Dp_DIR)
-    fun Context.loadPlaylist40Dp(bitmapMap: MutableMap<String, Bitmap?>) =
-        tryOnly { playlist40DpDir?.listFiles()?.forEach { bitmapMap[it.name] = it.readAsBitmap() } }
+    fun Context.loadPlaylist40Dp(bitmapMap: MutableMap<String, Bitmap>) =
+        tryOnly { playlist40DpDir?.listFiles()?.forEach { it.readAsBitmap()?.let { bitmap -> bitmapMap[it.name] = bitmap } } }
     fun Context.writePlaylist40Dp(titlePinyin: String, bitmap: Bitmap) =
         tryOnly { File(playlist40DpDir, titlePinyin).writeBitmap(bitmap) }
     fun Context.removePlaylist40Dp(titlePinyin: String) =
