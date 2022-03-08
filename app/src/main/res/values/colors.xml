@@ -5,6 +5,12 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+    
+    <color name="dark_primary">#FF242D3A</color>
+    <color name="dark_variant">#FF1C242E</color>
+    <color name="dark_on_primary">#FF1F2732</color>
+    <color name="dark_ascent">#FF262626</color>
+    
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     
@@ -17,5 +23,9 @@
     <color name="color_visualizer">@color/black</color>
 
     <color name="color_vector_image">@color/black</color>
+    
+    <color name="nav_header_start">@color/purple_700</color>
+    
+    <color name="color_toolbar">@color/purple_500</color>
 
 </resources>
