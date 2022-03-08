@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import projekt.cloud.piece.music.player.databinding.FragmentHomeBinding
 
-class HomeFragment : Fragment() {
+class HomeFragment : BaseMainFragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
