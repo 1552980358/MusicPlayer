@@ -141,7 +141,8 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
         // ExoPlayer Config
         exoPlayer = Builder(this).build()
         exoPlayer.addListener(this)
-        
+    
+        defaultImage = getDrawable(this, R.drawable.ic_music)!!.toBitmap()
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
