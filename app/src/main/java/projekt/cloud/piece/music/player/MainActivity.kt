@@ -66,8 +66,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var activityInterface: MainActivityInterface
     private val albumBitmap40DpMap get() = activityInterface.albumBitmap40DpMap
-    private val audioBitmap40DpMap = activityInterface.audioBitmap40DpMap
-    private val playlistBitmap40DpMap = activityInterface.playlistBitmap40DpMap
+    private val audioBitmap40DpMap get() = activityInterface.audioBitmap40DpMap
+    private val playlistBitmap40DpMap get() = activityInterface.playlistBitmap40DpMap
 
     private lateinit var audioDatabase: AudioDatabase
 
