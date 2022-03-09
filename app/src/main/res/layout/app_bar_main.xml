@@ -1,27 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:showIn="@layout/activity_main">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/Theme.MusicPlayer.AppBarOverlay">
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/color_toolbar"
-            app:popupTheme="@style/Theme.MusicPlayer.PopupOverlay" />
+            android:layout_height="wrap_content"
+            android:theme="@style/Theme.MusicPlayer.AppBarOverlay">
 
-    </com.google.android.material.appbar.AppBarLayout>
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/color_toolbar"
+                app:popupTheme="@style/Theme.MusicPlayer.PopupOverlay" />
 
-    <include
-        android:id="@+id/content_main"
-        layout="@layout/content_main" />
+        </com.google.android.material.appbar.AppBarLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <include
+            android:id="@+id/content_main"
+            layout="@layout/content_main" />
+
+        <include
+            android:id="@+id/content_bottom_sheet_main"
+            layout="@layout/content_bottom_sheet_main" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>
