@@ -27,6 +27,8 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.core.view.WindowCompat.setDecorFitsSystemWindows
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks
@@ -124,13 +126,12 @@ class MainActivity : BaseThemeActivity() {
 
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
         navController = fragmentContainerView.getFragment<NavHostFragment>().navController
-        appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_home), binding.root)
+        appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_home), binding.drawerLayout)
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
