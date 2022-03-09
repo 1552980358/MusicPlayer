@@ -18,6 +18,14 @@ import android.provider.MediaStore.Audio.AudioColumns.SIZE
 import android.provider.MediaStore.Audio.AudioColumns.TITLE
 import android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 import android.provider.MediaStore.MediaColumns.DURATION
+import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
+import android.support.v4.media.session.PlaybackStateCompat
+import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.util.Log
 import android.view.Menu
 import android.view.View
@@ -77,19 +85,28 @@ class MainActivity : BaseMediaControlActivity() {
             _isNightMode = !isNightMode
         }
         private val isNightMode get() = _isNightMode!!
+        
+        private const val TAG = "MainActivity"
     }
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    
+    private val appBarMain get() = binding.appBarMain
+    private val contentMain get() = appBarMain.contentMain
+    private val contentBottomSheetMain get() = appBarMain.contentBottomSheetMain
 
-    private val fragmentContainerView get() = binding.appBarMain.contentMain.fragmentContainerView
+    private val fragmentContainerView get() = contentMain.fragmentContainerView
     private lateinit var navController: NavController
 
     private lateinit var activityInterface: MainActivityInterface
+    private val audioList get() = activityInterface.audioList
     private val albumBitmap40DpMap get() = activityInterface.albumBitmap40DpMap
     private val audioBitmap40DpMap get() = activityInterface.audioBitmap40DpMap
     private val playlistBitmap40DpMap get() = activityInterface.playlistBitmap40DpMap
-
+    
+    private var isPlaying = false
+    
     private lateinit var audioDatabase: AudioDatabase
 
     private val fragmentLifecycleCallbacks =  object : FragmentLifecycleCallbacks() {
@@ -129,6 +146,8 @@ class MainActivity : BaseMediaControlActivity() {
             Log.e(f::class.java.simpleName, "onFragmentDetached")
         }
     }
+    
+    private lateinit var audioItem: AudioItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -296,5 +315,67 @@ class MainActivity : BaseMediaControlActivity() {
         supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks)
         super.onDestroy()
     }
-
+    
+    override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
+        metadata?.apply {
+            contentBottomSheetMain.title = getString(METADATA_KEY_TITLE)
+            contentBottomSheetMain.bitmap =
+                audioBitmap40DpMap[getString(METADATA_KEY_MEDIA_ID)]
+                    ?: albumBitmap40DpMap[getString(METADATA_KEY_ALBUM)]
+                        ?: activityInterface.defaultAudioImage
+            audioList.find { it.id == getString(METADATA_KEY_MEDIA_ID) }?.let { audioItem = it }
+        }
+    }
+    
+    override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
+        state?.state?.let { playbackState ->
+            when (playbackState) {
+                STATE_PLAYING -> {
+                    if (behavior.isDraggable) {
+                        behavior.isDraggable = false
+                    }
+                    if (behavior.state != STATE_EXPANDED) {
+                        behavior.state = STATE_EXPANDED
+                        behavior.isHideable = false
+                        contentMain.root.apply {
+                            layoutParams = (layoutParams as CoordinatorLayout.LayoutParams).apply {
+                                setMargins(0, 0, 0, getDimensionPixelSize(R.dimen.main_bottom_sheet_height))
+                            }
+                        }
+                    }
+                    if (!isPlaying) {
+                        isPlaying = true
+                    }
+                    if (contentBottomSheetMain.playbackState != R.drawable.ani_play_pause) {
+                        contentBottomSheetMain.playbackState = R.drawable.ani_play_pause
+                    }
+                     when (contentBottomSheetMain.playbackState) {
+                        null -> contentBottomSheetMain.playbackState = R.drawable.ic_pause
+                        R.drawable.ani_pause_play -> contentBottomSheetMain.playbackState = R.drawable.ani_play_pause
+                    }
+                }
+                STATE_PAUSED -> {
+                    if (isPlaying) {
+                        isPlaying = false
+                    }
+                    when (contentBottomSheetMain.playbackState) {
+                        null -> contentBottomSheetMain.playbackState = R.drawable.ic_play
+                        R.drawable.ani_pause_play -> contentBottomSheetMain.playbackState = R.drawable.ani_pause_play
+                    }
+                }
+                STATE_BUFFERING -> {
+                    isPlaying = false
+                }
+            }
+        }
+    }
+    
+    override fun onConnected() {
+        registerMediaController()
+        activityInterface.setMediaBrowserCompat(mediaBrowserCompat)
+        
+    }
+    
+    override fun getParentID() = TAG
+    
 }
