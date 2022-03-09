@@ -13,4 +13,6 @@ object Action {
     const val BROADCAST_ACTION_PREV = "${APPLICATION_ID}.prev"
     const val BROADCAST_ACTION_NEXT = "${APPLICATION_ID}.next"
     
+    const val ACTION_SYNC_SERVICE = "ACTION_SYNC_SERVICE"
+    
 }
