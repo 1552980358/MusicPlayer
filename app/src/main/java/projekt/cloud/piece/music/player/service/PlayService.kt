@@ -90,11 +90,18 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
         }
     
         override fun onPause() {
-        
-        }
+            if (playbackStateCompat.state != STATE_PLAYING) {
+                return
+            }
+            
+            exoPlayer.pause()
     
-        override fun onStop() {
-        
+            playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                .setState(STATE_PAUSED, playbackStateCompat.position, 1F)
+                .build()
+            mediaSession.setPlaybackState(playbackStateCompat)
+            
+            startService { putExtra(START_COMMAND_ACTION, START_COMMAND_ACTION_PAUSE) }
         }
     
         override fun onSkipToPrevious() {
