@@ -6,9 +6,6 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
-import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART
-import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI
-import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
@@ -126,7 +123,6 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
             }
             
             exoPlayer.stop()
-            exoPlayer.seekTo(0L)
             
             playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
                 .setState(STATE_BUFFERING, 0, 1F)
