@@ -12,9 +12,9 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import lib.github1552980358.ktExtension.android.view.getDrawable
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_HALF_LONG
+import projekt.cloud.piece.music.player.widget.ProgressBar
 
 object DataBindingUtil {
     
@@ -76,6 +76,14 @@ object DataBindingUtil {
                 setImageDrawable(this)
                 startTransition(ANIMATION_DURATION)
             }
+        }
+    }
+    
+    @JvmStatic
+    @BindingAdapter("app:progress")
+    fun ProgressBar.setProgress(progress: Long? = null) {
+        if (progress != null) {
+            this.progress = progress
         }
     }
     
