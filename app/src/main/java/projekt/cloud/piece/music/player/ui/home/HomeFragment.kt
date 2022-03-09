@@ -31,12 +31,8 @@ class HomeFragment : BaseMainFragment() {
                     activityInterface.defaultAudioImage,
                     audioBitmap40DpMap,
                     albumBitmap40DpMap,
-                    rootClick = {
-                    
-                    },
-                    optionClick = { index, relativeLayout ->
-                    
-                    }
+                    rootClick = { activityInterface.itemClick(it) },
+                    optionClick = { index, relativeLayout -> }
                 )
             },
             refreshCompleted = {
