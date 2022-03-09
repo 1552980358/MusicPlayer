@@ -120,10 +120,10 @@ class MainActivity : BaseThemeActivity() {
 
             }
         )
+    
+        supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
 
         super.onCreate(savedInstanceState)
-
-        supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
