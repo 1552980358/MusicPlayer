@@ -1,8 +1,15 @@
 package projekt.cloud.piece.music.player.service
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.MediaSessionCompat.Callback
 import android.support.v4.media.session.PlaybackStateCompat
@@ -13,12 +20,37 @@ import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_NEXT
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_STOP
+import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.getDrawable
+import androidx.core.graphics.drawable.toBitmap
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayer.Builder
+import com.google.android.exoplayer2.MediaItem.fromUri
 import com.google.android.exoplayer2.Player.Listener
 import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
+import projekt.cloud.piece.music.player.R
+import projekt.cloud.piece.music.player.database.item.AudioItem
+import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION
+import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION_PAUSE
+import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION_PLAY
+import projekt.cloud.piece.music.player.service.play.Config.FOREGROUND_SERVICE
+import projekt.cloud.piece.music.player.service.play.Config.getConfig
+import projekt.cloud.piece.music.player.service.play.Config.setConfig
+import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_INDEX
+import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
+import projekt.cloud.piece.music.player.service.play.MediaIdUtil.parseAsUri
+import projekt.cloud.piece.music.player.service.play.NotificationUtil.createNotification
+import projekt.cloud.piece.music.player.service.play.NotificationUtil.createNotificationManager
+import projekt.cloud.piece.music.player.service.play.NotificationUtil.startForeground
+import projekt.cloud.piece.music.player.service.play.NotificationUtil.update
+import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArtRaw
+import projekt.cloud.piece.music.player.util.ImageUtil.loadAudioArtRaw
+import projekt.cloud.piece.music.player.util.ServiceUtil.startService
 
 class PlayService: MediaBrowserServiceCompat(), Listener {
     
@@ -77,6 +109,15 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
     private lateinit var playbackStateCompat: PlaybackStateCompat
     
     private lateinit var exoPlayer: ExoPlayer
+    
+    private lateinit var audioList: List<AudioItem>
+    private var listIndex = 0
+    
+    private var configs = 0
+    
+    private lateinit var defaultImage: Bitmap
+    
+    private lateinit var notificationManager: NotificationManagerCompat
     
     override fun onCreate() {
         super.onCreate()
