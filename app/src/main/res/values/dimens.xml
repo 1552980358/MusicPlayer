@@ -4,6 +4,7 @@
     <dimen name="nav_header_margin_top">16dp</dimen>
     <dimen name="nav_header_icon_size">48dp</dimen>
 
+    <dimen name="dp_5">5dp</dimen>
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_24">24dp</dimen>
     <dimen name="dp_40">40dp</dimen>
@@ -23,5 +24,11 @@
     <dimen name="home_recycler_view_layout_relative_layout_image_size">@dimen/dp_24</dimen>
     <dimen name="home_recycler_view_layout_title_text_size">@dimen/title_text_size</dimen>
     <dimen name="home_recycler_view_layout_subtitle_text_size">@dimen/subtitle_text_size</dimen>
+
+    <dimen name="main_bottom_sheet_height">@dimen/dp_60</dimen>
+    <dimen name="main_bottom_sheet_view_margin">@dimen/dp_10</dimen>
+    <dimen name="main_bottom_sheet_image_view_size">@dimen/dp_40</dimen>
+    <dimen name="main_bottom_sheet_text_view_text_size">@dimen/title_text_size</dimen>
+    <dimen name="main_bottom_sheet_image_button_size">@dimen/dp_24</dimen>
 
 </resources>
