@@ -21,6 +21,7 @@ import android.provider.MediaStore.MediaColumns.DURATION
 import android.util.Log
 import android.view.Menu
 import android.view.View
+import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -37,11 +38,15 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.room.Room.databaseBuilder
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import lib.github1552980358.ktExtension.android.content.intent
+import lib.github1552980358.ktExtension.android.content.isSystemDarkMode
 import lib.github1552980358.ktExtension.android.graphics.heightF
 import lib.github1552980358.ktExtension.android.graphics.widthF
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
+import projekt.cloud.piece.music.player.ThemeTransitionActivity.Companion.EXTRA_IS_NIGHT
+import projekt.cloud.piece.music.player.ThemeTransitionActivity.Companion.setScreenshot
 import projekt.cloud.piece.music.player.base.BaseMainFragment
 import projekt.cloud.piece.music.player.base.BaseThemeActivity
 import projekt.cloud.piece.music.player.database.AudioDatabase
@@ -57,8 +62,22 @@ import projekt.cloud.piece.music.player.util.ImageUtil.loadPlaylist40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.writeAlbumArt40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.writeAlbumArtRaw
 import projekt.cloud.piece.music.player.util.MainActivityInterface
+import projekt.cloud.piece.music.player.util.ViewUtil.screenshot
 
 class MainActivity : BaseThemeActivity() {
+    
+    companion object {
+        private var _isNightMode: Boolean? = null
+        private fun initialIsNightMode(isNightMode: Boolean) {
+            if (_isNightMode == null) {
+                _isNightMode = isNightMode
+            }
+        }
+        private fun updateNightMode() {
+            _isNightMode = !isNightMode
+        }
+        private val isNightMode get() = _isNightMode!!
+    }
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
@@ -123,7 +142,9 @@ class MainActivity : BaseThemeActivity() {
         )
     
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
-
+    
+        setDecorFitsSystemWindows(window, false)
+        
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -137,6 +158,19 @@ class MainActivity : BaseThemeActivity() {
         binding.navView.setupWithNavController(navController)
 
         audioDatabase = databaseBuilder(this, AudioDatabase::class.java, DATABASE_NAME).build()
+        
+        initialIsNightMode(isSystemDarkMode)
+        
+        binding.navView.getHeaderView(0).findViewById<RelativeLayout>(R.id.relative_layout).setOnClickListener {
+            binding.root.screenshot(window) { bitmap ->
+                setScreenshot(bitmap)
+                updateNightMode()
+                startActivity(intent(this, ThemeTransitionActivity::class.java) {
+                    putExtra(EXTRA_IS_NIGHT, isNightMode)
+                })
+                overridePendingTransition(0, 0)
+            }
+        }
 
         val requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             when {
