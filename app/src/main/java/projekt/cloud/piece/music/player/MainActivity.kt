@@ -256,14 +256,22 @@ class MainActivity : BaseThemeActivity() {
 
     private fun loadContent() {
         runBlocking {
-            launch { activityInterface.audioList = audioDatabase.audio.query() }
             launch { activityInterface.albumList = audioDatabase.album.query() }
             launch { activityInterface.artistList = audioDatabase.artist.query() }
+            activityInterface.audioList = audioDatabase.audio.query()
+        }
+        activityInterface.audioList.forEach { audioItem ->
+            activityInterface.albumList.find { it.id == audioItem.album }?.let {
+                audioItem.albumItem = it
+            }
+            activityInterface.artistList.find { it.id == audioItem.artist }?.let {
+                audioItem.artistItem = it
+            }
         }
         ui { activityInterface.refreshStageChanged() }
         runBlocking {
-            launch { loadBitmap() }
             launch { activityInterface.playlistList = audioDatabase.playlist.query() }
+            loadBitmap()
         }
         ui { activityInterface.refreshCompleted() }
     }
