@@ -12,56 +12,70 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import lib.github1552980358.ktExtension.android.view.getDrawable
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
-import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_LONG
+import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_HALF_LONG
 
 object DataBindingUtil {
     
     @JvmStatic
     @BindingAdapter("app:isRefreshing")
-    fun SwipeRefreshLayout.setRefresh(isRefreshing: Boolean) {
-        this.isRefreshing = isRefreshing
+    fun SwipeRefreshLayout.setRefresh(isRefreshing: Boolean?) {
+        if (isRefreshing != null) {
+            this.isRefreshing = isRefreshing
+        }
     }
     
     @JvmStatic
     @BindingAdapter("app:drawable")
-    fun AppCompatImageButton.playbackStateDrawable(@DrawableRes drawableRes: Int) {
-        setImageResource(drawableRes)
-        (drawable as AnimatedVectorDrawable).start()
+    fun AppCompatImageButton.playbackStateDrawable(@DrawableRes drawableRes: Int?) {
+        if (drawableRes != null) {
+            setImageResource(drawableRes)
+            if (drawable != null) {
+                (drawable as AnimatedVectorDrawable).start()
+            }
+        }
     }
     
     @JvmStatic
     @BindingAdapter("app:textAnimated")
-    fun AppCompatTextView.setTextAnimated(newText: String) {
-        ofFloat(1F, 0F).apply {
-            duration = ANIMATION_DURATION_LONG
-            addUpdateListener { alpha = animatedValue as Float }
-            doOnEnd {
-                text = newText
-                ofFloat(0F, 1F).apply {
-                    duration = ANIMATION_DURATION_LONG
-                    addUpdateListener { alpha = animatedValue as Float }
-                }.start()
+    fun AppCompatTextView.setTextAnimated(newText: String?) {
+        if (newText != null) {
+            if (text.isNullOrBlank()) {
+                return setText(newText)
             }
-        }.start()
+            ofFloat(1F, 0F).apply {
+                duration = ANIMATION_DURATION_HALF_LONG
+                addUpdateListener { alpha = animatedValue as Float }
+                doOnEnd {
+                    text = newText
+                    ofFloat(0F, 1F).apply {
+                        duration = ANIMATION_DURATION_HALF_LONG
+                        addUpdateListener { alpha = animatedValue as Float }
+                    }.start()
+                }
+            }.start()
+        }
     }
     
     @JvmStatic
     @BindingAdapter("app:bitmapAnimated")
-    fun AppCompatImageView.setBitmapAnimated(bitmap: Bitmap) {
-        if (drawable == null) {
-            return setImageBitmap(bitmap)
-        }
-        TransitionDrawable(
-            arrayOf(
-                when (val lastDrawable = drawable) {
-                    is TransitionDrawable -> lastDrawable.getDrawable(1)
-                    else -> drawable
-                },
-                BitmapDrawable(resources, bitmap))
-        ).apply {
-            setImageDrawable(this)
-            startTransition(ANIMATION_DURATION)
+    fun AppCompatImageView.setBitmapAnimated(bitmap: Bitmap?) {
+        if (bitmap != null) {
+            if (drawable == null) {
+                return setImageBitmap(bitmap)
+            }
+            TransitionDrawable(
+                arrayOf(
+                    when (val lastDrawable = drawable) {
+                        is TransitionDrawable -> lastDrawable.getDrawable(1)
+                        else -> drawable
+                    },
+                    BitmapDrawable(resources, bitmap))
+            ).apply {
+                setImageDrawable(this)
+                startTransition(ANIMATION_DURATION)
+            }
         }
     }
     
