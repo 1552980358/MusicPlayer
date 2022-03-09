@@ -55,11 +55,9 @@
                 android:layout_height="@dimen/main_bottom_sheet_image_button_size"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/main_bottom_sheet_view_margin"
-                android:layout_marginTop="@dimen/main_bottom_sheet_view_margin"
-                android:layout_marginEnd="@dimen/main_bottom_sheet_view_margin"
-                android:layout_marginBottom="@dimen/main_bottom_sheet_view_margin"
+                android:layout_margin="@dimen/main_bottom_sheet_view_margin"
                 android:background="@null"
+                android:tint="?attr/colorControlNormal"
                 app:drawable="@{playbackState}" />
 
             <androidx.appcompat.widget.AppCompatTextView
