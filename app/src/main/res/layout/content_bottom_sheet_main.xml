@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/app_bar_main">
+
+    <data>
+        <variable
+            name="title"
+            type="String" />
+        <variable
+            name="bitmap"
+            type="android.graphics.Bitmap" />
+        <variable
+            name="progress"
+            type="Long" />
+        <variable
+            name="duration"
+            type="Long" />
+        <variable
+            name="playbackState"
+            type="Integer" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/main_bottom_sheet_height"
+        android:maxHeight="@dimen/main_bottom_sheet_height"
+        android:id="@+id/linear_layout"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/relative_layout"
+            android:background="?attr/selectableItemBackground">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/image_view"
+                android:layout_width="@dimen/main_bottom_sheet_image_view_size"
+                android:layout_height="@dimen/main_bottom_sheet_image_view_size"
+                android:layout_marginStart="@dimen/main_bottom_sheet_view_margin"
+                android:layout_marginTop="@dimen/main_bottom_sheet_view_margin"
+                android:layout_marginEnd="@dimen/main_bottom_sheet_view_margin"
+                android:layout_marginBottom="@dimen/main_bottom_sheet_view_margin"
+                app:bitmapAnimated="@{bitmap}"/>
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/image_button"
+                android:layout_width="@dimen/main_bottom_sheet_image_button_size"
+                android:layout_height="@dimen/main_bottom_sheet_image_button_size"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/main_bottom_sheet_view_margin"
+                android:layout_marginTop="@dimen/main_bottom_sheet_view_margin"
+                android:layout_marginEnd="@dimen/main_bottom_sheet_view_margin"
+                android:layout_marginBottom="@dimen/main_bottom_sheet_view_margin"
+                android:background="@null"
+                app:drawable="@{playbackState}" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@id/image_button"
+                android:layout_toEndOf="@id/image_view"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="@dimen/main_bottom_sheet_text_view_text_size"
+                app:textAnimated="@{title}"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</layout>
