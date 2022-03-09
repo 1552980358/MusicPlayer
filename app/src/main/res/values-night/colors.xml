@@ -5,4 +5,6 @@
 
     <color name="color_nav_header_background">@color/dark_ascent</color>
 
+    <color name="progress_bar">@color/light_gray</color>
+
 </resources>

@@ -18,4 +18,6 @@
 
     <color name="color_nav_header_background">@color/purple_700</color>
 
+    <color name="progress_bar">@color/purple_500</color>
+
 </resources>
