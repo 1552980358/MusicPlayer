@@ -14,11 +14,11 @@ import android.provider.MediaStore.Audio.AudioColumns._ID
 import android.provider.MediaStore.Audio.AudioColumns.ALBUM_ID
 import android.provider.MediaStore.Audio.AudioColumns.ARTIST_ID
 import android.provider.MediaStore.Audio.AudioColumns.DATA
+import android.provider.MediaStore.Audio.AudioColumns.DURATION
 import android.provider.MediaStore.Audio.AudioColumns.IS_MUSIC
 import android.provider.MediaStore.Audio.AudioColumns.SIZE
 import android.provider.MediaStore.Audio.AudioColumns.TITLE
 import android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-import android.provider.MediaStore.MediaColumns.DURATION
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
@@ -306,6 +306,7 @@ class MainActivity : BaseMediaControlActivity() {
                             getString(getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM))
                         ))
                     }
+                    @Suppress("InlinedApi")
                     audioList.add(
                         AudioItem(
                             id = getString(getColumnIndexOrThrow(_ID)),
