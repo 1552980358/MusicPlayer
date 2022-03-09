@@ -55,12 +55,7 @@ import projekt.cloud.piece.music.player.util.ServiceUtil.startService
 class PlayService: MediaBrowserServiceCompat(), Listener {
     
     companion object {
-        /**
-         *
-         * (1 << 9) | (1 << 0) | (1 << 8) | (1 << 10) | (1 << 5) | (1 << 4) | (1 << 12)
-         * -> 0b1011100110001
-         * -> 5937
-         **/
+        
         const val PlaybackStateActions =
             ACTION_PLAY_PAUSE or ACTION_STOP or ACTION_SEEK_TO or ACTION_PLAY_FROM_MEDIA_ID or ACTION_SKIP_TO_NEXT or ACTION_SKIP_TO_PREVIOUS or ACTION_SKIP_TO_QUEUE_ITEM
         
