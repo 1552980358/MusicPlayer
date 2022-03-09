@@ -7,9 +7,11 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.MediaSessionCompat.Callback
 import android.support.v4.media.session.PlaybackStateCompat
@@ -133,13 +135,11 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
             val audioItem = audioList[listIndex]
             mediaSession.setMetadata(
                 MediaMetadataCompat.Builder()
-                    .apply {
-                        putString(METADATA_KEY_MEDIA_ID, audioItem.id)
-                        putString(METADATA_KEY_ARTIST, audioItem.artistItem.name)
-                        putString(METADATA_KEY_ALBUM, audioItem.albumItem.title)
-                        putString(METADATA_KEY_ALBUM_ART, audioItem.album)
-                        putLong(METADATA_KEY_DURATION, audioItem.duration)
-                    }.build()
+                    .putString(METADATA_KEY_MEDIA_ID, audioItem.id)
+                    .putString(METADATA_KEY_TITLE, audioItem.title)
+                    .putString(METADATA_KEY_ALBUM, audioItem.album)
+                    .putLong(METADATA_KEY_DURATION, audioItem.duration)
+                    .build()
             )
             
             exoPlayer.setMediaItem(fromUri(audioItem.id.parseAsUri))
