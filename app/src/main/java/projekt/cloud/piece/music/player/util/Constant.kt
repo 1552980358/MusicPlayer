@@ -8,4 +8,6 @@ object Constant {
     const val ANIMATION_DURATION_HALF = 250
     const val ANIMATION_DURATION_HALF_LONG = 250L
     
+    const val DELAY_MILS = 500L
+    
 }
