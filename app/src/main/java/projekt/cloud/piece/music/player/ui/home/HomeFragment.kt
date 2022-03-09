@@ -33,8 +33,6 @@ class HomeFragment : BaseMainFragment() {
             refreshStageChanged = {
                 recyclerViewAdapterUtil = RecyclerViewAdapterUtil(binding.recyclerView,
                     audioList,
-                    artistList,
-                    albumList,
                     getDrawable(R.drawable.ic_music, null)!!.toBitmap(),
                     audioBitmap40DpMap,
                     albumBitmap40DpMap,

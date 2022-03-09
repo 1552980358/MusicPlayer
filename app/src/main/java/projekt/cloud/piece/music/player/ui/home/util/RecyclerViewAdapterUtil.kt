@@ -11,15 +11,11 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import lib.github1552980358.ktExtension.android.view.createViewHolder
 import projekt.cloud.piece.music.player.R
-import projekt.cloud.piece.music.player.database.item.AlbumItem
-import projekt.cloud.piece.music.player.database.item.ArtistItem
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.util.ViewHolderUtil.bind
 
 class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
                               private val audioList: List<AudioItem>,
-                              private val artistList: List<ArtistItem>,
-                              private val albumList: List<AlbumItem>,
                               private val defaultBitmap: Bitmap,
                               private val audioBitmap: Map<String, Bitmap?>,
                               private val albumBitmapMap: Map<String, Bitmap?>,
@@ -45,14 +41,13 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
                 return@setOnLongClickListener true
             }
             relativeLayout.setOnClickListener { optionClick(position, relativeLayout) }
-            val audioItem = audioList[position]
-            textViewTitle.text = audioItem.title
-            val album = albumList.find { it.id == audioItem.album }!!
-            @Suppress("SetTextI18n")
-            textViewSubtitle.text = "${artistList.find { it.id == audioItem.artist }?.name} - ${album.title}"
-            imageView.setImageBitmap(
-                audioBitmap[audioItem.id] ?: albumBitmapMap[album.id] ?: defaultBitmap
-            )
+            audioList[position].apply {
+                textViewTitle.text = title
+                @Suppress("SetTextI18n")
+                textViewSubtitle.text = "${artistItem.name} - ${albumItem.title}"
+                imageView.setImageBitmap(audioBitmap[id] ?: albumBitmapMap[album] ?: defaultBitmap)
+            }
+            
         }
 
         override fun getItemCount() = audioList.size
