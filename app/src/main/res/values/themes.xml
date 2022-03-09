@@ -10,13 +10,35 @@
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
         <!-- Customize your theme here. -->
     </style>
 
     <style name="Theme.MusicPlayer.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.MusicPlayer.NoActionBar.MainActivity" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/purple_500</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.MusicPlayer.NoActionBar.MainActivity.PostSplashScreenTheme</item>
+    </style>
+
+    <style name="Theme.MusicPlayer.NoActionBar.MainActivity.PostSplashScreenTheme" parent="Theme.MusicPlayer.NoActionBar">
+        <item name="android:navigationBarColor">@color/white</item>
+    </style>
+
+    <style name="Theme.MusicPlayer.NoActionBar.Translucent" parent="Theme.MusicPlayer.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="Theme.MusicPlayer.NoActionBar.Translucent.ThemeTransitionActivity" parent="Theme.MusicPlayer.NoActionBar.Translucent">
+        <item name="android:backgroundDimEnabled">false</item>
     </style>
 
     <style name="Theme.MusicPlayer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
