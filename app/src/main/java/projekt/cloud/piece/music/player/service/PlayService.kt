@@ -146,6 +146,29 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        when (intent?.getStringExtra(START_COMMAND_ACTION)) {
+            START_COMMAND_ACTION_PLAY -> {
+                val notification = audioList[listIndex].run {
+                    createNotification(this, false, loadAudioArtRaw(id) ?: loadAlbumArtRaw(album) ?: defaultImage)
+                }
+                when {
+                    !configs.getConfig(FOREGROUND_SERVICE) -> {
+                        startForeground(notification)
+                        configs = configs.setConfig(FOREGROUND_SERVICE, true)
+                    }
+                    else -> notificationManager.update(notification)
+                }
+            }
+            START_COMMAND_ACTION_PAUSE -> {
+                val notification = audioList[listIndex].run {
+                    createNotification(this, true, loadAudioArtRaw(id) ?: loadAlbumArtRaw(album) ?: defaultImage)
+                }
+                startForeground(notification)
+                stopForeground(false)
+                configs = configs.setConfig(FOREGROUND_SERVICE, false)
+            }
+        }
+        
         return super.onStartCommand(intent, flags, startId)
     }
     
