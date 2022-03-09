@@ -34,6 +34,7 @@ import com.google.android.exoplayer2.Player.Listener
 import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.database.item.AudioItem
+import projekt.cloud.piece.music.player.service.play.Action.ACTION_SYNC_SERVICE
 import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION
 import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION_PAUSE
 import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION_PLAY
@@ -229,6 +230,31 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         result.detach()
         result.sendResult(null)
+    }
+    
+    override fun onCustomAction(action: String, extras: Bundle?, result: Result<Bundle>) {
+        when (action) {
+            ACTION_SYNC_SERVICE -> {
+                result.sendResult(null)
+                
+                playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                    .setState(playbackStateCompat.state, exoPlayer.currentPosition, 1F)
+                    .build()
+                mediaSession.setPlaybackState(playbackStateCompat)
+    
+                if (::audioList.isInitialized) {
+                    val audioItem = audioList[listIndex]
+                    mediaSession.setMetadata(
+                        MediaMetadataCompat.Builder()
+                            .putString(METADATA_KEY_MEDIA_ID, audioItem.id)
+                            .putString(METADATA_KEY_TITLE, audioItem.title)
+                            .putString(METADATA_KEY_ALBUM, audioItem.album)
+                            .putLong(METADATA_KEY_DURATION, audioItem.duration)
+                            .build()
+                    )
+                }
+            }
+        }
     }
     
 }
