@@ -136,6 +136,8 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
         
         sessionToken = mediaSession.sessionToken
     
+        notificationManager = createNotificationManager
+    
         // ExoPlayer Config
         exoPlayer = Builder(this).build()
         exoPlayer.addListener(this)
