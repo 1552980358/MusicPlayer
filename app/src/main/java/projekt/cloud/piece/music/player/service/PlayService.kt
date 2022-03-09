@@ -96,7 +96,40 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
         }
     
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
-        
+            mediaId ?: return
+            extras?.let { extrasBundle ->
+                if (extrasBundle.containsKey(EXTRA_LIST)) {
+                    @Suppress("UNCHECKED_CAST")
+                    audioList = extrasBundle.getSerializable(EXTRA_LIST) as List<AudioItem>
+                }
+                if (extrasBundle.containsKey(EXTRA_INDEX)) {
+                    listIndex = extrasBundle.getInt(EXTRA_INDEX)
+                }
+            }
+            
+            exoPlayer.stop()
+            exoPlayer.seekTo(0L)
+            
+            playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                .setState(STATE_BUFFERING, 0, 1F)
+                .build()
+            mediaSession.setPlaybackState(playbackStateCompat)
+            val audioItem = audioList[listIndex]
+            mediaSession.setMetadata(
+                MediaMetadataCompat.Builder()
+                    .apply {
+                        putString(METADATA_KEY_MEDIA_ID, audioItem.id)
+                        putString(METADATA_KEY_ARTIST, audioItem.artistItem.name)
+                        putString(METADATA_KEY_ALBUM, audioItem.albumItem.title)
+                        putString(METADATA_KEY_ALBUM_ART, audioItem.album)
+                        putLong(METADATA_KEY_DURATION, audioItem.duration)
+                    }.build()
+            )
+            
+            exoPlayer.setMediaItem(fromUri(audioItem.id.parseAsUri))
+            exoPlayer.prepare()
+    
+            onPlay()
         }
     
         override fun onSeekTo(pos: Long) {
