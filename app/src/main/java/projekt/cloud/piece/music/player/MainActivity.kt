@@ -48,7 +48,7 @@ import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.ThemeTransitionActivity.Companion.EXTRA_IS_NIGHT
 import projekt.cloud.piece.music.player.ThemeTransitionActivity.Companion.setScreenshot
 import projekt.cloud.piece.music.player.base.BaseMainFragment
-import projekt.cloud.piece.music.player.base.BaseThemeActivity
+import projekt.cloud.piece.music.player.base.BaseMediaControlActivity
 import projekt.cloud.piece.music.player.database.AudioDatabase
 import projekt.cloud.piece.music.player.database.AudioDatabase.Companion.DATABASE_NAME
 import projekt.cloud.piece.music.player.database.item.AlbumItem
@@ -64,7 +64,7 @@ import projekt.cloud.piece.music.player.util.ImageUtil.writeAlbumArtRaw
 import projekt.cloud.piece.music.player.util.MainActivityInterface
 import projekt.cloud.piece.music.player.util.ViewUtil.screenshot
 
-class MainActivity : BaseThemeActivity() {
+class MainActivity : BaseMediaControlActivity() {
     
     companion object {
         private var _isNightMode: Boolean? = null
