@@ -47,12 +47,17 @@ import androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.room.Room.databaseBuilder
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import lib.github1552980358.ktExtension.android.content.intent
 import lib.github1552980358.ktExtension.android.content.isSystemDarkMode
 import lib.github1552980358.ktExtension.android.graphics.heightF
 import lib.github1552980358.ktExtension.android.graphics.widthF
+import lib.github1552980358.ktExtension.android.os.bundle
+import lib.github1552980358.ktExtension.android.view.getDimensionPixelSize
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
@@ -115,6 +120,10 @@ class MainActivity : BaseMediaControlActivity() {
     private var isPlaying = false
     
     private lateinit var audioDatabase: AudioDatabase
+    
+    private lateinit var behavior: BottomSheetBehavior<LinearLayout>
+    
+    private val transportControls get() = mediaControllerCompat.transportControls
 
     private val fragmentLifecycleCallbacks =  object : FragmentLifecycleCallbacks() {
         override fun onFragmentAttached(fm: FragmentManager, f: Fragment, context: Context) {
@@ -193,6 +202,10 @@ class MainActivity : BaseMediaControlActivity() {
         binding.navView.setupWithNavController(navController)
 
         audioDatabase = databaseBuilder(this, AudioDatabase::class.java, DATABASE_NAME).build()
+    
+        behavior = BottomSheetBehavior.from(contentBottomSheetMain.linearLayout)
+        behavior.peekHeight = 0
+        behavior.state = STATE_COLLAPSED
         
         initialIsNightMode(isSystemDarkMode)
         
