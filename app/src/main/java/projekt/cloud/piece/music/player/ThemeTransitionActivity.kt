@@ -15,6 +15,7 @@ import lib.github1552980358.ktExtension.android.graphics.widthF
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.base.BaseThemeActivity
 import projekt.cloud.piece.music.player.databinding.ActivityThemeTransitionBinding
+import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_LONG
 import kotlin.math.hypot
 
 class ThemeTransitionActivity: BaseThemeActivity() {
@@ -27,8 +28,6 @@ class ThemeTransitionActivity: BaseThemeActivity() {
         private val screenshot get() = _screenshot!!
         
         const val EXTRA_IS_NIGHT = "is-night"
-        
-        private const val ANIMATION_DURATION = 1000L
     }
     
     private lateinit var binding: ActivityThemeTransitionBinding
@@ -54,7 +53,7 @@ class ThemeTransitionActivity: BaseThemeActivity() {
             
             binding.imageView.doOnAttach {
                 createCircularReveal(binding.imageView, 0, 0, hypot(screenshot.widthF, screenshot.heightF), 0F).apply {
-                    duration = ANIMATION_DURATION
+                    duration = ANIMATION_DURATION_LONG
                     doOnEnd {
                         setScreenshot(null)
                         finish()
