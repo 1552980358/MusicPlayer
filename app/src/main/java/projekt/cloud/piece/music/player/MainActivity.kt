@@ -66,6 +66,7 @@ import projekt.cloud.piece.music.player.database.item.AlbumItem
 import projekt.cloud.piece.music.player.database.item.ArtistItem
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.ActivityMainBinding
+import projekt.cloud.piece.music.player.service.play.Action.ACTION_SYNC_SERVICE
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_INDEX
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArt
@@ -386,8 +387,11 @@ class MainActivity : BaseMediaControlActivity() {
     override fun onConnected() {
         registerMediaController()
         activityInterface.setMediaBrowserCompat(mediaBrowserCompat)
-        
+        requestSyncService()
     }
+    
+    private fun requestSyncService() =
+        mediaBrowserCompat.sendCustomAction(ACTION_SYNC_SERVICE, null, null)
     
     override fun getParentID() = TAG
     
