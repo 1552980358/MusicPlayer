@@ -31,11 +31,14 @@ import android.view.Menu
 import android.view.View
 import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.core.content.res.ResourcesCompat.getDrawable
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.WindowCompat.setDecorFitsSystemWindows
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -63,6 +66,8 @@ import projekt.cloud.piece.music.player.database.item.AlbumItem
 import projekt.cloud.piece.music.player.database.item.ArtistItem
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.ActivityMainBinding
+import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_INDEX
+import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArt
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArts40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAudioArt40Dp
@@ -71,6 +76,7 @@ import projekt.cloud.piece.music.player.util.ImageUtil.writeAlbumArt40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.writeAlbumArtRaw
 import projekt.cloud.piece.music.player.util.MainActivityInterface
 import projekt.cloud.piece.music.player.util.ViewUtil.screenshot
+import java.io.Serializable
 
 class MainActivity : BaseMediaControlActivity() {
     
@@ -152,8 +158,15 @@ class MainActivity : BaseMediaControlActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         activityInterface = MainActivityInterface(
-            itemClick = {
-
+            itemClick = { index ->
+                val audioItem = audioList[index]
+                transportControls.playFromMediaId(
+                    audioItem.id,
+                    bundle {
+                        putSerializable(EXTRA_LIST, audioList as Serializable)
+                        putInt(EXTRA_INDEX, index)
+                    }
+                )
             },
             requestRefresh = {
 
