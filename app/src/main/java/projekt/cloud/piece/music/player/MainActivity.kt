@@ -26,7 +26,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -157,6 +156,7 @@ class MainActivity : BaseThemeActivity() {
         val artistList = arrayListOf<ArtistItem>()
         loadFromDatabase(audioList, albumList, artistList)
         initialImage(albumList)
+        loadContent()
     }
 
     private fun launchApplication() = io { loadContent() }
