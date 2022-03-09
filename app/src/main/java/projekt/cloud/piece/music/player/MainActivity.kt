@@ -6,6 +6,7 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Bitmap
 import android.graphics.Bitmap.createBitmap
 import android.graphics.Matrix
+import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.ArtistColumns.ARTIST
@@ -29,6 +30,7 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.util.Log
 import android.view.Menu
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -230,6 +232,20 @@ class MainActivity : BaseMediaControlActivity() {
             PERMISSION_GRANTED -> launchApplication()
             else -> requestPermission.launch(READ_EXTERNAL_STORAGE)
         }
+        
+        contentBottomSheetMain.imageButton.setOnClickListener {
+            when (mediaControllerCompat.playbackState.state) {
+                STATE_PLAYING -> mediaControllerCompat.transportControls.pause()
+                STATE_PAUSED -> mediaControllerCompat.transportControls.play()
+                else -> Unit
+            }
+            (contentBottomSheetMain.linearLayout.background as RippleDrawable).apply {
+                // Effect
+                setHotspot(contentBottomSheetMain.imageButton.x, contentBottomSheetMain.imageButton.y)
+                state = intArrayOf(android.R.attr.state_pressed, android.R.attr.state_enabled)
+                state = intArrayOf()
+            }
+        }
 
     }
 
@@ -359,11 +375,8 @@ class MainActivity : BaseMediaControlActivity() {
             when (playbackState) {
                 STATE_PLAYING -> {
                     if (behavior.isDraggable) {
-                        behavior.isDraggable = false
-                    }
-                    if (behavior.state != STATE_EXPANDED) {
                         behavior.state = STATE_EXPANDED
-                        behavior.isHideable = false
+                        behavior.isDraggable = false
                         contentMain.root.apply {
                             layoutParams = (layoutParams as CoordinatorLayout.LayoutParams).apply {
                                 setMargins(0, 0, 0, getDimensionPixelSize(R.dimen.main_bottom_sheet_height))
@@ -387,7 +400,7 @@ class MainActivity : BaseMediaControlActivity() {
                     }
                     when (contentBottomSheetMain.playbackState) {
                         null -> contentBottomSheetMain.playbackState = R.drawable.ic_play
-                        R.drawable.ani_pause_play -> contentBottomSheetMain.playbackState = R.drawable.ani_pause_play
+                        R.drawable.ani_play_pause -> contentBottomSheetMain.playbackState = R.drawable.ani_pause_play
                     }
                 }
                 STATE_BUFFERING -> {
