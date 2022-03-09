@@ -21,6 +21,7 @@ import android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 import android.provider.MediaStore.MediaColumns.DURATION
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
 import android.support.v4.media.session.PlaybackStateCompat
@@ -52,6 +53,8 @@ import androidx.room.Room.databaseBuilder
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import lib.github1552980358.ktExtension.android.content.intent
@@ -76,6 +79,7 @@ import projekt.cloud.piece.music.player.databinding.ActivityMainBinding
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_SYNC_SERVICE
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_INDEX
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
+import projekt.cloud.piece.music.player.util.Constant.DELAY_MILS
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArt
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArts40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAudioArt40Dp
@@ -120,6 +124,7 @@ class MainActivity : BaseMediaControlActivity() {
     private val playlistBitmap40DpMap get() = activityInterface.playlistBitmap40DpMap
     
     private var isPlaying = false
+    private var job: Job? = null
     
     private lateinit var audioDatabase: AudioDatabase
     
@@ -366,14 +371,19 @@ class MainActivity : BaseMediaControlActivity() {
                 audioBitmap40DpMap[getString(METADATA_KEY_MEDIA_ID)]
                     ?: albumBitmap40DpMap[getString(METADATA_KEY_ALBUM)]
                         ?: activityInterface.defaultAudioImage
+            contentBottomSheetMain.duration = getLong(METADATA_KEY_DURATION)
             audioList.find { it.id == getString(METADATA_KEY_MEDIA_ID) }?.let { audioItem = it }
         }
     }
     
     override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
-        state?.state?.let { playbackState ->
+        state?.state?.also { playbackState ->
             when (playbackState) {
                 STATE_PLAYING -> {
+                    isPlaying = false
+                    job?.cancel()
+                    isPlaying = true
+                    job = timerJob(state.position)
                     if (behavior.isDraggable) {
                         behavior.state = STATE_EXPANDED
                         behavior.isDraggable = false
@@ -382,9 +392,6 @@ class MainActivity : BaseMediaControlActivity() {
                                 setMargins(0, 0, 0, getDimensionPixelSize(R.dimen.main_bottom_sheet_height))
                             }
                         }
-                    }
-                    if (!isPlaying) {
-                        isPlaying = true
                     }
                     if (contentBottomSheetMain.playbackState != R.drawable.ani_play_pause) {
                         contentBottomSheetMain.playbackState = R.drawable.ani_play_pause
@@ -395,9 +402,8 @@ class MainActivity : BaseMediaControlActivity() {
                     }
                 }
                 STATE_PAUSED -> {
-                    if (isPlaying) {
-                        isPlaying = false
-                    }
+                    isPlaying = false
+                    job?.cancel()
                     when (contentBottomSheetMain.playbackState) {
                         null -> contentBottomSheetMain.playbackState = R.drawable.ic_play
                         R.drawable.ani_play_pause -> contentBottomSheetMain.playbackState = R.drawable.ani_pause_play
@@ -405,10 +411,23 @@ class MainActivity : BaseMediaControlActivity() {
                 }
                 STATE_BUFFERING -> {
                     isPlaying = false
+                    job?.cancel()
                 }
             }
         }
     }
+    
+    private fun timerJob(progress: Long) = io {
+        var currentProgress = progress.correct()
+        do {
+            ui { contentBottomSheetMain.progress = currentProgress }
+            delay(DELAY_MILS)
+            currentProgress += DELAY_MILS
+        } while (isPlaying)
+    }
+    
+    private suspend fun Long.correct() =
+        this + (this % DELAY_MILS).apply { delay(this) }
     
     override fun onConnected() {
         registerMediaController()
