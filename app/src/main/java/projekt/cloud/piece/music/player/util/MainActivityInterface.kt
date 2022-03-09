@@ -24,5 +24,7 @@ class MainActivityInterface(val itemClick: () -> Unit, val requestRefresh: () ->
         this.refreshStageChanged = refreshStageChanged
         this.refreshCompleted = refreshCompleted
     }
+    
+    lateinit var defaultAudioImage: Bitmap
 
 }

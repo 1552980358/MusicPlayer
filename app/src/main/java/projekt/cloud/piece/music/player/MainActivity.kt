@@ -140,6 +140,8 @@ class MainActivity : BaseThemeActivity() {
 
             }
         )
+        
+        activityInterface.defaultAudioImage = getDrawable(resources, R.drawable.ic_music, null)!!.toBitmap()
     
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
     
