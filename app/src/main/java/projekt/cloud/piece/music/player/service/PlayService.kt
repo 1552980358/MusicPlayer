@@ -72,7 +72,21 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
     private lateinit var mediaSession: MediaSessionCompat
     private val mediaSessionCallback = object : Callback() {
         override fun onPlay() {
-        
+            if (playbackStateCompat.state !in (STATE_PAUSED .. STATE_PLAYING) || playbackStateCompat.state != STATE_BUFFERING) {
+                return
+            }
+    
+            // Play
+            exoPlayer.play()
+            
+            // Update state
+            playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                .setState(STATE_PLAYING, playbackStateCompat.position, 1F)
+                .build()
+            mediaSession.setPlaybackState(playbackStateCompat)
+            
+            // Set service launch foreground keep playing
+            startService { putExtra(START_COMMAND_ACTION, START_COMMAND_ACTION_PLAY) }
         }
     
         override fun onPause() {
