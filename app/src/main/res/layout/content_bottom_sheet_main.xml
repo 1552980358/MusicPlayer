@@ -39,6 +39,12 @@
             android:id="@+id/relative_layout"
             android:background="?attr/selectableItemBackground">
 
+            <projekt.cloud.piece.music.player.widget.ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                app:duration="@{duration}"
+                app:progress="@{progress}" />
+
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/image_view"
                 android:layout_width="@dimen/main_bottom_sheet_image_view_size"
