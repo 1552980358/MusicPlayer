@@ -66,7 +66,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
     private lateinit var mediaSession: MediaSessionCompat
     private val mediaSessionCallback = object : Callback() {
         override fun onPlay() {
-            if (playbackStateCompat.state !in (STATE_PAUSED .. STATE_PLAYING) || playbackStateCompat.state != STATE_BUFFERING) {
+            if (playbackStateCompat.state !in (STATE_PAUSED .. STATE_PLAYING) && playbackStateCompat.state != STATE_BUFFERING) {
                 return
             }
     
