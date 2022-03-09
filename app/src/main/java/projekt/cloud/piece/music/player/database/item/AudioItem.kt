@@ -2,6 +2,7 @@ package projekt.cloud.piece.music.player.database.item
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import projekt.cloud.piece.c2pinyin.pinyin
 import java.io.Serializable
@@ -16,4 +17,12 @@ data class AudioItem(
     @ColumnInfo(name = "size") val size: Long,
     @ColumnInfo(name = "duration") val duration: Long,
     @ColumnInfo(name = "path") val path: String
-): Serializable
+): Serializable {
+    
+    @Ignore
+    lateinit var artistItem: ArtistItem
+    
+    @Ignore
+    lateinit var albumItem: AlbumItem
+    
+}
