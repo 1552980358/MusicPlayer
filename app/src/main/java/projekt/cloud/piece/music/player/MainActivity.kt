@@ -42,6 +42,7 @@ import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.base.BaseMainFragment
+import projekt.cloud.piece.music.player.base.BaseThemeActivity
 import projekt.cloud.piece.music.player.database.AudioDatabase
 import projekt.cloud.piece.music.player.database.AudioDatabase.Companion.DATABASE_NAME
 import projekt.cloud.piece.music.player.database.item.AlbumItem
@@ -56,7 +57,7 @@ import projekt.cloud.piece.music.player.util.ImageUtil.writeAlbumArt40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.writeAlbumArtRaw
 import projekt.cloud.piece.music.player.util.MainActivityInterface
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseThemeActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
