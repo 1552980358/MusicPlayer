@@ -1,0 +1,8 @@
+package projekt.cloud.piece.music.player.util
+
+object Constant {
+    
+    const val ANIMATION_DURATION = 500
+    const val ANIMATION_DURATION_LONG = 500L
+    
+}
