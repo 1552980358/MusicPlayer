@@ -87,4 +87,12 @@ object DataBindingUtil {
         }
     }
     
+    @JvmStatic
+    @BindingAdapter("app:duration")
+    fun ProgressBar.setDuration(duration: Long? = null) {
+        if (duration != null) {
+            this.duration = duration
+        }
+    }
+    
 }
