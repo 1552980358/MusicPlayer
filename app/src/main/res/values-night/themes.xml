@@ -16,4 +16,8 @@
 
     <style name="Theme.MusicPlayer.NoActionBar.VariableNavigationBar" parent="Theme.MusicPlayer.NoActionBar" />
 
+    <style name="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.Translucent.ThemeTransitionActivity" parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.Translucent">
+        <item name="android:navigationBarColor">@color/black</item>
+    </style>
+
 </resources>

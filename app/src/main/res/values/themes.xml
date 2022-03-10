@@ -33,10 +33,12 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
     </style>
 
     <style name="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.Translucent.ThemeTransitionActivity" parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.Translucent">
-        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:navigationBarColor">@color/white</item>
     </style>
 
     <style name="Theme.MusicPlayer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
