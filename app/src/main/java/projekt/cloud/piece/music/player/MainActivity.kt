@@ -30,8 +30,9 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.util.Log
 import android.view.Menu
+import android.view.MotionEvent.ACTION_DOWN
+import android.view.MotionEvent.ACTION_UP
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -128,7 +129,7 @@ class MainActivity : BaseMediaControlActivity() {
     
     private lateinit var audioDatabase: AudioDatabase
     
-    private lateinit var behavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var behavior: BottomSheetBehavior<RelativeLayout>
     
     private val transportControls get() = mediaControllerCompat.transportControls
 
@@ -210,7 +211,7 @@ class MainActivity : BaseMediaControlActivity() {
 
         audioDatabase = databaseBuilder(this, AudioDatabase::class.java, DATABASE_NAME).build()
     
-        behavior = BottomSheetBehavior.from(contentBottomSheetMain.linearLayout)
+        behavior = BottomSheetBehavior.from(contentBottomSheetMain.relativeLayout)
         behavior.peekHeight = 0
         behavior.state = STATE_COLLAPSED
         
@@ -238,20 +239,27 @@ class MainActivity : BaseMediaControlActivity() {
             else -> requestPermission.launch(READ_EXTERNAL_STORAGE)
         }
         
-        contentBottomSheetMain.imageButton.setOnClickListener {
-            when (mediaControllerCompat.playbackState.state) {
-                STATE_PLAYING -> mediaControllerCompat.transportControls.pause()
-                STATE_PAUSED -> mediaControllerCompat.transportControls.play()
-                else -> Unit
+        @Suppress("ClickableViewAccessibility")
+        contentBottomSheetMain.relativeLayout.setOnTouchListener { view, motionEvent ->
+            when (motionEvent.action) {
+                ACTION_DOWN -> {
+                    (view.background as RippleDrawable).setHotspot(motionEvent.x, motionEvent.y)
+                    view.isPressed = true
+                }
+                ACTION_UP -> {
+                    view.isPressed = false
+                    when {
+                        motionEvent.x > contentBottomSheetMain.textView.right -> when (mediaControllerCompat.playbackState.state) {
+                            STATE_PLAYING -> mediaControllerCompat.transportControls.pause()
+                            STATE_PAUSED -> mediaControllerCompat.transportControls.play()
+                            else -> Unit
+                        }
+                    }
+                }
             }
-            (contentBottomSheetMain.linearLayout.background as RippleDrawable).apply {
-                // Effect
-                setHotspot(contentBottomSheetMain.imageButton.x, contentBottomSheetMain.imageButton.y)
-                state = intArrayOf(android.R.attr.state_pressed, android.R.attr.state_enabled)
-                state = intArrayOf()
-            }
+            return@setOnTouchListener true
         }
-
+        
     }
 
     private fun initialApplication() = io {
