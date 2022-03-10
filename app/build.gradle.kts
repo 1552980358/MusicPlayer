@@ -65,6 +65,8 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     // To use Kotlin annotation processing tool (kapt)
     kapt("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.palette:palette-ktx:1.0.0")
+    implementation("androidx.viewpager:viewpager:1.1.0-alpha01")
 
     implementation("com.google.android.material:material:1.5.0")
     val exoPlayerVersion = "2.16.1"
