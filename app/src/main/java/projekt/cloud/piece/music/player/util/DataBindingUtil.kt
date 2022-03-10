@@ -28,7 +28,7 @@ object DataBindingUtil {
     
     @JvmStatic
     @BindingAdapter("app:drawable")
-    fun AppCompatImageButton.playbackStateDrawable(@DrawableRes drawableRes: Int?) {
+    fun AppCompatImageView.playbackStateDrawable(@DrawableRes drawableRes: Int?) {
         if (drawableRes != null) {
             setImageResource(drawableRes)
             if (drawable != null) {
