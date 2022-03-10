@@ -33,7 +33,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.MusicPlayer.NoActionBar.VariableNavigationBar.MainActivity"
+            android:theme="@style/Theme.MusicPlayer.MainActivity"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,7 +44,7 @@
 
         <activity
             android:name=".ThemeTransitionActivity"
-            android:theme="@style/Theme.MusicPlayer.NoActionBar.VariableNavigationBar.Translucent.ThemeTransitionActivity" />
+            android:theme="@style/Theme.MusicPlayer.ThemeTransitionActivity" />
 
     </application>
 
