@@ -5,4 +5,6 @@
 
     <string name="menu_home">Home</string>
 
+    <string name="fragment_play_content_bottom_queue">Queue</string>
+
 </resources>
