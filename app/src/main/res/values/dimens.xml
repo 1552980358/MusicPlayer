@@ -4,15 +4,20 @@
     <dimen name="nav_header_margin_top">16dp</dimen>
     <dimen name="nav_header_icon_size">48dp</dimen>
 
+    <dimen name="dp_0">0dp</dimen>
     <dimen name="dp_5">5dp</dimen>
     <dimen name="dp_10">10dp</dimen>
+    <dimen name="dp_15">15dp</dimen>
     <dimen name="dp_24">24dp</dimen>
+    <dimen name="dp_30">30dp</dimen>
     <dimen name="dp_40">40dp</dimen>
     <dimen name="dp_50">50dp</dimen>
     <dimen name="dp_60">60dp</dimen>
 
     <dimen name="sp_14">14sp</dimen>
     <dimen name="sp_16">16sp</dimen>
+
+    <dimen name="linear_layout_weighted_length">@dimen/dp_0</dimen>
 
     <dimen name="title_text_size">@dimen/sp_16</dimen>
     <dimen name="subtitle_text_size">@dimen/sp_14</dimen>
@@ -30,5 +35,11 @@
     <dimen name="main_bottom_sheet_image_view_size">@dimen/dp_40</dimen>
     <dimen name="main_bottom_sheet_text_view_text_size">@dimen/title_text_size</dimen>
     <dimen name="main_bottom_sheet_image_button_size">@dimen/dp_24</dimen>
+
+    <dimen name="fragment_play_content_buttons_width">@dimen/linear_layout_weighted_length</dimen>
+    <dimen name="fragment_play_content_buttons_icon_size">@dimen/dp_30</dimen>
+    <dimen name="fragment_play_content_buttons_button_margin">@dimen/dp_15</dimen>
+    <dimen name="fragment_play_content_buttons_button_border">@dimen/dp_0</dimen>
+
 
 </resources>
