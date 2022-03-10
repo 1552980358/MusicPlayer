@@ -45,6 +45,9 @@
         <activity
             android:name=".ThemeTransitionActivity"
             android:theme="@style/Theme.MusicPlayer.ThemeTransitionActivity" />
+        
+        <activity android:name=".PlayActivity"
+            android:theme="@style/Theme.MusicPlayer.PlayActivity" />
 
     </application>
 
