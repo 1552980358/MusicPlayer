@@ -81,6 +81,7 @@ import projekt.cloud.piece.music.player.service.play.Action.ACTION_SYNC_SERVICE
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_INDEX
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
 import projekt.cloud.piece.music.player.util.Constant.DELAY_MILS
+import projekt.cloud.piece.music.player.util.Extra.EXTRA_AUDIO_ITEM
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArt
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArts40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAudioArt40Dp
@@ -252,8 +253,10 @@ class MainActivity : BaseMediaControlActivity() {
                         motionEvent.x > contentBottomSheetMain.textView.right -> when (mediaControllerCompat.playbackState.state) {
                             STATE_PLAYING -> mediaControllerCompat.transportControls.pause()
                             STATE_PAUSED -> mediaControllerCompat.transportControls.play()
-                            else -> Unit
                         }
+                        else -> startActivity(intent(this, PlayActivity::class.java) {
+                            putExtra(EXTRA_AUDIO_ITEM, audioItem)
+                        })
                     }
                 }
             }
