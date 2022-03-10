@@ -46,7 +46,7 @@
     <dimen name="fragment_play_content_bottom_root_radius">@dimen/dp_5</dimen>
     <dimen name="fragment_play_content_bottom_root_elevation">@dimen/dp_5</dimen>
     <dimen name="fragment_play_content_bottom_banner_height">@dimen/dp_60</dimen>
-    <dimen name="fragment_play_content_bottom_banner_padding">@dimen/dp_5</dimen>
+    <dimen name="fragment_play_content_bottom_banner_padding">@dimen/dp_10</dimen>
     <dimen name="fragment_play_content_bottom_banner_image_size">@dimen/dp_40</dimen>
     <dimen name="fragment_play_content_bottom_banner_image_margin_end">@dimen/dp_10</dimen>
     <dimen name="fragment_play_content_bottom_banner_text_size">@dimen/title_text_size</dimen>
