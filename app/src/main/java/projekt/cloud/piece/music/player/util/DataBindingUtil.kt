@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
@@ -66,8 +67,16 @@ object DataBindingUtil {
     @BindingAdapter("app:bitmapAnimated")
     fun AppCompatImageView.setBitmapAnimated(bitmap: Bitmap?) {
         if (bitmap != null) {
-            if (drawable == null) {
-                return setImageBitmap(bitmap)
+            return setDrawableAnimated(BitmapDrawable(resources, bitmap))
+        }
+    }
+    
+    @JvmStatic
+    @BindingAdapter("app:drawableAnimated")
+    fun AppCompatImageView.setDrawableAnimated(newDrawable: Drawable?) {
+        if (drawable != null) {
+            if (newDrawable == null) {
+                return setImageDrawable(newDrawable)
             }
             TransitionDrawable(
                 arrayOf(
@@ -75,7 +84,7 @@ object DataBindingUtil {
                         is TransitionDrawable -> lastDrawable.getDrawable(1)
                         else -> drawable
                     },
-                    BitmapDrawable(resources, bitmap))
+                    newDrawable)
             ).apply {
                 setImageDrawable(this)
                 startTransition(ANIMATION_DURATION)
