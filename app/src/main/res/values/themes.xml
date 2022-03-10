@@ -41,6 +41,13 @@
         <item name="android:navigationBarColor">@color/white</item>
     </style>
 
+    <style name="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.Transparent.DisableNavigationBarContrast"
+        parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.Transparent" />
+
+    <style name="Theme.MusicPlayer.PlayActivity"
+        parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.Transparent.DisableNavigationBarContrast">
+    </style>
+
     <style name="Theme.MusicPlayer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.MusicPlayer.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
