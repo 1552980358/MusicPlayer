@@ -34,6 +34,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayer.Builder
 import com.google.android.exoplayer2.MediaItem.fromUri
 import com.google.android.exoplayer2.Player.Listener
+import com.google.android.exoplayer2.Player.STATE_ENDED
 import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.database.item.AudioItem
@@ -44,6 +45,7 @@ import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION
 import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION_PLAY
 import projekt.cloud.piece.music.player.service.play.Config.FOREGROUND_SERVICE
 import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT
+import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT_ONE
 import projekt.cloud.piece.music.player.service.play.Config.getConfig
 import projekt.cloud.piece.music.player.service.play.Config.setConfig
 import projekt.cloud.piece.music.player.service.play.Config.shl
@@ -108,11 +110,34 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
         }
     
         override fun onSkipToPrevious() {
-        
+            if (listIndex == 0) {
+                if (!playConfig.getConfig(PLAY_CONFIG_REPEAT)
+                    && !playConfig.getConfig(PLAY_CONFIG_REPEAT_ONE)) {
+                    // just seek to pos 0
+                    return onSeekTo(0L)
+                }
+                
+                // Move to the last index
+                listIndex = audioList.lastIndex
+                return onPlayFromMediaId(audioList.last().id, null)
+            }
+            // Move to previous
+            onPlayFromMediaId(audioList[--listIndex].id, null)
         }
         
         override fun onSkipToNext() {
-        
+            if (listIndex == audioList.lastIndex) {
+                if (!playConfig.getConfig(PLAY_CONFIG_REPEAT)
+                    && !playConfig.getConfig(PLAY_CONFIG_REPEAT_ONE)) {
+                    // just seek to pos 0
+                    return onSeekTo(0L)
+                }
+                // Move to the first index
+                listIndex = 0
+                return onPlayFromMediaId(audioList.last().id, null)
+            }
+            // Move to next
+            onPlayFromMediaId(audioList[++listIndex].id, null)
         }
     
         override fun onSkipToQueueItem(id: Long) {
@@ -161,6 +186,8 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
     
     @Volatile
     private lateinit var playbackStateCompat: PlaybackStateCompat
+    
+    private val transportControls get() = mediaSession.controller.transportControls
     
     private lateinit var exoPlayer: ExoPlayer
     
@@ -239,7 +266,24 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
     }
     
     override fun onPlaybackStateChanged(playbackState: Int) {
-    
+        if (playbackState == STATE_ENDED) {
+            when {
+                playConfig.getConfig(PLAY_CONFIG_REPEAT) ->
+                    mediaSession.controller.transportControls.skipToNext()
+                
+                playConfig.getConfig(PLAY_CONFIG_REPEAT_ONE) -> {
+                    playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                        .setState(STATE_BUFFERING, 0, 1F)
+                        .build()
+                    exoPlayer.prepare()
+                    transportControls.play()
+                }
+                
+                else -> if (listIndex < audioList.lastIndex) {
+                    transportControls.skipToNext()
+                }
+            }
+        }
     }
     
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?) = when (clientPackageName) {
