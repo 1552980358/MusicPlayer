@@ -20,6 +20,9 @@ data class AudioItem(
 ): Serializable {
     
     @Ignore
+    var index = 0
+    
+    @Ignore
     lateinit var artistItem: ArtistItem
     
     @Ignore
