@@ -105,7 +105,7 @@ class PlayFragment: BasePlayFragment() {
                     }
                 }
             },
-            updateProgress = {  },
+            updateProgress = { progress -> contentPlayFragmentButtons.progress = progress },
             updatePlayState = { isPlaying -> contentPlayFragmentButtons.isPlaying = isPlaying }
         )
         
