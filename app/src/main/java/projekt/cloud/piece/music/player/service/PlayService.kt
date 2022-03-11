@@ -186,7 +186,14 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
         }
     
         override fun onSeekTo(pos: Long) {
-        
+    
+            exoPlayer.seekTo(pos)
+            
+            playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                .setState(playbackStateCompat.state, pos, 1F)
+                .build()
+            mediaSession.setPlaybackState(playbackStateCompat)
+            
         }
         
     }
