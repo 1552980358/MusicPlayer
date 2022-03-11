@@ -102,25 +102,12 @@
 
             </RelativeLayout>
 
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <projekt.cloud.piece.music.player.widget.TimeView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="@dimen/fragment_play_content_buttons_seek_icon_width"
-                    android:layout_height="@dimen/fragment_play_content_buttons_seek_icon_height"
-                    app:alphaAnimated="@{isSeekbarTouched ? 1F : 0F}"
-                    android:src="@drawable/ic_seek_to"
-                    android:tint="@{iconTintColor == null ? Color.WHITE : primaryColor}" />
-
-                <projekt.cloud.piece.music.player.widget.TimeView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:alphaAnimated="@{isSeekbarTouched ? 1F : 0F}"
-                    app:color="@{primaryColor}"
-                    app:time="@{seekbarTouchedProgress}" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
+                android:layout_height="wrap_content"
+                app:alphaAnimated="@{isSeekbarTouched ? 1F : 0F}"
+                app:color="@{primaryColor}"
+                app:time="@{seekbarTouchedProgress}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
