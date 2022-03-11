@@ -32,6 +32,7 @@ import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_SHUFFLE
 import projekt.cloud.piece.music.player.service.play.Config.getConfig
 import projekt.cloud.piece.music.player.service.play.Config.setConfig
 import projekt.cloud.piece.music.player.util.ActivityUtil.pixelHeight
+import projekt.cloud.piece.music.player.util.ColorUtil.isLight
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_HALF_LONG
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_LONG
 import projekt.cloud.piece.music.player.util.ContextUtil.navigationBarHeight
@@ -76,6 +77,32 @@ class PlayFragment: BasePlayFragment() {
             updateColor = { primaryColor, secondaryColor ->
                 contentPlayFragmentButtons.primaryColor = primaryColor
                 contentPlayFragmentButtons.secondaryColor = secondaryColor
+                when (contentPlayFragmentButtons.circleColor) {
+                    null -> contentPlayFragmentButtons.circleColor = when {
+                        primaryColor.isLight -> BLACK
+                        else -> WHITE
+                    }
+                    else -> {
+                        when {
+                            primaryColor.isLight -> {
+                                if (contentPlayFragmentButtons.circleColor != BLACK) {
+                                    ofArgb(contentPlayFragmentButtons.circleColor!!, BLACK).apply {
+                                        duration = ANIMATION_DURATION_LONG
+                                        addUpdateListener { contentPlayFragmentButtons.circleColor = animatedValue as Int }
+                                    }.start()
+                                }
+                            }
+                            else -> {
+                                if (contentPlayFragmentButtons.circleColor != WHITE) {
+                                    ofArgb(contentPlayFragmentButtons.circleColor!!, WHITE).apply {
+                                        duration = ANIMATION_DURATION_LONG
+                                        addUpdateListener { contentPlayFragmentButtons.circleColor = animatedValue as Int }
+                                    }.start()
+                                }
+                            }
+                        }
+                    }
+                }
             },
             updateContrast = { isLight ->
                 when(contentPlayFragmentButtons.iconTintColor) {
@@ -224,6 +251,7 @@ class PlayFragment: BasePlayFragment() {
     }
     
     private fun loadMetadata(audioItem: AudioItem) {
+        contentPlayFragmentButtons.duration = audioItem.duration
         contentPlayFragmentBottomSheet.title = audioItem.title
         contentPlayFragmentBottomSheet.subtitle = "${audioItem.artistItem.name} - ${audioItem.albumItem.title}"
     }
