@@ -4,27 +4,31 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorInt
-import lib.github1552980358.ktExtension.android.view.heightF
 import lib.github1552980358.ktExtension.android.view.widthF
 import projekt.cloud.piece.music.player.R
 
 class TimeView(context: Context, attributeSet: AttributeSet?): View(context, attributeSet) {
     
     private companion object {
-         const val COLON = ":"
+        const val DEFAULT_STR = "00:00"
+        const val COLON = ":"
     }
     
     private val paint = Paint()
     private val length: Float
+    
+    private val rect = Rect()
     
     init {
         paint.isAntiAlias = true
         paint.color = Color.WHITE
         paint.textSize = resources.getDimension(R.dimen.view_duration_text_size)
         length = paint.measureText(COLON)
+        paint.getTextBounds(DEFAULT_STR, 0, DEFAULT_STR.length, rect)
     }
     
     var duration = 0L
@@ -38,11 +42,17 @@ class TimeView(context: Context, attributeSet: AttributeSet?): View(context, att
         invalidate()
     }
     
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val margin = resources.getDimensionPixelSize(R.dimen.view_duration_text_margin)
+        // Add 0.5dp to 4 sides
+        setMeasuredDimension(rect.width() + margin, rect.height() + margin)
+    }
+    
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas ?: return
         
-        val drawY = heightF - paint.fontMetrics.bottom
+        val drawY = (measuredHeight - rect.height()) / 2F + rect.height()
         // Draw colon first
         canvas.drawText(COLON, (widthF - length) / 2, drawY, paint)
         var text = (duration / 60000).addZero
