@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
@@ -168,6 +169,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                     .putString(METADATA_KEY_MEDIA_ID, audioItem.id)
                     .putString(METADATA_KEY_TITLE, audioItem.title)
                     .putString(METADATA_KEY_ALBUM, audioItem.albumItem.title)
+                    .putString(METADATA_KEY_ALBUM_ART_URI, audioItem.album)
                     .putLong(METADATA_KEY_DURATION, audioItem.duration)
                     .build()
             )
@@ -313,6 +315,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                             .putString(METADATA_KEY_MEDIA_ID, audioItem.id)
                             .putString(METADATA_KEY_TITLE, audioItem.title)
                             .putString(METADATA_KEY_ALBUM, audioItem.albumItem.title)
+                            .putString(METADATA_KEY_ALBUM_ART_URI, audioItem.album)
                             .putLong(METADATA_KEY_DURATION, audioItem.duration)
                             .build()
                     )
