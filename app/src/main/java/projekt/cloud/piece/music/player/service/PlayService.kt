@@ -1,6 +1,7 @@
 package projekt.cloud.piece.music.player.service
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
@@ -26,7 +27,9 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.os.bundleOf
 import androidx.media.MediaBrowserServiceCompat
+import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayer.Builder
 import com.google.android.exoplayer2.MediaItem.fromUri
@@ -34,20 +37,25 @@ import com.google.android.exoplayer2.Player.Listener
 import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.database.item.AudioItem
+import projekt.cloud.piece.music.player.service.play.Action.ACTION_PLAY_CONFIG_CHANGED
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_SYNC_SERVICE
 import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION
 import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION_PAUSE
 import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION_PLAY
 import projekt.cloud.piece.music.player.service.play.Config.FOREGROUND_SERVICE
+import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT
 import projekt.cloud.piece.music.player.service.play.Config.getConfig
 import projekt.cloud.piece.music.player.service.play.Config.setConfig
+import projekt.cloud.piece.music.player.service.play.Config.shl
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_INDEX
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
+import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_PLAY_CONFIG
 import projekt.cloud.piece.music.player.service.play.MediaIdUtil.parseAsUri
 import projekt.cloud.piece.music.player.service.play.NotificationUtil.createNotification
 import projekt.cloud.piece.music.player.service.play.NotificationUtil.createNotificationManager
 import projekt.cloud.piece.music.player.service.play.NotificationUtil.startForeground
 import projekt.cloud.piece.music.player.service.play.NotificationUtil.update
+import projekt.cloud.piece.music.player.service.play.SharedPreferences.SP_PLAY_CONFIG
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArtRaw
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAudioArtRaw
 import projekt.cloud.piece.music.player.util.ServiceUtil.startService
@@ -159,7 +167,11 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
     private lateinit var audioList: List<AudioItem>
     private var listIndex = 0
     
+    private lateinit var sharedPreferences: SharedPreferences
+    
     private var configs = 0
+    
+    private var playConfig = PLAY_CONFIG_REPEAT.shl
     
     private lateinit var defaultImage: Bitmap
     
@@ -168,10 +180,18 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
     override fun onCreate() {
         super.onCreate()
     
+        sharedPreferences = getDefaultSharedPreferences(this)
+        if (sharedPreferences.contains(SP_PLAY_CONFIG)) {
+            playConfig = sharedPreferences.getInt(SP_PLAY_CONFIG, playConfig)
+        }
+    
         // MediaBrowser Config
         playbackStateCompat = PlaybackStateCompat.Builder()
             .setState(STATE_NONE, 0, 1F)
             .setActions(PlaybackStateActions)
+            .addCustomAction(ACTION_SYNC_SERVICE, ACTION_SYNC_SERVICE, R.drawable.ic_launcher_foreground)
+            .addCustomAction(ACTION_PLAY_CONFIG_CHANGED, ACTION_PLAY_CONFIG_CHANGED, R.drawable.ic_launcher_foreground)
+            .setExtras(bundleOf(EXTRA_PLAY_CONFIG to playConfig))
             .build()
     
         mediaSession = MediaSessionCompat(this, ROOT_ID).apply {
@@ -252,6 +272,25 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                             .putLong(METADATA_KEY_DURATION, audioItem.duration)
                             .build()
                     )
+                }
+            }
+            ACTION_PLAY_CONFIG_CHANGED -> {
+                result.sendResult(null)
+                extras?.let {
+                    if (it.containsKey(EXTRA_PLAY_CONFIG)) {
+                        playConfig = it.getInt(EXTRA_PLAY_CONFIG)
+                        
+                        playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                            .setState(playbackStateCompat.state, exoPlayer.currentPosition, 1F)
+                            .setExtras(bundleOf(EXTRA_PLAY_CONFIG to playConfig))
+                            .build()
+                        
+                        mediaSession.setPlaybackState(playbackStateCompat)
+                        
+                        sharedPreferences.edit()
+                            .putInt(SP_PLAY_CONFIG, playConfig)
+                            .apply()
+                    }
                 }
             }
         }
