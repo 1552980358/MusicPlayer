@@ -39,7 +39,7 @@
     <dimen name="main_bottom_sheet_image_button_size">@dimen/dp_24</dimen>
 
     <dimen name="fragment_play_content_buttons_width">@dimen/linear_layout_weighted_length</dimen>
-    <dimen name="fragment_play_content_buttons_icon_size">@dimen/dp_30</dimen>
+    <dimen name="fragment_play_content_buttons_icon_size">@dimen/dp_24</dimen>
     <dimen name="fragment_play_content_buttons_button_margin">@dimen/dp_15</dimen>
     <dimen name="fragment_play_content_buttons_button_border">@dimen/dp_0</dimen>
     <dimen name="fragment_play_content_bottom_root_margin">@dimen/dp_20</dimen>
