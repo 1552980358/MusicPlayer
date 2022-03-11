@@ -334,6 +334,10 @@ class MainActivity : BaseMediaControlActivity() {
             launch { activityInterface.albumList = audioDatabase.album.query() }
             launch { activityInterface.artistList = audioDatabase.artist.query() }
             activityInterface.audioList = audioDatabase.audio.query()
+            activityInterface.audioList.apply {
+                sortedBy { it.pinyin }
+                forEachIndexed { index, audioItem -> audioItem.index = index }
+            }
         }
         activityInterface.audioList.forEach { audioItem ->
             activityInterface.albumList.find { it.id == audioItem.album }?.let {
