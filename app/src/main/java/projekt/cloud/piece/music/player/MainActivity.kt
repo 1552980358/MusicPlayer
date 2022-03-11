@@ -125,9 +125,6 @@ class MainActivity : BaseMediaControlActivity() {
     private val audioBitmap40DpMap get() = activityInterface.audioBitmap40DpMap
     private val playlistBitmap40DpMap get() = activityInterface.playlistBitmap40DpMap
     
-    private var isPlaying = false
-    private var job: Job? = null
-    
     private lateinit var audioDatabase: AudioDatabase
     
     private lateinit var behavior: BottomSheetBehavior<RelativeLayout>
@@ -370,6 +367,13 @@ class MainActivity : BaseMediaControlActivity() {
 
     override fun onSupportNavigateUp() =
         navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    
+    override fun onResume() {
+        super.onResume()
+        if (mediaBrowserCompat.isConnected) {
+            requestSyncService()
+        }
+    }
 
     override fun onDestroy() {
         supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks)
@@ -392,10 +396,7 @@ class MainActivity : BaseMediaControlActivity() {
         state?.state?.also { playbackState ->
             when (playbackState) {
                 STATE_PLAYING -> {
-                    isPlaying = false
-                    job?.cancel()
-                    isPlaying = true
-                    job = timerJob(state.position)
+                    startPlaying(state.position)
                     if (behavior.isDraggable) {
                         behavior.state = STATE_EXPANDED
                         behavior.isDraggable = false
@@ -415,7 +416,6 @@ class MainActivity : BaseMediaControlActivity() {
                 }
                 STATE_PAUSED -> {
                     isPlaying = false
-                    job?.cancel()
                     when (contentBottomSheetMain.playbackState) {
                         null -> contentBottomSheetMain.playbackState = R.drawable.ic_play
                         R.drawable.ani_play_pause -> contentBottomSheetMain.playbackState = R.drawable.ani_pause_play
@@ -423,19 +423,13 @@ class MainActivity : BaseMediaControlActivity() {
                 }
                 STATE_BUFFERING -> {
                     isPlaying = false
-                    job?.cancel()
                 }
             }
         }
     }
     
-    private fun timerJob(progress: Long) = io {
-        var currentProgress = progress.correct()
-        do {
-            ui { contentBottomSheetMain.progress = currentProgress }
-            delay(DELAY_MILS)
-            currentProgress += DELAY_MILS
-        } while (isPlaying)
+    override fun updateTime(currentProgress: Long) {
+        contentBottomSheetMain.progress = currentProgress
     }
     
     private suspend fun Long.correct() =
