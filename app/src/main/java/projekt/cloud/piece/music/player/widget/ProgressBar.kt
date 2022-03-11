@@ -5,7 +5,6 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Paint.Style.FILL
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat.getColor
@@ -22,14 +21,12 @@ class ProgressBar(context: Context, attributeSet: AttributeSet?): View(context, 
     
     var progress = 0L
         set(value) {
-            Log.e("ProgressBar", "progress" + value.toString())
             field = value
             invalidate()
         }
     
     var duration = 0L
         set(value) {
-            Log.e("ProgressBar", "DURATION" + value.toString())
             field = value
             invalidate()
         }
