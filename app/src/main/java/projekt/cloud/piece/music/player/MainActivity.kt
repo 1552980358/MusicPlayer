@@ -246,6 +246,7 @@ class MainActivity : BaseMediaControlActivity() {
                 }
                 ACTION_UP -> {
                     view.isPressed = false
+                    @Suppress("SwitchIntDef")
                     when {
                         motionEvent.x > contentBottomSheetMain.textView.right -> when (mediaControllerCompat.playbackState.state) {
                             STATE_PLAYING -> mediaControllerCompat.transportControls.pause()
