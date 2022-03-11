@@ -111,7 +111,10 @@ class PlayActivity: BaseMediaControlActivity() {
                 loadAudioArtRaw(audioItem.id) ?: loadAlbumArtRaw(audioItem.album) ?: defaultCoverBitmap
             ui { activityInterface.loadBitmap(currentCoverBitmap) }
             MediaNotificationProcessor(this@PlayActivity, currentCoverBitmap).apply {
-                ui { binding.backgroundColor = backgroundColor }
+                ui {
+                    binding.backgroundColor = backgroundColor
+                    activityInterface.loadIsLight(backgroundColor.isLight)
+                }
             }
         }
         
