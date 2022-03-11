@@ -66,15 +66,18 @@ class PlayFragment: BasePlayFragment() {
         loadMetadata(activityInterface.requestMetadata())
         
         activityInterface.setListener(
-            loadMetadata = { audioItem -> loadMetadata(audioItem) },
+            updateAudioItem = { audioItem -> loadMetadata(audioItem) },
             updatePlayConfig = { playConfig ->
                 if (contentPlayFragmentButtons.playConfig != playConfig) {
                     contentPlayFragmentButtons.playConfig = playConfig
                 }
             },
-            loadBitmap = { bitmap -> binding.coverImage = bitmap },
-            loadColor = { primaryColor, secondaryColor ->  },
-            loadIsLight = { isLight ->
+            updateBitmap = { bitmap -> binding.coverImage = bitmap },
+            updateColor = { primaryColor, secondaryColor ->
+                contentPlayFragmentButtons.primaryColor = primaryColor
+                contentPlayFragmentButtons.secondaryColor = secondaryColor
+            },
+            updateContrast = { isLight ->
                 when(contentPlayFragmentButtons.iconTintColor) {
                     null -> contentPlayFragmentButtons.iconTintColor = when {
                         isLight -> BLACK
@@ -102,7 +105,7 @@ class PlayFragment: BasePlayFragment() {
                     }
                 }
             },
-            updateTime = {  },
+            updateProgress = {  },
             updatePlayState = { isPlaying -> contentPlayFragmentButtons.isPlaying = isPlaying }
         )
         

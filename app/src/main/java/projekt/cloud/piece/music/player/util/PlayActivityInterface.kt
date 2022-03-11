@@ -7,29 +7,29 @@ import projekt.cloud.piece.music.player.database.item.AudioItem
 class PlayActivityInterface(val requestMetadata: () -> AudioItem,
                             val changePlayConfig: (Int) -> Unit) {
 
-    lateinit var loadMetadata: (AudioItem) -> Unit
+    lateinit var updateAudioItem: (AudioItem) -> Unit
     lateinit var updatePlayConfig: (Int) -> Unit
-    lateinit var loadBitmap: (Bitmap) -> Unit
-    lateinit var loadColor: (Int, Int) -> Unit
-    lateinit var loadIsLight: (Boolean) -> Unit
-    lateinit var updateTime: (Long) -> Unit
+    lateinit var updateBitmap: (Bitmap) -> Unit
+    lateinit var updateColor: (Int, Int) -> Unit
+    lateinit var updateContrast: (Boolean) -> Unit
+    lateinit var updateProgress: (Long) -> Unit
     lateinit var updatePlayState: (Boolean) -> Unit
     
     lateinit var transportControls: TransportControls
     
-    fun setListener(loadMetadata: (AudioItem) -> Unit,
+    fun setListener(updateAudioItem: (AudioItem) -> Unit,
                     updatePlayConfig: (Int) -> Unit,
-                    loadBitmap: (Bitmap) -> Unit,
-                    loadColor: (Int, Int) -> Unit,
-                    loadIsLight: (Boolean) -> Unit,
-                    updateTime: (Long) -> Unit,
+                    updateBitmap: (Bitmap) -> Unit,
+                    updateColor: (Int, Int) -> Unit,
+                    updateContrast: (Boolean) -> Unit,
+                    updateProgress: (Long) -> Unit,
                     updatePlayState: (Boolean) -> Unit) {
-        this.loadMetadata = loadMetadata
+        this.updateAudioItem = updateAudioItem
         this.updatePlayConfig = updatePlayConfig
-        this.loadBitmap = loadBitmap
-        this.loadColor = loadColor
-        this.loadIsLight = loadIsLight
-        this.updateTime = updateTime
+        this.updateBitmap = updateBitmap
+        this.updateColor = updateColor
+        this.updateContrast = updateContrast
+        this.updateProgress = updateProgress
         this.updatePlayState = updatePlayState
     }
 

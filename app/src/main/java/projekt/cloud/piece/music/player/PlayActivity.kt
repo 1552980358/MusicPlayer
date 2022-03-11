@@ -139,7 +139,7 @@ class PlayActivity: BaseMediaControlActivity() {
                 audioItem = audioDatabase.audio.query(getString(METADATA_KEY_MEDIA_ID)).apply {
                     albumItem = audioDatabase.album.query(album)
                     artistItem = audioDatabase.artist.query(artist)
-                    activityInterface.loadMetadata(audioItem)
+                    activityInterface.updateAudioItem(audioItem)
                 }
                 ui { updateMetadata(audioItem) }
             }
@@ -172,16 +172,17 @@ class PlayActivity: BaseMediaControlActivity() {
     }
     
     override fun updateTime(currentProgress: Long) =
-        activityInterface.updateTime(currentProgress)
+        activityInterface.updateProgress(currentProgress)
     
     private fun updateMetadata(audioItem: AudioItem) {
         currentCoverBitmap =
             loadAudioArtRaw(audioItem.id) ?: loadAlbumArtRaw(audioItem.album) ?: defaultCoverBitmap
-        ui { activityInterface.loadBitmap(currentCoverBitmap) }
+        ui { activityInterface.updateBitmap(currentCoverBitmap) }
         MediaNotificationProcessor(this@PlayActivity, currentCoverBitmap).apply {
             ui {
                 binding.backgroundColor = backgroundColor
-                activityInterface.loadIsLight(backgroundColor.isLight)
+                activityInterface
+                activityInterface.updateContrast(backgroundColor.isLight)
             }
         }
     }
