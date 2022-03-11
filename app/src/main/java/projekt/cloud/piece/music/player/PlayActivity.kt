@@ -164,6 +164,7 @@ class PlayActivity: BaseMediaControlActivity() {
                     activityInterface.updatePlayState(true)
                 }
                 STATE_PAUSED -> {
+                    updateTime(state.position)
                     isPlaying = false
                     activityInterface.updatePlayState(false)
                 }
