@@ -31,6 +31,7 @@ import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT_O
 import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_SHUFFLE
 import projekt.cloud.piece.music.player.service.play.Config.getConfig
 import projekt.cloud.piece.music.player.service.play.Config.setConfig
+import projekt.cloud.piece.music.player.ui.play.util.RecyclerViewAdapterUtil
 import projekt.cloud.piece.music.player.util.ActivityUtil.pixelHeight
 import projekt.cloud.piece.music.player.util.ColorUtil.isLight
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_HALF_LONG
@@ -54,6 +55,8 @@ class PlayFragment: BasePlayFragment() {
     private val imageViewShuffle get() = contentPlayFragmentButtons.imageViewShuffle
     
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<CardView>
+    
+    private lateinit var recyclerViewAdapterUtil: RecyclerViewAdapterUtil
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_play, container, false)
@@ -137,6 +140,13 @@ class PlayFragment: BasePlayFragment() {
                 if (contentPlayFragmentButtons.isPlaying != isPlaying) {
                     contentPlayFragmentButtons.isPlaying = isPlaying
                 }
+            },
+            updateAudioList = { audioList ->
+                if (!::recyclerViewAdapterUtil.isInitialized) {
+                    recyclerViewAdapterUtil = RecyclerViewAdapterUtil(contentPlayFragmentBottomSheet.recyclerView, audioList)
+                    return@setListener
+                }
+                recyclerViewAdapterUtil.audioList = audioList
             }
         )
         
