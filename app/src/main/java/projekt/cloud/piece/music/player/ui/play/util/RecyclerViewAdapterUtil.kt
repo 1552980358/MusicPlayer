@@ -11,14 +11,15 @@ import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.LayoutRecyclerPlayBinding
 
 class RecyclerViewAdapterUtil(private val recyclerView: RecyclerView,
-                              list: List<AudioItem>) {
+                              list: List<AudioItem>,
+                              private val clickListener: (Int) -> Unit) {
     
-    private class RecyclerViewHolder(private val binding: LayoutRecyclerPlayBinding): ViewHolder(binding.root) {
+    private inner class RecyclerViewHolder(private val binding: LayoutRecyclerPlayBinding): ViewHolder(binding.root) {
         
         fun bind(index: Int, audioItem: AudioItem) {
             binding.index = "${index + 1}"
             binding.audioItem = audioItem
-            binding.relativeLayout.setOnClickListener {  }
+            binding.relativeLayout.setOnClickListener { clickListener(audioItem.index) }
         }
         
     }
