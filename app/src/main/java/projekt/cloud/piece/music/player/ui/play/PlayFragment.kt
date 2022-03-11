@@ -101,7 +101,9 @@ class PlayFragment: BasePlayFragment() {
                         }
                     }
                 }
-            }
+            },
+            updateTime = {  },
+            updatePlayState = { isPlaying -> contentPlayFragmentButtons.isPlaying = isPlaying }
         )
         
         return binding.root
@@ -120,6 +122,13 @@ class PlayFragment: BasePlayFragment() {
         
         contentPlayFragmentButtons.linearLayout.apply {
             layoutParams = layoutParams.apply { height = bottomHeight * 2 / 5 }
+        }
+        
+        contentPlayFragmentButtons.floatingActionButton.setOnClickListener {
+            when (contentPlayFragmentButtons.isPlaying) {
+                true -> activityInterface.transportControls.pause()
+                else -> activityInterface.transportControls.play()
+            }
         }
         
         bottomSheetBehavior = BottomSheetBehavior.from(contentPlayFragmentBottomSheet.cardView)
