@@ -11,6 +11,9 @@ interface AlbumItemDao {
 
     @Query("select * from album")
     fun query(): List<AlbumItem>
+    
+    @Query("select * from album where id=:id")
+    fun query(id: String): AlbumItem
 
     @Insert
     fun insert(vararg albumItem: AlbumItem)
