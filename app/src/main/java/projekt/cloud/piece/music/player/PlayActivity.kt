@@ -12,6 +12,7 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.util.Log
 import android.view.View
+import android.view.View.OVER_SCROLL_NEVER
 import androidx.core.content.res.ResourcesCompat.getDrawable
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
@@ -117,6 +118,12 @@ class PlayActivity: BaseMediaControlActivity() {
         audioDatabase = Room.databaseBuilder(this, AudioDatabase::class.java, DATABASE_NAME).build()
         
         binding = DataBindingUtil.setContentView(this, R.layout.activity_play)
+    
+        /**
+         * For ViewPager2, method of disabling over scroll is token from
+         * https://stackoverflow.com/a/56942231/11685230
+         **/
+        binding.viewPager.getChildAt(0).overScrollMode = OVER_SCROLL_NEVER
         
         val fragmentList = listOf(
             PlayFragment().apply { arguments = bundle { putSerializable(EXTRA_AUDIO_ITEM, audioItem) } }
