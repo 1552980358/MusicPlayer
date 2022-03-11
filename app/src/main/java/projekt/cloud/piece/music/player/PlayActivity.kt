@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
@@ -17,6 +18,7 @@ import androidx.core.view.WindowCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.room.Room
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import lib.github1552980358.ktExtension.android.content.getSerializableOf
 import lib.github1552980358.ktExtension.android.os.bundle
@@ -25,6 +27,8 @@ import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import mkaflowski.mediastylepalette.MediaNotificationProcessor
 import projekt.cloud.piece.music.player.base.BaseMediaControlActivity
 import projekt.cloud.piece.music.player.base.BasePlayFragment
+import projekt.cloud.piece.music.player.database.AudioDatabase
+import projekt.cloud.piece.music.player.database.AudioDatabase.Companion.DATABASE_NAME
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.ActivityPlayBinding
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_PLAY_CONFIG_CHANGED
@@ -90,6 +94,8 @@ class PlayActivity: BaseMediaControlActivity() {
     private lateinit var defaultCoverBitmap: Bitmap
     private lateinit var currentCoverBitmap: Bitmap
     
+    private lateinit var audioDatabase: AudioDatabase
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
     
@@ -105,6 +111,8 @@ class PlayActivity: BaseMediaControlActivity() {
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
         
         super.onCreate(savedInstanceState)
+    
+        audioDatabase = Room.databaseBuilder(this, AudioDatabase::class.java, DATABASE_NAME).build()
         
         binding = DataBindingUtil.setContentView(this, R.layout.activity_play)
         
@@ -120,19 +128,22 @@ class PlayActivity: BaseMediaControlActivity() {
             defaultCoverBitmap = getDrawable(resources, R.drawable.ic_music_big, null)!!.toBitmap()
             currentCoverBitmap =
                 loadAudioArtRaw(audioItem.id) ?: loadAlbumArtRaw(audioItem.album) ?: defaultCoverBitmap
-            ui { activityInterface.loadBitmap(currentCoverBitmap) }
-            MediaNotificationProcessor(this@PlayActivity, currentCoverBitmap).apply {
-                ui {
-                    binding.backgroundColor = backgroundColor
-                    activityInterface.loadIsLight(backgroundColor.isLight)
-                }
-            }
+            updateMetadata(audioItem)
         }
         
     }
     
     override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
-    
+        metadata?.apply {
+            io {
+                audioItem = audioDatabase.audio.query(getString(METADATA_KEY_MEDIA_ID)).apply {
+                    albumItem = audioDatabase.album.query(album)
+                    artistItem = audioDatabase.artist.query(artist)
+                    activityInterface.loadMetadata(audioItem)
+                }
+                ui { updateMetadata(audioItem) }
+            }
+        }
     }
     
     override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
@@ -150,7 +161,20 @@ class PlayActivity: BaseMediaControlActivity() {
     
     override fun onConnected() {
         registerMediaController()
+        activityInterface.transportControls = mediaControllerCompat.transportControls
         mediaBrowserCompat.sendCustomAction(ACTION_SYNC_SERVICE, null, null)
+    }
+    
+    private fun updateMetadata(audioItem: AudioItem) {
+        currentCoverBitmap =
+            loadAudioArtRaw(audioItem.id) ?: loadAlbumArtRaw(audioItem.album) ?: defaultCoverBitmap
+        ui { activityInterface.loadBitmap(currentCoverBitmap) }
+        MediaNotificationProcessor(this@PlayActivity, currentCoverBitmap).apply {
+            ui {
+                binding.backgroundColor = backgroundColor
+                activityInterface.loadIsLight(backgroundColor.isLight)
+            }
+        }
     }
     
     override fun getParentID() = TAG
