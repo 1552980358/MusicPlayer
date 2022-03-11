@@ -144,7 +144,8 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
         }
     
         override fun onSkipToQueueItem(id: Long) {
-        
+            listIndex = id.toInt()
+            onPlayFromMediaId(audioList[listIndex].id, null)
         }
     
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
