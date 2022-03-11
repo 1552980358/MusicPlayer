@@ -162,10 +162,13 @@ class PlayFragment: BasePlayFragment() {
                                 }
                             }
                         }
-                        compareAxis(touchX, touchY, imageViewPrev, rawAxis) -> {
-                        }
-                        compareAxis(touchX, touchY, imageViewNext, rawAxis) -> {
-                        }
+                        
+                        compareAxis(touchX, touchY, imageViewPrev, rawAxis) ->
+                            activityInterface.transportControls.skipToPrevious()
+                        
+                        compareAxis(touchX, touchY, imageViewNext, rawAxis) ->
+                            activityInterface.transportControls.skipToNext()
+                        
                         compareAxis(touchX, touchY, imageViewShuffle, rawAxis) -> {
                             contentPlayFragmentButtons.playConfig?.let { playConfig ->
                                 activityInterface.changePlayConfig(playConfig.setConfig(PLAY_CONFIG_SHUFFLE, !playConfig.getConfig(PLAY_CONFIG_SHUFFLE)))
