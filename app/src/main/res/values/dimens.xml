@@ -6,6 +6,7 @@
 
     <dimen name="dp_0">0dp</dimen>
     <dimen name="dp_1">1dp</dimen>
+    <dimen name="dp_2">2dp</dimen>
     <dimen name="dp_5">5dp</dimen>
     <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_15">15dp</dimen>
@@ -23,6 +24,9 @@
 
     <dimen name="title_text_size">@dimen/sp_16</dimen>
     <dimen name="subtitle_text_size">@dimen/sp_14</dimen>
+
+    <dimen name="view_duration_text_margin">@dimen/dp_2</dimen>
+    <dimen name="view_duration_text_size">@dimen/sp_14</dimen>
 
     <dimen name="home_recycler_view_layout_height">@dimen/dp_60</dimen>
     <dimen name="home_recycler_view_layout_margin">@dimen/dp_10</dimen>
