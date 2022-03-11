@@ -138,7 +138,7 @@ class PlayActivity: BaseMediaControlActivity() {
                 audioItem = audioDatabase.audio.query(getString(METADATA_KEY_MEDIA_ID)).apply {
                     albumItem = audioDatabase.album.query(album)
                     artistItem = audioDatabase.artist.query(artist)
-                    activityInterface.updateAudioItem(audioItem)
+                    activityInterface.updateAudioItem(this)
                 }
                 ui { updateMetadata(audioItem) }
             }
