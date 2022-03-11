@@ -14,5 +14,6 @@ object Action {
     const val BROADCAST_ACTION_NEXT = "${APPLICATION_ID}.next"
     
     const val ACTION_SYNC_SERVICE = "ACTION_SYNC_SERVICE"
+    const val ACTION_PLAY_CONFIG_CHANGED = "ACTION_PLAY_CONFIG_CHANGED"
     
 }
