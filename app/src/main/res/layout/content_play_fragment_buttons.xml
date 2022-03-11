@@ -25,86 +25,184 @@
             name="isPlaying"
             type="Boolean" />
 
+        <variable
+            name="primaryColor"
+            type="Integer" />
+
+        <variable
+            name="secondaryColor"
+            type="Integer" />
+
+        <variable
+            name="circleColor"
+            type="Integer" />
+
+        <variable
+            name="progress"
+            type="Long" />
+
+        <variable
+            name="duration"
+            type="Long" />
+
+        <variable
+            name="isSeekbarTouched"
+            type="Boolean" />
+
+        <variable
+            name="seekbarTouchedProgress"
+            type="Long" />
+
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/linear_layout"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="@dimen/fragment_play_content_buttons_width"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/image_view_cycle"
-                android:layout_width="@dimen/fragment_play_content_buttons_icon_size"
-                android:layout_height="@dimen/fragment_play_content_buttons_icon_size"
-                android:layout_centerInParent="true"
-                android:alpha="@{playConfig == null || Config.getConfig(playConfig, Config.PLAY_CONFIG_REPEAT) || Config.getConfig(playConfig, Config.PLAY_CONFIG_REPEAT_ONE) ? 1F : 0.5F}"
-                android:tint="@{iconTintColor == null ? Color.BLACK : iconTintColor}"
-                app:imageResource="@{playConfig == null ? R.drawable.ic_repeat : Config.getConfig(playConfig, Config.PLAY_CONFIG_REPEAT_ONE) ? R.drawable.ic_repeat_one : R.drawable.ic_repeat}"
-                tools:ignore="ContentDescription" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        </RelativeLayout>
+                <projekt.cloud.piece.music.player.widget.TimeView
+                    android:id="@+id/time_view_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    app:alphaAnimated="@{isSeekbarTouched ? 0.5F : 1F}"
+                    app:color="@{primaryColor}"
+                    app:time="@{progress}" />
 
-        <RelativeLayout
-            android:layout_width="@dimen/fragment_play_content_buttons_width"
-            android:layout_height="match_parent"
-            android:layout_weight="2">
+                <projekt.cloud.piece.music.player.widget.TimeView
+                    android:id="@+id/time_view_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    app:color="@{secondaryColor}"
+                    app:time="@{duration}" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/floating_action_button"
+                <projekt.cloud.piece.music.player.widget.Seekbar
+                    android:id="@+id/seekbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_15"
+                    android:layout_toStartOf="@id/time_view_duration"
+                    android:layout_toEndOf="@id/time_view_progress"
+                    app:circleColor="@{circleColor}"
+                    app:duration="@{duration}"
+                    app:primaryColor="@{primaryColor}"
+                    app:progress="@{progress}"
+                    app:secondaryColor="@{secondaryColor}" />
+
+            </RelativeLayout>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginStart="@dimen/fragment_play_content_buttons_button_margin"
-                android:layout_marginEnd="@dimen/fragment_play_content_buttons_button_margin"
-                android:backgroundTint="@color/white"
-                app:borderWidth="@dimen/fragment_play_content_buttons_button_border"
-                app:isPlaying="@{isPlaying}"
-                tools:ignore="ContentDescription" />
+                android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/image_view_prev"
-                android:layout_width="@dimen/fragment_play_content_buttons_icon_size"
-                android:layout_height="@dimen/fragment_play_content_buttons_icon_size"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@id/floating_action_button"
-                android:src="@drawable/ic_prev"
-                android:tint="@{iconTintColor == null ? Color.BLACK : iconTintColor}"
-                tools:ignore="ContentDescription" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="@dimen/fragment_play_content_buttons_seek_icon_width"
+                    android:layout_height="@dimen/fragment_play_content_buttons_seek_icon_height"
+                    app:alphaAnimated="@{isSeekbarTouched ? 1F : 0F}"
+                    android:src="@drawable/ic_seek_to"
+                    android:tint="@{iconTintColor == null ? Color.WHITE : primaryColor}" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/image_view_next"
-                android:layout_width="@dimen/fragment_play_content_buttons_icon_size"
-                android:layout_height="@dimen/fragment_play_content_buttons_icon_size"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@id/floating_action_button"
-                android:src="@drawable/ic_next"
-                android:tint="@{iconTintColor == null ? Color.BLACK : iconTintColor}"
-                tools:ignore="ContentDescription" />
+                <projekt.cloud.piece.music.player.widget.TimeView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:alphaAnimated="@{isSeekbarTouched ? 1F : 0F}"
+                    app:color="@{primaryColor}"
+                    app:time="@{seekbarTouchedProgress}" />
 
-        </RelativeLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <RelativeLayout
-            android:layout_width="@dimen/fragment_play_content_buttons_width"
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/image_view_shuffle"
-                android:layout_width="@dimen/fragment_play_content_buttons_icon_size"
-                android:layout_height="@dimen/fragment_play_content_buttons_icon_size"
-                android:layout_centerInParent="true"
-                android:src="@drawable/ic_shuffle"
-                android:alpha="@{playConfig == null || !Config.getConfig(playConfig, Config.PLAY_CONFIG_SHUFFLE) ? 0.5F : 1F}"
-                android:tint="@{iconTintColor == null ? Color.BLACK : iconTintColor}"
-                tools:ignore="ContentDescription" />
+            <RelativeLayout
+                android:layout_width="@dimen/fragment_play_content_buttons_width"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
-        </RelativeLayout>
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/image_view_cycle"
+                    android:layout_width="@dimen/fragment_play_content_buttons_icon_size"
+                    android:layout_height="@dimen/fragment_play_content_buttons_icon_size"
+                    android:layout_centerInParent="true"
+                    android:alpha="@{playConfig == null || Config.getConfig(playConfig, Config.PLAY_CONFIG_REPEAT) || Config.getConfig(playConfig, Config.PLAY_CONFIG_REPEAT_ONE) ? 1F : 0.5F}"
+                    android:tint="@{iconTintColor == null ? Color.BLACK : iconTintColor}"
+                    app:imageResource="@{playConfig == null ? R.drawable.ic_repeat : Config.getConfig(playConfig, Config.PLAY_CONFIG_REPEAT_ONE) ? R.drawable.ic_repeat_one : R.drawable.ic_repeat}"
+                    tools:ignore="ContentDescription" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="@dimen/fragment_play_content_buttons_width"
+                android:layout_height="match_parent"
+                android:layout_weight="2">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/floating_action_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="@dimen/fragment_play_content_buttons_button_margin"
+                    android:layout_marginEnd="@dimen/fragment_play_content_buttons_button_margin"
+                    android:backgroundTint="@color/white"
+                    app:borderWidth="@dimen/fragment_play_content_buttons_button_border"
+                    app:isPlaying="@{isPlaying}"
+                    tools:ignore="ContentDescription" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/image_view_prev"
+                    android:layout_width="@dimen/fragment_play_content_buttons_icon_size"
+                    android:layout_height="@dimen/fragment_play_content_buttons_icon_size"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@id/floating_action_button"
+                    android:src="@drawable/ic_prev"
+                    android:tint="@{iconTintColor == null ? Color.BLACK : iconTintColor}"
+                    tools:ignore="ContentDescription" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/image_view_next"
+                    android:layout_width="@dimen/fragment_play_content_buttons_icon_size"
+                    android:layout_height="@dimen/fragment_play_content_buttons_icon_size"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@id/floating_action_button"
+                    android:src="@drawable/ic_next"
+                    android:tint="@{iconTintColor == null ? Color.BLACK : iconTintColor}"
+                    tools:ignore="ContentDescription" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="@dimen/fragment_play_content_buttons_width"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/image_view_shuffle"
+                    android:layout_width="@dimen/fragment_play_content_buttons_icon_size"
+                    android:layout_height="@dimen/fragment_play_content_buttons_icon_size"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_shuffle"
+                    android:alpha="@{playConfig == null || !Config.getConfig(playConfig, Config.PLAY_CONFIG_SHUFFLE) ? 0.5F : 1F}"
+                    android:tint="@{iconTintColor == null ? Color.BLACK : iconTintColor}"
+                    tools:ignore="ContentDescription" />
+
+            </RelativeLayout>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
