@@ -47,6 +47,8 @@ class PlayFragment: BasePlayFragment() {
                 height = resources.displayMetrics.widthPixels
             }
         }
+    
+        loadMetadata(activityInterface.requestMetadata())
         
         activityInterface.setListener(
             loadMetadata = { audioItem ->
