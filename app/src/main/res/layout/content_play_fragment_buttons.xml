@@ -21,6 +21,10 @@
             name="playConfig"
             type="Integer" />
 
+        <variable
+            name="isPlaying"
+            type="Boolean" />
+
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -60,6 +64,7 @@
                 android:layout_marginEnd="@dimen/fragment_play_content_buttons_button_margin"
                 android:backgroundTint="@color/white"
                 app:borderWidth="@dimen/fragment_play_content_buttons_button_border"
+                app:isPlaying="@{isPlaying}"
                 tools:ignore="ContentDescription" />
 
             <androidx.appcompat.widget.AppCompatImageView
