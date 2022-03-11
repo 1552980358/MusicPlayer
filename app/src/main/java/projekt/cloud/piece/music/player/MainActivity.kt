@@ -433,9 +433,6 @@ class MainActivity : BaseMediaControlActivity() {
         contentBottomSheetMain.progress = currentProgress
     }
     
-    private suspend fun Long.correct() =
-        this + (this % DELAY_MILS).apply { delay(this) }
-    
     override fun onConnected() {
         registerMediaController()
         activityInterface.setMediaBrowserCompat(mediaBrowserCompat)
