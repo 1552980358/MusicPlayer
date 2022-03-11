@@ -143,7 +143,9 @@ class PlayFragment: BasePlayFragment() {
             },
             updateAudioList = { audioList ->
                 if (!::recyclerViewAdapterUtil.isInitialized) {
-                    recyclerViewAdapterUtil = RecyclerViewAdapterUtil(contentPlayFragmentBottomSheet.recyclerView, audioList)
+                    recyclerViewAdapterUtil = RecyclerViewAdapterUtil(contentPlayFragmentBottomSheet.recyclerView, audioList) { index ->
+                        activityInterface.transportControls.skipToQueueItem(index.toLong())
+                    }
                     return@setListener
                 }
                 recyclerViewAdapterUtil.audioList = audioList
