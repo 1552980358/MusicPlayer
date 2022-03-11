@@ -14,6 +14,7 @@ class PlayActivityInterface(val requestMetadata: () -> AudioItem,
     lateinit var updateContrast: (Boolean) -> Unit
     lateinit var updateProgress: (Long) -> Unit
     lateinit var updatePlayState: (Boolean) -> Unit
+    lateinit var updateAudioList: (List<AudioItem>) -> Unit
     
     lateinit var transportControls: TransportControls
     
@@ -23,7 +24,8 @@ class PlayActivityInterface(val requestMetadata: () -> AudioItem,
                     updateColor: (Int, Int) -> Unit,
                     updateContrast: (Boolean) -> Unit,
                     updateProgress: (Long) -> Unit,
-                    updatePlayState: (Boolean) -> Unit) {
+                    updatePlayState: (Boolean) -> Unit,
+                    updateAudioList: (List<AudioItem>) -> Unit) {
         this.updateAudioItem = updateAudioItem
         this.updatePlayConfig = updatePlayConfig
         this.updateBitmap = updateBitmap
@@ -31,6 +33,7 @@ class PlayActivityInterface(val requestMetadata: () -> AudioItem,
         this.updateContrast = updateContrast
         this.updateProgress = updateProgress
         this.updatePlayState = updatePlayState
+        this.updateAudioList = updateAudioList
     }
 
 }
