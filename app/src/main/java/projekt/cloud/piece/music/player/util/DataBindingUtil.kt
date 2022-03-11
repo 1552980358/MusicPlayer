@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
+import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.AppCompatImageView
@@ -21,7 +22,9 @@ import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_HALF_LONG
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_LONG
+import projekt.cloud.piece.music.player.widget.TimeView
 import projekt.cloud.piece.music.player.widget.ProgressBar
+import projekt.cloud.piece.music.player.widget.Seekbar
 
 object DataBindingUtil {
     
@@ -133,6 +136,73 @@ object DataBindingUtil {
             when (val imageDrawable = drawable) {
                 is AnimatedVectorDrawable -> imageDrawable.start()
             }
+        }
+    }
+    
+    @JvmStatic
+    @BindingAdapter("app:time")
+    fun TimeView.setTime(duration: Long?) {
+        if (duration != null) {
+            this.duration = duration
+        }
+    }
+    
+    @JvmStatic
+    @BindingAdapter("app:color")
+    fun TimeView.setColor(color: Int?) {
+        if (color != null) {
+            updateTextColor(color)
+        }
+    }
+    
+    @JvmStatic
+    @BindingAdapter("app:primaryColor")
+    fun Seekbar.setPrimaryColor(@ColorInt color: Int?) {
+        if (color != null) {
+            setProgressColor(color)
+        }
+    }
+    
+    @JvmStatic
+    @BindingAdapter("app:secondaryColor")
+    fun Seekbar.setSecondaryColor(@ColorInt color: Int?) {
+        if (color != null) {
+            setRemainColor(color)
+        }
+    }
+    
+    @JvmStatic
+    @BindingAdapter("app:circleColor")
+    fun Seekbar.setCircleColor(@ColorInt color: Int?) {
+        if (color != null) {
+            setCircleColor(color)
+        }
+    }
+    
+    @JvmStatic
+    @BindingAdapter("app:progress")
+    fun Seekbar.setProgress(progress: Long?) {
+        if (progress != null) {
+            this.progress = progress
+        }
+    }
+    
+    @JvmStatic
+    @BindingAdapter("app:duration")
+    fun Seekbar.setDuration(duration: Long?) {
+        if (duration != null) {
+            this.duration = duration
+        }
+    }
+    
+    @JvmStatic
+    @BindingAdapter("app:alphaAnimated")
+    fun View.setAlphaAnimated(alpha: Float?) {
+        if (alpha != null) {
+            ofFloat(this.alpha, alpha).apply {
+                duration = ANIMATION_DURATION_LONG
+                addUpdateListener { this@setAlphaAnimated.alpha = animatedValue as Float }
+            }.start()
         }
     }
     
