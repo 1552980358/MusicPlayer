@@ -54,7 +54,36 @@ class PlayFragment: BasePlayFragment() {
             loadMetadata = { audioItem ->
             
             },
-            loadBitmap = { bitmap -> binding.coverImage = bitmap }
+            loadBitmap = { bitmap -> binding.coverImage = bitmap },
+            loadColor = { primaryColor, secondaryColor ->  },
+            loadIsLight = { isLight ->
+                when(contentPlayFragmentButtons.iconTintColor) {
+                    null -> contentPlayFragmentButtons.iconTintColor = when {
+                        isLight -> BLACK
+                        else -> WHITE
+                    }
+                    else -> {
+                        when {
+                            isLight -> {
+                                if (contentPlayFragmentButtons.iconTintColor != BLACK) {
+                                    ofArgb(contentPlayFragmentButtons.iconTintColor!!, BLACK).apply {
+                                        duration = ANIMATION_DURATION_LONG
+                                        addUpdateListener { contentPlayFragmentButtons.iconTintColor = animatedValue as Int }
+                                    }.start()
+                                }
+                            }
+                            else -> {
+                                if (contentPlayFragmentButtons.iconTintColor != WHITE) {
+                                    ofArgb(contentPlayFragmentButtons.iconTintColor!!, WHITE).apply {
+                                        duration = ANIMATION_DURATION_LONG
+                                        addUpdateListener { contentPlayFragmentButtons.iconTintColor = animatedValue as Int }
+                                    }.start()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         )
         
         return binding.root
