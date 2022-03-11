@@ -150,7 +150,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
             mediaId ?: return
             extras?.let { extrasBundle ->
-                if (extrasBundle.containsKey(EXTRA_LIST)) {
+                if (extrasBundle.containsKey(EXTRA_LIST) && extrasBundle.containsKey(EXTRA_INDEX)) {
                     @Suppress("UNCHECKED_CAST")
                     audioList = extrasBundle.getSerializable(EXTRA_LIST) as List<AudioItem>
                     listIndex = extrasBundle.getInt(EXTRA_INDEX)
