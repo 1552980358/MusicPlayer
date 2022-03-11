@@ -9,7 +9,13 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaControllerCompat.Callback
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.annotation.MainThread
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import lib.github1552980358.ktExtension.kotlinx.coroutines.io
+import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.service.PlayService
+import projekt.cloud.piece.music.player.util.Constant.DELAY_MILS
 
 abstract class BaseMediaControlActivity: BaseThemeActivity() {
     
@@ -17,6 +23,36 @@ abstract class BaseMediaControlActivity: BaseThemeActivity() {
     private lateinit var subscriptionCallback: SubscriptionCallback
     private lateinit var mediaControllerCallback: Callback
     protected lateinit var mediaControllerCompat: MediaControllerCompat
+    
+    private var job: Job? = null
+    protected var isPlaying = false
+        protected set(value) {
+            if (field != value) {
+                field = value
+                if (!value) {
+                    job?.cancel()
+                }
+            }
+        }
+    
+    private suspend fun Long.correctTime() =
+        this + (this % DELAY_MILS).apply { delay(this) }
+    
+    protected fun startPlaying(progress: Long) {
+        isPlaying = false
+        isPlaying = true
+        job = io {
+            var currentProgress = progress.correctTime()
+            do {
+                ui { updateTime(currentProgress) }
+                delay(DELAY_MILS)
+                currentProgress += DELAY_MILS
+            } while (isPlaying)
+        }
+    }
+    
+    @MainThread
+    abstract fun updateTime(currentProgress: Long)
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +95,11 @@ abstract class BaseMediaControlActivity: BaseThemeActivity() {
         }
         
         mediaControllerCompat.registerCallback(mediaControllerCallback)
+    }
+    
+    override fun onPause() {
+        super.onPause()
+        isPlaying = false
     }
     
     override fun onDestroy() {
