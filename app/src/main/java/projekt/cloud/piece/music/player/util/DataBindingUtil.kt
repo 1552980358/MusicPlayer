@@ -16,6 +16,8 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_HALF_LONG
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_LONG
@@ -120,6 +122,17 @@ object DataBindingUtil {
                 duration = ANIMATION_DURATION_LONG
                 addUpdateListener { setBackgroundColor(animatedValue as Int) }
             }.start()
+        }
+    }
+    
+    @JvmStatic
+    @BindingAdapter("app:isPlaying")
+    fun FloatingActionButton.updatePlayingState(isPlaying: Boolean?) {
+        if (isPlaying != null) {
+            setImageResource(if (isPlaying) R.drawable.ani_play_pause else R.drawable.ani_pause_play)
+            when (val imageDrawable = drawable) {
+                is AnimatedVectorDrawable -> imageDrawable.start()
+            }
         }
     }
     
