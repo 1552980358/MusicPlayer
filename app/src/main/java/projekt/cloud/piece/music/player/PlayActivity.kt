@@ -181,7 +181,7 @@ class PlayActivity: BaseMediaControlActivity() {
         MediaNotificationProcessor(this@PlayActivity, currentCoverBitmap).apply {
             ui {
                 binding.backgroundColor = backgroundColor
-                activityInterface
+                activityInterface.updateColor(primaryTextColor, secondaryTextColor)
                 activityInterface.updateContrast(backgroundColor.isLight)
             }
         }
