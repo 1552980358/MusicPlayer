@@ -105,7 +105,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
             exoPlayer.pause()
     
             playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
-                .setState(STATE_PAUSED, playbackStateCompat.position, 1F)
+                .setState(STATE_PAUSED, exoPlayer.currentPosition, 1F)
                 .build()
             mediaSession.setPlaybackState(playbackStateCompat)
             
