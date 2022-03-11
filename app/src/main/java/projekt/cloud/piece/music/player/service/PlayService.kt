@@ -48,6 +48,7 @@ import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION
 import projekt.cloud.piece.music.player.service.play.Config.FOREGROUND_SERVICE
 import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT
 import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT_ONE
+import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_SHUFFLE
 import projekt.cloud.piece.music.player.service.play.Config.getConfig
 import projekt.cloud.piece.music.player.service.play.Config.setConfig
 import projekt.cloud.piece.music.player.service.play.Config.shl
@@ -152,6 +153,9 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                 if (extrasBundle.containsKey(EXTRA_LIST)) {
                     @Suppress("UNCHECKED_CAST")
                     audioList = extrasBundle.getSerializable(EXTRA_LIST) as List<AudioItem>
+                    if (configs.getConfig(PLAY_CONFIG_SHUFFLE)) {
+                        audioList.shuffled()
+                    }
                 }
                 if (extrasBundle.containsKey(EXTRA_INDEX)) {
                     listIndex = extrasBundle.getInt(EXTRA_INDEX)
@@ -328,6 +332,11 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                 extras?.let {
                     if (it.containsKey(EXTRA_PLAY_CONFIG)) {
                         playConfig = it.getInt(EXTRA_PLAY_CONFIG)
+                        
+                        when {
+                            playConfig.getConfig(PLAY_CONFIG_SHUFFLE) -> audioList.shuffled()
+                            else -> audioList.sortedBy { audioItem -> audioItem.index }
+                        }
                         
                         playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
                             .setState(playbackStateCompat.state, exoPlayer.currentPosition, 1F)
