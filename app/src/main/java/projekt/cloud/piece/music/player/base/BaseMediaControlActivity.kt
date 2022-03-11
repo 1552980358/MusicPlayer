@@ -15,6 +15,7 @@ import kotlinx.coroutines.delay
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.service.PlayService
+import projekt.cloud.piece.music.player.service.play.Action
 import projekt.cloud.piece.music.player.util.Constant.DELAY_MILS
 
 abstract class BaseMediaControlActivity: BaseThemeActivity() {
@@ -66,7 +67,26 @@ abstract class BaseMediaControlActivity: BaseThemeActivity() {
             this,
             ComponentName(this, PlayService::class.java),
             object : ConnectionCallback() {
-                override fun onConnected() = this@BaseMediaControlActivity.onConnected()
+                override fun onConnected() {
+                    mediaBrowserCompat.unsubscribe(parentId)
+                    mediaBrowserCompat.subscribe(parentId, subscriptionCallback)
+    
+                    mediaControllerCompat = MediaControllerCompat(this@BaseMediaControlActivity, mediaBrowserCompat.sessionToken)
+                    MediaControllerCompat.setMediaController(this@BaseMediaControlActivity, mediaControllerCompat)
+    
+                    mediaControllerCallback = object : Callback() {
+                        override fun onPlaybackStateChanged(state: PlaybackStateCompat?) =
+                            this@BaseMediaControlActivity.onPlaybackStateChanged(state)
+                        override fun onMetadataChanged(metadata: MediaMetadataCompat?) =
+                            this@BaseMediaControlActivity.onMetadataChanged(metadata)
+                    }
+    
+                    mediaControllerCompat.registerCallback(mediaControllerCallback)
+                    
+                    requestSyncService()
+    
+                    this@BaseMediaControlActivity.onConnected()
+                }
                 override fun onConnectionSuspended() = this@BaseMediaControlActivity.onConnectionSuspended()
                 override fun onConnectionFailed() = this@BaseMediaControlActivity.onConnectionFailed()
             }, null
@@ -80,21 +100,11 @@ abstract class BaseMediaControlActivity: BaseThemeActivity() {
         }
     }
     
-    protected fun registerMediaController() {
-        mediaBrowserCompat.unsubscribe(parentId)
-        mediaBrowserCompat.subscribe(parentId, subscriptionCallback)
-        
-        mediaControllerCompat = MediaControllerCompat(this, mediaBrowserCompat.sessionToken)
-        MediaControllerCompat.setMediaController(this, mediaControllerCompat)
-        
-        mediaControllerCallback = object : Callback() {
-            override fun onPlaybackStateChanged(state: PlaybackStateCompat?) =
-                this@BaseMediaControlActivity.onPlaybackStateChanged(state)
-            override fun onMetadataChanged(metadata: MediaMetadataCompat?) =
-                this@BaseMediaControlActivity.onMetadataChanged(metadata)
+    override fun onResume() {
+        super.onResume()
+        if (mediaBrowserCompat.isConnected) {
+            requestSyncService()
         }
-        
-        mediaControllerCompat.registerCallback(mediaControllerCallback)
     }
     
     override fun onPause() {
@@ -111,13 +121,16 @@ abstract class BaseMediaControlActivity: BaseThemeActivity() {
         super.onDestroy()
     }
     
+    protected fun requestSyncService() =
+        mediaBrowserCompat.sendCustomAction(Action.ACTION_SYNC_SERVICE, null, null)
+    
     open fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) = Unit
     
     abstract fun onMetadataChanged(metadata: MediaMetadataCompat?)
     
     abstract fun onPlaybackStateChanged(state: PlaybackStateCompat?)
     
-    abstract fun onConnected()
+    open fun onConnected() = Unit
     
     open fun onConnectionSuspended() = Unit
     

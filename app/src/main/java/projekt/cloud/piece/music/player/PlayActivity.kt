@@ -32,7 +32,6 @@ import projekt.cloud.piece.music.player.database.AudioDatabase.Companion.DATABAS
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.ActivityPlayBinding
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_PLAY_CONFIG_CHANGED
-import projekt.cloud.piece.music.player.service.play.Action.ACTION_SYNC_SERVICE
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_PLAY_CONFIG
 import projekt.cloud.piece.music.player.ui.play.PlayFragment
 import projekt.cloud.piece.music.player.util.ColorUtil.isLight
@@ -166,9 +165,8 @@ class PlayActivity: BaseMediaControlActivity() {
     }
     
     override fun onConnected() {
-        registerMediaController()
+        super.onConnected()
         activityInterface.transportControls = mediaControllerCompat.transportControls
-        mediaBrowserCompat.sendCustomAction(ACTION_SYNC_SERVICE, null, null)
     }
     
     override fun updateTime(currentProgress: Long) =
