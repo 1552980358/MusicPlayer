@@ -40,6 +40,7 @@ import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_PLAY_CONFIG_CHANGED
+import projekt.cloud.piece.music.player.service.play.Action.ACTION_REQUEST_LIST
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_SYNC_SERVICE
 import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION
 import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION_PAUSE
@@ -220,6 +221,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
             .setActions(PlaybackStateActions)
             .addCustomAction(ACTION_SYNC_SERVICE, ACTION_SYNC_SERVICE, R.drawable.ic_launcher_foreground)
             .addCustomAction(ACTION_PLAY_CONFIG_CHANGED, ACTION_PLAY_CONFIG_CHANGED, R.drawable.ic_launcher_foreground)
+            .addCustomAction(ACTION_REQUEST_LIST, ACTION_REQUEST_LIST, R.drawable.ic_launcher_foreground)
             .setExtras(bundleOf(EXTRA_PLAY_CONFIG to playConfig))
             .build()
     
@@ -339,6 +341,21 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                             .apply()
                     }
                 }
+            }
+            ACTION_REQUEST_LIST -> result.sendResult(bundleOf(EXTRA_LIST to currentPlaylist()))
+        }
+    }
+    
+    private fun currentPlaylist(): List<AudioItem> {
+        if (listIndex == audioList.lastIndex) {
+            return audioList
+        }
+        return arrayListOf<AudioItem>().apply {
+            for (i in listIndex + 1 .. audioList.lastIndex) {
+                add(audioList[i])
+            }
+            for (i in 0 .. listIndex) {
+                add(audioList[i])
             }
         }
     }
