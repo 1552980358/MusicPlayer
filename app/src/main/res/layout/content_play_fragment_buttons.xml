@@ -9,8 +9,16 @@
 
         <import type="android.graphics.Color" />
 
+        <import type="projekt.cloud.piece.music.player.R" />
+
+        <import type="projekt.cloud.piece.music.player.service.play.Config" />
+
         <variable
             name="iconTintColor"
+            type="Integer" />
+
+        <variable
+            name="playConfig"
             type="Integer" />
 
     </data>
@@ -27,11 +35,13 @@
             android:layout_weight="1">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/image_view_mode"
+                android:id="@+id/image_view_cycle"
                 android:layout_width="@dimen/fragment_play_content_buttons_icon_size"
                 android:layout_height="@dimen/fragment_play_content_buttons_icon_size"
                 android:layout_centerInParent="true"
+                android:alpha="@{playConfig == null || Config.getConfig(playConfig, Config.PLAY_CONFIG_REPEAT) || Config.getConfig(playConfig, Config.PLAY_CONFIG_REPEAT_ONE) ? 1F : 0.5F}"
                 android:tint="@{iconTintColor == null ? Color.BLACK : iconTintColor}"
+                app:imageResource="@{playConfig == null ? R.drawable.ic_repeat : Config.getConfig(playConfig, Config.PLAY_CONFIG_REPEAT_ONE) ? R.drawable.ic_repeat_one : R.drawable.ic_repeat}"
                 tools:ignore="ContentDescription" />
 
         </RelativeLayout>
@@ -80,10 +90,12 @@
             android:layout_weight="1">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/image_view_option"
+                android:id="@+id/image_view_shuffle"
                 android:layout_width="@dimen/fragment_play_content_buttons_icon_size"
                 android:layout_height="@dimen/fragment_play_content_buttons_icon_size"
                 android:layout_centerInParent="true"
+                android:src="@drawable/ic_shuffle"
+                android:alpha="@{playConfig == null || !Config.getConfig(playConfig, Config.PLAY_CONFIG_SHUFFLE) ? 0.5F : 1F}"
                 android:tint="@{iconTintColor == null ? Color.BLACK : iconTintColor}"
                 tools:ignore="ContentDescription" />
 
