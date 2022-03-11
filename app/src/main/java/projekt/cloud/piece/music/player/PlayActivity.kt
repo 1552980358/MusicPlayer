@@ -5,10 +5,14 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.util.Log
 import android.view.View
 import androidx.core.content.res.ResourcesCompat.getDrawable
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -23,7 +27,11 @@ import projekt.cloud.piece.music.player.base.BaseMediaControlActivity
 import projekt.cloud.piece.music.player.base.BasePlayFragment
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.ActivityPlayBinding
+import projekt.cloud.piece.music.player.service.play.Action.ACTION_PLAY_CONFIG_CHANGED
+import projekt.cloud.piece.music.player.service.play.Action.ACTION_SYNC_SERVICE
+import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_PLAY_CONFIG
 import projekt.cloud.piece.music.player.ui.play.PlayFragment
+import projekt.cloud.piece.music.player.util.ColorUtil.isLight
 import projekt.cloud.piece.music.player.util.Extra.EXTRA_AUDIO_ITEM
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArtRaw
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAudioArtRaw
@@ -88,7 +96,10 @@ class PlayActivity: BaseMediaControlActivity() {
         audioItem = intent.getSerializableOf(EXTRA_AUDIO_ITEM)!!
         
         activityInterface = PlayActivityInterface(
-            requestMetadata = { audioItem }
+            requestMetadata = { audioItem },
+            changePlayConfig = { config ->
+                mediaBrowserCompat.sendCustomAction(ACTION_PLAY_CONFIG_CHANGED, bundleOf(EXTRA_PLAY_CONFIG to config), null)
+            }
         )
         
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
@@ -125,11 +136,21 @@ class PlayActivity: BaseMediaControlActivity() {
     }
     
     override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
-    
+        state?.state?.also { playbackState ->
+            when (playbackState) {
+                STATE_PLAYING -> {}
+                STATE_PAUSED -> {}
+                STATE_BUFFERING -> {}
+            }
+            state.extras?.getInt(EXTRA_PLAY_CONFIG)?.let {
+                activityInterface.updatePlayConfig(it)
+            }
+        }
     }
     
     override fun onConnected() {
         registerMediaController()
+        mediaBrowserCompat.sendCustomAction(ACTION_SYNC_SERVICE, null, null)
     }
     
     override fun getParentID() = TAG
