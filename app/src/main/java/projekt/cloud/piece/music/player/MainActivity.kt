@@ -20,7 +20,7 @@ import android.provider.MediaStore.Audio.AudioColumns.SIZE
 import android.provider.MediaStore.Audio.AudioColumns.TITLE
 import android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
@@ -386,7 +386,7 @@ class MainActivity : BaseMediaControlActivity() {
             contentBottomSheetMain.title = getString(METADATA_KEY_TITLE)
             contentBottomSheetMain.bitmap =
                 audioBitmap40DpMap[getString(METADATA_KEY_MEDIA_ID)]
-                    ?: albumBitmap40DpMap[getString(METADATA_KEY_ALBUM)]
+                    ?: albumBitmap40DpMap[getString(METADATA_KEY_ALBUM_ART_URI)]
                         ?: activityInterface.defaultAudioImage
             contentBottomSheetMain.duration = getLong(METADATA_KEY_DURATION)
             audioList.find { it.id == getString(METADATA_KEY_MEDIA_ID) }?.let { audioItem = it }
