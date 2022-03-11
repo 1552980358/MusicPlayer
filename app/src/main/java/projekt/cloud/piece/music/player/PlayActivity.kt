@@ -149,9 +149,15 @@ class PlayActivity: BaseMediaControlActivity() {
     override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
         state?.state?.also { playbackState ->
             when (playbackState) {
-                STATE_PLAYING -> {}
-                STATE_PAUSED -> {}
-                STATE_BUFFERING -> {}
+                STATE_PLAYING -> {
+                    startPlaying(state.position)
+                    activityInterface.updatePlayState(true)
+                }
+                STATE_PAUSED -> {
+                    isPlaying = false
+                    activityInterface.updatePlayState(false)
+                }
+                STATE_BUFFERING -> isPlaying = false
             }
             state.extras?.getInt(EXTRA_PLAY_CONFIG)?.let {
                 activityInterface.updatePlayConfig(it)
@@ -164,6 +170,9 @@ class PlayActivity: BaseMediaControlActivity() {
         activityInterface.transportControls = mediaControllerCompat.transportControls
         mediaBrowserCompat.sendCustomAction(ACTION_SYNC_SERVICE, null, null)
     }
+    
+    override fun updateTime(currentProgress: Long) =
+        activityInterface.updateTime(currentProgress)
     
     private fun updateMetadata(audioItem: AudioItem) {
         currentCoverBitmap =
