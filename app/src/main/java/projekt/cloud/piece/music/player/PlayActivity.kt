@@ -3,6 +3,7 @@ package projekt.cloud.piece.music.player
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.support.v4.media.MediaBrowserCompat.CustomActionCallback
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.session.PlaybackStateCompat
@@ -32,6 +33,8 @@ import projekt.cloud.piece.music.player.database.AudioDatabase.Companion.DATABAS
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.ActivityPlayBinding
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_PLAY_CONFIG_CHANGED
+import projekt.cloud.piece.music.player.service.play.Action.ACTION_REQUEST_LIST
+import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_PLAY_CONFIG
 import projekt.cloud.piece.music.player.ui.play.PlayFragment
 import projekt.cloud.piece.music.player.util.ColorUtil.isLight
@@ -142,6 +145,7 @@ class PlayActivity: BaseMediaControlActivity() {
                 }
                 ui { updateMetadata(audioItem) }
             }
+            requestSyncList()
         }
     }
     
@@ -167,6 +171,19 @@ class PlayActivity: BaseMediaControlActivity() {
     override fun onConnected() {
         super.onConnected()
         activityInterface.transportControls = mediaControllerCompat.transportControls
+        requestSyncList()
+    }
+    
+    
+    private fun requestSyncList() {
+        mediaBrowserCompat.sendCustomAction(ACTION_REQUEST_LIST, null, object : CustomActionCallback() {
+            override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
+                @Suppress("UNCHECKED_CAST")
+                (resultData?.getSerializable(EXTRA_LIST) as List<AudioItem>?)?.let { audioList ->
+                    activityInterface.updateAudioList(audioList)
+                }
+            }
+        })
     }
     
     override fun updateTime(currentProgress: Long) =
