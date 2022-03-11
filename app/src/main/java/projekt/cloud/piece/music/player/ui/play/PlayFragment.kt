@@ -133,7 +133,11 @@ class PlayFragment: BasePlayFragment() {
                 }
             },
             updateProgress = { progress -> contentPlayFragmentButtons.progress = progress },
-            updatePlayState = { isPlaying -> contentPlayFragmentButtons.isPlaying = isPlaying }
+            updatePlayState = { isPlaying ->
+                if (contentPlayFragmentButtons.isPlaying != isPlaying) {
+                    contentPlayFragmentButtons.isPlaying = isPlaying
+                }
+            }
         )
         
         return binding.root
