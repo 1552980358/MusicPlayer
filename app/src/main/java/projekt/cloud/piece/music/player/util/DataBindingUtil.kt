@@ -74,8 +74,8 @@ object DataBindingUtil {
     @JvmStatic
     @BindingAdapter("app:drawableAnimated")
     fun AppCompatImageView.setDrawableAnimated(newDrawable: Drawable?) {
-        if (drawable != null) {
-            if (newDrawable == null) {
+        if (newDrawable != null) {
+            if (drawable == null) {
                 return setImageDrawable(newDrawable)
             }
             TransitionDrawable(
