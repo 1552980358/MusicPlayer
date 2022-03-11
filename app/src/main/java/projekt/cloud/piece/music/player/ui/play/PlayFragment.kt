@@ -134,6 +134,16 @@ class PlayFragment: BasePlayFragment() {
             }
         }
         
+        contentPlayFragmentButtons.seekbar.setOnSeekChangeListener { progress, isReleased ->
+            if (contentPlayFragmentButtons.isSeekbarTouched != !isReleased) {
+                contentPlayFragmentButtons.isSeekbarTouched = !isReleased
+            }
+            when {
+                isReleased -> activityInterface.transportControls.seekTo(progress)
+                else -> contentPlayFragmentButtons.seekbarTouchedProgress = progress
+            }
+        }
+
         bottomSheetBehavior = BottomSheetBehavior.from(contentPlayFragmentBottomSheet.cardView)
         with(bottomSheetBehavior) {
             peekHeight = bottomHeight * 3 / 5
