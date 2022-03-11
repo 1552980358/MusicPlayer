@@ -12,6 +12,8 @@ class PlayActivityInterface(val requestMetadata: () -> AudioItem,
     lateinit var loadBitmap: (Bitmap) -> Unit
     lateinit var loadColor: (Int, Int) -> Unit
     lateinit var loadIsLight: (Boolean) -> Unit
+    lateinit var updateTime: (Long) -> Unit
+    lateinit var updatePlayState: (Boolean) -> Unit
     
     lateinit var transportControls: TransportControls
     
@@ -19,12 +21,16 @@ class PlayActivityInterface(val requestMetadata: () -> AudioItem,
                     updatePlayConfig: (Int) -> Unit,
                     loadBitmap: (Bitmap) -> Unit,
                     loadColor: (Int, Int) -> Unit,
-                    loadIsLight: (Boolean) -> Unit) {
+                    loadIsLight: (Boolean) -> Unit,
+                    updateTime: (Long) -> Unit,
+                    updatePlayState: (Boolean) -> Unit) {
         this.loadMetadata = loadMetadata
         this.updatePlayConfig = updatePlayConfig
         this.loadBitmap = loadBitmap
         this.loadColor = loadColor
         this.loadIsLight = loadIsLight
+        this.updateTime = updateTime
+        this.updatePlayState = updatePlayState
     }
 
 }
