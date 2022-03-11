@@ -153,12 +153,11 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                 if (extrasBundle.containsKey(EXTRA_LIST)) {
                     @Suppress("UNCHECKED_CAST")
                     audioList = extrasBundle.getSerializable(EXTRA_LIST) as List<AudioItem>
+                    listIndex = extrasBundle.getInt(EXTRA_INDEX)
                     if (configs.getConfig(PLAY_CONFIG_SHUFFLE)) {
                         audioList.shuffled()
+                        listIndex = audioList.indexOfFirst { it.index == listIndex }
                     }
-                }
-                if (extrasBundle.containsKey(EXTRA_INDEX)) {
-                    listIndex = extrasBundle.getInt(EXTRA_INDEX)
                 }
             }
             
