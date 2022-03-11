@@ -106,7 +106,7 @@ class PlayActivity: BaseMediaControlActivity() {
         }
         
         io {
-            defaultCoverBitmap = getDrawable(resources, R.drawable.ic_music, null)!!.toBitmap()
+            defaultCoverBitmap = getDrawable(resources, R.drawable.ic_music_big, null)!!.toBitmap()
             currentCoverBitmap =
                 loadAudioArtRaw(audioItem.id) ?: loadAlbumArtRaw(audioItem.album) ?: defaultCoverBitmap
             ui { activityInterface.loadBitmap(currentCoverBitmap) }
