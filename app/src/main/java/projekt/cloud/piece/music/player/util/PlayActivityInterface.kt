@@ -1,6 +1,7 @@
 package projekt.cloud.piece.music.player.util
 
 import android.graphics.Bitmap
+import android.support.v4.media.session.MediaControllerCompat.TransportControls
 import projekt.cloud.piece.music.player.database.item.AudioItem
 
 class PlayActivityInterface(val requestMetadata: () -> AudioItem,
@@ -11,6 +12,8 @@ class PlayActivityInterface(val requestMetadata: () -> AudioItem,
     lateinit var loadBitmap: (Bitmap) -> Unit
     lateinit var loadColor: (Int, Int) -> Unit
     lateinit var loadIsLight: (Boolean) -> Unit
+    
+    lateinit var transportControls: TransportControls
     
     fun setListener(loadMetadata: (AudioItem) -> Unit,
                     updatePlayConfig: (Int) -> Unit,
