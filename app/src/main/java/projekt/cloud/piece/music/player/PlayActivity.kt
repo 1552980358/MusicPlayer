@@ -35,6 +35,7 @@ import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import mkaflowski.mediastylepalette.MediaNotificationProcessor
+import okhttp3.internal.format
 import projekt.cloud.piece.music.player.base.BaseMediaControlActivity
 import projekt.cloud.piece.music.player.base.BasePlayFragment
 import projekt.cloud.piece.music.player.database.AudioDatabase
@@ -45,6 +46,7 @@ import projekt.cloud.piece.music.player.service.play.Action.ACTION_PLAY_CONFIG_C
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_REQUEST_LIST
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_PLAY_CONFIG
+import projekt.cloud.piece.music.player.ui.lyricPlay.LyricPlayFragment
 import projekt.cloud.piece.music.player.ui.play.PlayFragment
 import projekt.cloud.piece.music.player.util.ActivityUtil.pixelHeight
 import projekt.cloud.piece.music.player.util.ColorUtil.isLight
@@ -120,6 +122,9 @@ class PlayActivity: BaseMediaControlActivity() {
     private var isScrolling = false
     private var scrollOffsetPixel = 0
     
+    private var colors: String? = null
+    private var audioList: List<AudioItem>? = null
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
     
@@ -127,6 +132,8 @@ class PlayActivity: BaseMediaControlActivity() {
         
         activityInterface = PlayActivityInterface(
             requestMetadata = { audioItem },
+            requestColor = { colors },
+            requestList = { audioList },
             changePlayConfig = { config ->
                 mediaBrowserCompat.sendCustomAction(ACTION_PLAY_CONFIG_CHANGED, bundleOf(EXTRA_PLAY_CONFIG to config), object : CustomActionCallback() {
                     override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
@@ -154,7 +161,8 @@ class PlayActivity: BaseMediaControlActivity() {
         binding.viewPager.getChildAt(0).overScrollMode = OVER_SCROLL_NEVER
         
         val fragmentList = listOf(
-            PlayFragment().apply { arguments = bundle { putSerializable(EXTRA_AUDIO_ITEM, audioItem) } }
+            PlayFragment().apply { arguments = bundle { putSerializable(EXTRA_AUDIO_ITEM, audioItem) } },
+            LyricPlayFragment()
         )
         binding.viewPager.adapter = object : FragmentStateAdapter(this) {
             override fun getItemCount() = fragmentList.size
@@ -244,6 +252,7 @@ class PlayActivity: BaseMediaControlActivity() {
             override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
                 @Suppress("UNCHECKED_CAST")
                 (resultData?.getSerializable(EXTRA_LIST) as List<AudioItem>?)?.let { audioList ->
+                    this@PlayActivity.audioList = audioList
                     activityInterface.updateAudioList(audioList)
                 }
             }
@@ -280,6 +289,7 @@ class PlayActivity: BaseMediaControlActivity() {
                         }.start()
                     }
                 }
+                colors = format("#%08X #%08X", primaryTextColor, secondaryTextColor)
                 activityInterface.updateColor(primaryTextColor, secondaryTextColor)
                 activityInterface.updateContrast(backgroundColor.isLight)
             }
