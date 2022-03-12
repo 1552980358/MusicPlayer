@@ -51,8 +51,7 @@
     <dimen name="fragment_play_content_buttons_icon_size">@dimen/dp_24</dimen>
     <dimen name="fragment_play_content_buttons_button_margin">@dimen/dp_15</dimen>
     <dimen name="fragment_play_content_buttons_button_border">@dimen/dp_0</dimen>
-    <dimen name="fragment_play_content_buttons_seek_icon_height">@dimen/dp_12</dimen>
-    <dimen name="fragment_play_content_buttons_seek_icon_width">@dimen/dp_20</dimen>
+    <dimen name="fragment_play_content_buttons_seek_height">@dimen/dp_15</dimen>
     <dimen name="fragment_play_content_bottom_root_margin">@dimen/dp_20</dimen>
     <dimen name="fragment_play_content_bottom_root_radius">@dimen/dp_5</dimen>
     <dimen name="fragment_play_content_bottom_root_elevation">@dimen/dp_5</dimen>
