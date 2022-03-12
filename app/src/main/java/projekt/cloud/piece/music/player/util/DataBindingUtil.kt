@@ -51,17 +51,19 @@ object DataBindingUtil {
             if (text.isNullOrBlank()) {
                 return setText(newText)
             }
-            ofFloat(1F, 0F).apply {
-                duration = ANIMATION_DURATION_HALF_LONG
-                addUpdateListener { alpha = animatedValue as Float }
-                doOnEnd {
-                    text = newText
-                    ofFloat(0F, 1F).apply {
-                        duration = ANIMATION_DURATION_HALF_LONG
-                        addUpdateListener { alpha = animatedValue as Float }
-                    }.start()
-                }
-            }.start()
+            if (text != newText) {
+                ofFloat(1F, 0F).apply {
+                    duration = ANIMATION_DURATION_HALF_LONG
+                    addUpdateListener { alpha = animatedValue as Float }
+                    doOnEnd {
+                        text = newText
+                        ofFloat(0F, 1F).apply {
+                            duration = ANIMATION_DURATION_HALF_LONG
+                            addUpdateListener { alpha = animatedValue as Float }
+                        }.start()
+                    }
+                }.start()
+            }
         }
     }
     
