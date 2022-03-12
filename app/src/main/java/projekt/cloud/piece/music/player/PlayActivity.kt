@@ -122,7 +122,14 @@ class PlayActivity: BaseMediaControlActivity() {
         activityInterface = PlayActivityInterface(
             requestMetadata = { audioItem },
             changePlayConfig = { config ->
-                mediaBrowserCompat.sendCustomAction(ACTION_PLAY_CONFIG_CHANGED, bundleOf(EXTRA_PLAY_CONFIG to config), null)
+                mediaBrowserCompat.sendCustomAction(ACTION_PLAY_CONFIG_CHANGED, bundleOf(EXTRA_PLAY_CONFIG to config), object : CustomActionCallback() {
+                    override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
+                        @Suppress("UNCHECKED_CAST")
+                        (resultData?.getSerializable(EXTRA_LIST) as List<AudioItem>?)?.let { list ->
+                            activityInterface.updateAudioList(list)
+                        }
+                    }
+                })
             }
         )
         
