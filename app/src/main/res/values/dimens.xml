@@ -32,6 +32,9 @@
     <dimen name="view_duration_text_margin">@dimen/dp_2</dimen>
     <dimen name="view_duration_text_size">@dimen/sp_14</dimen>
 
+    <dimen name="view_recycler_lyric_padding_horizontal">@dimen/dp_10</dimen>
+    <dimen name="view_recycler_lyric_padding_vertical">@dimen/dp_5</dimen>
+
     <dimen name="play_progressbar_indicator_thick">@dimen/dp_4</dimen>
     <dimen name="play_seekbar_wrap_height">@dimen/dp_10</dimen>
 
