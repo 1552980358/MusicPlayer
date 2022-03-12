@@ -38,6 +38,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:id="@+id/toolbar"
+                    android:background="@drawable/shape_toolbar_filter"
+                    app:navigationIcon="@drawable/ic_close"
                     app:popupTheme="@style/Theme.MusicPlayer.PopupOverlay" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
