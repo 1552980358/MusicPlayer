@@ -254,8 +254,6 @@ class PlayFragment: BasePlayFragment() {
                 updateProgress = { progress -> contentPlayFragmentButtons.progress = progress }
             )
             
-            loadMetadata(activityInterface.requestMetadata())
-            
             // Sync data from activity
             activityInterface.requestColor()?.split(' ')?.also {
                 updateColor(parseColor(it.first()), parseColor(it.last()))
