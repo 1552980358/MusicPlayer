@@ -181,6 +181,15 @@ class PlayActivity: BaseMediaControlActivity() {
             }.start()
         }
         
+        binding.viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
+            override fun onPageScrollStateChanged(state: Int) {
+                isScrolling = state == SCROLL_STATE_DRAGGING || state == SCROLL_STATE_SETTLING
+            }
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                scrollOffsetPixel = positionOffsetPixels
+            }
+        })
+        
     }
     
     override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
@@ -247,12 +256,23 @@ class PlayActivity: BaseMediaControlActivity() {
                 binding.relativeLayout.setBackgroundColor(backgroundColor)
                 when {
                     !isLaunched -> binding.coordinatorLayout.setBackgroundColor(backgroundColor)
-                    else -> createCircularReveal(binding.relativeLayout, circularStartPoint.x, circularStartPoint.y, 0F,
-                        hypot(circularStartPoint.x.toFloat(), circularStartPoint.y.toFloat())
-                    ).apply {
-                        duration = ANIMATION_DURATION_LONG
-                        doOnEnd { binding.coordinatorLayout.setBackgroundColor(backgroundColor) }
-                    }.start()
+                    else -> {
+                        val startX = when {
+                            isScrolling -> if (scrollOffsetPixel > circularStartPoint.x) 0 else circularStartPoint.x - scrollOffsetPixel
+                            else -> circularStartPoint.x
+                        }
+                        createCircularReveal(binding.relativeLayout, startX, circularStartPoint.y, 0F,
+                            hypot(
+                                when (startX) {
+                                    0 -> resources.displayMetrics.widthPixels
+                                    else -> resources.displayMetrics.widthPixels - startX
+                                }.toFloat(),
+                                circularStartPoint.y.toFloat())
+                        ).apply {
+                            duration = ANIMATION_DURATION_LONG
+                            doOnEnd { binding.coordinatorLayout.setBackgroundColor(backgroundColor) }
+                        }.start()
+                    }
                 }
                 activityInterface.updateColor(primaryTextColor, secondaryTextColor)
                 activityInterface.updateContrast(backgroundColor.isLight)
