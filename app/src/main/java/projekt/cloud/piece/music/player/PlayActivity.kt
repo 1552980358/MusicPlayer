@@ -2,6 +2,7 @@ package projekt.cloud.piece.music.player
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Point
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat.CustomActionCallback
 import android.support.v4.media.MediaMetadataCompat
@@ -12,11 +13,15 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.util.Log
 import android.view.View
+import android.view.View.GONE
 import android.view.View.OVER_SCROLL_NEVER
+import android.view.ViewAnimationUtils.createCircularReveal
+import androidx.core.animation.doOnEnd
 import androidx.core.content.res.ResourcesCompat.getDrawable
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
+import androidx.core.view.doOnAttach
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -38,11 +43,15 @@ import projekt.cloud.piece.music.player.service.play.Action.ACTION_REQUEST_LIST
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_PLAY_CONFIG
 import projekt.cloud.piece.music.player.ui.play.PlayFragment
+import projekt.cloud.piece.music.player.util.ActivityUtil.pixelHeight
 import projekt.cloud.piece.music.player.util.ColorUtil.isLight
+import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_LONG
 import projekt.cloud.piece.music.player.util.Extra.EXTRA_AUDIO_ITEM
+import projekt.cloud.piece.music.player.util.Extra.EXTRA_POINT
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArtRaw
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAudioArtRaw
 import projekt.cloud.piece.music.player.util.PlayActivityInterface
+import kotlin.math.hypot
 
 class PlayActivity: BaseMediaControlActivity() {
     
@@ -99,6 +108,11 @@ class PlayActivity: BaseMediaControlActivity() {
     
     private lateinit var audioDatabase: AudioDatabase
     
+    private var isLaunched = false
+    
+    private lateinit var rootStartPoint: Point
+    private val circularStartPoint = Point()
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
     
@@ -135,9 +149,28 @@ class PlayActivity: BaseMediaControlActivity() {
         
         io {
             defaultCoverBitmap = getDrawable(resources, R.drawable.ic_music_big, null)!!.toBitmap()
-            currentCoverBitmap =
-                loadAudioArtRaw(audioItem.id) ?: loadAlbumArtRaw(audioItem.album) ?: defaultCoverBitmap
             updateMetadata(audioItem)
+        }
+        
+        circularStartPoint.apply {
+            x = resources.displayMetrics.widthPixels / 2
+            y = (resources.displayMetrics.heightPixels - resources.displayMetrics.widthPixels) * 2 / 5 -
+                resources.getDimensionPixelSize(R.dimen.fragment_play_content_buttons_seek_height) * 2 +
+                resources.displayMetrics.widthPixels
+        }
+    
+        rootStartPoint = intent.getParcelableExtra(EXTRA_POINT)!!
+        
+        binding.coordinatorLayout.doOnAttach {
+            createCircularReveal(
+                binding.coordinatorLayout,
+                rootStartPoint.x, rootStartPoint.y,
+                0F,
+                hypot(resources.displayMetrics.widthPixels - rootStartPoint.x.toFloat(), rootStartPoint.y.toFloat())
+            ).apply {
+                duration = 500L
+                doOnEnd { isLaunched = true }
+            }.start()
         }
         
     }
@@ -150,7 +183,7 @@ class PlayActivity: BaseMediaControlActivity() {
                     artistItem = audioDatabase.artist.query(artist)
                     activityInterface.updateAudioItem(this)
                 }
-                ui { updateMetadata(audioItem) }
+                updateMetadata(audioItem)
             }
             requestSyncList()
         }
@@ -203,12 +236,41 @@ class PlayActivity: BaseMediaControlActivity() {
         ui { activityInterface.updateBitmap(currentCoverBitmap) }
         MediaNotificationProcessor(this@PlayActivity, currentCoverBitmap).apply {
             ui {
-                binding.backgroundColor = backgroundColor
+                binding.relativeLayout.setBackgroundColor(backgroundColor)
+                when {
+                    !isLaunched -> binding.coordinatorLayout.setBackgroundColor(backgroundColor)
+                    else -> createCircularReveal(binding.relativeLayout, circularStartPoint.x, circularStartPoint.y, 0F,
+                        hypot(circularStartPoint.x.toFloat(), circularStartPoint.y.toFloat())
+                    ).apply {
+                        duration = ANIMATION_DURATION_LONG
+                        doOnEnd { binding.coordinatorLayout.setBackgroundColor(backgroundColor) }
+                    }.start()
+                }
                 activityInterface.updateColor(primaryTextColor, secondaryTextColor)
                 activityInterface.updateContrast(backgroundColor.isLight)
             }
         }
     }
+    
+    override fun finish() {
+        binding.coordinatorLayout.doOnAttach {
+            createCircularReveal(
+                binding.coordinatorLayout,
+                rootStartPoint.x, rootStartPoint.y,
+                hypot(resources.displayMetrics.heightPixels.toFloat(), pixelHeight.toFloat()),
+                0F
+            ).apply {
+                duration = 500L
+                doOnEnd {
+                    binding.coordinatorLayout.visibility = GONE
+                    super.finish()
+                    overridePendingTransition(0, 0)
+                }
+            }.start()
+        }
+    }
+    
+    override fun onBackPressed() = finish()
     
     override fun getParentID() = TAG
     
