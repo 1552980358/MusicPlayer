@@ -27,6 +27,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.room.Room
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_DRAGGING
+import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_SETTLING
 import lib.github1552980358.ktExtension.android.content.getSerializableOf
 import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
@@ -113,6 +116,9 @@ class PlayActivity: BaseMediaControlActivity() {
     
     private lateinit var rootStartPoint: Point
     private val circularStartPoint = Point()
+    
+    private var isScrolling = false
+    private var scrollOffsetPixel = 0
     
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
