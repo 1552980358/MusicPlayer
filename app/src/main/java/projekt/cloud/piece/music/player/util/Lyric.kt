@@ -31,4 +31,7 @@ class Lyric {
     
     val last get() = _lyricItemList.last()
     
+    val lrcFile get() =
+        arrayListOf<String>().apply { _lyricItemList.forEach { add(it.lrcLine) } }.joinToString("\n")
+    
 }
