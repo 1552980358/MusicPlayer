@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <data>
-
-        <import type="android.graphics.Color" />
-
-        <variable
-            name="backgroundColor"
-            type="Integer" />
-
-    </data>
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:color="@{backgroundColor == null ? Color.TRANSPARENT : backgroundColor}">
+        android:id="@+id/coordinator_layout">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/relative_layout" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:layout_width="match_parent"
