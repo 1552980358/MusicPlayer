@@ -1,11 +1,9 @@
 package projekt.cloud.piece.music.player.util
 
-import android.animation.ValueAnimator.ofArgb
 import android.animation.ValueAnimator.ofFloat
 import android.graphics.Bitmap
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.view.View
@@ -13,7 +11,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -110,21 +107,6 @@ object DataBindingUtil {
     fun ProgressBar.setDuration(duration: Long? = null) {
         if (duration != null) {
             this.duration = duration
-        }
-    }
-    
-    @JvmStatic
-    @BindingAdapter("app:color")
-    fun CoordinatorLayout.setColor(@ColorInt color: Int) {
-        if (background == null) {
-            return setBackgroundColor(color)
-        }
-    
-        when (val backgroundDrawable = background) {
-            is ColorDrawable -> ofArgb(backgroundDrawable.color, color).apply {
-                duration = ANIMATION_DURATION_LONG
-                addUpdateListener { setBackgroundColor(animatedValue as Int) }
-            }.start()
         }
     }
     
