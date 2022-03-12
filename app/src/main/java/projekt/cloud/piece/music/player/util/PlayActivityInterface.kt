@@ -7,6 +7,8 @@ import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.ui.play.PlayFragment
 
 class PlayActivityInterface(val requestMetadata: () -> AudioItem,
+                            val requestColor: () -> String?,
+                            val requestList: () -> List<AudioItem>?,
                             val changePlayConfig: (Int) -> Unit) {
 
     lateinit var updateAudioItem: (AudioItem) -> Unit
