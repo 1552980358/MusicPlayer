@@ -156,7 +156,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                     audioList = extrasBundle.getSerializable(EXTRA_LIST) as List<AudioItem>
                     listIndex = extrasBundle.getInt(EXTRA_INDEX)
                     if (configs.getConfig(PLAY_CONFIG_SHUFFLE)) {
-                        audioList.shuffled()
+                        audioList = audioList.shuffled()
                         listIndex = audioList.indexOfFirst { it.index == listIndex }
                     }
                 }
@@ -338,11 +338,12 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                 extras?.let {
                     if (it.containsKey(EXTRA_PLAY_CONFIG)) {
                         playConfig = it.getInt(EXTRA_PLAY_CONFIG)
-                        
+                        val currentAudioItem = audioList[listIndex]
                         when {
-                            playConfig.getConfig(PLAY_CONFIG_SHUFFLE) -> audioList.shuffled()
-                            else -> audioList.sortedBy { audioItem -> audioItem.index }
+                            playConfig.getConfig(PLAY_CONFIG_SHUFFLE) -> audioList = audioList.shuffled()
+                            else -> audioList = audioList.sortedBy { audioItem -> audioItem.index }
                         }
+                        listIndex = audioList.indexOfFirst { it == currentAudioItem }
                         
                         playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
                             .setState(playbackStateCompat.state, exoPlayer.currentPosition, 1F)
