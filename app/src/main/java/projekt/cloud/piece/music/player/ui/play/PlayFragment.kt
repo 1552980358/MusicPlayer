@@ -70,44 +70,14 @@ class PlayFragment: BasePlayFragment() {
     
         loadMetadata(activityInterface.requestMetadata())
         
-        activityInterface.setListener(
-            updateAudioItem = { audioItem -> loadMetadata(audioItem) },
+        activityInterface.setPlayFragmentListener(
             updatePlayConfig = { playConfig ->
                 if (contentPlayFragmentButtons.playConfig != playConfig) {
                     contentPlayFragmentButtons.playConfig = playConfig
                 }
             },
             updateBitmap = { bitmap -> binding.coverImage = bitmap },
-            updateColor = { primaryColor, secondaryColor ->
-                contentPlayFragmentButtons.primaryColor = primaryColor
-                contentPlayFragmentButtons.secondaryColor = secondaryColor
-                when (contentPlayFragmentButtons.circleColor) {
-                    null -> contentPlayFragmentButtons.circleColor = when {
-                        primaryColor.isLight -> BLACK
-                        else -> WHITE
-                    }
-                    else -> {
-                        when {
-                            primaryColor.isLight -> {
-                                if (contentPlayFragmentButtons.circleColor != BLACK) {
-                                    ofArgb(contentPlayFragmentButtons.circleColor!!, BLACK).apply {
-                                        duration = ANIMATION_DURATION_LONG
-                                        addUpdateListener { contentPlayFragmentButtons.circleColor = animatedValue as Int }
-                                    }.start()
-                                }
-                            }
-                            else -> {
-                                if (contentPlayFragmentButtons.circleColor != WHITE) {
-                                    ofArgb(contentPlayFragmentButtons.circleColor!!, WHITE).apply {
-                                        duration = ANIMATION_DURATION_LONG
-                                        addUpdateListener { contentPlayFragmentButtons.circleColor = animatedValue as Int }
-                                    }.start()
-                                }
-                            }
-                        }
-                    }
-                }
-            },
+            
             updateContrast = { isLight ->
                 when(contentPlayFragmentButtons.iconTintColor) {
                     null -> contentPlayFragmentButtons.iconTintColor = when {
@@ -136,7 +106,6 @@ class PlayFragment: BasePlayFragment() {
                     }
                 }
             },
-            updateProgress = { progress -> contentPlayFragmentButtons.progress = progress },
             updatePlayState = { isPlaying ->
                 if (contentPlayFragmentButtons.isPlaying != isPlaying) {
                     contentPlayFragmentButtons.isPlaying = isPlaying
@@ -147,7 +116,7 @@ class PlayFragment: BasePlayFragment() {
                     recyclerViewAdapterUtil = RecyclerViewAdapterUtil(contentPlayFragmentBottomSheet.recyclerView, audioList) { index ->
                         activityInterface.transportControls.skipToQueueItem(index.toLong())
                     }
-                    return@setListener
+                    return@setPlayFragmentListener
                 }
                 recyclerViewAdapterUtil.audioList = audioList
             }
@@ -274,6 +243,44 @@ class PlayFragment: BasePlayFragment() {
             setSupportActionBar(binding.toolbar)
             binding.toolbar.setNavigationOnClickListener { finish() }
             supportActionBar?.setDisplayShowTitleEnabled(false)
+        }
+        
+        if (!activityInterface.isCurrent(this)) {
+            activityInterface.setCommonListener(
+                this,
+                updateAudioItem = { audioItem -> loadMetadata(audioItem) },
+                updateColor = { primaryColor, secondaryColor ->
+                    contentPlayFragmentButtons.primaryColor = primaryColor
+                    contentPlayFragmentButtons.secondaryColor = secondaryColor
+                    when (contentPlayFragmentButtons.circleColor) {
+                        null -> contentPlayFragmentButtons.circleColor = when {
+                            primaryColor.isLight -> BLACK
+                            else -> WHITE
+                        }
+                        else -> {
+                            when {
+                                primaryColor.isLight -> {
+                                    if (contentPlayFragmentButtons.circleColor != BLACK) {
+                                        ofArgb(contentPlayFragmentButtons.circleColor!!, BLACK).apply {
+                                            duration = ANIMATION_DURATION_LONG
+                                            addUpdateListener { contentPlayFragmentButtons.circleColor = animatedValue as Int }
+                                        }.start()
+                                    }
+                                }
+                                else -> {
+                                    if (contentPlayFragmentButtons.circleColor != WHITE) {
+                                        ofArgb(contentPlayFragmentButtons.circleColor!!, WHITE).apply {
+                                            duration = ANIMATION_DURATION_LONG
+                                            addUpdateListener { contentPlayFragmentButtons.circleColor = animatedValue as Int }
+                                        }.start()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                updateProgress = { progress -> contentPlayFragmentButtons.progress = progress }
+            )
         }
     }
     
