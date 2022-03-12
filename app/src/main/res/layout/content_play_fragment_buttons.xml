@@ -91,7 +91,7 @@
                 <projekt.cloud.piece.music.player.widget.Seekbar
                     android:id="@+id/seekbar"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_15"
+                    android:layout_height="@dimen/fragment_play_content_buttons_seek_height"
                     android:layout_toStartOf="@id/time_view_duration"
                     android:layout_toEndOf="@id/time_view_progress"
                     app:circleColor="@{circleColor}"
