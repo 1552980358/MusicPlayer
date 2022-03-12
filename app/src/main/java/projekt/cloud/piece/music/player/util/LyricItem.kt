@@ -1,5 +1,7 @@
 package projekt.cloud.piece.music.player.util
 
+import projekt.cloud.piece.music.player.util.LyricUtil.timeStrWithBracket
+
 data class LyricItem(val time: Long) {
 
     private val _lyricLines = arrayListOf<String>()
@@ -25,6 +27,11 @@ data class LyricItem(val time: Long) {
     val lyricLines: List<String> get() = _lyricLines
     
     val size get() = _lyricLines.size
+    
+    val lrcLine get() = run {
+        val timeStr = time.timeStrWithBracket
+        arrayListOf<String>().apply { _lyricLines.forEach { add("$timeStr$it") } }.joinToString("\n")
+    }
     
     override fun toString() = _lyricLines.joinToString(separator = "\n")
     
