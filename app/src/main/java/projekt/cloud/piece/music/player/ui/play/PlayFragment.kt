@@ -3,6 +3,7 @@ package projekt.cloud.piece.music.player.ui.play
 import android.animation.ValueAnimator.ofArgb
 import android.graphics.Color.BLACK
 import android.graphics.Color.WHITE
+import android.graphics.Color.parseColor
 import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -249,38 +250,20 @@ class PlayFragment: BasePlayFragment() {
             activityInterface.setCommonListener(
                 this,
                 updateAudioItem = { audioItem -> loadMetadata(audioItem) },
-                updateColor = { primaryColor, secondaryColor ->
-                    contentPlayFragmentButtons.primaryColor = primaryColor
-                    contentPlayFragmentButtons.secondaryColor = secondaryColor
-                    when (contentPlayFragmentButtons.circleColor) {
-                        null -> contentPlayFragmentButtons.circleColor = when {
-                            primaryColor.isLight -> BLACK
-                            else -> WHITE
-                        }
-                        else -> {
-                            when {
-                                primaryColor.isLight -> {
-                                    if (contentPlayFragmentButtons.circleColor != BLACK) {
-                                        ofArgb(contentPlayFragmentButtons.circleColor!!, BLACK).apply {
-                                            duration = ANIMATION_DURATION_LONG
-                                            addUpdateListener { contentPlayFragmentButtons.circleColor = animatedValue as Int }
-                                        }.start()
-                                    }
-                                }
-                                else -> {
-                                    if (contentPlayFragmentButtons.circleColor != WHITE) {
-                                        ofArgb(contentPlayFragmentButtons.circleColor!!, WHITE).apply {
-                                            duration = ANIMATION_DURATION_LONG
-                                            addUpdateListener { contentPlayFragmentButtons.circleColor = animatedValue as Int }
-                                        }.start()
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
+                updateColor = { primaryColor, secondaryColor -> updateColor(primaryColor, secondaryColor) },
                 updateProgress = { progress -> contentPlayFragmentButtons.progress = progress }
             )
+            
+            loadMetadata(activityInterface.requestMetadata())
+            
+            // Sync data from activity
+            activityInterface.requestColor()?.split(' ')?.also {
+                updateColor(parseColor(it.first()), parseColor(it.last()))
+            }
+            
+            activityInterface.requestList()?.let { list ->
+                recyclerViewAdapterUtil.audioList = list
+            }
         }
     }
     
@@ -288,6 +271,37 @@ class PlayFragment: BasePlayFragment() {
         contentPlayFragmentButtons.duration = audioItem.duration
         contentPlayFragmentBottomSheet.title = audioItem.title
         contentPlayFragmentBottomSheet.subtitle = "${audioItem.artistItem.name} - ${audioItem.albumItem.title}"
+    }
+    
+    private fun updateColor(primaryColor: Int, secondaryColor: Int) {
+        contentPlayFragmentButtons.primaryColor = primaryColor
+        contentPlayFragmentButtons.secondaryColor = secondaryColor
+        when (contentPlayFragmentButtons.circleColor) {
+            null -> contentPlayFragmentButtons.circleColor = when {
+                primaryColor.isLight -> BLACK
+                else -> WHITE
+            }
+            else -> {
+                when {
+                    primaryColor.isLight -> {
+                        if (contentPlayFragmentButtons.circleColor != BLACK) {
+                            ofArgb(contentPlayFragmentButtons.circleColor!!, BLACK).apply {
+                                duration = ANIMATION_DURATION_LONG
+                                addUpdateListener { contentPlayFragmentButtons.circleColor = animatedValue as Int }
+                            }.start()
+                        }
+                    }
+                    else -> {
+                        if (contentPlayFragmentButtons.circleColor != WHITE) {
+                            ofArgb(contentPlayFragmentButtons.circleColor!!, WHITE).apply {
+                                duration = ANIMATION_DURATION_LONG
+                                addUpdateListener { contentPlayFragmentButtons.circleColor = animatedValue as Int }
+                            }.start()
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }
