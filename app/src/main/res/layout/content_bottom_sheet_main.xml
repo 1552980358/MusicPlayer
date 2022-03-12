@@ -45,7 +45,6 @@
             android:layout_marginTop="@dimen/main_bottom_sheet_view_margin"
             android:layout_marginEnd="@dimen/main_bottom_sheet_view_margin"
             android:layout_marginBottom="@dimen/main_bottom_sheet_view_margin"
-            android:transitionName="imageView"
             app:bitmapAnimated="@{bitmap}"/>
 
         <androidx.appcompat.widget.AppCompatImageView
