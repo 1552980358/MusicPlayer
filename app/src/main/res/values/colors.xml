@@ -20,4 +20,8 @@
 
     <color name="progress_bar">@color/purple_500</color>
 
+    <color name="shape_toolbar_filter_start">#66000000</color>
+    <color name="shape_toolbar_filter_center">#33000000</color>
+    <color name="shape_toolbar_filter_end">#00000000</color>
+
 </resources>
