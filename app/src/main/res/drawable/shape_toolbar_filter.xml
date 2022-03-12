@@ -3,7 +3,7 @@
     <gradient
         android:angle="270"
         android:type="linear"
-        android:startColor="#66000000"
-        android:centerColor="#33000000"
-        android:endColor="#00000000"/>
+        android:startColor="@color/shape_toolbar_filter_start"
+        android:centerColor="@color/shape_toolbar_filter_center"
+        android:endColor="@color/shape_toolbar_filter_end"/>
 </shape>
