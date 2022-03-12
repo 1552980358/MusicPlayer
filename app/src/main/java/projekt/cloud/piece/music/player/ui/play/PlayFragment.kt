@@ -11,6 +11,7 @@ import android.view.MotionEvent.ACTION_DOWN
 import android.view.MotionEvent.ACTION_UP
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -263,6 +264,14 @@ class PlayFragment: BasePlayFragment() {
                 bottomSheetBehavior.state = STATE_COLLAPSED
                 bottomSheetBehavior.isHideable = false
             }
+        }
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as AppCompatActivity).apply {
+            setSupportActionBar(binding.toolbar)
+            binding.toolbar.setNavigationOnClickListener { finish() }
         }
     }
     
