@@ -237,6 +237,7 @@ class PlayFragment: BasePlayFragment() {
                         
                         compareAxis(touchX, touchY, imageViewShuffle, rawAxis) -> {
                             contentPlayFragmentButtons.playConfig?.let { playConfig ->
+                                recyclerViewAdapterUtil.hasShuffledUpdated = true
                                 activityInterface.changePlayConfig(playConfig.setConfig(PLAY_CONFIG_SHUFFLE, !playConfig.getConfig(PLAY_CONFIG_SHUFFLE)))
                             }
                         }
