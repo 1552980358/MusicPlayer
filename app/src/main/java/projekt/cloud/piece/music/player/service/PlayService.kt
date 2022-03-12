@@ -335,7 +335,6 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                 }
             }
             ACTION_PLAY_CONFIG_CHANGED -> {
-                result.sendResult(null)
                 extras?.let {
                     if (it.containsKey(EXTRA_PLAY_CONFIG)) {
                         playConfig = it.getInt(EXTRA_PLAY_CONFIG)
@@ -355,6 +354,8 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                         sharedPreferences.edit()
                             .putInt(SP_PLAY_CONFIG, playConfig)
                             .apply()
+    
+                        result.sendResult(bundleOf(EXTRA_LIST to  currentPlaylist()))
                     }
                 }
             }
