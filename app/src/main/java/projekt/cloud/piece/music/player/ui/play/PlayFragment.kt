@@ -272,6 +272,7 @@ class PlayFragment: BasePlayFragment() {
         (requireActivity() as AppCompatActivity).apply {
             setSupportActionBar(binding.toolbar)
             binding.toolbar.setNavigationOnClickListener { finish() }
+            supportActionBar?.setDisplayShowTitleEnabled(false)
         }
     }
     
