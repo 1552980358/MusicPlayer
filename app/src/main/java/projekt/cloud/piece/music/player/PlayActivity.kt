@@ -109,6 +109,7 @@ class PlayActivity: BaseMediaControlActivity() {
     private lateinit var audioDatabase: AudioDatabase
     
     private var isLaunched = false
+    private var isFinishAnimationLaunched = false
     
     private lateinit var rootStartPoint: Point
     private val circularStartPoint = Point()
@@ -253,20 +254,23 @@ class PlayActivity: BaseMediaControlActivity() {
     }
     
     override fun finish() {
-        binding.coordinatorLayout.doOnAttach {
-            createCircularReveal(
-                binding.coordinatorLayout,
-                rootStartPoint.x, rootStartPoint.y,
-                hypot(resources.displayMetrics.heightPixels.toFloat(), pixelHeight.toFloat()),
-                0F
-            ).apply {
-                duration = 500L
-                doOnEnd {
-                    binding.coordinatorLayout.visibility = GONE
-                    super.finish()
-                    overridePendingTransition(0, 0)
-                }
-            }.start()
+        if (!isFinishAnimationLaunched) {
+            isFinishAnimationLaunched = true
+            return binding.coordinatorLayout.doOnAttach {
+                createCircularReveal(
+                    binding.coordinatorLayout,
+                    rootStartPoint.x, rootStartPoint.y,
+                    hypot(resources.displayMetrics.heightPixels.toFloat(), pixelHeight.toFloat()),
+                    0F
+                ).apply {
+                    duration = 500L
+                    doOnEnd {
+                        binding.coordinatorLayout.visibility = GONE
+                        super.finish()
+                        overridePendingTransition(0, 0)
+                    }
+                }.start()
+            }
         }
     }
     
