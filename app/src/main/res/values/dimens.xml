@@ -22,6 +22,8 @@
     <dimen name="sp_14">14sp</dimen>
     <dimen name="sp_16">16sp</dimen>
 
+    <dimen name="status_bar_height">@dimen/dp_24</dimen>
+
     <dimen name="linear_layout_weighted_length">@dimen/dp_0</dimen>
 
     <dimen name="title_text_size">@dimen/sp_16</dimen>
