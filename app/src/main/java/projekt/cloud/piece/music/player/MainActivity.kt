@@ -6,6 +6,7 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Bitmap
 import android.graphics.Bitmap.createBitmap
 import android.graphics.Matrix
+import android.graphics.Point
 import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
 import android.provider.MediaStore
@@ -78,6 +79,7 @@ import projekt.cloud.piece.music.player.databinding.ActivityMainBinding
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_INDEX
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
 import projekt.cloud.piece.music.player.util.Extra.EXTRA_AUDIO_ITEM
+import projekt.cloud.piece.music.player.util.Extra.EXTRA_POINT
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArt
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArts40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAudioArt40Dp
@@ -248,9 +250,16 @@ class MainActivity : BaseMediaControlActivity() {
                             STATE_PLAYING -> mediaControllerCompat.transportControls.pause()
                             STATE_PAUSED -> mediaControllerCompat.transportControls.play()
                         }
-                        else -> startActivity(intent(this, PlayActivity::class.java) {
-                            putExtra(EXTRA_AUDIO_ITEM, audioItem)
-                        })
+                        else -> {
+                            startActivity(intent(this, PlayActivity::class.java) {
+                                putExtra(EXTRA_AUDIO_ITEM, audioItem)
+                                IntArray(2).apply {
+                                    contentBottomSheetMain.imageViewArt.getLocationOnScreen(this)
+                                    putExtra(EXTRA_POINT, Point(this[0] + contentBottomSheetMain.imageViewArt.width / 2, this[1] + contentBottomSheetMain.imageViewArt.height / 2))
+                                }
+                            })
+                            overridePendingTransition(0, 0)
+                        }
                     }
                 }
             }
