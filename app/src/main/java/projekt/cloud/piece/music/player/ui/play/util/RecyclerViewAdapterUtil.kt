@@ -43,16 +43,26 @@ class RecyclerViewAdapterUtil(private val recyclerView: RecyclerView,
             field = value
         }
     
+    var hasShuffledUpdated = false
+    
     init {
         recyclerView.adapter = adapter
     }
     
     private fun compareAndNotifyListUpdate(originList: List<AudioItem>, newList: List<AudioItem>) {
+        if (hasShuffledUpdated) {
+            hasShuffledUpdated = false
+            @Suppress("NotifyDataSetChanged")
+            adapter.notifyItemRangeRemoved(0, audioList.size)
+            return adapter.notifyItemRangeInserted(0, audioList.size)
+        }
+    
         val originListLastItem = originList.last()
         val newListLastItem = newList.last()
         if (originListLastItem.id != newListLastItem.id) {
             if (originList.first().id == newListLastItem.id) {
                 adapter.notifyItemRemoved(0)
+                adapter.notifyItemInserted(newList.lastIndex)
                 return adapter.notifyItemRangeChanged(0, newList.size)
             }
             if (originList.size > 1) {
@@ -68,7 +78,6 @@ class RecyclerViewAdapterUtil(private val recyclerView: RecyclerView,
                 adapter.notifyItemRangeChanged(0, newList.size)
             }
         }
-        
     }
     
 }
