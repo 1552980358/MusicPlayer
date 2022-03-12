@@ -26,17 +26,20 @@
                 app:bitmapAnimated="@{coverImage}"/>
 
             <!-- Put it below AppCompatImageView, so that it can cover that -->
-            <RelativeLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@*android:dimen/status_bar_height"
-                android:background="@drawable/shape_toolbar_filter">
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/status_bar_height"
+                    android:background="@color/shape_toolbar_filter_start" />
                 <com.google.android.material.appbar.MaterialToolbar
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:id="@+id/toolbar"
                     app:popupTheme="@style/Theme.MusicPlayer.PopupOverlay" />
-            </RelativeLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
             <!-- It manage the ripple effect of the whole bottom part -->
             <RelativeLayout
