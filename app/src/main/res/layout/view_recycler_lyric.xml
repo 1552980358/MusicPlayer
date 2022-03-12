@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="lyric"
+            type="String" />
+
+        <variable
+            name="textColor"
+            type="Integer" />
+
+    </data>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@{lyric}"
+        android:paddingStart="@dimen/view_recycler_lyric_padding_horizontal"
+        android:paddingEnd="@dimen/view_recycler_lyric_padding_horizontal"
+        android:paddingTop="@dimen/view_recycler_lyric_padding_vertical"
+        android:paddingBottom="@dimen/view_recycler_lyric_padding_vertical"
+        android:textColor="@{textColor}"
+        android:textSize="@dimen/title_text_size" />
+
+</layout>
