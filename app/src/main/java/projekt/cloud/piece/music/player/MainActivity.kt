@@ -226,6 +226,9 @@ class MainActivity : BaseMediaControlActivity() {
         }
     
         extendedFloatingActionButton.setOnClickListener {
+            if (extendedFloatingActionButton.isExtended) {
+                extendedFloatingActionButton.shrink()
+            }
             startActivity(intent(this, PlayActivity::class.java) {
                 putExtra(EXTRA_AUDIO_ITEM, audioItem)
                 putExtra(EXTRA_POINT, extendedFabCenterPoint)
