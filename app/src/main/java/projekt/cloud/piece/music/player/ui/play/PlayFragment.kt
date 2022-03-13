@@ -258,6 +258,7 @@ class PlayFragment: BasePlayFragment() {
             supportActionBar?.setDisplayShowTitleEnabled(false)
             invalidateOptionsMenu()
         }
+        activityInterface.setCurrentFragment(this)
     }
     
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
