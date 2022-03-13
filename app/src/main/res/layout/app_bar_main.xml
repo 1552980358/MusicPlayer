@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/extended_floating_action_button"
             android:layout_gravity="bottom|end"
-            android:layout_margin="30dp"
+            android:layout_margin="@dimen/fab_margins"
             app:iconTint="@null" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
