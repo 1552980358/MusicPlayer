@@ -1,8 +1,11 @@
 package projekt.cloud.piece.music.player
 
+import android.app.Instrumentation
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Point
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.Q
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat.CustomActionCallback
 import android.support.v4.media.MediaMetadataCompat
@@ -13,15 +16,14 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.util.Log
 import android.view.View
-import android.view.View.GONE
 import android.view.View.OVER_SCROLL_NEVER
 import android.view.ViewAnimationUtils.createCircularReveal
+import android.view.Window.FEATURE_ACTIVITY_TRANSITIONS
 import androidx.core.animation.doOnEnd
 import androidx.core.content.res.ResourcesCompat.getDrawable
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
-import androidx.core.view.doOnAttach
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -30,6 +32,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_DRAGGING
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_SETTLING
+import com.google.android.material.transition.platform.MaterialContainerTransform
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import lib.github1552980358.ktExtension.android.content.getSerializableOf
 import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
@@ -47,11 +51,9 @@ import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_PLAY_CONFIG
 import projekt.cloud.piece.music.player.ui.lyricPlay.LyricPlayFragment
 import projekt.cloud.piece.music.player.ui.play.PlayFragment
-import projekt.cloud.piece.music.player.util.ActivityUtil.pixelHeight
 import projekt.cloud.piece.music.player.util.ColorUtil.isLight
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_LONG
 import projekt.cloud.piece.music.player.util.Extra.EXTRA_AUDIO_ITEM
-import projekt.cloud.piece.music.player.util.Extra.EXTRA_POINT
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArtRaw
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAudioArtRaw
 import projekt.cloud.piece.music.player.util.PlayActivityInterface
@@ -61,6 +63,7 @@ class PlayActivity: BaseMediaControlActivity() {
     
     companion object {
         const val TAG = "PlayActivity"
+        private const val TRANSFORM_ANIMATION_DURATION = 300L
     }
     
     private lateinit var binding: ActivityPlayBinding
@@ -113,9 +116,7 @@ class PlayActivity: BaseMediaControlActivity() {
     private lateinit var audioDatabase: AudioDatabase
     
     private var isLaunched = false
-    private var isFinishAnimationLaunched = false
     
-    private lateinit var rootStartPoint: Point
     private val circularStartPoint = Point()
     
     private var isScrolling = false
@@ -146,6 +147,20 @@ class PlayActivity: BaseMediaControlActivity() {
         )
         
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
+    
+        // Token from
+        // https://material.io/develop/android/theming/motion#material-container-transform
+        window.requestFeature(FEATURE_ACTIVITY_TRANSITIONS)
+        findViewById<View>(android.R.id.content).transitionName = "fab_trans"
+        setEnterSharedElementCallback(MaterialContainerTransformSharedElementCallback())
+        window.sharedElementEnterTransition = MaterialContainerTransform().apply {
+            addTarget(android.R.id.content)
+            duration = TRANSFORM_ANIMATION_DURATION
+        }
+        window.sharedElementReturnTransition = MaterialContainerTransform().apply {
+            addTarget(android.R.id.content)
+            duration = TRANSFORM_ANIMATION_DURATION
+        }
         
         super.onCreate(savedInstanceState)
     
@@ -191,20 +206,6 @@ class PlayActivity: BaseMediaControlActivity() {
                 resources.getDimensionPixelSize(R.dimen.fragment_play_content_buttons_seek_height) * 2 +
                 resources.displayMetrics.widthPixels
         }
-    
-        rootStartPoint = intent.getParcelableExtra(EXTRA_POINT)!!
-        
-        binding.coordinatorLayout.doOnAttach {
-            createCircularReveal(
-                binding.coordinatorLayout,
-                rootStartPoint.x, rootStartPoint.y,
-                0F,
-                hypot(resources.displayMetrics.widthPixels - rootStartPoint.x.toFloat(), rootStartPoint.y.toFloat())
-            ).apply {
-                duration = 500L
-                doOnEnd { isLaunched = true }
-            }.start()
-        }
         
     }
     
@@ -247,7 +248,6 @@ class PlayActivity: BaseMediaControlActivity() {
         activityInterface.transportControls = mediaControllerCompat.transportControls
         requestSyncList()
     }
-    
     
     private fun requestSyncList() {
         mediaBrowserCompat.sendCustomAction(ACTION_REQUEST_LIST, null, object : CustomActionCallback() {
@@ -299,28 +299,14 @@ class PlayActivity: BaseMediaControlActivity() {
         }
     }
     
-    override fun finish() {
-        if (!isFinishAnimationLaunched) {
-            isFinishAnimationLaunched = true
-            return binding.coordinatorLayout.doOnAttach {
-                createCircularReveal(
-                    binding.coordinatorLayout,
-                    rootStartPoint.x, rootStartPoint.y,
-                    hypot(resources.displayMetrics.widthPixels.toFloat(), pixelHeight.toFloat()),
-                    0F
-                ).apply {
-                    duration = ANIMATION_DURATION_LONG
-                    doOnEnd {
-                        binding.coordinatorLayout.visibility = GONE
-                        super.finish()
-                        overridePendingTransition(0, 0)
-                    }
-                }.start()
-            }
+    override fun onStop() {
+        if (!isFinishing && SDK_INT == Q) {
+            Instrumentation().callActivityOnSaveInstanceState(this, Bundle())
         }
+        super.onStop()
     }
     
-    override fun onBackPressed() = finish()
+    override fun onBackPressed() = finishAfterTransition()
     
     override fun getParentID() = TAG
     
