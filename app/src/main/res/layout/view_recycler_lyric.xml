@@ -4,6 +4,8 @@
 
     <data>
 
+        <import type="android.graphics.Typeface" />
+
         <variable
             name="lyric"
             type="String" />
@@ -12,18 +14,31 @@
             name="textColor"
             type="Integer" />
 
+        <variable
+            name="textStyle"
+            type="Integer" />
+
     </data>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@{lyric}"
-        android:paddingStart="@dimen/view_recycler_lyric_padding_horizontal"
-        android:paddingEnd="@dimen/view_recycler_lyric_padding_horizontal"
-        android:paddingTop="@dimen/view_recycler_lyric_padding_vertical"
-        android:paddingBottom="@dimen/view_recycler_lyric_padding_vertical"
-        android:textColor="@{textColor}"
-        android:textSize="@dimen/title_text_size" />
+        android:id="@+id/relative_layout">
+
+        <!-- Typeface method token from https://stackoverflow.com/a/64423913/11685230 -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@{lyric}"
+            android:typeface="@{Typeface.defaultFromStyle(textStyle == null ? Typeface.NORMAL : textStyle)}"
+            android:paddingStart="@dimen/view_recycler_lyric_padding_horizontal"
+            android:paddingEnd="@dimen/view_recycler_lyric_padding_horizontal"
+            android:paddingTop="@dimen/view_recycler_lyric_padding_vertical"
+            android:paddingBottom="@dimen/view_recycler_lyric_padding_vertical"
+            android:textColor="@{textColor}"
+            android:textSize="@dimen/title_text_size" />
+
+    </RelativeLayout>
 
 </layout>
