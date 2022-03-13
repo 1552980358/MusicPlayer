@@ -28,10 +28,6 @@
             android:id="@+id/content_main"
             layout="@layout/content_main" />
 
-        <include
-            android:id="@+id/content_bottom_sheet_main"
-            layout="@layout/content_bottom_sheet_main" />
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>
