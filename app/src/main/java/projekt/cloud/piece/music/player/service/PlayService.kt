@@ -286,13 +286,8 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                 playConfig.getConfig(PLAY_CONFIG_REPEAT) ->
                     mediaSession.controller.transportControls.skipToNext()
                 
-                playConfig.getConfig(PLAY_CONFIG_REPEAT_ONE) -> {
-                    playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
-                        .setState(STATE_BUFFERING, 0, 1F)
-                        .build()
-                    exoPlayer.prepare()
-                    transportControls.play()
-                }
+                playConfig.getConfig(PLAY_CONFIG_REPEAT_ONE) ->
+                    transportControls.playFromMediaId(audioList[listIndex].id, null)
                 
                 else -> if (listIndex < audioList.lastIndex) {
                     transportControls.skipToNext()
