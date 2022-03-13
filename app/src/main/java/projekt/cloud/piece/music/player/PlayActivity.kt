@@ -34,7 +34,6 @@ import lib.github1552980358.ktExtension.android.content.getSerializableOf
 import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
-import mkaflowski.mediastylepalette.MediaNotificationProcessor
 import okhttp3.internal.format
 import projekt.cloud.piece.music.player.base.BaseMediaControlActivity
 import projekt.cloud.piece.music.player.base.BasePlayFragment
@@ -269,7 +268,7 @@ class PlayActivity: BaseMediaControlActivity() {
         currentCoverBitmap =
             loadAudioArtRaw(audioItem.id) ?: loadAlbumArtRaw(audioItem.album) ?: defaultCoverBitmap
         ui { activityInterface.updateBitmap(currentCoverBitmap) }
-        MediaNotificationProcessor(this@PlayActivity, currentCoverBitmap).apply {
+        audioDatabase.color.query(audioItem.id, audioItem.album).apply {
             ui {
                 binding.relativeLayout.setBackgroundColor(backgroundColor)
                 when {
@@ -293,8 +292,8 @@ class PlayActivity: BaseMediaControlActivity() {
                         }.start()
                     }
                 }
-                colors = format("#%08X #%08X", primaryTextColor, secondaryTextColor)
-                activityInterface.updateColor(primaryTextColor, secondaryTextColor)
+                colors = format("#%08X #%08X", primaryColor, secondaryColor)
+                activityInterface.updateColor(primaryColor, secondaryColor)
                 activityInterface.updateContrast(backgroundColor.isLight)
             }
         }
