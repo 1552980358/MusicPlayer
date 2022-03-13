@@ -152,20 +152,32 @@ class PlayActivity: BaseMediaControlActivity() {
         audioDatabase = Room.databaseBuilder(this, AudioDatabase::class.java, DATABASE_NAME).build()
         
         binding = DataBindingUtil.setContentView(this, R.layout.activity_play)
-    
-        /**
-         * For ViewPager2, method of disabling over scroll is token from
-         * https://stackoverflow.com/a/56942231/11685230
-         **/
-        binding.viewPager.getChildAt(0).overScrollMode = OVER_SCROLL_NEVER
         
-        val fragmentList = listOf(
-            PlayFragment().apply { arguments = bundle { putSerializable(EXTRA_AUDIO_ITEM, audioItem) } },
-            LyricPlayFragment()
-        )
-        binding.viewPager.adapter = object : FragmentStateAdapter(this) {
-            override fun getItemCount() = fragmentList.size
-            override fun createFragment(position: Int) = fragmentList[position]
+        with(binding.viewPager) {
+            /**
+             * For ViewPager2, method of disabling over scroll is token from
+             * https://stackoverflow.com/a/56942231/11685230
+             **/
+            binding.viewPager.getChildAt(0).overScrollMode = OVER_SCROLL_NEVER
+    
+            val fragmentList = listOf(
+                PlayFragment().apply { arguments = bundle { putSerializable(EXTRA_AUDIO_ITEM, audioItem) } },
+                LyricPlayFragment()
+            )
+    
+            adapter = object : FragmentStateAdapter(this@PlayActivity) {
+                override fun getItemCount() = fragmentList.size
+                override fun createFragment(position: Int) = fragmentList[position]
+            }
+    
+            registerOnPageChangeCallback(object : OnPageChangeCallback() {
+                override fun onPageScrollStateChanged(state: Int) {
+                    isScrolling = state == SCROLL_STATE_DRAGGING || state == SCROLL_STATE_SETTLING
+                }
+                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                    scrollOffsetPixel = positionOffsetPixels
+                }
+            })
         }
         
         io {
@@ -193,15 +205,6 @@ class PlayActivity: BaseMediaControlActivity() {
                 doOnEnd { isLaunched = true }
             }.start()
         }
-        
-        binding.viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
-            override fun onPageScrollStateChanged(state: Int) {
-                isScrolling = state == SCROLL_STATE_DRAGGING || state == SCROLL_STATE_SETTLING
-            }
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                scrollOffsetPixel = positionOffsetPixels
-            }
-        })
         
     }
     
