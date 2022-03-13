@@ -7,7 +7,6 @@ import android.content.res.ColorStateList.valueOf
 import android.graphics.Bitmap
 import android.graphics.Bitmap.createBitmap
 import android.graphics.Matrix
-import android.graphics.Point
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.provider.MediaStore
@@ -30,8 +29,10 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.util.Log
 import android.view.Menu
 import android.view.View
+import android.view.Window.FEATURE_ACTIVITY_TRANSITIONS
 import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityOptionsCompat.makeSceneTransitionAnimation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -47,6 +48,7 @@ import androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.room.Room.databaseBuilder
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -75,7 +77,6 @@ import projekt.cloud.piece.music.player.databinding.ActivityMainBinding
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_INDEX
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
 import projekt.cloud.piece.music.player.util.Extra.EXTRA_AUDIO_ITEM
-import projekt.cloud.piece.music.player.util.Extra.EXTRA_POINT
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArt
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArts40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAudioArt40Dp
@@ -166,14 +167,6 @@ class MainActivity : BaseMediaControlActivity() {
     
     private var countJob: Job? = null
     
-    private val extendedFabCenterPoint by lazy {
-        IntArray(2).run {
-            extendedFloatingActionButton.getLocationOnScreen(this)
-            val center = resources.getDimensionPixelSize(R.dimen.fab_size) / 2
-            Point(resources.displayMetrics.widthPixels - resources.getDimensionPixelSize(R.dimen.fab_margins) - center, last() + center)
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
 
         activityInterface = MainActivityInterface(
@@ -197,6 +190,12 @@ class MainActivity : BaseMediaControlActivity() {
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
     
         setDecorFitsSystemWindows(window, false)
+    
+        // Token from
+        // https://material.io/develop/android/theming/motion#material-container-transform
+        window.requestFeature(FEATURE_ACTIVITY_TRANSITIONS)
+        setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
+        window.sharedElementsUseOverlay = false
         
         super.onCreate(savedInstanceState)
 
@@ -229,10 +228,14 @@ class MainActivity : BaseMediaControlActivity() {
             if (extendedFloatingActionButton.isExtended) {
                 extendedFloatingActionButton.shrink()
             }
-            startActivity(intent(this, PlayActivity::class.java) {
-                putExtra(EXTRA_AUDIO_ITEM, audioItem)
-                putExtra(EXTRA_POINT, extendedFabCenterPoint)
-            })
+            startActivity(intent(
+                this,
+                PlayActivity::class.java) {
+                    putExtra(EXTRA_AUDIO_ITEM, audioItem)
+                    // putExtra(EXTRA_POINT, extendedFabCenterPoint)
+                },
+                makeSceneTransitionAnimation(this, extendedFloatingActionButton, "fab_trans").toBundle()
+            )
         }
     
         extendedFloatingActionButton.hide()
