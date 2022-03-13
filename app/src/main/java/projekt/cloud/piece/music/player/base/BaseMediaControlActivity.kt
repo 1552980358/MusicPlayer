@@ -113,6 +113,7 @@ abstract class BaseMediaControlActivity: BaseThemeActivity() {
     }
     
     override fun onDestroy() {
+        isPlaying = false
         if (mediaBrowserCompat.isConnected) {
             mediaControllerCompat.unregisterCallback(mediaControllerCallback)
             mediaBrowserCompat.unsubscribe(parentId, subscriptionCallback)
