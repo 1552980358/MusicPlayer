@@ -131,9 +131,8 @@ class PlayActivity: BaseMediaControlActivity() {
         audioItem = intent.getSerializableOf(EXTRA_AUDIO_ITEM)!!
         
         activityInterface = PlayActivityInterface(
+            this,
             requestMetadata = { audioItem },
-            requestColor = { colors },
-            requestList = { audioList },
             changePlayConfig = { config ->
                 mediaBrowserCompat.sendCustomAction(ACTION_PLAY_CONFIG_CHANGED, bundleOf(EXTRA_PLAY_CONFIG to config), object : CustomActionCallback() {
                     override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
