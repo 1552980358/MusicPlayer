@@ -142,7 +142,8 @@ class PlayActivity: BaseMediaControlActivity() {
                         }
                     }
                 })
-            }
+            },
+            requestColors = { colors }
         )
         
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
