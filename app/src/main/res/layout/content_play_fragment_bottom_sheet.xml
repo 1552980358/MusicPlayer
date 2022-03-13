@@ -53,6 +53,7 @@
                     android:layout_height="@dimen/fragment_play_content_bottom_banner_image_size"
                     android:layout_marginEnd="@dimen/fragment_play_content_bottom_banner_image_margin_end"
                     app:drawableAnimated="@{device}"
+                    android:tint="?android:attr/textColorPrimary"
                     tools:ignore="ContentDescription" />
 
                 <LinearLayout
