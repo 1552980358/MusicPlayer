@@ -11,7 +11,8 @@ import projekt.cloud.piece.music.player.ui.play.PlayFragment
 
 class PlayActivityInterface(baseMediaControlActivity: BaseMediaControlActivity,
                             val requestMetadata: () -> AudioItem,
-                            val changePlayConfig: (Int) -> Unit) {
+                            val changePlayConfig: (Int) -> Unit,
+                            val requestColors: () -> String?) {
 
     private lateinit var playUpdateAudioItem: (AudioItem) -> Unit
     private var lyricPlayUpdateAudioItem: ((AudioItem) -> Unit)? = null
