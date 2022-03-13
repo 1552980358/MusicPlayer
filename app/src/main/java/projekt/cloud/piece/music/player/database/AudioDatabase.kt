@@ -8,8 +8,10 @@ import projekt.cloud.piece.music.player.database.itemDao.AudioItemDao
 import projekt.cloud.piece.music.player.database.item.AlbumItem
 import projekt.cloud.piece.music.player.database.item.ArtistItem
 import projekt.cloud.piece.music.player.database.item.AudioItem
+import projekt.cloud.piece.music.player.database.item.ColorItem
 import projekt.cloud.piece.music.player.database.item.PlaylistContentItem
 import projekt.cloud.piece.music.player.database.item.PlaylistItem
+import projekt.cloud.piece.music.player.database.itemDao.ColorItemDao
 import projekt.cloud.piece.music.player.database.itemDao.PlaylistContentItemDao
 import projekt.cloud.piece.music.player.database.itemDao.PlaylistItemDao
 import projekt.cloud.piece.music.player.database.relation.AlbumAudio.AlbumAudioDao
@@ -19,6 +21,7 @@ import projekt.cloud.piece.music.player.database.relation.ArtistAudio.ArtistAudi
     AudioItem::class,
     AlbumItem::class,
     ArtistItem::class,
+    ColorItem::class,
     PlaylistItem::class,
     PlaylistContentItem::class],
     version = 1)
@@ -39,6 +42,9 @@ abstract class AudioDatabase: RoomDatabase() {
 
     abstract fun artistItem(): ArtistItemDao
     val artist get() = artistItem()
+    
+    abstract fun colorItem(): ColorItemDao
+    val color get() = colorItem()
 
     abstract fun artistAudio(): ArtistAudioDao
     val artistAudio get() = artistAudio()
