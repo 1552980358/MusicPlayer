@@ -67,7 +67,7 @@ class LyricPlayFragment: BasePlayFragment() {
     
         (requireActivity() as AppCompatActivity).apply {
             setSupportActionBar(binding.toolbar)
-            binding.toolbar.setNavigationOnClickListener { finish() }
+            binding.toolbar.setNavigationOnClickListener { finishAfterTransition() }
             supportActionBar?.setDisplayShowTitleEnabled(false)
         }
         
