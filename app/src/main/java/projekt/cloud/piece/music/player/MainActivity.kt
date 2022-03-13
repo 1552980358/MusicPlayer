@@ -3,9 +3,12 @@ package projekt.cloud.piece.music.player
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.Context
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.content.res.ColorStateList.valueOf
 import android.graphics.Bitmap
 import android.graphics.Bitmap.createBitmap
 import android.graphics.Matrix
+import android.graphics.Point
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.ArtistColumns.ARTIST
@@ -44,6 +47,8 @@ import androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.room.Room.databaseBuilder
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import lib.github1552980358.ktExtension.android.content.intent
@@ -54,6 +59,7 @@ import lib.github1552980358.ktExtension.android.os.bundle
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
+import mkaflowski.mediastylepalette.MediaNotificationProcessor
 import projekt.cloud.piece.music.player.ThemeTransitionActivity.Companion.EXTRA_IS_NIGHT
 import projekt.cloud.piece.music.player.ThemeTransitionActivity.Companion.setScreenshot
 import projekt.cloud.piece.music.player.base.BaseMainFragment
@@ -68,6 +74,8 @@ import projekt.cloud.piece.music.player.database.item.ColorItem.Companion.TYPE_A
 import projekt.cloud.piece.music.player.databinding.ActivityMainBinding
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_INDEX
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
+import projekt.cloud.piece.music.player.util.Extra.EXTRA_AUDIO_ITEM
+import projekt.cloud.piece.music.player.util.Extra.EXTRA_POINT
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArt
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArts40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAudioArt40Dp
@@ -100,6 +108,8 @@ class MainActivity : BaseMediaControlActivity() {
     
     private val appBarMain get() = binding.appBarMain
     private val contentMain get() = appBarMain.contentMain
+    
+    private val extendedFloatingActionButton get() = appBarMain.extendedFloatingActionButton
 
     private val fragmentContainerView get() = contentMain.fragmentContainerView
     private lateinit var navController: NavController
@@ -153,6 +163,16 @@ class MainActivity : BaseMediaControlActivity() {
     }
     
     private lateinit var audioItem: AudioItem
+    
+    private var countJob: Job? = null
+    
+    private val extendedFabCenterPoint by lazy {
+        IntArray(2).run {
+            extendedFloatingActionButton.getLocationOnScreen(this)
+            val offset = extendedFloatingActionButton.width / 2
+            Point(first() + offset, last() + offset)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -204,6 +224,15 @@ class MainActivity : BaseMediaControlActivity() {
                 overridePendingTransition(0, 0)
             }
         }
+    
+        extendedFloatingActionButton.setOnClickListener {
+            startActivity(intent(this, PlayActivity::class.java) {
+                putExtra(EXTRA_AUDIO_ITEM, audioItem)
+                putExtra(EXTRA_POINT, extendedFabCenterPoint)
+            })
+        }
+    
+        extendedFloatingActionButton.hide()
 
         val requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             when {
@@ -215,8 +244,6 @@ class MainActivity : BaseMediaControlActivity() {
             PERMISSION_GRANTED -> launchApplication()
             else -> requestPermission.launch(READ_EXTERNAL_STORAGE)
         }
-        
-        
     }
 
     private fun initialApplication() = io {
@@ -351,7 +378,37 @@ class MainActivity : BaseMediaControlActivity() {
     override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
         metadata?.apply {
             
-            audioList.find { it.id == getString(METADATA_KEY_MEDIA_ID) }?.let { audioItem = it }
+            if (extendedFloatingActionButton.isExtended) {
+                extendedFloatingActionButton.shrink()
+            }
+            countJob?.cancel()
+            countJob = io {
+                
+                audioList.find { it.id == getString(METADATA_KEY_MEDIA_ID) }?.let { audioItem = it }
+    
+                val bitmapImage = audioBitmap40DpMap[audioItem.id]
+                    ?: albumBitmap40DpMap[audioItem.album]
+                    ?: activityInterface.defaultAudioImage
+                
+                audioDatabase.color.query(audioItem.id, audioItem.album).apply {
+                    ui {
+                        if (!extendedFloatingActionButton.isShown) {
+                            extendedFloatingActionButton.show()
+                        }
+                        extendedFloatingActionButton.icon = BitmapDrawable(resources, bitmapImage)
+                        extendedFloatingActionButton.backgroundTintList = valueOf(backgroundColor)
+                        extendedFloatingActionButton.setTextColor(primaryColor)
+                        if (extendedFloatingActionButton.text != audioItem.title) {
+                            extendedFloatingActionButton.text = audioItem.title
+                            appBarMain.extendedFloatingActionButton.extend()
+                        }
+                    }
+                }
+                
+                delay(5000L)
+                ui { extendedFloatingActionButton.shrink() }
+            }
+            
         }
     }
     
@@ -359,16 +416,13 @@ class MainActivity : BaseMediaControlActivity() {
         state?.state?.also { playbackState ->
             when (playbackState) {
                 STATE_PLAYING -> {
-                    startPlaying(state.position)
-                    
-                    
+                    // startPlaying(state.position)
                 }
                 STATE_PAUSED -> {
-                    isPlaying = false
-                    
+                    // isPlaying = false
                 }
                 STATE_BUFFERING -> {
-                    isPlaying = false
+                    // isPlaying = false
                 }
             }
         }
