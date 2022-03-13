@@ -277,6 +277,7 @@ class PlayActivity: BaseMediaControlActivity() {
                     else -> {
                         val startX = when {
                             isScrolling -> if (scrollOffsetPixel > circularStartPoint.x) 0 else circularStartPoint.x - scrollOffsetPixel
+                            !activityInterface.isPlayFragment -> 0
                             else -> circularStartPoint.x
                         }
                         createCircularReveal(binding.relativeLayout, startX, circularStartPoint.y, 0F,
