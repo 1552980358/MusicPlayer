@@ -51,6 +51,7 @@
             android:layout_below="@id/relative_layout_status_bar"
             android:background="@drawable/shape_toolbar_filter"
             app:navigationIcon="@drawable/ic_close"
+            android:theme="@style/Theme.MusicPlayer.AppBarOverlay"
             app:popupTheme="@style/Theme.MusicPlayer.PopupOverlay" />
 
     </RelativeLayout>
