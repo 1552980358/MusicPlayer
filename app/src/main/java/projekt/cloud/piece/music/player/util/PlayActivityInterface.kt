@@ -3,11 +3,14 @@ package projekt.cloud.piece.music.player.util
 import android.graphics.Bitmap
 import android.net.Uri
 import android.support.v4.media.session.MediaControllerCompat.TransportControls
+import androidx.activity.result.contract.ActivityResultContracts.GetContent
+import projekt.cloud.piece.music.player.base.BaseMediaControlActivity
 import projekt.cloud.piece.music.player.base.BasePlayFragment
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.ui.play.PlayFragment
 
-class PlayActivityInterface(val requestMetadata: () -> AudioItem,
+class PlayActivityInterface(baseMediaControlActivity: BaseMediaControlActivity,
+                            val requestMetadata: () -> AudioItem,
                             val changePlayConfig: (Int) -> Unit) {
 
     private lateinit var playUpdateAudioItem: (AudioItem) -> Unit
@@ -74,6 +77,16 @@ class PlayActivityInterface(val requestMetadata: () -> AudioItem,
     
     fun setCurrentFragment(fragment: BasePlayFragment) {
         currentFragment = fragment
+    }
+    
+    private lateinit var pickLyricAction: (Uri) -> Unit
+    private var pickLyric = baseMediaControlActivity.registerForActivityResult(GetContent()) {
+        pickLyricAction(it)
+    }
+    
+    fun getLyric(block: (uri: Uri) -> Unit) {
+        pickLyricAction = block
+        pickLyric.launch("*/*")
     }
 
 }
