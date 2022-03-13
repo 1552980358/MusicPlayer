@@ -26,6 +26,7 @@
     <dimen name="status_bar_height">@dimen/dp_24</dimen>
 
     <dimen name="fab_size">@dimen/dp_56</dimen>
+    <dimen name="fab_margins">@dimen/dp_30</dimen>
 
     <dimen name="linear_layout_weighted_length">@dimen/dp_0</dimen>
 
