@@ -34,7 +34,8 @@
             android:id="@+id/extended_floating_action_button"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margins"
-            app:iconTint="@null" />
+            app:iconTint="@null"
+            android:transitionName="fab_trans"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
