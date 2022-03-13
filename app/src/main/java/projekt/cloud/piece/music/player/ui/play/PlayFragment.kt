@@ -18,6 +18,7 @@ import androidx.cardview.widget.CardView
 import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import kotlinx.coroutines.delay
 import lib.github1552980358.ktExtension.android.content.getStatusBarHeight
@@ -167,6 +168,13 @@ class PlayFragment: BasePlayFragment() {
             peekHeight = bottomHeight * 3 / 5
             isHideable = true
             state = STATE_HIDDEN
+        }
+        
+        contentPlayFragmentBottomSheet.relativeLayout.setOnClickListener {
+            bottomSheetBehavior.state = when (bottomSheetBehavior.state) {
+                STATE_COLLAPSED -> STATE_EXPANDED
+                else -> STATE_COLLAPSED
+            }
         }
         
         contentPlayFragmentButtons.linearLayout.setOnTouchListener { _, motionEvent ->
