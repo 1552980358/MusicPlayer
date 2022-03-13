@@ -310,7 +310,7 @@ class PlayActivity: BaseMediaControlActivity() {
                     hypot(resources.displayMetrics.heightPixels.toFloat(), pixelHeight.toFloat()),
                     0F
                 ).apply {
-                    duration = 500L
+                    duration = ANIMATION_DURATION_LONG
                     doOnEnd {
                         binding.coordinatorLayout.visibility = GONE
                         super.finish()
