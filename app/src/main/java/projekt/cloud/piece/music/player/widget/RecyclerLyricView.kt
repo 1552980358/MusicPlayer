@@ -2,10 +2,11 @@ package projekt.cloud.piece.music.player.widget
 
 import android.content.Context
 import android.graphics.Color.WHITE
+import android.graphics.Typeface.BOLD
+import android.graphics.Typeface.NORMAL
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.annotation.ColorInt
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.databinding.ViewRecyclerLyricBinding
 import projekt.cloud.piece.music.player.util.Lyric
-import projekt.cloud.piece.music.player.util.LyricItem
 
 class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): RecyclerView(context, attributeSet) {
     
@@ -52,9 +52,23 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
     }
 
     private class RecyclerViewHolder(private val binding: ViewRecyclerLyricBinding): ViewHolder(binding.root) {
-        fun bindView(lyricItem: LyricItem, @ColorInt textColor: Int) {
+        fun setTextStyle(textStyle: Int) {
+            binding.textStyle = textStyle
+        }
+        fun setTextColor(textColor: Int) {
             binding.textColor = textColor
-            binding.lyric = lyricItem.toString()
+        }
+        fun setLyric(lyric: String) {
+            binding.lyric = lyric
+        }
+        fun setTopPadding(padding: Int) {
+            binding.relativeLayout.setPadding(0, padding, 0, 0)
+        }
+        fun setBottomPadding(padding: Int) {
+            binding.relativeLayout.setPadding(0, 0, 0, padding)
+        }
+        fun setNoPadding() {
+            binding.relativeLayout.setPadding(0, 0, 0, 0)
         }
     }
     
@@ -65,11 +79,19 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
     
         override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
             lyric?.let {
-                holder.bindView(it[position], when (currentPosition) {
-                    position -> primaryColor
-                    previousPosition -> secondaryColor  // Remove color
-                    else -> secondaryColor
-                })
+                when (position) {
+                    0 -> holder.setTopPadding(paddings)
+                    it.size - 1 -> holder.setBottomPadding(paddings)
+                    else -> holder.setNoPadding()
+                }
+                if (position == currentPosition) {
+                    holder.setTextColor(primaryColor)
+                    holder.setTextStyle(BOLD)
+                } else {
+                    holder.setTextColor(secondaryColor)
+                    holder.setTextStyle(NORMAL)
+                }
+                holder.setLyric(it[position].toString())
             }
         }
     
@@ -86,37 +108,43 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
             adapter.notifyDataSetChanged()
             currentPosition = -1
             previousPosition = -1
+            (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(0, resources.displayMetrics.heightPixels / 2)
         }
     
     var primaryColor = WHITE
         set(value) {
             field = value
-            lyric?.size?.let { adapter.notifyItemChanged(0, it) }
+            @Suppress("NotifyDataSetChanged")
+            lyric?.size?.let { adapter.notifyDataSetChanged() }
         }
     
     var secondaryColor = WHITE
         set(value) {
             field = value
-            lyric?.size?.let { adapter.notifyItemChanged(0, it) }
+            @Suppress("NotifyDataSetChanged")
+            lyric?.size?.let { adapter.notifyDataSetChanged() }
         }
     
     private var previousPosition = -1
     private var currentPosition = -1
         set(value) {
+            if (field == value) {
+                return
+            }
             previousPosition = field
             field = value
-            if (previousPosition != -1) {
+            if (previousPosition > -1) {
                 adapter.notifyItemChanged(previousPosition)
             }
-            if (value != -1) {
+            if (value > -1) {
                 adapter.notifyItemChanged(value)
             }
-            (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(value, height / 2)
+            (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(value, resources.displayMetrics.heightPixels / 2)
         }
     
-    fun updateProgress(progress: Long) {
-        lyric?.indexOf(progress)?.also { currentPosition = it }
-    }
+    fun updateProgress(progress: Long) = lyric?.indexOf(progress)?.let { currentPosition = it }
+    
+    var paddings = 0
     
     init {
         setAdapter(adapter)
