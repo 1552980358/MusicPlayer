@@ -1,9 +1,13 @@
 package projekt.cloud.piece.music.player.ui.play
 
 import android.animation.ValueAnimator.ofArgb
+import android.bluetooth.BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED
+import android.content.Context.AUDIO_SERVICE
+import android.content.Intent.ACTION_HEADSET_PLUG
 import android.graphics.Color.BLACK
 import android.graphics.Color.WHITE
 import android.graphics.drawable.RippleDrawable
+import android.media.AudioManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -21,9 +25,12 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPS
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import kotlinx.coroutines.delay
+import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.getStatusBarHeight
+import lib.github1552980358.ktExtension.android.content.register
 import lib.github1552980358.ktExtension.android.view.heightF
 import lib.github1552980358.ktExtension.android.view.widthF
+import lib.github1552980358.ktExtension.androidx.fragment.app.getDrawable
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.R
@@ -35,6 +42,7 @@ import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT_O
 import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_SHUFFLE
 import projekt.cloud.piece.music.player.service.play.Config.getConfig
 import projekt.cloud.piece.music.player.service.play.Config.setConfig
+import projekt.cloud.piece.music.player.ui.play.util.AudioUtil.deviceDrawableId
 import projekt.cloud.piece.music.player.ui.play.util.RecyclerViewAdapterUtil
 import projekt.cloud.piece.music.player.util.ActivityUtil.pixelHeight
 import projekt.cloud.piece.music.player.util.ColorUtil.isLight
@@ -61,6 +69,15 @@ class PlayFragment: BasePlayFragment() {
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<CardView>
     
     private lateinit var recyclerViewAdapterUtil: RecyclerViewAdapterUtil
+    
+    private lateinit var audioManager: AudioManager
+    
+    private val broadcastReceiver = broadcastReceiver { _, intent, _ ->
+        when (intent?.action) {
+            ACTION_HEADSET_PLUG, ACTION_CONNECTION_STATE_CHANGED ->
+                contentPlayFragmentBottomSheet.device = getDrawable(audioManager.deviceDrawableId)
+        }
+    }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_play, container, false)
@@ -176,6 +193,10 @@ class PlayFragment: BasePlayFragment() {
                 else -> STATE_COLLAPSED
             }
         }
+    
+        audioManager = requireActivity().getSystemService(AUDIO_SERVICE) as AudioManager
+        contentPlayFragmentBottomSheet.device = getDrawable(audioManager.deviceDrawableId)
+        broadcastReceiver.register(requireContext(), ACTION_HEADSET_PLUG, ACTION_CONNECTION_STATE_CHANGED)
         
         contentPlayFragmentButtons.linearLayout.setOnTouchListener { _, motionEvent ->
             when (motionEvent.action) {
@@ -300,6 +321,12 @@ class PlayFragment: BasePlayFragment() {
                 }
             }
         }
+    }
+    
+    override fun onDestroyView() {
+        super.onDestroyView()
+        requireContext().unregisterReceiver(broadcastReceiver)
+        _binding = null
     }
 
 }
