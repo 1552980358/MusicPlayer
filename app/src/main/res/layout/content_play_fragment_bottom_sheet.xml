@@ -43,7 +43,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/fragment_play_content_bottom_banner_height"
-                android:id="@+id/relative_layout_audio_info"
+                android:id="@+id/relative_layout"
                 android:background="?attr/selectableItemBackground"
                 android:padding="@dimen/fragment_play_content_bottom_banner_padding">
 
