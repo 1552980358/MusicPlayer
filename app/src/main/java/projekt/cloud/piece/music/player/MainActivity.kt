@@ -63,6 +63,8 @@ import projekt.cloud.piece.music.player.database.AudioDatabase.Companion.DATABAS
 import projekt.cloud.piece.music.player.database.item.AlbumItem
 import projekt.cloud.piece.music.player.database.item.ArtistItem
 import projekt.cloud.piece.music.player.database.item.AudioItem
+import projekt.cloud.piece.music.player.database.item.ColorItem
+import projekt.cloud.piece.music.player.database.item.ColorItem.Companion.TYPE_ALBUM
 import projekt.cloud.piece.music.player.databinding.ActivityMainBinding
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_INDEX
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
@@ -240,13 +242,20 @@ class MainActivity : BaseMediaControlActivity() {
         val matrix = Matrix()
         val bitmapSize = resources.getDimensionPixelSize(R.dimen.dp_40)
         for (albumItem in albumList) {
-            bitmap = tryRun { loadAlbumArt(albumItem.id) } ?: continue
+            bitmap = tryRun { loadAlbumArt(albumItem.id) }
+            if (bitmap == null) {
+                audioDatabase.color.insert(ColorItem(albumItem.id, TYPE_ALBUM))
+                continue
+            }
             // albumByteArrayRawMap[albumItem.id] = writeAlbumArtRaw(albumItem.id, bitmap)
             writeAlbumArtRaw(albumItem.id, bitmap)
             matrix.apply { setScale(bitmapSize / bitmap.widthF, bitmapSize / bitmap.heightF) }
             createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, false).apply {
                 writeAlbumArt40Dp(albumItem.id, this)
                 albumBitmap40DpMap[albumItem.id] = this
+            }
+            MediaNotificationProcessor(this, bitmap).apply {
+                audioDatabase.color.insert(ColorItem(albumItem.id, TYPE_ALBUM, backgroundColor, primaryTextColor, secondaryTextColor))
             }
             bitmap.recycle()
         }
