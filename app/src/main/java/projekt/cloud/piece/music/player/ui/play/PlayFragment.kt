@@ -3,10 +3,11 @@ package projekt.cloud.piece.music.player.ui.play
 import android.animation.ValueAnimator.ofArgb
 import android.graphics.Color.BLACK
 import android.graphics.Color.WHITE
-import android.graphics.Color.parseColor
 import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.MotionEvent.ACTION_CANCEL
 import android.view.MotionEvent.ACTION_DOWN
 import android.view.MotionEvent.ACTION_UP
@@ -120,9 +121,12 @@ class PlayFragment: BasePlayFragment() {
                     return@setPlayFragmentListener
                 }
                 recyclerViewAdapterUtil.audioList = audioList
-            }
+            },
+            updateAudioItem = { audioItem -> loadMetadata(audioItem) },
+            updateColor = { primaryColor, secondaryColor -> updateColor(primaryColor, secondaryColor) },
+            updateProgress = { progress -> contentPlayFragmentButtons.progress = progress }
         )
-        
+        setHasOptionsMenu(true)
         return binding.root
     }
     
@@ -244,25 +248,12 @@ class PlayFragment: BasePlayFragment() {
             setSupportActionBar(binding.toolbar)
             binding.toolbar.setNavigationOnClickListener { finish() }
             supportActionBar?.setDisplayShowTitleEnabled(false)
+            invalidateOptionsMenu()
         }
-        
-        if (!activityInterface.isCurrent(this)) {
-            activityInterface.setCommonListener(
-                this,
-                updateAudioItem = { audioItem -> loadMetadata(audioItem) },
-                updateColor = { primaryColor, secondaryColor -> updateColor(primaryColor, secondaryColor) },
-                updateProgress = { progress -> contentPlayFragmentButtons.progress = progress }
-            )
-            
-            // Sync data from activity
-            activityInterface.requestColor()?.split(' ')?.also {
-                updateColor(parseColor(it.first()), parseColor(it.last()))
-            }
-            
-            activityInterface.requestList()?.let { list ->
-                recyclerViewAdapterUtil.audioList = list
-            }
-        }
+    }
+    
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
     }
     
     private fun loadMetadata(audioItem: AudioItem) {
