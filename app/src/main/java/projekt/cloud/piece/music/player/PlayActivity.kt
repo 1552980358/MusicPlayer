@@ -306,7 +306,7 @@ class PlayActivity: BaseMediaControlActivity() {
                 createCircularReveal(
                     binding.coordinatorLayout,
                     rootStartPoint.x, rootStartPoint.y,
-                    hypot(resources.displayMetrics.heightPixels.toFloat(), pixelHeight.toFloat()),
+                    hypot(resources.displayMetrics.widthPixels.toFloat(), pixelHeight.toFloat()),
                     0F
                 ).apply {
                     duration = ANIMATION_DURATION_LONG
