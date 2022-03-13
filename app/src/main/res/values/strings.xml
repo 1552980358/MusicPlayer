@@ -7,4 +7,6 @@
 
     <string name="fragment_play_content_bottom_queue">Queue</string>
 
+    <string name="fragment_lyric_play_menu_add_lyric">Add lyric…</string>
+
 </resources>
