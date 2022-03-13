@@ -170,7 +170,7 @@ class MainActivity : BaseMediaControlActivity() {
         IntArray(2).run {
             extendedFloatingActionButton.getLocationOnScreen(this)
             val center = resources.getDimensionPixelSize(R.dimen.fab_size) / 2
-            Point(first() + center, last() + center)
+            Point(resources.displayMetrics.widthPixels - resources.getDimensionPixelSize(R.dimen.fab_margins) - center, last() + center)
         }
     }
 
