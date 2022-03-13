@@ -169,8 +169,8 @@ class MainActivity : BaseMediaControlActivity() {
     private val extendedFabCenterPoint by lazy {
         IntArray(2).run {
             extendedFloatingActionButton.getLocationOnScreen(this)
-            val offset = extendedFloatingActionButton.width / 2
-            Point(first() + offset, last() + offset)
+            val center = resources.getDimensionPixelSize(R.dimen.fab_size) / 2
+            Point(first() + center, last() + center)
         }
     }
 
