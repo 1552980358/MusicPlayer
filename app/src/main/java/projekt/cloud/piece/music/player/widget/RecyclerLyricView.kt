@@ -9,8 +9,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.databinding.ViewRecyclerLyricBinding
 import projekt.cloud.piece.music.player.util.Lyric
@@ -108,7 +110,9 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
             adapter.notifyDataSetChanged()
             currentPosition = -1
             previousPosition = -1
-            (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(0, resources.displayMetrics.heightPixels / 2)
+            // (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(0, resources.displayMetrics.heightPixels / 2)
+            // smoothScrollToPosition(0)
+            smoothScrollToPosition(0)
         }
     
     var primaryColor = WHITE
@@ -139,15 +143,38 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
             if (value > -1) {
                 adapter.notifyItemChanged(value)
             }
-            (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(value, resources.displayMetrics.heightPixels / 2)
+            if (!isControlled) {
+                smoothScrollToPosition(value)
+            }
         }
     
     fun updateProgress(progress: Long) = lyric?.indexOf(progress)?.let { currentPosition = it }
     
     var paddings = 0
     
+    private var isControlled = false
+    
+    private var countJob: Job? = null
+    
     init {
         setAdapter(adapter)
+        
+        addOnScrollListener(object : OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                isControlled = newState == SCROLL_STATE_DRAGGING
+                if (!isControlled) {
+                    countJob?.cancel()
+                    countJob = io {
+                        delay(5000L)
+                        if (!isControlled) {
+                            if (currentPosition > -1) {
+                                smoothScrollToPosition(currentPosition)
+                            }
+                        }
+                    }
+                }
+            }
+        })
     }
 
 }
