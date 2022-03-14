@@ -28,4 +28,6 @@ data class AudioItem(
     @Ignore
     lateinit var albumItem: AlbumItem
     
+    val durationInt get() = duration.toInt()
+    
 }
