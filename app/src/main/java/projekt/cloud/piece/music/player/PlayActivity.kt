@@ -249,13 +249,13 @@ class PlayActivity: BaseMediaControlActivity() {
         requestSyncList()
     }
     
-    private fun requestSyncList() {
+    private fun requestSyncList() = io {
         mediaBrowserCompat.sendCustomAction(ACTION_REQUEST_LIST, null, object : CustomActionCallback() {
             override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
                 @Suppress("UNCHECKED_CAST")
                 (resultData?.getSerializable(EXTRA_LIST) as List<AudioItem>?)?.let { audioList ->
                     this@PlayActivity.audioList = audioList
-                    activityInterface.updateAudioList(audioList)
+                    ui { activityInterface.updateAudioList(audioList) }
                 }
             }
         })
