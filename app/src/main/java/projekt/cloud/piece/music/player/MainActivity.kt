@@ -246,9 +246,6 @@ class MainActivity : BaseMediaControlActivity() {
         }
     
         extendedFloatingActionButton.setOnClickListener {
-            if (extendedFloatingActionButton.isExtended) {
-                extendedFloatingActionButton.shrink()
-            }
             startActivity(intent(
                 this,
                 PlayActivity::class.java) {
