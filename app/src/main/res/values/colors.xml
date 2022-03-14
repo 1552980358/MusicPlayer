@@ -14,6 +14,8 @@
     <color name="dark_on_primary">#FF000215</color>
     <color name="dark_ascent">#FF262626</color>
 
+    <color name="background_dim">#52000000</color>
+
     <color name="color_toolbar">@color/purple_500</color>
 
     <color name="color_nav_header_background">@color/purple_700</color>
