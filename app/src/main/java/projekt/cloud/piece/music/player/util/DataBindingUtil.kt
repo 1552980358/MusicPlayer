@@ -19,7 +19,6 @@ import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_HALF_LONG
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_LONG
-import projekt.cloud.piece.music.player.widget.TimeView
 import projekt.cloud.piece.music.player.widget.Seekbar
 
 object DataBindingUtil {
@@ -103,22 +102,6 @@ object DataBindingUtil {
             when (val imageDrawable = drawable) {
                 is AnimatedVectorDrawable -> imageDrawable.start()
             }
-        }
-    }
-    
-    @JvmStatic
-    @BindingAdapter("app:time")
-    fun TimeView.setTime(duration: Long?) {
-        if (duration != null) {
-            this.duration = duration
-        }
-    }
-    
-    @JvmStatic
-    @BindingAdapter("app:color")
-    fun TimeView.setColor(color: Int?) {
-        if (color != null) {
-            updateTextColor(color)
         }
     }
     

@@ -8,14 +8,33 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorInt
+import androidx.databinding.BindingAdapter
 import lib.github1552980358.ktExtension.android.view.widthF
 import projekt.cloud.piece.music.player.R
 
 class TimeView(context: Context, attributeSet: AttributeSet?): View(context, attributeSet) {
     
-    private companion object {
-        const val DEFAULT_STR = "00:00"
-        const val COLON = ":"
+    companion object {
+        private const val DEFAULT_STR = "00:00"
+        private const val COLON = ":"
+    
+        @JvmStatic
+        @BindingAdapter(value = ["app:time", "app:timeInt"], requireAll = false)
+        fun TimeView.setTime(duration: Long?, durationInt: Int?) {
+            if (duration != null) {
+                this.duration = duration
+            }
+            if (durationInt != null) {
+                this.duration = durationInt.toLong()
+            }
+        }
+    
+        @JvmStatic
+        @BindingAdapter("app:color")
+        fun TimeView.setColor(color: Int) {
+            updateTextColor(color)
+        }
+        
     }
     
     private val paint = Paint()
