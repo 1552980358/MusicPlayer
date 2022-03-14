@@ -257,24 +257,27 @@ class MainActivity : BaseMediaControlActivity() {
                 makeSceneTransitionAnimation(this, extendedFloatingActionButton, "fab_trans").toBundle()
             )
         }
+        
+        extendedFloatingActionButton.apply {
+            hide()
+            setAnimateShowBeforeLayout(true)
     
-        extendedFloatingActionButton.hide()
-    
-        extendedFloatingActionButton.setOnLongClickListener {
-            with(MaterialContainerTransform()) {
-                startView = extendedFloatingActionButton
-                endView = appBarMain.contentControlPanelMain.materialCardView
-                addTarget(endView)
-                
-                pathMotion = MaterialArcMotion()
-    
-                TransitionManager.beginDelayedTransition(appBarMain.coordinatorLayout, this)
+            setOnLongClickListener {
+                with(MaterialContainerTransform()) {
+                    startView = this@apply
+                    endView = appBarMain.contentControlPanelMain.materialCardView
+                    addTarget(endView)
+            
+                    pathMotion = MaterialArcMotion()
+            
+                    TransitionManager.beginDelayedTransition(appBarMain.coordinatorLayout, this)
+                }
+                visibility = GONE
+                contentControlPanelMain.root.visibility = VISIBLE
+        
+                isControlPanelOpened = true
+                true
             }
-            extendedFloatingActionButton.visibility = GONE
-            contentControlPanelMain.root.visibility = VISIBLE
-    
-            isControlPanelOpened = true
-            true
         }
         
         contentControlPanelMain.root.setOnClickListener {
@@ -493,7 +496,6 @@ class MainActivity : BaseMediaControlActivity() {
                 val imageDrawableBig = BitmapDrawable(resources,
                     loadAudioArtRaw(audioItem.id) ?: loadAlbumArtRaw(audioItem.album) ?: activityInterface.defaultAudioImage
                 )
-                extendedFloatingActionButton.setAnimateShowBeforeLayout(true)
                 audioDatabase.color.query(audioItem.id, audioItem.album).apply {
                     ui {
                         if (!isControlPanelOpened && !extendedFloatingActionButton.isShown) {
