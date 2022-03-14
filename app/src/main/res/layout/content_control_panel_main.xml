@@ -79,7 +79,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="2"
-                        android:text="@{audioItem == null ? `` : audioItem.title}"
+                        android:text="@{audioItem.title, default = ``}"
                         android:textColor="@{primaryColor == null ? Color.WHITE : primaryColor}"
                         android:textSize="@dimen/title_text_size" />
 
@@ -88,7 +88,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="2"
-                        android:text="@{audioItem == null ? `` : audioItem.artistItem.name + ` - ` + audioItem.albumItem.title}"
+                        android:text="@{audioItem.artistItem.name + ` - ` + audioItem.albumItem.title, default = ``}"
                         android:textColor="@{secondaryColor == null ? Color.WHITE : secondaryColor}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
