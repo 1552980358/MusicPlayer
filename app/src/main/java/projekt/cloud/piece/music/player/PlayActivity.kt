@@ -300,9 +300,7 @@ class PlayActivity: BaseMediaControlActivity() {
     }
     
     override fun onStop() {
-        if (!isFinishing && SDK_INT == Q) {
-            Instrumentation().callActivityOnSaveInstanceState(this, Bundle())
-        }
+        Instrumentation().callActivityOnSaveInstanceState(this, Bundle())
         super.onStop()
     }
     
