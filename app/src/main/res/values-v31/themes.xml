@@ -4,6 +4,9 @@
     <style name="Theme.MusicPlayer.MainActivity" parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar">
         <item name="android:windowSplashScreenBackground">@color/purple_500</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+
+        <!-- Extended Floating Action Bar -->
+        <item name="shapeAppearanceSmallComponent">@style/AppearanceSmallComponent</item>
     </style>
 
 </resources>
