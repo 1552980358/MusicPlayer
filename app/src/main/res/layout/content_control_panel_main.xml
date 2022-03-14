@@ -34,6 +34,10 @@
             name="secondaryColor"
             type="Integer" />
 
+        <variable
+            name="progress"
+            type="Integer" />
+
     </data>
 
     <RelativeLayout
@@ -127,6 +131,32 @@
                         android:tint="@{primaryColor == null ? Color.WHITE : primaryColor}" />
 
                 </RelativeLayout>
+
+                <androidx.appcompat.widget.AppCompatSeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/seekbar"
+                    android:progress="@{progress, default = 0}"
+                    android:max="@{audioItem.durationInt, default = 100}"
+                    android:layout_below="@id/image_view"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:thumbTint="@{primaryColor == null ? Color.WHITE : primaryColor}"
+                    android:progressTint="@{primaryColor == null ? Color.WHITE : primaryColor}" />
+
+                <projekt.cloud.piece.music.player.widget.TimeView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/seekbar"
+                    app:color="@{primaryColor}"
+                    app:timeInt="@{progress}" />
+
+                <projekt.cloud.piece.music.player.widget.TimeView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/seekbar"
+                    android:layout_alignParentEnd="true"
+                    app:color="@{secondaryColor}"
+                    app:time="@{audioItem.duration}" />
 
             </RelativeLayout>
 
