@@ -38,6 +38,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.Window.FEATURE_ACTIVITY_TRANSITIONS
 import android.widget.RelativeLayout
+import android.widget.SeekBar
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityOptionsCompat.makeSceneTransitionAnimation
 import androidx.navigation.ui.AppBarConfiguration
@@ -185,6 +186,8 @@ class MainActivity : BaseMediaControlActivity() {
     
     private var isControlPanelOpened = false
     
+    private var isScrolling = false
+    
     override fun onCreate(savedInstanceState: Bundle?) {
 
         activityInterface = MainActivityInterface(
@@ -317,6 +320,19 @@ class MainActivity : BaseMediaControlActivity() {
             
             true
         }
+        
+        contentControlPanelMain.seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                contentControlPanelMain.progress = seekBar.progress
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                isScrolling = true
+            }
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                transportControls.seekTo(contentControlPanelMain.progress!!.toLong())
+                isScrolling = false
+            }
+        })
 
         val requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             when {
@@ -477,7 +493,7 @@ class MainActivity : BaseMediaControlActivity() {
                 val imageDrawableBig = BitmapDrawable(resources,
                     loadAudioArtRaw(audioItem.id) ?: loadAlbumArtRaw(audioItem.album) ?: activityInterface.defaultAudioImage
                 )
-                
+                extendedFloatingActionButton.setAnimateShowBeforeLayout(true)
                 audioDatabase.color.query(audioItem.id, audioItem.album).apply {
                     ui {
                         if (!isControlPanelOpened && !extendedFloatingActionButton.isShown) {
@@ -535,9 +551,7 @@ class MainActivity : BaseMediaControlActivity() {
         state?.state?.also { playbackState ->
             when (playbackState) {
                 STATE_PLAYING -> {
-                    if (!isPlaying) {
-                        startPlaying(state.position)
-                    }
+                    startPlaying(state.position)
                     if (contentControlPanelMain.playState != R.drawable.ani_play_pause) {
                         contentControlPanelMain.playState = R.drawable.ani_play_pause
                     }
@@ -558,7 +572,9 @@ class MainActivity : BaseMediaControlActivity() {
     }
     
     override fun updateTime(currentProgress: Long) {
-    
+        if (!isScrolling) {
+            contentControlPanelMain.progress = currentProgress.toInt()
+        }
     }
     
     override fun onConnected() {
