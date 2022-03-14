@@ -28,7 +28,7 @@
             android:gravity="center"
             android:text="@{index == null ? `0` : index}"
             android:textColor="?android:attr/textColorPrimary"
-            android:textSize="@dimen/main_bottom_sheet_text_view_text_size" />
+            android:textSize="@dimen/title_text_size" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:text="@{audioItem.title == null ? `` : audioItem.title}"
                 android:textColor="?android:attr/textColorPrimary"
-                android:textSize="@dimen/main_bottom_sheet_text_view_text_size" />
+                android:textSize="@dimen/title_text_size" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
