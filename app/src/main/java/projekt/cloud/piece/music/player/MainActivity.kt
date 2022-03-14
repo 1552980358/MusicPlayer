@@ -348,6 +348,25 @@ class MainActivity : BaseMediaControlActivity() {
             else -> requestPermission.launch(READ_EXTERNAL_STORAGE)
         }
     }
+    
+    override fun onResume() {
+        super.onResume()
+        if (mediaBrowserCompat.isConnected) {
+            requestSyncService()
+        }
+    }
+    
+    override fun onBackPressed() {
+        when {
+            isControlPanelOpened -> hideControlPanel()
+            else -> super.onBackPressed()
+        }
+    }
+    
+    override fun onDestroy() {
+        supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks)
+        super.onDestroy()
+    }
 
     private fun initialApplication() = io {
         val audioList = arrayListOf<AudioItem>()
@@ -466,18 +485,6 @@ class MainActivity : BaseMediaControlActivity() {
     override fun onSupportNavigateUp() =
         navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     
-    override fun onResume() {
-        super.onResume()
-        if (mediaBrowserCompat.isConnected) {
-            requestSyncService()
-        }
-    }
-
-    override fun onDestroy() {
-        supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks)
-        super.onDestroy()
-    }
-    
     override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
         metadata?.let { mediaMetadata ->
             
@@ -540,13 +547,6 @@ class MainActivity : BaseMediaControlActivity() {
         extendedFloatingActionButton.visibility = VISIBLE
     
         isControlPanelOpened = false
-    }
-    
-    override fun onBackPressed() {
-        when {
-            isControlPanelOpened -> hideControlPanel()
-            else -> super.onBackPressed()
-        }
     }
     
     override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
