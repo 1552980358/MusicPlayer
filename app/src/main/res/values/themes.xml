@@ -13,6 +13,8 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
         <!-- Navigation bar -->
         <item name="android:navigationBarColor">@color/white</item>
+        <!-- Extended Floating Action Bar -->
+        <item name="shapeAppearanceSmallComponent">@style/AppearanceSmallComponent</item>
     </style>
 
     <style name="Theme.MusicPlayer.NoActionBar" parent="Theme.MusicPlayer">
@@ -51,4 +53,13 @@
     <style name="Theme.MusicPlayer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.MusicPlayer.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppearanceSmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">@dimen/dp_4</item>
+        <item name="cornerSizeTopRight">@dimen/dp_4</item>
+        <item name="cornerSizeBottomLeft">@dimen/dp_4</item>
+        <item name="cornerSizeBottomRight">@dimen/dp_4</item>
+    </style>
+
 </resources>

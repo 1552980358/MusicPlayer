@@ -11,7 +11,10 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/dark_primary</item>
+        <!-- Navigation bar -->
         <item name="android:navigationBarColor">@color/black</item>
+        <!-- Extended Floating Action Bar -->
+        <item name="shapeAppearanceSmallComponent">@style/AppearanceSmallComponent</item>
     </style>
 
     <style name="Theme.MusicPlayer.NoActionBar.VariableNavigationBar" parent="Theme.MusicPlayer.NoActionBar" />
