@@ -19,6 +19,8 @@
     <dimen name="dp_50">50dp</dimen>
     <dimen name="dp_56">56dp</dimen>
     <dimen name="dp_60">60dp</dimen>
+    <dimen name="dp_90">90dp</dimen>
+    <dimen name="dp_120">120dp</dimen>
 
     <dimen name="sp_14">14sp</dimen>
     <dimen name="sp_16">16sp</dimen>
@@ -50,11 +52,14 @@
     <dimen name="home_recycler_view_layout_title_text_size">@dimen/title_text_size</dimen>
     <dimen name="home_recycler_view_layout_subtitle_text_size">@dimen/subtitle_text_size</dimen>
 
-    <dimen name="main_bottom_sheet_height">@dimen/dp_60</dimen>
-    <dimen name="main_bottom_sheet_view_margin">@dimen/dp_10</dimen>
-    <dimen name="main_bottom_sheet_image_view_size">@dimen/dp_40</dimen>
-    <dimen name="main_bottom_sheet_text_view_text_size">@dimen/title_text_size</dimen>
-    <dimen name="main_bottom_sheet_image_button_size">@dimen/dp_24</dimen>
+    <dimen name="main_card_margin_horizontal">@dimen/dp_20</dimen>
+    <dimen name="main_relative_padding">@dimen/dp_10</dimen>
+    <dimen name="main_image_size">@dimen/dp_120</dimen>
+    <dimen name="main_image_margin_end">@dimen/dp_10</dimen>
+    <dimen name="main_linear_margin_end">@dimen/dp_90</dimen>
+    <dimen name="main_relative_button_size">@dimen/dp_30</dimen>
+    <dimen name="main_image_button_size">@dimen/dp_30</dimen>
+    <dimen name="main_image_button_margin_horizontal">@dimen/dp_10</dimen>
 
     <dimen name="fragment_play_content_buttons_width">@dimen/linear_layout_weighted_length</dimen>
     <dimen name="fragment_play_content_buttons_icon_size">@dimen/dp_24</dimen>
