@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.createBitmap
 import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.ArtistColumns.ARTIST
@@ -26,9 +27,15 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
+import android.transition.TransitionManager
 import android.util.Log
 import android.view.Menu
+import android.view.MotionEvent.ACTION_CANCEL
+import android.view.MotionEvent.ACTION_DOWN
+import android.view.MotionEvent.ACTION_UP
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.Window.FEATURE_ACTIVITY_TRANSITIONS
 import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
@@ -48,6 +55,8 @@ import androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.room.Room.databaseBuilder
+import com.google.android.material.transition.platform.MaterialArcMotion
+import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -78,8 +87,10 @@ import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_INDEX
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
 import projekt.cloud.piece.music.player.util.Extra.EXTRA_AUDIO_ITEM
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArt
+import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArtRaw
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArts40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAudioArt40Dp
+import projekt.cloud.piece.music.player.util.ImageUtil.loadAudioArtRaw
 import projekt.cloud.piece.music.player.util.ImageUtil.loadPlaylist40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.writeAlbumArt40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.writeAlbumArtRaw
@@ -109,8 +120,13 @@ class MainActivity : BaseMediaControlActivity() {
     
     private val appBarMain get() = binding.appBarMain
     private val contentMain get() = appBarMain.contentMain
+    private val contentControlPanelMain get() = appBarMain.contentControlPanelMain
     
     private val extendedFloatingActionButton get() = appBarMain.extendedFloatingActionButton
+    
+    private val imageButtonPlayControl get() = contentControlPanelMain.imageButtonPlayControl
+    private val imageButtonPrev get() = contentControlPanelMain.imageButtonPrev
+    private val imageButtonNext get() = contentControlPanelMain.imageButtonNext
 
     private val fragmentContainerView get() = contentMain.fragmentContainerView
     private lateinit var navController: NavController
@@ -166,6 +182,8 @@ class MainActivity : BaseMediaControlActivity() {
     private lateinit var audioItem: AudioItem
     
     private var countJob: Job? = null
+    
+    private var isControlPanelOpened = false
     
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -232,13 +250,73 @@ class MainActivity : BaseMediaControlActivity() {
                 this,
                 PlayActivity::class.java) {
                     putExtra(EXTRA_AUDIO_ITEM, audioItem)
-                    // putExtra(EXTRA_POINT, extendedFabCenterPoint)
                 },
                 makeSceneTransitionAnimation(this, extendedFloatingActionButton, "fab_trans").toBundle()
             )
         }
     
         extendedFloatingActionButton.hide()
+    
+        extendedFloatingActionButton.setOnLongClickListener {
+            with(MaterialContainerTransform()) {
+                startView = extendedFloatingActionButton
+                endView = appBarMain.contentControlPanelMain.materialCardView
+                addTarget(endView)
+                
+                pathMotion = MaterialArcMotion()
+    
+                TransitionManager.beginDelayedTransition(appBarMain.coordinatorLayout, this)
+            }
+            extendedFloatingActionButton.visibility = GONE
+            contentControlPanelMain.root.visibility = VISIBLE
+    
+            isControlPanelOpened = true
+            true
+        }
+        
+        contentControlPanelMain.root.setOnClickListener {
+            if (isControlPanelOpened) {
+                hideControlPanel()
+            }
+        }
+    
+        @Suppress("ClickableViewAccessibility")
+        contentControlPanelMain.relativeLayoutButtons.setOnTouchListener { view, motionEvent ->
+            when (motionEvent.action) {
+                ACTION_DOWN -> {
+                    (contentControlPanelMain.relativeLayout.background as RippleDrawable).setHotspot(
+                        contentControlPanelMain.relativeLayoutButtons.x + motionEvent.x,
+                        contentControlPanelMain.relativeLayoutButtons.y + motionEvent.y
+                    )
+                    contentControlPanelMain.relativeLayout.isPressed = true
+                }
+                ACTION_UP -> {
+                    contentControlPanelMain.relativeLayout.isPressed = false
+                    when {
+                        motionEvent.x in (imageButtonPlayControl.x .. imageButtonPlayControl.right.toFloat()) &&
+                            motionEvent.y in (imageButtonPlayControl.y .. imageButtonPlayControl.bottom.toFloat()) -> {
+                            when {
+                                isPlaying -> transportControls.pause()
+                                else -> transportControls.play()
+                            }
+                        }
+    
+                        motionEvent.x in (imageButtonPrev.x .. imageButtonPrev.right.toFloat()) &&
+                            motionEvent.y in (imageButtonPrev.y .. imageButtonPrev.bottom.toFloat()) -> {
+                            transportControls.skipToPrevious()
+                        }
+    
+                        motionEvent.x in (imageButtonNext.x .. imageButtonNext.right.toFloat()) &&
+                            motionEvent.y in (imageButtonNext.y .. imageButtonNext.bottom.toFloat()) -> {
+                                transportControls.skipToNext()
+                        }
+                    }
+                }
+                ACTION_CANCEL -> contentControlPanelMain.relativeLayout.isPressed = true
+            }
+            
+            true
+        }
 
         val requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             when {
@@ -382,7 +460,7 @@ class MainActivity : BaseMediaControlActivity() {
     }
     
     override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
-        metadata?.apply {
+        metadata?.let { mediaMetadata ->
             
             if (extendedFloatingActionButton.isExtended) {
                 extendedFloatingActionButton.shrink()
@@ -390,23 +468,35 @@ class MainActivity : BaseMediaControlActivity() {
             countJob?.cancel()
             countJob = io {
                 
-                audioList.find { it.id == getString(METADATA_KEY_MEDIA_ID) }?.let { audioItem = it }
+                audioList.find { it.id == mediaMetadata.getString(METADATA_KEY_MEDIA_ID) }?.let { audioItem = it }
     
-                val bitmapImage = audioBitmap40DpMap[audioItem.id]
+                val imageDrawable = BitmapDrawable(resources, audioBitmap40DpMap[audioItem.id]
                     ?: albumBitmap40DpMap[audioItem.album]
-                    ?: activityInterface.defaultAudioImage
+                    ?: activityInterface.defaultAudioImage)
+                
+                val imageDrawableBig = BitmapDrawable(resources,
+                    loadAudioArtRaw(audioItem.id) ?: loadAlbumArtRaw(audioItem.album) ?: activityInterface.defaultAudioImage
+                )
                 
                 audioDatabase.color.query(audioItem.id, audioItem.album).apply {
                     ui {
-                        if (!extendedFloatingActionButton.isShown) {
+                        if (!isControlPanelOpened && !extendedFloatingActionButton.isShown) {
                             extendedFloatingActionButton.show()
                         }
-                        extendedFloatingActionButton.icon = BitmapDrawable(resources, bitmapImage)
+                        extendedFloatingActionButton.icon = imageDrawable
                         extendedFloatingActionButton.backgroundTintList = valueOf(backgroundColor)
                         extendedFloatingActionButton.setTextColor(primaryColor)
                         if (extendedFloatingActionButton.text != audioItem.title) {
                             extendedFloatingActionButton.text = audioItem.title
                             appBarMain.extendedFloatingActionButton.extend()
+                        }
+                        
+                        with(contentControlPanelMain) {
+                            image = imageDrawableBig
+                            backgroundColor = this@apply.backgroundColor
+                            primaryColor = this@apply.primaryColor
+                            secondaryColor = this@apply.secondaryColor
+                            audioItem = this@MainActivity.audioItem
                         }
                     }
                 }
@@ -418,17 +508,50 @@ class MainActivity : BaseMediaControlActivity() {
         }
     }
     
+    private fun hideControlPanel() {
+        with(MaterialContainerTransform()) {
+            startView = contentControlPanelMain.materialCardView
+            endView = extendedFloatingActionButton
+            addTarget(endView)
+        
+            pathMotion = MaterialArcMotion()
+        
+            TransitionManager.beginDelayedTransition(appBarMain.coordinatorLayout, this)
+        }
+        contentControlPanelMain.root.visibility = GONE
+        extendedFloatingActionButton.visibility = VISIBLE
+    
+        isControlPanelOpened = false
+    }
+    
+    override fun onBackPressed() {
+        when {
+            isControlPanelOpened -> hideControlPanel()
+            else -> super.onBackPressed()
+        }
+    }
+    
     override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
         state?.state?.also { playbackState ->
             when (playbackState) {
                 STATE_PLAYING -> {
-                    // startPlaying(state.position)
+                    if (!isPlaying) {
+                        startPlaying(state.position)
+                    }
+                    if (contentControlPanelMain.playState != R.drawable.ani_play_pause) {
+                        contentControlPanelMain.playState = R.drawable.ani_play_pause
+                    }
                 }
                 STATE_PAUSED -> {
-                    // isPlaying = false
+                    if (isPlaying) {
+                        isPlaying = false
+                    }
+                    if (contentControlPanelMain.playState != R.drawable.ani_pause_play) {
+                        contentControlPanelMain.playState = R.drawable.ani_pause_play
+                    }
                 }
                 STATE_BUFFERING -> {
-                    // isPlaying = false
+                    isPlaying = false
                 }
             }
         }
