@@ -20,7 +20,6 @@ import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_HALF_LONG
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_LONG
 import projekt.cloud.piece.music.player.widget.TimeView
-import projekt.cloud.piece.music.player.widget.ProgressBar
 import projekt.cloud.piece.music.player.widget.Seekbar
 
 object DataBindingUtil {
@@ -93,22 +92,6 @@ object DataBindingUtil {
                 setImageDrawable(this)
                 startTransition(ANIMATION_DURATION)
             }
-        }
-    }
-    
-    @JvmStatic
-    @BindingAdapter("app:progress")
-    fun ProgressBar.setProgress(progress: Long? = null) {
-        if (progress != null) {
-            this.progress = progress
-        }
-    }
-    
-    @JvmStatic
-    @BindingAdapter("app:duration")
-    fun ProgressBar.setDuration(duration: Long? = null) {
-        if (duration != null) {
-            this.duration = duration
         }
     }
     
