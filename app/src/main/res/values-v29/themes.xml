@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.Transparent.DisableNavigationBarContrast"
-        parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.Transparent">
+    <style name="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.DisableNavigationBarContrast"
+        parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar">
         <item name="android:enforceNavigationBarContrast">false</item>
     </style>
 </resources>

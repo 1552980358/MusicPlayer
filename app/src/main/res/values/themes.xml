@@ -44,11 +44,13 @@
         <item name="android:navigationBarColor">@color/white</item>
     </style>
 
-    <style name="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.Transparent.DisableNavigationBarContrast"
-        parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.Transparent" />
+    <style name="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.DisableNavigationBarContrast"
+        parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar"/>
 
     <style name="Theme.MusicPlayer.PlayActivity"
-        parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.Transparent.DisableNavigationBarContrast">
+        parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.DisableNavigationBarContrast">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
     <style name="Theme.MusicPlayer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
