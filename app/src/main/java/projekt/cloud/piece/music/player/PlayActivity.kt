@@ -198,15 +198,15 @@ class PlayActivity: BaseMediaControlActivity() {
         io {
             defaultCoverBitmap = getDrawable(resources, R.drawable.ic_music_big, null)!!.toBitmap()
             updateMetadata(audioItem)
+            
+            circularStartPoint.apply {
+                x = resources.displayMetrics.widthPixels / 2
+                y = (resources.displayMetrics.heightPixels - resources.displayMetrics.widthPixels) * 2 / 5 -
+                    resources.getDimensionPixelSize(R.dimen.fragment_play_content_buttons_seek_height) * 2 +
+                    resources.displayMetrics.widthPixels
+            }
+            
         }
-        
-        circularStartPoint.apply {
-            x = resources.displayMetrics.widthPixels / 2
-            y = (resources.displayMetrics.heightPixels - resources.displayMetrics.widthPixels) * 2 / 5 -
-                resources.getDimensionPixelSize(R.dimen.fragment_play_content_buttons_seek_height) * 2 +
-                resources.displayMetrics.widthPixels
-        }
-        
     }
     
     override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
@@ -269,33 +269,37 @@ class PlayActivity: BaseMediaControlActivity() {
             loadAudioArtRaw(audioItem.id) ?: loadAlbumArtRaw(audioItem.album) ?: defaultCoverBitmap
         ui { activityInterface.updateBitmap(currentCoverBitmap) }
         audioDatabase.color.query(audioItem.id, audioItem.album).apply {
-            ui {
-                binding.relativeLayout.setBackgroundColor(backgroundColor)
-                when {
-                    !isLaunched -> binding.coordinatorLayout.setBackgroundColor(backgroundColor)
-                    else -> {
-                        val startX = when {
-                            isScrolling -> if (scrollOffsetPixel > circularStartPoint.x) 0 else circularStartPoint.x - scrollOffsetPixel
-                            !activityInterface.isPlayFragment -> 0
-                            else -> circularStartPoint.x
-                        }
-                        createCircularReveal(binding.relativeLayout, startX, circularStartPoint.y, 0F,
-                            hypot(
-                                when (startX) {
-                                    0 -> resources.displayMetrics.widthPixels
-                                    else -> resources.displayMetrics.widthPixels - startX
-                                }.toFloat(),
-                                circularStartPoint.y.toFloat())
-                        ).apply {
-                            duration = ANIMATION_DURATION_LONG
-                            doOnEnd { binding.coordinatorLayout.setBackgroundColor(backgroundColor) }
-                        }.start()
+            ui { binding.relativeLayout.setBackgroundColor(backgroundColor) }
+            when {
+                !isLaunched -> {
+                    ui { binding.coordinatorLayout.setBackgroundColor(backgroundColor) }
+                    isLaunched = true
+                }
+                else -> {
+                    val startX = when {
+                        isScrolling -> if (scrollOffsetPixel > circularStartPoint.x) 0 else circularStartPoint.x - scrollOffsetPixel
+                        !activityInterface.isPlayFragment -> 0
+                        else -> circularStartPoint.x
+                    }
+                    createCircularReveal(binding.relativeLayout, startX, circularStartPoint.y, 0F,
+                        hypot(
+                            when (startX) {
+                                0 -> resources.displayMetrics.widthPixels
+                                else -> resources.displayMetrics.widthPixels - startX
+                            }.toFloat(),
+                            circularStartPoint.y.toFloat())
+                    ).apply {
+                        duration = ANIMATION_DURATION_LONG
+                        doOnEnd { binding.coordinatorLayout.setBackgroundColor(backgroundColor) }
+                        ui { start() }
                     }
                 }
-                colors = format("#%08X #%08X", primaryColor, secondaryColor)
+            }
+            ui {
                 activityInterface.updateColor(primaryColor, secondaryColor)
                 activityInterface.updateContrast(backgroundColor.isLight)
             }
+            colors = format("#%08X #%08X", primaryColor, secondaryColor)
         }
     }
     
