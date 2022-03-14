@@ -38,6 +38,10 @@
             app:iconTint="@null"
             android:transitionName="fab_trans"/>
 
+        <include
+            android:id="@+id/content_control_panel_main"
+            layout="@layout/content_control_panel_main" />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>
