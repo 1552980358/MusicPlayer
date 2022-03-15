@@ -1,13 +1,7 @@
 package projekt.cloud.piece.music.player.base
 
-import androidx.fragment.app.Fragment
-import projekt.cloud.piece.music.player.util.PlayActivityInterface
+import projekt.cloud.piece.music.player.ui.play.PlayFragment
+import projekt.cloud.piece.music.player.ui.play.util.FragmentManager
 
-open class BasePlayFragment: Fragment() {
-    
-    protected lateinit var activityInterface: PlayActivityInterface
-    fun setInterface(activityInterface: PlayActivityInterface) {
-        this.activityInterface = activityInterface
-    }
-    
-}
+open class BasePlayFragment(protected val playFragmentManager: FragmentManager)
+    : BackPressedTerminationFragment()

@@ -1,332 +1,135 @@
 package projekt.cloud.piece.music.player.ui.play
 
-import android.animation.ValueAnimator.ofArgb
-import android.bluetooth.BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED
-import android.content.Context.AUDIO_SERVICE
-import android.content.Intent.ACTION_HEADSET_PLUG
-import android.graphics.Color.BLACK
-import android.graphics.Color.WHITE
-import android.graphics.drawable.RippleDrawable
-import android.media.AudioManager
+import android.graphics.Color.TRANSPARENT
+import android.graphics.Point
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MotionEvent.ACTION_CANCEL
-import android.view.MotionEvent.ACTION_DOWN
-import android.view.MotionEvent.ACTION_UP
 import android.view.View
+import android.view.View.OVER_SCROLL_NEVER
+import android.view.ViewAnimationUtils.createCircularReveal
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
+import androidx.core.animation.doOnEnd
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
-import kotlinx.coroutines.delay
-import lib.github1552980358.ktExtension.android.content.broadcastReceiver
-import lib.github1552980358.ktExtension.android.content.getStatusBarHeight
-import lib.github1552980358.ktExtension.android.content.register
-import lib.github1552980358.ktExtension.android.view.heightF
-import lib.github1552980358.ktExtension.android.view.widthF
-import lib.github1552980358.ktExtension.androidx.fragment.app.getDrawable
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_DRAGGING
+import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_SETTLING
+import com.google.android.material.transition.MaterialContainerTransform
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.R
+import projekt.cloud.piece.music.player.base.BaseMainFragment
 import projekt.cloud.piece.music.player.base.BasePlayFragment
-import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.FragmentPlayBinding
-import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT
-import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT_ONE
-import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_SHUFFLE
-import projekt.cloud.piece.music.player.service.play.Config.getConfig
-import projekt.cloud.piece.music.player.service.play.Config.setConfig
-import projekt.cloud.piece.music.player.ui.play.util.AudioUtil.deviceDrawableId
-import projekt.cloud.piece.music.player.ui.play.util.RecyclerViewAdapterUtil
-import projekt.cloud.piece.music.player.util.ActivityUtil.pixelHeight
-import projekt.cloud.piece.music.player.util.ColorUtil.isLight
-import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_HALF_LONG
+import projekt.cloud.piece.music.player.ui.play.playCover.PlayCoverFragment
+import projekt.cloud.piece.music.player.ui.play.util.Extra.EXTRA_FRAGMENT_MANAGER
+import projekt.cloud.piece.music.player.ui.play.util.FragmentManager
+import projekt.cloud.piece.music.player.util.Constant
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_LONG
-import projekt.cloud.piece.music.player.util.ContextUtil.navigationBarHeight
+import kotlin.math.hypot
 
-class PlayFragment: BasePlayFragment() {
-    
+class PlayFragment: BaseMainFragment() {
+
     private var _binding: FragmentPlayBinding? = null
     private val binding get() = _binding!!
-    
-    private val contentPlayFragmentBottomSheet get() =
-        binding.contentPlayFragmentBottomSheet
-    
-    private val contentPlayFragmentButtons get() =
-        binding.contentPlayFragmentButtons
-    
-    private val imageViewCycle get() = contentPlayFragmentButtons.imageViewCycle
-    private val imageViewPrev get() = contentPlayFragmentButtons.imageViewPrev
-    private val imageViewNext get() = contentPlayFragmentButtons.imageViewNext
-    private val imageViewShuffle get() = contentPlayFragmentButtons.imageViewShuffle
-    
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<CardView>
-    
-    private lateinit var recyclerViewAdapterUtil: RecyclerViewAdapterUtil
-    
-    private lateinit var audioManager: AudioManager
-    
-    private val broadcastReceiver = broadcastReceiver { _, intent, _ ->
-        when (intent?.action) {
-            ACTION_HEADSET_PLUG, ACTION_CONNECTION_STATE_CHANGED ->
-                contentPlayFragmentBottomSheet.device = getDrawable(audioManager.deviceDrawableId)
-        }
+
+    private lateinit var fragmentList: List<BasePlayFragment>
+
+    private var isScrolling = false
+    private var scrollOffsetPixel = 0
+
+    private lateinit var fragmentManager: FragmentManager
+
+    private val circularStartPoint = Point()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        requireActivity().window.statusBarColor = TRANSPARENT
+        requireActivity().window.navigationBarColor = TRANSPARENT
+
+        sharedElementEnterTransition = MaterialContainerTransform()
+
+        fragmentManager = FragmentManager(activityInterface)
+        fragmentList = listOf(
+            PlayCoverFragment(fragmentManager)
+        )
     }
-    
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_play, container, false)
-        
-        binding.imageView.apply {
-            layoutParams = layoutParams.apply {
-                height = resources.displayMetrics.widthPixels
+
+        with(binding.viewPager) {
+
+            /**
+             * For ViewPager2, method of disabling over scroll is token from
+             * https://stackoverflow.com/a/56942231/11685230
+             **/
+            getChildAt(0).overScrollMode = OVER_SCROLL_NEVER
+
+            adapter = object : FragmentStateAdapter(this@PlayFragment) {
+                override fun getItemCount() = fragmentList.size
+                override fun createFragment(position: Int) = fragmentList[position]
             }
-        }
-    
-        loadMetadata(activityInterface.requestMetadata())
-        
-        activityInterface.setPlayFragmentListener(
-            updatePlayConfig = { playConfig ->
-                if (contentPlayFragmentButtons.playConfig != playConfig) {
-                    contentPlayFragmentButtons.playConfig = playConfig
+
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageScrollStateChanged(state: Int) {
+                    isScrolling = state == SCROLL_STATE_DRAGGING || state == SCROLL_STATE_SETTLING
                 }
-            },
-            updateBitmap = { bitmap -> binding.coverImage = bitmap },
-            
-            updateContrast = { isLight ->
-                when(contentPlayFragmentButtons.iconTintColor) {
-                    null -> contentPlayFragmentButtons.iconTintColor = when {
-                        isLight -> BLACK
-                        else -> WHITE
-                    }
-                    else -> {
-                        when {
-                            isLight -> {
-                                if (contentPlayFragmentButtons.iconTintColor != BLACK) {
-                                    ofArgb(contentPlayFragmentButtons.iconTintColor!!, BLACK).apply {
-                                        duration = ANIMATION_DURATION_LONG
-                                        addUpdateListener { contentPlayFragmentButtons.iconTintColor = animatedValue as Int }
-                                    }.start()
-                                }
-                            }
-                            else -> {
-                                if (contentPlayFragmentButtons.iconTintColor != WHITE) {
-                                    ofArgb(contentPlayFragmentButtons.iconTintColor!!, WHITE).apply {
-                                        duration = ANIMATION_DURATION_LONG
-                                        addUpdateListener { contentPlayFragmentButtons.iconTintColor = animatedValue as Int }
-                                    }.start()
-                                }
-                            }
-                        }
-                    }
+                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                    scrollOffsetPixel = positionOffsetPixels
                 }
-            },
-            updatePlayState = { isPlaying ->
-                if (contentPlayFragmentButtons.isPlaying != isPlaying) {
-                    contentPlayFragmentButtons.isPlaying = isPlaying
-                }
-            },
-            updateAudioList = { audioList ->
-                if (!::recyclerViewAdapterUtil.isInitialized) {
-                    recyclerViewAdapterUtil = RecyclerViewAdapterUtil(contentPlayFragmentBottomSheet.recyclerView, audioList) { index ->
-                        activityInterface.transportControls.skipToQueueItem(index.toLong())
-                    }
-                    return@setPlayFragmentListener
-                }
-                recyclerViewAdapterUtil.audioList = audioList
-            },
-            updateAudioItem = { audioItem -> loadMetadata(audioItem) },
-            updateColor = { primaryColor, secondaryColor -> updateColor(primaryColor, secondaryColor) },
-            updateProgress = { progress -> contentPlayFragmentButtons.progress = progress }
-        )
-        setHasOptionsMenu(true)
-        return binding.root
-    }
-    
-    @Suppress("ClickableViewAccessibility")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        contentPlayFragmentBottomSheet.cardView.apply {
-            layoutParams = layoutParams.apply {
-                height = pixelHeight - requireContext().getStatusBarHeight()
-            }
-            setContentPadding(0, 0, 0, navigationBarHeight)
-        }
-    
-        val bottomHeight = pixelHeight - resources.displayMetrics.widthPixels
-        
-        contentPlayFragmentButtons.linearLayout.apply {
-            layoutParams = layoutParams.apply { height = bottomHeight * 2 / 5 }
-        }
-        
-        contentPlayFragmentButtons.floatingActionButton.setOnClickListener {
-            when (contentPlayFragmentButtons.isPlaying) {
-                true -> activityInterface.transportControls.pause()
-                else -> activityInterface.transportControls.play()
-            }
-        }
-        
-        contentPlayFragmentButtons.seekbar.setOnSeekChangeListener { progress, isReleased ->
-            if (contentPlayFragmentButtons.isSeekbarTouched != !isReleased) {
-                contentPlayFragmentButtons.isSeekbarTouched = !isReleased
-            }
-            when {
-                isReleased -> activityInterface.transportControls.seekTo(progress)
-                else -> contentPlayFragmentButtons.seekbarTouchedProgress = progress
-            }
+            })
         }
 
-        bottomSheetBehavior = BottomSheetBehavior.from(contentPlayFragmentBottomSheet.cardView)
-        with(bottomSheetBehavior) {
-            peekHeight = bottomHeight * 3 / 5
-            isHideable = true
-            state = STATE_HIDDEN
-        }
-        
-        contentPlayFragmentBottomSheet.relativeLayout.setOnClickListener {
-            bottomSheetBehavior.state = when (bottomSheetBehavior.state) {
-                STATE_COLLAPSED -> STATE_EXPANDED
-                else -> STATE_COLLAPSED
-            }
-        }
-    
-        audioManager = requireActivity().getSystemService(AUDIO_SERVICE) as AudioManager
-        contentPlayFragmentBottomSheet.device = getDrawable(audioManager.deviceDrawableId)
-        broadcastReceiver.register(requireContext(), ACTION_HEADSET_PLUG, ACTION_CONNECTION_STATE_CHANGED)
-        
-        contentPlayFragmentButtons.linearLayout.setOnTouchListener { _, motionEvent ->
-            when (motionEvent.action) {
-                ACTION_DOWN -> {
-                    binding.relativeLayout.apply {
-                        (background as RippleDrawable).setHotspot(motionEvent.x, motionEvent.y)
-                        isPressed = true
-                    }
-                }
-                ACTION_UP -> {
-                    binding.relativeLayout.isPressed = false
-                    val touchX = motionEvent.rawX
-                    val touchY = motionEvent.rawY
-                    val rawAxis = IntArray(2)
-                    when {
-                        compareAxis(touchX, touchY, imageViewCycle, rawAxis) -> {
-                            contentPlayFragmentButtons.playConfig?.let { playConfig ->
-                                val repeat = playConfig.getConfig(PLAY_CONFIG_REPEAT)
-                                val repeatOne = playConfig.getConfig(PLAY_CONFIG_REPEAT_ONE)
-                                when {
-                                    // Repeat with list
-                                    repeat && !repeatOne -> activityInterface.changePlayConfig(
-                                        playConfig.setConfig(PLAY_CONFIG_REPEAT, false)
-                                            .setConfig(PLAY_CONFIG_REPEAT_ONE, true)
-                                    )
-                                    // Repeat with single audio
-                                    !repeat && repeatOne ->
-                                        activityInterface.changePlayConfig(playConfig.setConfig(PLAY_CONFIG_REPEAT_ONE, false))
-                                    // Play list, no repeat
-                                    !repeat && !repeatOne ->
-                                        activityInterface.changePlayConfig(playConfig.setConfig(PLAY_CONFIG_REPEAT, true))
-                                }
-                            }
-                        }
-                        
-                        compareAxis(touchX, touchY, imageViewPrev, rawAxis) ->
-                            activityInterface.transportControls.skipToPrevious()
-                        
-                        compareAxis(touchX, touchY, imageViewNext, rawAxis) ->
-                            activityInterface.transportControls.skipToNext()
-                        
-                        compareAxis(touchX, touchY, imageViewShuffle, rawAxis) -> {
-                            contentPlayFragmentButtons.playConfig?.let { playConfig ->
-                                recyclerViewAdapterUtil.hasShuffledUpdated = true
-                                activityInterface.changePlayConfig(playConfig.setConfig(PLAY_CONFIG_SHUFFLE, !playConfig.getConfig(PLAY_CONFIG_SHUFFLE)))
-                            }
-                        }
-                    }
-                }
-                ACTION_CANCEL -> { binding.relativeLayout.isPressed = false }
-            }
-            return@setOnTouchListener true
-        }
+        return binding.root
     }
-    
-    private fun compareAxis(x: Float, y: Float, view: View, rawAxis: IntArray): Boolean {
-        view.getLocationOnScreen(rawAxis)
-        return compareAxis(x, rawAxis.first().toFloat(), view.widthF) && compareAxis(y, rawAxis.last().toFloat(), view.heightF)
-    }
-    
-    private fun compareAxis(axis: Float, targetX: Float, length: Float) =
-        axis in (targetX .. targetX + length)
-    
-    override fun onStart() {
-        super.onStart()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         io {
-            delay(ANIMATION_DURATION_HALF_LONG)
-            ui {
-                bottomSheetBehavior.state = STATE_COLLAPSED
-                bottomSheetBehavior.isHideable = false
+            val audioItem = fragmentManager.audioItem
+            if (audioItem != null) {
+                fragmentManager.audioItem = audioItem
+                activityInterface.audioDatabase.color.query(audioItem.id, audioItem.album).apply {
+                    ui {
+                        binding.root.setBackgroundColor(backgroundColor)
+                        fragmentManager.updateColor(backgroundColor, primaryColor, secondaryColor)
+                    }
+                }
+
+                circularStartPoint.apply {
+                    x = resources.displayMetrics.widthPixels / 2
+                    y = (resources.displayMetrics.heightPixels - resources.displayMetrics.widthPixels) * 2 / 5 -
+                            resources.getDimensionPixelSize(R.dimen.fragment_play_content_buttons_seek_height) * 2 +
+                            resources.displayMetrics.widthPixels
+                }
             }
         }
-    }
-    
-    override fun onResume() {
-        super.onResume()
-        (requireActivity() as AppCompatActivity).apply {
-            setSupportActionBar(binding.toolbar)
-            binding.toolbar.setNavigationOnClickListener { finishAfterTransition() }
-            supportActionBar?.setDisplayShowTitleEnabled(false)
-            invalidateOptionsMenu()
-        }
-        activityInterface.setCurrentFragment(this)
-    }
-    
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.clear()
-    }
-    
-    private fun loadMetadata(audioItem: AudioItem) {
-        contentPlayFragmentButtons.duration = audioItem.duration
-        contentPlayFragmentBottomSheet.title = audioItem.title
-        contentPlayFragmentBottomSheet.subtitle = "${audioItem.artistItem.name} - ${audioItem.albumItem.title}"
-    }
-    
-    private fun updateColor(primaryColor: Int, secondaryColor: Int) {
-        contentPlayFragmentButtons.primaryColor = primaryColor
-        contentPlayFragmentButtons.secondaryColor = secondaryColor
-        when (contentPlayFragmentButtons.circleColor) {
-            null -> contentPlayFragmentButtons.circleColor = when {
-                primaryColor.isLight -> BLACK
-                else -> WHITE
-            }
-            else -> {
-                when {
-                    primaryColor.isLight -> {
-                        if (contentPlayFragmentButtons.circleColor != BLACK) {
-                            ofArgb(contentPlayFragmentButtons.circleColor!!, BLACK).apply {
-                                duration = ANIMATION_DURATION_LONG
-                                addUpdateListener { contentPlayFragmentButtons.circleColor = animatedValue as Int }
-                            }.start()
-                        }
+        fragmentManager.initial {
+            io {
+                activityInterface.audioDatabase.color.query(it.id, it.album).apply {
+                    binding.relativeLayout.setBackgroundColor(backgroundColor)
+                    createCircularReveal(
+                        binding.relativeLayout, circularStartPoint.x, circularStartPoint.y, 0F,
+                        hypot(circularStartPoint.x.toFloat(), circularStartPoint.y.toFloat())).apply {
+                        duration = ANIMATION_DURATION_LONG
+                        doOnEnd { binding.root.setBackgroundColor(backgroundColor) }
+                        ui { start() }
                     }
-                    else -> {
-                        if (contentPlayFragmentButtons.circleColor != WHITE) {
-                            ofArgb(contentPlayFragmentButtons.circleColor!!, WHITE).apply {
-                                duration = ANIMATION_DURATION_LONG
-                                addUpdateListener { contentPlayFragmentButtons.circleColor = animatedValue as Int }
-                            }.start()
-                        }
-                    }
+                    ui { fragmentManager.updateColor(backgroundColor, primaryColor, secondaryColor) }
                 }
             }
         }
     }
-    
+
     override fun onDestroyView() {
+        activityInterface.onDestroyPlay()
         super.onDestroyView()
-        requireContext().unregisterReceiver(broadcastReceiver)
         _binding = null
     }
+
+    override fun onBackPressed() =
+        fragmentList[binding.viewPager.currentItem].canBackStack
 
 }

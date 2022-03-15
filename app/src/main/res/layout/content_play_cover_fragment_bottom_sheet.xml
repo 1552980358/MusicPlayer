@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/fragment_play">
+
+    <data>
+
+        <variable
+            name="audioItem"
+            type="projekt.cloud.piece.music.player.database.item.AudioItem" />
+
+        <variable
+            name="device"
+            type="android.graphics.drawable.Drawable" />
+
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/card_view"
+        android:layout_marginStart="@dimen/fragment_play_content_bottom_root_margin"
+        android:layout_marginEnd="@dimen/fragment_play_content_bottom_root_margin"
+        android:elevation="@dimen/fragment_play_content_bottom_root_elevation"
+        app:cardCornerRadius="@dimen/fragment_play_content_bottom_root_radius"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/fragment_play_content_bottom_banner_height"
+                android:id="@+id/relative_layout"
+                android:background="?attr/selectableItemBackground"
+                android:padding="@dimen/fragment_play_content_bottom_banner_padding">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/image_view_device"
+                    android:layout_width="@dimen/fragment_play_content_bottom_banner_image_size"
+                    android:layout_height="@dimen/fragment_play_content_bottom_banner_image_size"
+                    android:layout_marginEnd="@dimen/fragment_play_content_bottom_banner_image_margin_end"
+                    app:drawableAnimated="@{device}"
+                    android:tint="?android:attr/textColorPrimary"
+                    tools:ignore="ContentDescription" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_toEndOf="@id/image_view_device"
+                    android:layout_centerVertical="true">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/text_view_title"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textSize="@dimen/fragment_play_content_bottom_banner_text_size"
+                        app:textAnimated="@{audioItem.title}" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/text_view_subtitle"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        app:textAnimated="@{audioItem.artistItem.name + ` - ` + audioItem.albumItem.title}" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/fragment_play_content_bottom_divider"
+                android:background="@color/light_gray" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_play_content_bottom_queue"
+                android:textColor="?attr/colorPrimary"
+                android:layout_marginStart="@dimen/fragment_play_content_bottom_queue_margin_horizontal"
+                android:layout_marginEnd="@dimen/fragment_play_content_bottom_queue_margin_horizontal"
+                android:layout_marginTop="@dimen/fragment_play_content_bottom_queue_margin_vertical"
+                android:layout_marginBottom="@dimen/fragment_play_content_bottom_queue_margin_vertical"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/recycler_view"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.cardview.widget.CardView>
+
+</layout>

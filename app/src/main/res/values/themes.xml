@@ -11,49 +11,21 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
-        <!-- Navigation bar -->
-        <item name="android:navigationBarColor">@color/white</item>
     </style>
 
     <style name="Theme.MusicPlayer.NoActionBar" parent="Theme.MusicPlayer">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
 
-    <style name="Theme.MusicPlayer.NoActionBar.VariableNavigationBar" parent="Theme.MusicPlayer.NoActionBar"/>
+    <style name="Theme.MusicPlayer.NoActionBar.VariableNavigationBar" parent="Theme.MusicPlayer.NoActionBar" />
 
-    <style name="Theme.MusicPlayer.MainActivity" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/purple_500</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-        <item name="postSplashScreenTheme">@style/Theme.MusicPlayer.NoActionBar.VariableNavigationBar</item>
+    <style name="Theme.MusicPlayer.MainActivity" parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar" />
 
-        <!-- Extended Floating Action Bar -->
-        <item name="shapeAppearanceSmallComponent">@style/AppearanceSmallComponent</item>
+    <style name="Theme.MusicPlayer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="extendedFloatingActionButtonStyle">@style/Theme.MusicPlayer.ExtendedFloatingActionBar</item>
     </style>
-
-    <style name="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.Transparent" parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar">
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:backgroundDimEnabled">false</item>
-    </style>
-
-    <style name="Theme.MusicPlayer.ThemeTransitionActivity" parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.Transparent">
-        <item name="android:navigationBarColor">@color/white</item>
-    </style>
-
-    <style name="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.DisableNavigationBarContrast"
-        parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar"/>
-
-    <style name="Theme.MusicPlayer.PlayActivity"
-        parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.DisableNavigationBarContrast">
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-    </style>
-
-    <style name="Theme.MusicPlayer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.MusicPlayer.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
@@ -63,6 +35,10 @@
         <item name="cornerSizeTopRight">@dimen/dp_4</item>
         <item name="cornerSizeBottomLeft">@dimen/dp_4</item>
         <item name="cornerSizeBottomRight">@dimen/dp_4</item>
+    </style>
+
+    <style name="Theme.MusicPlayer.ExtendedFloatingActionBar" parent="Widget.MaterialComponents.ExtendedFloatingActionButton.Icon">
+        <item name="shapeAppearanceOverlay">@style/AppearanceSmallComponent</item>
     </style>
 
 </resources>

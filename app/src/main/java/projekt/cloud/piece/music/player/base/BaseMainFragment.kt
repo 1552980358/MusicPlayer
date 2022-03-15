@@ -1,9 +1,8 @@
 package projekt.cloud.piece.music.player.base
 
-import androidx.fragment.app.Fragment
 import projekt.cloud.piece.music.player.util.MainActivityInterface
 
-open class BaseMainFragment: Fragment() {
+open class BaseMainFragment: BackPressedTerminationFragment() {
 
     protected lateinit var activityInterface: MainActivityInterface
 

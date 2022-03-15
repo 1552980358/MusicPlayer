@@ -25,6 +25,7 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
+import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.graphics.drawable.toBitmap
@@ -250,7 +251,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
         exoPlayer = Builder(this).build()
         exoPlayer.addListener(this)
     
-        defaultImage = getDrawable(this, R.drawable.ic_music_big)!!.toBitmap()
+        defaultImage = getDrawable(this, R.drawable.ic_music)!!.toBitmap()
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -350,7 +351,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                         sharedPreferences.edit()
                             .putInt(SP_PLAY_CONFIG, playConfig)
                             .apply()
-    
+
                         result.sendResult(bundleOf(EXTRA_LIST to  currentPlaylist()))
                     }
                 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="projekt.cloud.piece.music.player">
-    
+
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -32,22 +32,12 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:launchMode="singleTask"
-            android:theme="@style/Theme.MusicPlayer.MainActivity"
-            android:windowSoftInputMode="adjustPan">
+            android:theme="@style/Theme.MusicPlayer.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".ThemeTransitionActivity"
-            android:theme="@style/Theme.MusicPlayer.ThemeTransitionActivity" />
-        
-        <activity android:name=".PlayActivity"
-            android:theme="@style/Theme.MusicPlayer.PlayActivity" />
 
     </application>
 
