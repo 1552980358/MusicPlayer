@@ -19,5 +19,7 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
+
+    <style name="Theme.MusicPlayer.MainActivity" parent="Theme.MusicPlayer.NoActionBar" />
     
 </resources>
