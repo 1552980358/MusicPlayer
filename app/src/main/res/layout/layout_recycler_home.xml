@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="audioItem"
+            type="projekt.cloud.piece.music.player.database.item.AudioItem" />
+
+        <variable
+            name="imageDrawable"
+            type="android.graphics.drawable.Drawable" />
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/md_spec_list_height"
+        android:id="@+id/root"
+        android:padding="@dimen/md_spec_list_paddings">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/image_view_image"
+            android:layout_width="@dimen/md_spec_list_image_size"
+            android:layout_height="@dimen/md_spec_list_image_size"
+            android:src="@{imageDrawable}"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_view_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/md_spec_list_margins_horizontal"
+            android:layout_marginEnd="@dimen/md_spec_list_margins_horizontal"
+            android:layout_toStartOf="@id/image_view_more"
+            android:layout_toEndOf="@id/image_view_image"
+            android:text="@{audioItem.title, default = ``}"
+            android:textSize="@dimen/title_text_size" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_view_title"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="@dimen/md_spec_list_margins_horizontal"
+            android:layout_marginEnd="@dimen/md_spec_list_margins_horizontal"
+            android:layout_toStartOf="@id/image_view_more"
+            android:layout_toEndOf="@id/image_view_image"
+            android:text="@{audioItem.title, default = ``}"
+            android:textSize="@dimen/subtitle_text_size" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/image_view_more"
+            android:layout_width="@dimen/md_spec_list_button_size"
+            android:layout_height="@dimen/md_spec_list_button_size"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_more" />
+
+    </RelativeLayout>
+
+</layout>
