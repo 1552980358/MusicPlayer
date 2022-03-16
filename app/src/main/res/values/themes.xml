@@ -21,5 +21,21 @@
     </style>
 
     <style name="Theme.MusicPlayer.MainActivity" parent="Theme.MusicPlayer.NoActionBar" />
+
+    <style name="Theme.MusicPlayer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.MusicPlayer.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Theme.MusicPlayer.ExtendedFloatingActionBar" parent="Widget.MaterialComponents.ExtendedFloatingActionButton.Icon">
+        <item name="shapeAppearanceOverlay">@style/ExtendedFloatingActionButtonStyle</item>
+    </style>
+
+    <style name="ExtendedFloatingActionButtonStyle" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">@dimen/fab_radius</item>
+        <item name="cornerSizeTopRight">@dimen/fab_radius</item>
+        <item name="cornerSizeBottomLeft">@dimen/fab_radius</item>
+        <item name="cornerSizeBottomRight">@dimen/fab_radius</item>
+    </style>
     
 </resources>
