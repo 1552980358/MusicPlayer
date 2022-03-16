@@ -7,11 +7,16 @@
     <dimen name="md_spec_list_margins_horizontal">16dp</dimen>
     <dimen name="md_spec_list_button_size">24dp</dimen>
 
+    <dimen name="nav_header_height">120dp</dimen>
+    <dimen name="nav_header_margin_top">16dp</dimen>
+    <dimen name="nav_header_icon_size">48dp</dimen>
+
     <dimen name="status_bar_height">24dp</dimen>
     <dimen name="title_text_size">16sp</dimen>
     <dimen name="subtitle_text_size">14sp</dimen>
 
     <dimen name="bottom_nav_margin_horizontal">16dp</dimen>
     <dimen name="fab_margin_horizontal">16dp</dimen>
+    <dimen name="fab_radius">4dp</dimen>
 
 </resources>
