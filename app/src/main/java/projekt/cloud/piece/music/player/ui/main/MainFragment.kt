@@ -4,10 +4,14 @@ import android.content.res.ColorStateList.valueOf
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
@@ -17,7 +21,7 @@ import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.databinding.FragmentMainBinding
 import projekt.cloud.piece.music.player.ui.main.home.HomeFragment
 
-class MainFragment: BaseFragment() {
+class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
 
     companion object {
         private const val TAG = "MainFragment"
@@ -25,7 +29,10 @@ class MainFragment: BaseFragment() {
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
-    private val extendedFloatingActionButton get() = binding.extendedFloatingActionButton
+    private val appBarMain get() = binding.appBarMain
+    private val toolbar get() = appBarMain.toolbar
+    private val bottomNavigation get() = appBarMain.bottomNavigation
+    private val extendedFloatingActionButton get() = appBarMain.extendedFloatingActionButton
 
     private val audioArtMap get() = activityViewModel.audioArtMap
     private val albumArtMap get() = activityViewModel.albumArtMap
@@ -36,7 +43,7 @@ class MainFragment: BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false)
-        binding.bottomNavigation.background = null
+        bottomNavigation.background = null
         return binding.root
     }
 
@@ -94,6 +101,10 @@ class MainFragment: BaseFragment() {
             }
         }
 
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        return true
     }
 
 }
