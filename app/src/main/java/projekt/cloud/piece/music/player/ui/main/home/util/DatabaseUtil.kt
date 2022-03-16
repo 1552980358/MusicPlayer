@@ -57,9 +57,10 @@ object DatabaseUtil {
         launch { context.loadAudioArt40Dp(audioArtMap) }
         launch { context.loadAlbumArts40Dp(albumArtMap) }
         database.audio.query().apply {
-            forEach {
-                it.albumItem = database.album.query(it.album)
-                it.artistItem = database.artist.query(it.artist)
+            forEachIndexed { index, audioItem ->
+                audioItem.index = index
+                audioItem.albumItem = database.album.query(audioItem.album)
+                audioItem.artistItem = database.artist.query(audioItem.artist)
             }
             callback(this)
         }
