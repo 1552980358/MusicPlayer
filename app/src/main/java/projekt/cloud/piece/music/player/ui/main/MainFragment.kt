@@ -49,7 +49,21 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        with(binding.viewPager) {
+        (requireActivity() as AppCompatActivity).apply {
+            setSupportActionBar(toolbar)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            with(ActionBarDrawerToggle(this,
+                binding.root,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close)) {
+                binding.root.addDrawerListener(this)
+                syncState()
+            }
+        }
+        binding.navigationView.setNavigationItemSelectedListener(this)
+
+        with(appBarMain.viewPager) {
 
             val fragments = listOf(
                 HomeFragment()
