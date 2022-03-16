@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.androidx.fragment.app.getDrawable
@@ -16,6 +17,8 @@ import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.FragmentHomeBinding
+import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_INDEX
+import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
 import projekt.cloud.piece.music.player.ui.main.home.util.DatabaseUtil.initializeApp
 import projekt.cloud.piece.music.player.ui.main.home.util.DatabaseUtil.launchAppCoroutine
 import projekt.cloud.piece.music.player.ui.main.home.util.RecyclerViewAdapterUtil
@@ -66,7 +69,16 @@ class HomeFragment: BaseFragment() {
             audioList,
             activityViewModel.audioArtMap,
             activityViewModel.albumArtMap,
-            activityViewModel.defaultCoverArt
+            activityViewModel.defaultCoverArt,
+            onClick = {
+                activityViewModel.mediaControllerCompat.transportControls.playFromMediaId(
+                    audioList[it].id,
+                    bundleOf(EXTRA_LIST to audioList, EXTRA_INDEX to it)
+                )
+            },
+            onOptionClick = {
+
+            }
         )
         activityViewModel.isLoaded = true
     }
