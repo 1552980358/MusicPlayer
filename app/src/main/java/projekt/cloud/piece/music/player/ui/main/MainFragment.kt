@@ -89,10 +89,12 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
         }
 
         extendedFloatingActionButton.setOnClickListener {
-            navController.navigate(
-                MainFragmentDirections.actionNavMainToNavPlay(),
-                FragmentNavigatorExtras(extendedFloatingActionButton to extendedFloatingActionButton.transitionName)
-            )
+            if (activityViewModel.audioItem != null) {
+                navController.navigate(
+                    MainFragmentDirections.actionNavMainToNavPlay(),
+                    FragmentNavigatorExtras(extendedFloatingActionButton to extendedFloatingActionButton.transitionName)
+                )
+            }
         }
 
         activityViewModel.setAudioItemObserver(TAG) { audioItem ->
