@@ -25,10 +25,15 @@ class MainActivityViewModel: ViewModel() {
             value?.let { _audioItemObservers.forEach { (_, observer) -> observer(it) } }
         }
     private var _audioItemObservers = mutableMapOf<String, (AudioItem) -> Unit>()
-    fun setAudioItemObserver(tag: String, observer: ((AudioItem) -> Unit)?) {
+    fun setAudioItemObserver(tag: String, needValueInstant: Boolean = true, observer: ((AudioItem) -> Unit)? = null) {
         when (observer) {
             null -> _audioItemObservers.remove(tag)
-            else -> _audioItemObservers[tag] = observer
+            else -> {
+                _audioItemObservers[tag] = observer
+                if (needValueInstant) {
+                    audioItem?.let { observer(it) }
+                }
+            }
         }
     }
 
