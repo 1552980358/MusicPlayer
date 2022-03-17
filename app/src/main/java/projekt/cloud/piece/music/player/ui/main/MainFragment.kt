@@ -49,8 +49,6 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        bottomNavigation.menu.getItem(bottomNavigation.menu.size() - 1).isEnabled = false
-
         (requireActivity() as AppCompatActivity).apply {
             setSupportActionBar(toolbar)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
