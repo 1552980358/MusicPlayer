@@ -19,4 +19,15 @@
     <dimen name="fab_margin_horizontal">16dp</dimen>
     <dimen name="fab_radius">4dp</dimen>
 
+    <dimen name="view_duration_text_margin">2dp</dimen>
+    <dimen name="view_duration_text_size">14sp</dimen>
+
+    <dimen name="progressbar_indicator_thick">4dp</dimen>
+    <dimen name="seekbar_wrap_height">10dp</dimen>
+
+    <dimen name="view_recycler_lyric_padding_horizontal">10dp</dimen>
+    <dimen name="view_recycler_lyric_padding_vertical">5dp</dimen>
+
+    <dimen name="play_control_seekbar_height">15dp</dimen>
+
 </resources>
