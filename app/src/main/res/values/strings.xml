@@ -2,4 +2,10 @@
     <string name="app_name">MusicPlayer</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="nav_home">AudioTrack</string>
+    <string name="nav_album">Album</string>
+    <string name="nav_artist">Artist</string>
+    <string name="nav_playlist">Playlist</string>
+
 </resources>
