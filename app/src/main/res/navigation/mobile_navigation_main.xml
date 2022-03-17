@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
     app:startDestination="@id/nav_main">
 
     <fragment
         android:id="@+id/nav_main"
-        android:name="projekt.cloud.piece.music.player.ui.main.MainFragment" />
+        android:name="projekt.cloud.piece.music.player.ui.main.MainFragment"
+        tools:layout="@layout/fragment_main">
+        <action
+            android:id="@+id/action_nav_main_to_nav_play"
+            app:destination="@id/nav_play" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_play"
+        android:name="projekt.cloud.piece.music.player.ui.play.PlayFragment"
+        tools:layout="@layout/fragment_play" />
 
 </navigation>
