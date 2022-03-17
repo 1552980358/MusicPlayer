@@ -37,17 +37,39 @@ class MainActivityViewModel: ViewModel() {
         }
     }
 
-    private val _isPlaying = MutableLiveData(false)
     var isPlaying = false
         set(value) {
             field = value
             _playStateObservers.forEach { (_, observer) -> observer(value) }
         }
-    private var _playStateObservers = mutableMapOf<String, (Boolean) -> Unit>()
-    fun setPlayStateObserver(tag: String, observer: ((Boolean) -> Unit)?) {
+    private val _playStateObservers = mutableMapOf<String, (Boolean) -> Unit>()
+    fun setPlayStateObserver(tag: String, needValueInstant: Boolean = true, observer: ((Boolean) -> Unit)?) {
         when (observer) {
             null -> _playStateObservers.remove(tag)
-            else -> _playStateObservers[tag] = observer
+            else -> {
+                _playStateObservers[tag] = observer
+                if (needValueInstant) {
+                    observer(isPlaying)
+                }
+            }
+        }
+    }
+
+    var progress = 0L
+        set(value) {
+            field = value
+            _progressObservers.forEach { (_, observer) -> observer(value) }
+        }
+    private val _progressObservers = mutableMapOf<String, (Long) -> Unit>()
+    fun setProgressObservers(tag: String, needValueInstant: Boolean = true, observer: ((Long) -> Unit)?) {
+        when (observer) {
+            null -> _progressObservers.remove(tag)
+            else -> {
+                _progressObservers[tag] = observer
+                if (needValueInstant) {
+                    observer(progress)
+                }
+            }
         }
     }
 
