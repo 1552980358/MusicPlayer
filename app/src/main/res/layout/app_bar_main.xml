@@ -5,8 +5,7 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -56,7 +55,9 @@
             app:layout_anchor="@id/bottom_app_bar"
             app:layout_anchorGravity="top|end"
             android:layout_marginHorizontal="@dimen/fab_margin_horizontal"
-            style="@style/Theme.MusicPlayer.ExtendedFloatingActionBar"/>
+            android:transitionName="transition_fab"
+            style="@style/Theme.MusicPlayer.ExtendedFloatingActionBar"
+            app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
