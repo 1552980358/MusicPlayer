@@ -38,6 +38,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
 
+    private var progressJob: Job? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
@@ -97,10 +99,11 @@ class MainActivity : AppCompatActivity() {
     private fun onPlaybackStateChanged(state: PlaybackStateCompat) {
         when (state.state) {
             STATE_PLAYING -> {
-                viewModel.isPlaying = true
+                progressJob?.cancel()
+                progressJob = startPlaying(state.position)
             }
             STATE_BUFFERING -> {
-
+                progressJob?.cancel()
             }
             STATE_PAUSED -> {
                 viewModel.isPlaying = false
@@ -113,5 +116,18 @@ class MainActivity : AppCompatActivity() {
             viewModel.audioItem = it
         }
     }
+
+    private fun startPlaying(progress: Long) =  io {
+        ui { viewModel.isPlaying = true }
+        var currentProgress = progress.correctTime()
+        do {
+            ui { viewModel.progress = currentProgress }
+            delay(DELAY_MILLIS)
+            currentProgress += DELAY_MILLIS
+        } while (viewModel.isPlaying)
+    }
+
+    private suspend fun Long.correctTime() =
+        this + (this % DELAY_MILLIS).apply { delay(this) }
 
 }
