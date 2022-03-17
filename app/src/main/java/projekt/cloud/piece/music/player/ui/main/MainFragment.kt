@@ -76,6 +76,13 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
 
         }
 
+        extendedFloatingActionButton.setOnClickListener {
+            navController.navigate(
+                MainFragmentDirections.actionNavMainToNavPlay(),
+                FragmentNavigatorExtras(extendedFloatingActionButton to extendedFloatingActionButton.transitionName)
+            )
+        }
+
         activityViewModel.setAudioItemObserver(TAG) { audioItem ->
             io {
                 val drawable = BitmapDrawable(
