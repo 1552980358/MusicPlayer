@@ -3,7 +3,6 @@ package projekt.cloud.piece.music.player.ui.main.home.util
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.RippleDrawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent.ACTION_DOWN
 import android.view.MotionEvent.ACTION_UP
@@ -33,7 +32,6 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
         }
         fun setOnClickListener(position: Int, onClick: (Int) -> Unit, onOptionClick: (Int) -> Unit) {
             binding.root.setOnClickListener {
-                Log.e("RVA", position.toString())
                 onClick(position)
             }
             binding.root.setOnLongClickListener {
