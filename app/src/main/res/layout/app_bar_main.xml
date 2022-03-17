@@ -51,6 +51,8 @@
             android:maxLines="1"
             android:ellipsize="end"
             app:iconTint="@null"
+            app:icon="@drawable/ic_music"
+            app:backgroundTint="@color/light_gray"
             app:layout_anchor="@id/bottom_app_bar"
             app:layout_anchorGravity="top|end"
             android:layout_marginHorizontal="@dimen/fab_margin_horizontal"
