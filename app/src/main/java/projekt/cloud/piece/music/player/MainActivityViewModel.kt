@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import projekt.cloud.piece.music.player.database.AudioDatabase
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_PLAY_CONFIG_CHANGED
+import projekt.cloud.piece.music.player.service.play.Action.ACTION_REQUEST_LIST
 import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT
 import projekt.cloud.piece.music.player.service.play.Config.shl
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
@@ -50,7 +51,7 @@ class MainActivityViewModel: ViewModel() {
             _playStateObservers.forEach { (_, observer) -> observer(value) }
         }
     private val _playStateObservers = mutableMapOf<String, (Boolean) -> Unit>()
-    fun setPlayStateObserver(tag: String, needValueInstant: Boolean = true, observer: ((Boolean) -> Unit)?) {
+    fun setPlayStateObserver(tag: String, needValueInstant: Boolean = true, observer: ((Boolean) -> Unit)? = null) {
         when (observer) {
             null -> _playStateObservers.remove(tag)
             else -> {
@@ -68,7 +69,7 @@ class MainActivityViewModel: ViewModel() {
             _progressObservers.forEach { (_, observer) -> observer(value) }
         }
     private val _progressObservers = mutableMapOf<String, (Long) -> Unit>()
-    fun setProgressObservers(tag: String, needValueInstant: Boolean = true, observer: ((Long) -> Unit)?) {
+    fun setProgressObservers(tag: String, needValueInstant: Boolean = true, observer: ((Long) -> Unit)? = null) {
         when (observer) {
             null -> _progressObservers.remove(tag)
             else -> {
@@ -86,7 +87,7 @@ class MainActivityViewModel: ViewModel() {
             _playConfigObservers.forEach { (_, observer) -> observer(value) }
         }
     private val _playConfigObservers = mutableMapOf<String, (Int) -> Unit>()
-    fun setPlayConfigObserver(tag: String, needValueInstant: Boolean = true, observer: ((Int) -> Unit)?) {
+    fun setPlayConfigObserver(tag: String, needValueInstant: Boolean = true, observer: ((Int) -> Unit)? = null) {
         when (observer) {
             null -> _playConfigObservers.remove(tag)
             else -> {
@@ -104,7 +105,7 @@ class MainActivityViewModel: ViewModel() {
             value?.let { _playlistObservers.forEach { (_, observer) -> observer(it) } }
         }
     private val _playlistObservers = mutableMapOf<String, (List<AudioItem>) -> Unit>()
-    fun setPlaylistObserver(tag: String, needValueInstant: Boolean = true, observer: ((List<AudioItem>) -> Unit)?) {
+    fun setPlaylistObserver(tag: String, needValueInstant: Boolean = true, observer: ((List<AudioItem>) -> Unit)? = null) {
         when (observer) {
             null -> _playlistObservers.remove(tag)
             else -> {
@@ -127,6 +128,23 @@ class MainActivityViewModel: ViewModel() {
                 }
             }
         })
+    }
+
+    var requireSyncPlaylist = false
+    fun getPlaylistSync() {
+        if (mediaBrowserCompat.isConnected) {
+            return mediaBrowserCompat.sendCustomAction(ACTION_REQUEST_LIST, null, object : CustomActionCallback() {
+                override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
+                    resultData?.let { resultExtra ->
+                        @Suppress("UNCHECKED_CAST")
+                        (resultExtra.getSerializable(EXTRA_LIST) as List<AudioItem>?)?.let { list ->
+                            playList = list
+                        }
+                    }
+                }
+            })
+        }
+        requireSyncPlaylist = true
     }
 
     lateinit var mediaBrowserCompat: MediaBrowserCompat
