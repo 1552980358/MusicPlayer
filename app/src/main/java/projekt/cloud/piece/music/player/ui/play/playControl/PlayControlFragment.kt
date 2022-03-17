@@ -165,13 +165,15 @@ class PlayControlFragment: BaseFragment() {
                             ofArgb(WHITE, BLACK).apply {
                                 duration = ANIMATION_DURATION
                                 addUpdateListener { contentControl.iconTintColor = animatedValue as Int }
-                            }.start()
+                                ui { start() }
+                            }
                         }
                         else -> if (contentControl.iconTintColor != WHITE) {
                             ofArgb(BLACK, WHITE).apply {
                                 duration = ANIMATION_DURATION
                                 addUpdateListener { contentControl.iconTintColor = animatedValue as Int }
-                            }.start()
+                                ui { start() }
+                            }
                         }
                     }
                 }
