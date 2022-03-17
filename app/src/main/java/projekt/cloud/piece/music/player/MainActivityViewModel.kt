@@ -13,7 +13,7 @@ import projekt.cloud.piece.music.player.service.play.Action.ACTION_PLAY_CONFIG_C
 import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT
 import projekt.cloud.piece.music.player.service.play.Config.shl
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
-import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_CONFIG
+import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_CONFIGS
 
 class MainActivityViewModel: ViewModel() {
 
@@ -117,7 +117,7 @@ class MainActivityViewModel: ViewModel() {
     }
 
     fun updatePlayConfig(newConfig: Int) {
-        mediaBrowserCompat.sendCustomAction(ACTION_PLAY_CONFIG_CHANGED, bundleOf(EXTRA_CONFIG to newConfig), object : CustomActionCallback() {
+        mediaBrowserCompat.sendCustomAction(ACTION_PLAY_CONFIG_CHANGED, bundleOf(EXTRA_CONFIGS to newConfig), object : CustomActionCallback() {
             override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
                 resultData?.let { resultExtra ->
                     @Suppress("UNCHECKED_CAST")
