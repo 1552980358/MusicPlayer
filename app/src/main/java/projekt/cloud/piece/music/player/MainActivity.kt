@@ -107,6 +107,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onPlaybackStateChanged(state: PlaybackStateCompat) {
+        @Suppress("SwitchIntDef")
         when (state.state) {
             STATE_PLAYING -> {
                 progressJob?.cancel()
