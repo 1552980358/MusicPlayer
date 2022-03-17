@@ -116,6 +116,12 @@ class PlayFragment: BaseFragment() {
         }
     }
 
+    override fun onDestroyView() {
+        activityViewModel.setAudioItemObserver(TAG)
+        _binding = null
+        super.onDestroyView()
+    }
+
     override fun onBackPressed() = fragmentList[viewPager.currentItem].canBackStack
 
 }
