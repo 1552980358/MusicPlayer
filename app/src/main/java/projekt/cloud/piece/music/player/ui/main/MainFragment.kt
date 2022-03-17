@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -39,6 +40,8 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
     private val bottomNavigation get() = appBarMain.bottomNavigation
     private val extendedFloatingActionButton get() = appBarMain.extendedFloatingActionButton
 
+    private lateinit var viewModel: MainViewModel
+
     private val audioArtMap get() = activityViewModel.audioArtMap
     private val albumArtMap get() = activityViewModel.albumArtMap
     private val defaultCoverArt get() = activityViewModel.defaultCoverArt
@@ -50,6 +53,7 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         exitTransition = Hold()
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -113,14 +117,28 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
                             if (text != audioItem.title) {
                                 text = audioItem.title
                             }
-                            if (!isExtended) {
-                                extend()
+                        }
+
+                        when {
+                            viewModel.isDestroyed -> {
+                                viewModel.isDestroyed = false
+                                when {
+                                    viewModel.isExtended -> ui { extend() }
+                                    else -> return@apply
+                                }
+                            }
+                            else -> {
+                                if (!isExtended) {
+                                    ui { extend() }
+                                    viewModel.isExtended = true
+                                }
                             }
                         }
 
                         countJob?.cancel()
                         countJob = io {
                             delay(5000L)
+                            viewModel.isExtended = false
                             ui { shrink() }
                         }
                     }
@@ -133,6 +151,15 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
     override fun onResume() {
         requireActivity().window.statusBarColor = getColor(R.color.purple_500)
         super.onResume()
+    }
+
+    override fun onDestroyView() {
+        countJob?.cancel()
+        countJob = null
+        activityViewModel.setAudioItemObserver(TAG)
+        _binding = null
+        viewModel.isDestroyed = true
+        super.onDestroyView()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
