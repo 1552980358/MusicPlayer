@@ -56,7 +56,8 @@ object DatabaseUtil {
                           callback: (List<AudioItem>) -> Unit) = runBlocking {
         launch { context.loadAudioArt40Dp(audioArtMap) }
         launch { context.loadAlbumArts40Dp(albumArtMap) }
-        database.audio.query().apply {
+        database.audio.query().toMutableList().apply {
+            this.sortBy { it.pinyin }
             forEachIndexed { index, audioItem ->
                 audioItem.index = index
                 audioItem.albumItem = database.album.query(audioItem.album)
