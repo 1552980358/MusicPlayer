@@ -21,6 +21,8 @@
         android:title="@string/nav_playlist"
         android:icon="@drawable/ic_playlist" />
 
-    <item android:title="" />
+    <item
+        android:title=""
+        android:enabled="false" />
 
 </menu>
