@@ -26,6 +26,7 @@ import projekt.cloud.piece.music.player.database.AudioDatabase
 import projekt.cloud.piece.music.player.database.AudioDatabase.Companion.DATABASE_NAME
 import projekt.cloud.piece.music.player.databinding.ActivityMainBinding
 import projekt.cloud.piece.music.player.service.PlayService
+import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_PLAY_CONFIG
 import projekt.cloud.piece.music.player.util.Constant.DELAY_MILLIS
 
 class MainActivity : AppCompatActivity() {
@@ -118,6 +119,7 @@ class MainActivity : AppCompatActivity() {
                 viewModel.isPlaying = false
             }
         }
+        state.extras?.getInt(EXTRA_PLAY_CONFIG)?.let { viewModel.playConfig = it }
     }
 
     private fun onMetadataChanged(metadata: MediaMetadataCompat) {
