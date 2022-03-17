@@ -14,4 +14,8 @@ open class BaseFragment: Fragment() {
         activityViewModel = ViewModelProvider(requireActivity())[MainActivityViewModel::class.java]
     }
 
+    open fun onBackPressed() = true
+
+    val canBackStack get() = onBackPressed()
+
 }
