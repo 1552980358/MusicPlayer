@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="position"
+            type="String" />
+
+        <variable
+            name="audioItem"
+            type="projekt.cloud.piece.music.player.database.item.AudioItem" />
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:padding="10dp"
+        android:id="@+id/root">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/text_view_position"
+            android:gravity="center"
+            android:text="@{position, default = ``}" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_view_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/text_view_position"
+            android:maxLines="1"
+            android:text="@{audioItem.title, default = ``}"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="@dimen/title_text_size" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toEndOf="@id/text_view_position"
+            android:layout_below="@id/text_view_title"
+            android:maxLines="1"
+            android:text="@{audioItem.artistItem.name + ` - ` + audioItem.albumItem.title}" />
+
+    </RelativeLayout>
+
+</layout>
