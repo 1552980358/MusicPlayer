@@ -39,7 +39,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/bottom_nav_margin_horizontal"
-                android:id="@+id/bottom_navigation"/>
+                android:id="@+id/bottom_navigation"
+                app:menu="@menu/menu_bottom_navigation_main" />
 
         </com.google.android.material.bottomappbar.BottomAppBar>
 
