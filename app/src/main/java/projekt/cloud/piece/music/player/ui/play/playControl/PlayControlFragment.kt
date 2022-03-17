@@ -84,6 +84,7 @@ class PlayControlFragment: BaseFragment() {
 
         }
         activityViewModel.setPlaylistObserver(TAG) { playlist -> recyclerViewAdapterUtil.playlist = playlist }
+        activityViewModel.getPlaylistSync()
 
         contentControl.floatingActionButton.setOnClickListener {
             when {
@@ -179,6 +180,7 @@ class PlayControlFragment: BaseFragment() {
                 }
             }
         }
+        activityViewModel.getPlaylistSync()
     }
 
     private fun updateColor(backgroundColor: Int, primaryColor: Int, secondaryColor: Int) {
@@ -210,6 +212,12 @@ class PlayControlFragment: BaseFragment() {
 
     override fun onDestroyView() {
         activityViewModel.setAudioItemObserver(TAG)
+        activityViewModel.setAudioItemObserver(TAG)
+        activityViewModel.setPlayStateObserver(TAG)
+        activityViewModel.setProgressObservers(TAG)
+        activityViewModel.setPlayConfigObserver(TAG)
+        activityViewModel.setPlaylistObserver(TAG)
+        activityViewModel.playList = null
         super.onDestroyView()
     }
 
