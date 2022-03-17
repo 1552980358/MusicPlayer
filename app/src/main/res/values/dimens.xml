@@ -7,6 +7,12 @@
     <dimen name="md_spec_list_margins_horizontal">16dp</dimen>
     <dimen name="md_spec_list_button_size">24dp</dimen>
 
+    <dimen name="md_spec_icon_margins">16dp</dimen>
+
+    <dimen name="linear_layout_weighted_length">0dp</dimen>
+
+    <dimen name="md_spec_double_line_list_height">64dp</dimen>
+
     <dimen name="nav_header_height">120dp</dimen>
     <dimen name="nav_header_margin_top">16dp</dimen>
     <dimen name="nav_header_icon_size">48dp</dimen>
@@ -29,5 +35,7 @@
     <dimen name="view_recycler_lyric_padding_vertical">5dp</dimen>
 
     <dimen name="play_control_seekbar_height">15dp</dimen>
+
+    <dimen name="play_control_control_fab_border_width">0dp</dimen>
 
 </resources>
