@@ -76,11 +76,6 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
 
         }
 
-        with(extendedFloatingActionButton) {
-            hide()
-            setAnimateShowBeforeLayout(true)
-        }
-
         activityViewModel.setAudioItemObserver(TAG) { audioItem ->
             io {
                 val drawable = BitmapDrawable(
@@ -96,9 +91,6 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
                             backgroundTintList = valueOf(backgroundColor)
                             if (text != audioItem.title) {
                                 text = audioItem.title
-                            }
-                            if (!isShown) {
-                                show()
                             }
                             if (!isExtended) {
                                 extend()
