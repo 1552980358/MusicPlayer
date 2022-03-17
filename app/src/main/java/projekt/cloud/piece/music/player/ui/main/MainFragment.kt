@@ -10,10 +10,15 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.NavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
+import com.google.android.material.transition.Hold
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import lib.github1552980358.ktExtension.androidx.fragment.app.getColor
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.R
@@ -39,11 +44,18 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
     private val defaultCoverArt get() = activityViewModel.defaultCoverArt
     private val database get() = activityViewModel.database
 
+    private lateinit var navController: NavController
     private var countJob: Job? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        exitTransition = Hold()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false)
         bottomNavigation.background = null
+        navController = findNavController()
         return binding.root
     }
 
@@ -114,6 +126,11 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
             }
         }
 
+    }
+
+    override fun onResume() {
+        requireActivity().window.statusBarColor = getColor(R.color.purple_500)
+        super.onResume()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
