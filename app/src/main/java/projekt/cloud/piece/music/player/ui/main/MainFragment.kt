@@ -11,6 +11,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.google.android.material.navigation.NavigationBarView.OnItemReselectedListener
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -21,7 +22,7 @@ import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.databinding.FragmentMainBinding
 import projekt.cloud.piece.music.player.ui.main.home.HomeFragment
 
-class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
+class MainFragment: BaseFragment(), OnNavigationItemSelectedListener, OnItemReselectedListener {
 
     companion object {
         private const val TAG = "MainFragment"
@@ -49,8 +50,6 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        bottomNavigation.menu.getItem(bottomNavigation.menu.size() - 1).isEnabled = false
-
         (requireActivity() as AppCompatActivity).apply {
             setSupportActionBar(toolbar)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -64,6 +63,8 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
             }
         }
         binding.navigationView.setNavigationItemSelectedListener(this)
+
+        appBarMain.bottomNavigation.setOnItemReselectedListener(this)
 
         with(appBarMain.viewPager) {
 
@@ -121,6 +122,12 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         return true
+    }
+
+    override fun onNavigationItemReselected(item: MenuItem) {
+        when (item.itemId) {
+
+        }
     }
 
 }
