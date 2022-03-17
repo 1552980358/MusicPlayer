@@ -8,4 +8,6 @@
     <string name="nav_artist">Artist</string>
     <string name="nav_playlist">Playlist</string>
 
+    <string name="play_control_bottom_sheet_queue">Queue</string>
+
 </resources>
