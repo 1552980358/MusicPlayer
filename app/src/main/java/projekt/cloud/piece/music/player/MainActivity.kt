@@ -82,6 +82,10 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                         mediaControllerCompat.registerCallback(mediaControllerCallback)
+
+                        if (viewModel.requireSyncPlaylist) {
+                            viewModel.requireSyncPlaylist = false
+                        }
                     }
                     override fun onConnectionSuspended() = Unit
                     override fun onConnectionFailed() = Unit
