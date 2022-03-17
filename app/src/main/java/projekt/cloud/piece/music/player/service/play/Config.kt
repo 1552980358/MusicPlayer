@@ -22,13 +22,12 @@ object Config {
         }
         return temp
     }
-    
-    const val FOREGROUND_SERVICE = 0
-    
+
     val Int.shl get() = (1 shl this)
-    
-    const val PLAY_CONFIG_SHUFFLE = 0
-    const val PLAY_CONFIG_REPEAT = 1
-    const val PLAY_CONFIG_REPEAT_ONE = 2
+
+    const val SERVICE_CONFIG_FOREGROUND_SERVICE = 0
+    const val PLAY_CONFIG_SHUFFLE = 1
+    const val PLAY_CONFIG_REPEAT = 2
+    const val PLAY_CONFIG_REPEAT_ONE = 3
 
 }
