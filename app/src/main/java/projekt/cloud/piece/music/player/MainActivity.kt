@@ -12,15 +12,21 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
+import androidx.core.view.WindowCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.room.Room
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import lib.github1552980358.ktExtension.kotlinx.coroutines.io
+import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.database.AudioDatabase
 import projekt.cloud.piece.music.player.database.AudioDatabase.Companion.DATABASE_NAME
 import projekt.cloud.piece.music.player.databinding.ActivityMainBinding
 import projekt.cloud.piece.music.player.service.PlayService
+import projekt.cloud.piece.music.player.util.Constant.DELAY_MILLIS
 
 class MainActivity : AppCompatActivity() {
 
@@ -41,6 +47,10 @@ class MainActivity : AppCompatActivity() {
     private var progressJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        delegate.installViewFactory()
+        delegate.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -76,7 +86,6 @@ class MainActivity : AppCompatActivity() {
                     override fun onConnectionFailed() = Unit
                 }, null
             )
-
         }
 
     }
