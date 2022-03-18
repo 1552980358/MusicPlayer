@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -18,14 +19,19 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.google.android.material.transition.Hold
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import lib.github1552980358.ktExtension.android.content.intent
 import lib.github1552980358.ktExtension.androidx.fragment.app.getColor
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.R
+import projekt.cloud.piece.music.player.ThemeSwitchActivity
+import projekt.cloud.piece.music.player.ThemeSwitchActivity.Companion.EXTRA_IS_NIGHT
+import projekt.cloud.piece.music.player.ThemeSwitchActivity.Companion.setScreenshot
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.databinding.FragmentMainBinding
 import projekt.cloud.piece.music.player.ui.main.album.AlbumFragment
 import projekt.cloud.piece.music.player.ui.main.home.HomeFragment
+import projekt.cloud.piece.music.player.util.ViewUtil.screenshot
 
 class MainFragment: BaseFragment() {
 
@@ -112,6 +118,21 @@ class MainFragment: BaseFragment() {
                     MainFragmentDirections.actionNavMainToNavPlay(),
                     FragmentNavigatorExtras(extendedFloatingActionButton to extendedFloatingActionButton.transitionName)
                 )
+            }
+        }
+
+        activityViewModel.initialIsNightMode(requireContext())
+
+        binding.navigationView.getHeaderView(0).findViewById<RelativeLayout>(R.id.relative_layout).setOnClickListener {
+            binding.root.screenshot(requireActivity().window) { screenshot ->
+                setScreenshot(screenshot)
+                with(activityViewModel) {
+                    isNightMode = !isNightMode
+                    startActivity(intent(requireContext(), ThemeSwitchActivity::class.java) {
+                        putExtra(EXTRA_IS_NIGHT, isNightMode)
+                    })
+                    requireActivity().overridePendingTransition(0, 0)
+                }
             }
         }
 
