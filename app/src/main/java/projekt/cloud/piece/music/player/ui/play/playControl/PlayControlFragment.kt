@@ -134,9 +134,12 @@ class PlayControlFragment: BaseFragment() {
                         compareAxis(rawX, rawY, imageViewNext, rawAxis) ->
                             transportControls.skipToNext()
 
-                        compareAxis(rawX, rawY, imageViewShuffle, rawAxis) -> activityViewModel.updatePlayConfig(
-                            activityViewModel.playConfig.run { setConfig(PLAY_CONFIG_SHUFFLE, !getConfig(PLAY_CONFIG_SHUFFLE)) }
-                        )
+                        compareAxis(rawX, rawY, imageViewShuffle, rawAxis) -> {
+                            recyclerViewAdapterUtil.hasShuffled = true
+                            activityViewModel.updatePlayConfig(
+                                activityViewModel.playConfig.run { setConfig(PLAY_CONFIG_SHUFFLE, !getConfig(PLAY_CONFIG_SHUFFLE)) }
+                            )
+                        }
 
                     }
                 }

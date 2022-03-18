@@ -56,7 +56,7 @@ class RecyclerViewAdapterUtil(private val recyclerView: RecyclerView, private va
 
     private val adapter = RecyclerViewAdapter()
 
-    private var hasShuffled = false
+    var hasShuffled = false
 
     init {
         recyclerView.adapter = adapter
