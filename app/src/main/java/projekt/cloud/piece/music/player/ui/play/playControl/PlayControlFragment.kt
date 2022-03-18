@@ -1,9 +1,13 @@
 package projekt.cloud.piece.music.player.ui.play.playControl
 
 import android.animation.ValueAnimator.ofArgb
+import android.bluetooth.BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED
+import android.content.Context.AUDIO_SERVICE
 import android.graphics.Color.BLACK
 import android.graphics.Color.WHITE
 import android.graphics.drawable.RippleDrawable
+import android.media.AudioManager
+import android.media.AudioManager.ACTION_HEADSET_PLUG
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent.ACTION_CANCEL
@@ -15,8 +19,11 @@ import androidx.cardview.widget.CardView
 import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
+import lib.github1552980358.ktExtension.android.content.broadcastReceiver
+import lib.github1552980358.ktExtension.android.content.register
 import lib.github1552980358.ktExtension.android.view.heightF
 import lib.github1552980358.ktExtension.android.view.widthF
+import lib.github1552980358.ktExtension.androidx.fragment.app.getDrawable
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.R
@@ -30,6 +37,7 @@ import projekt.cloud.piece.music.player.service.play.Config.getConfig
 import projekt.cloud.piece.music.player.service.play.Config.setConfig
 import projekt.cloud.piece.music.player.ui.play.playControl.util.RecyclerViewAdapterUtil
 import projekt.cloud.piece.music.player.util.ActivityUtil.pixelHeight
+import projekt.cloud.piece.music.player.util.AudioUtil.deviceDrawableId
 import projekt.cloud.piece.music.player.util.ColorUtil.isLight
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArtRaw
@@ -56,6 +64,19 @@ class PlayControlFragment: BaseFragment() {
     private val transportControls get() = activityViewModel.mediaControllerCompat.transportControls
 
     private lateinit var recyclerViewAdapterUtil: RecyclerViewAdapterUtil
+
+    private lateinit var audioManager: AudioManager
+
+    private val broadcastReceiver = broadcastReceiver { _, intent, _ ->
+        when (intent?.action) {
+            ACTION_HEADSET_PLUG, ACTION_CONNECTION_STATE_CHANGED -> bottom.device = getDrawable(audioManager.deviceDrawableId)
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        audioManager = requireContext().getSystemService(AUDIO_SERVICE) as AudioManager
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_play_control, container, false)
@@ -95,6 +116,9 @@ class PlayControlFragment: BaseFragment() {
                 else -> transportControls.play()
             }
         }
+
+        bottom.device = getDrawable(audioManager.deviceDrawableId)
+        broadcastReceiver.register(requireContext(), ACTION_HEADSET_PLUG, ACTION_CONNECTION_STATE_CHANGED)
 
         @Suppress("ClickableViewAccessibility")
         with(contentControl.root) {
@@ -229,6 +253,7 @@ class PlayControlFragment: BaseFragment() {
         activityViewModel.setProgressObservers(TAG)
         activityViewModel.setPlayConfigObserver(TAG)
         activityViewModel.setPlaylistObserver(TAG)
+        requireContext().unregisterReceiver(broadcastReceiver)
         activityViewModel.playList = null
         super.onDestroyView()
     }
