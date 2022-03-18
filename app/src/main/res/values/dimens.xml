@@ -11,6 +11,7 @@
 
     <dimen name="md_spec_list_single_padding_vertical">8dp</dimen>
     <dimen name="md_spec_list_single_height">56dp</dimen>
+    <dimen name="md_spec_fab_margin">16dp</dimen>
 
     <dimen name="linear_layout_weighted_length">0dp</dimen>
 
