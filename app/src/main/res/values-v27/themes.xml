@@ -5,4 +5,8 @@
         <item name="android:windowLightNavigationBar">true</item>
     </style>
 
+    <style name="Theme.MusicPlayer.ThemeSwitchActivity" parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.Transparent">
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
 </resources>

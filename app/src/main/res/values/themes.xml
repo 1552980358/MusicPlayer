@@ -26,6 +26,20 @@
 
     <style name="Theme.MusicPlayer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
+    <style name="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.Transparent"
+        parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="Theme.MusicPlayer.ThemeSwitchActivity" parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar.Transparent">
+        <item name="android:windowLightNavigationBar" tools:targetApi="p">true</item>
+    </style>
+
     <style name="Theme.MusicPlayer.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="Theme.MusicPlayer.ExtendedFloatingActionBar" parent="Widget.MaterialComponents.ExtendedFloatingActionButton.Icon">
