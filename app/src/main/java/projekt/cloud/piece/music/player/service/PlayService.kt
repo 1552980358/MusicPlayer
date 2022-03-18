@@ -64,6 +64,8 @@ import projekt.cloud.piece.music.player.service.play.SharedPreferencesUtil.DEFAU
 import projekt.cloud.piece.music.player.service.play.SharedPreferencesUtil.hasConfig
 import projekt.cloud.piece.music.player.service.play.SharedPreferencesUtil.readConfigs
 import projekt.cloud.piece.music.player.service.play.SharedPreferencesUtil.writeConfigs
+import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArtRaw
+import projekt.cloud.piece.music.player.util.ImageUtil.loadAudioArtRaw
 import projekt.cloud.piece.music.player.util.ServiceUtil.startService
 
 class PlayService: MediaBrowserServiceCompat(), Listener {
@@ -259,7 +261,14 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                 if (!::playlist.isInitialized || current !in 0 .. playlist.lastIndex) {
                     return super.onStartCommand(intent, flags, startId)
                 }
-                val notification = createNotification(playlist[current], false, defaultCoverArt)
+                val notification =
+                    createNotification(
+                        playlist[current],
+                        false,
+                        loadAudioArtRaw(playlist[current].id)
+                            ?: loadAlbumArtRaw(playlist[current].album)
+                            ?: defaultCoverArt
+                    )
                 when {
                     !configs.getConfig(SERVICE_CONFIG_FOREGROUND_SERVICE) -> {
                         configs = configs.setConfig(SERVICE_CONFIG_FOREGROUND_SERVICE, true)
@@ -269,7 +278,14 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                 }
             }
             START_COMMAND_ACTION_PAUSE -> {
-                val notification = createNotification(playlist[current], true, defaultCoverArt)
+                val notification =
+                    createNotification(
+                        playlist[current],
+                        true,
+                        loadAudioArtRaw(playlist[current].id)
+                            ?: loadAlbumArtRaw(playlist[current].album)
+                            ?: defaultCoverArt
+                    )
                 startForeground(notification)
                 stopForeground(false)
             }
