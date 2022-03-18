@@ -82,7 +82,9 @@ class PlayControlFragment: BaseFragment() {
         activityViewModel.setPlayConfigObserver(TAG) { playConfig -> contentControl.playConfig = playConfig }
 
         recyclerViewAdapterUtil = RecyclerViewAdapterUtil(recyclerView) {
-
+            activityViewModel.playList?.let { playlist ->
+                activityViewModel.mediaControllerCompat.transportControls.skipToQueueItem(playlist[it].index.toLong())
+            }
         }
         activityViewModel.setPlaylistObserver(TAG) { playlist -> recyclerViewAdapterUtil.playlist = playlist }
         activityViewModel.getPlaylistSync()
