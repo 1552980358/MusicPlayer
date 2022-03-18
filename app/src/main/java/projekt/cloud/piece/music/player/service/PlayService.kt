@@ -38,6 +38,8 @@ import com.google.android.exoplayer2.ExoPlayer.STATE_ENDED
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player.Listener
 import kotlinx.coroutines.Job
+import lib.github1552980358.ktExtension.android.content.broadcastReceiver
+import lib.github1552980358.ktExtension.android.content.register
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
 import projekt.cloud.piece.music.player.R
@@ -45,6 +47,10 @@ import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_PLAY_CONFIG_CHANGED
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_REQUEST_LIST
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_SYNC_SERVICE
+import projekt.cloud.piece.music.player.service.play.Action.BROADCAST_ACTION_NEXT
+import projekt.cloud.piece.music.player.service.play.Action.BROADCAST_ACTION_PAUSE
+import projekt.cloud.piece.music.player.service.play.Action.BROADCAST_ACTION_PLAY
+import projekt.cloud.piece.music.player.service.play.Action.BROADCAST_ACTION_PREV
 import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION
 import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION_PAUSE
 import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION_PLAY
@@ -212,6 +218,15 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
 
     }
 
+    private val broadcastReceiver = broadcastReceiver { _, intent, _ ->
+        when (intent?.action) {
+            BROADCAST_ACTION_PLAY -> mediaSessionCompat.controller.transportControls.play()
+            BROADCAST_ACTION_PAUSE -> mediaSessionCompat.controller.transportControls.pause()
+            BROADCAST_ACTION_PREV -> mediaSessionCompat.controller.transportControls.skipToPrevious()
+            BROADCAST_ACTION_NEXT -> mediaSessionCompat.controller.transportControls.skipToNext()
+        }
+    }
+
     private lateinit var exoPlayer: ExoPlayer
 
     private lateinit var playlist: List<AudioItem>
@@ -253,6 +268,8 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
         exoPlayer = Builder(this).build()
         exoPlayer.addListener(this)
 
+        broadcastReceiver.register(this, BROADCAST_ACTION_PLAY, BROADCAST_ACTION_PAUSE, BROADCAST_ACTION_PREV, BROADCAST_ACTION_NEXT)
+
         notificationManagerCompat = createNotificationManager
 
         defaultCoverArt = getDrawable(resources, R.drawable.ic_music, null)!!.toBitmap()
@@ -285,6 +302,11 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
             else -> Unit
         }
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    override fun onDestroy() {
+        unregisterReceiver(broadcastReceiver)
+        super.onDestroy()
     }
 
     override fun onCustomAction(action: String, extras: Bundle?, result: Result<Bundle>) {
