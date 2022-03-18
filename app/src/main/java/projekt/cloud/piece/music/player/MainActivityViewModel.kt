@@ -1,5 +1,6 @@
 package projekt.cloud.piece.music.player
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
@@ -7,6 +8,7 @@ import android.support.v4.media.MediaBrowserCompat.CustomActionCallback
 import android.support.v4.media.session.MediaControllerCompat
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
+import lib.github1552980358.ktExtension.android.content.isSystemDarkMode
 import projekt.cloud.piece.music.player.database.AudioDatabase
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_PLAY_CONFIG_CHANGED
@@ -19,6 +21,13 @@ import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_CONFIGS
 class MainActivityViewModel: ViewModel() {
 
     var isLoaded = false
+
+    var isNightMode = false
+    fun initialIsNightMode(context: Context) {
+        if (!isLoaded) {
+            isNightMode = context.isSystemDarkMode
+        }
+    }
 
     lateinit var database: AudioDatabase
     lateinit var defaultCoverArt: Bitmap
