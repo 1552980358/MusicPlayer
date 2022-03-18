@@ -22,6 +22,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
+import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.database.AudioDatabase
 import projekt.cloud.piece.music.player.database.AudioDatabase.Companion.DATABASE_NAME
 import projekt.cloud.piece.music.player.databinding.ActivityMainBinding
@@ -104,6 +105,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+    }
+
+    override fun onBackPressed() {
+        when (val currentFragment = supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first()) {
+            is BaseFragment -> if (currentFragment.canBackStack) {
+                super.onBackPressed()
+            }
+            else -> super.onBackPressed()
+        }
     }
 
     override fun onDestroy() {
