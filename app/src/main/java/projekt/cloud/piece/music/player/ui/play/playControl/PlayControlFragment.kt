@@ -63,7 +63,7 @@ class PlayControlFragment: BaseFragment() {
             layoutParams = layoutParams.apply { height = resources.displayMetrics.widthPixels }
         }
         val bottomHeight = requireActivity().pixelHeight - resources.displayMetrics.widthPixels
-        contentControl.root.apply {
+        contentControl.linearLayoutWrapper.apply {
             layoutParams = layoutParams.apply { height = bottomHeight * 2 / 5 }
         }
         bottomSheetBehavior = BottomSheetBehavior.from(bottom.root)
@@ -97,60 +97,58 @@ class PlayControlFragment: BaseFragment() {
         }
 
         @Suppress("ClickableViewAccessibility")
-        contentControl.linearLayout.setOnTouchListener { _, motionEvent ->
+        with(contentControl.root) {
+            setOnTouchListener { _, motionEvent ->
 
-            when (motionEvent.action) {
-                ACTION_DOWN -> {
-                    (contentControl.root.background as RippleDrawable).setHotspot(
-                        motionEvent.x + contentControl.linearLayout.x,
-                        motionEvent.y + contentControl.linearLayout.y
-                    )
-                    contentControl.root.isPressed = true
-                }
-                ACTION_CANCEL -> contentControl.root.isPressed = false
-                ACTION_UP -> {
-                    contentControl.root.isPressed = false
-                    val rawX = motionEvent.rawX
-                    val rawY = motionEvent.rawY
-                    val rawAxis = IntArray(2)
-                    when {
+                when (motionEvent.action) {
+                    ACTION_DOWN -> {
+                        (background as RippleDrawable).setHotspot(motionEvent.x, motionEvent.y)
+                        isPressed = true
+                    }
+                    ACTION_CANCEL -> isPressed = false
+                    ACTION_UP -> {
+                        isPressed = false
+                        val rawX = motionEvent.rawX
+                        val rawY = motionEvent.rawY
+                        val rawAxis = IntArray(2)
+                        when {
 
-                        compareAxis(rawX, rawY, imageViewCycle, rawAxis) -> {
-                            var playConfig = activityViewModel.playConfig
-                            val repeat = playConfig.getConfig(PLAY_CONFIG_REPEAT)
-                            val repeatOne = playConfig.getConfig(PLAY_CONFIG_REPEAT_ONE)
-                            when {
-                                repeat && !repeatOne ->
-                                    playConfig = playConfig.setConfig(PLAY_CONFIG_REPEAT, false)
-                                        .setConfig(PLAY_CONFIG_REPEAT_ONE, true)
-                                !repeat && repeatOne ->
-                                    playConfig = playConfig.setConfig(PLAY_CONFIG_REPEAT_ONE, false)
-                                !repeat && !repeatOne ->
-                                    playConfig = playConfig.setConfig(PLAY_CONFIG_REPEAT, true)
+                            compareAxis(rawX, rawY, imageViewCycle, rawAxis) -> {
+                                var playConfig = activityViewModel.playConfig
+                                val repeat = playConfig.getConfig(PLAY_CONFIG_REPEAT)
+                                val repeatOne = playConfig.getConfig(PLAY_CONFIG_REPEAT_ONE)
+                                when {
+                                    repeat && !repeatOne ->
+                                        playConfig = playConfig.setConfig(PLAY_CONFIG_REPEAT, false)
+                                            .setConfig(PLAY_CONFIG_REPEAT_ONE, true)
+                                    !repeat && repeatOne ->
+                                        playConfig = playConfig.setConfig(PLAY_CONFIG_REPEAT_ONE, false)
+                                    !repeat && !repeatOne ->
+                                        playConfig = playConfig.setConfig(PLAY_CONFIG_REPEAT, true)
+                                }
+                                activityViewModel.updatePlayConfig(playConfig)
                             }
-                            activityViewModel.updatePlayConfig(playConfig)
+
+                            compareAxis(rawX, rawY, imageViewPrev, rawAxis) ->
+                                transportControls.skipToPrevious()
+
+                            compareAxis(rawX, rawY, imageViewNext, rawAxis) ->
+                                transportControls.skipToNext()
+
+                            compareAxis(rawX, rawY, imageViewShuffle, rawAxis) -> {
+                                recyclerViewAdapterUtil.hasShuffled = true
+                                activityViewModel.updatePlayConfig(
+                                    activityViewModel.playConfig.run { setConfig(PLAY_CONFIG_SHUFFLE, !getConfig(PLAY_CONFIG_SHUFFLE)) }
+                                )
+                            }
+
                         }
-
-                        compareAxis(rawX, rawY, imageViewPrev, rawAxis) ->
-                            transportControls.skipToPrevious()
-
-                        compareAxis(rawX, rawY, imageViewNext, rawAxis) ->
-                            transportControls.skipToNext()
-
-                        compareAxis(rawX, rawY, imageViewShuffle, rawAxis) -> {
-                            recyclerViewAdapterUtil.hasShuffled = true
-                            activityViewModel.updatePlayConfig(
-                                activityViewModel.playConfig.run { setConfig(PLAY_CONFIG_SHUFFLE, !getConfig(PLAY_CONFIG_SHUFFLE)) }
-                            )
-                        }
-
                     }
                 }
+
+                true
             }
-
-            true
         }
-
     }
 
     override fun onBackPressed(): Boolean {
