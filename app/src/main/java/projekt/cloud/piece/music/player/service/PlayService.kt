@@ -255,12 +255,12 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
             .addCustomAction(ACTION_SYNC_SERVICE, ACTION_SYNC_SERVICE, R.drawable.ic_launcher_foreground)
             .addCustomAction(ACTION_PLAY_CONFIG_CHANGED, ACTION_PLAY_CONFIG_CHANGED, R.drawable.ic_launcher_foreground)
             .addCustomAction(ACTION_REQUEST_LIST, ACTION_REQUEST_LIST, R.drawable.ic_launcher_foreground)
+            .setExtras(bundleOf(EXTRA_CONFIGS to configs))
             .build()
 
         mediaSessionCompat = MediaSessionCompat(this, ROOT_ID).apply {
             setCallback(mediaSessionCallback)
             setPlaybackState(playbackStateCompat)
-            setExtras(bundleOf(EXTRA_CONFIGS to configs))
         }
 
         sessionToken = mediaSessionCompat.sessionToken
