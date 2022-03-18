@@ -180,6 +180,11 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
             onPlayAudioItem(playlist[++current])
         }
 
+        override fun onSkipToQueueItem(id: Long) {
+            current = id.toInt()
+            onPlayAudioItem(playlist[current])
+        }
+
         override fun onSeekTo(pos: Long) {
             Log.e(TAG, "onSeekTo $pos")
 
