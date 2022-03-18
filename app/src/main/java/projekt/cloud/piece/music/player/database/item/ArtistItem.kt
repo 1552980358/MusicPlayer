@@ -1,14 +1,12 @@
 package projekt.cloud.piece.music.player.database.item
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import projekt.cloud.piece.c2pinyin.pinyin
+import projekt.cloud.piece.music.player.database.base.BaseTitledItem
 import java.io.Serializable
 
 @Entity(tableName = "artist")
-data class ArtistItem(
-    @PrimaryKey @ColumnInfo(name = "id") val id: String,
-    @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "pinyin") val pinyin: String = name.pinyin
-): Serializable
+class ArtistItem(
+    id: String,
+    title: String
+): BaseTitledItem(id, title, title.pinyin), Serializable

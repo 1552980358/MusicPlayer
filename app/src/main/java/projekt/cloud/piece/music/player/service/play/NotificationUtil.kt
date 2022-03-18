@@ -62,7 +62,7 @@ object NotificationUtil {
         .setVibrate(longArrayOf(0))
         .setSilent(true)
         .setContentTitle(audioItem.title)
-        .setContentText("${audioItem.artistItem.name} - ${audioItem.albumItem.title}")
+        .setContentText("${audioItem.artistItem.title} - ${audioItem.albumItem.title}")
         .setLargeIcon(largeBitmap)
         .addAction(R.drawable.ic_prev, null, getBroadcast(this, 0, Intent(BROADCAST_ACTION_PREV), pendingIntentFlag))
         .getPlayPauseAction(this, isPaused)

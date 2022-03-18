@@ -4,15 +4,16 @@ import android.graphics.Color.BLACK
 import android.graphics.Color.parseColor
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
+import projekt.cloud.piece.music.player.database.base.BaseItem
+import java.io.Serializable
 
 @Entity(tableName = "color")
-data class ColorItem(
-    @PrimaryKey @ColumnInfo(name = "id") val id: String,
+class ColorItem(
+    id: String,
     @ColumnInfo(name = "type") val type: Int,
-    @ColumnInfo(name = "backgroundColor") val backgroundColor: Int = parseColor("#FFE1E1E1"),
-    @ColumnInfo(name = "primaryColor") val primaryColor: Int = BLACK,
-    @ColumnInfo(name = "secondaryColor") val secondaryColor: Int = BLACK) {
+    @ColumnInfo(name = "backgroundColor") var backgroundColor: Int = parseColor("#FFE1E1E1"),
+    @ColumnInfo(name = "primaryColor") var primaryColor: Int = BLACK,
+    @ColumnInfo(name = "secondaryColor") var secondaryColor: Int = BLACK): BaseItem(id), Serializable {
     
     companion object {
         const val TYPE_AUDIO = 0

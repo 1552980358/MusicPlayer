@@ -53,7 +53,7 @@
             android:layout_toStartOf="@id/image_view_more"
             android:layout_toEndOf="@id/image_view_image"
             android:maxLines="1"
-            android:text="@{audioItem.artistItem.name + ` - ` + audioItem.albumItem.title, default = ``}"
+            android:text="@{audioItem.artistItem.title + ` - ` + audioItem.albumItem.title, default = ``}"
             android:textSize="@dimen/subtitle_text_size" />
 
         <androidx.appcompat.widget.AppCompatImageView

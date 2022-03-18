@@ -71,7 +71,7 @@
                         android:id="@+id/text_view_subtitle"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        app:textAnimated="@{audioItem == null ? `` : audioItem.artistItem.name + ` - ` + audioItem.albumItem.title}" />
+                        app:textAnimated="@{audioItem == null ? `` : audioItem.artistItem.title + ` - ` + audioItem.albumItem.title}" />
 
                 </LinearLayout>
 
