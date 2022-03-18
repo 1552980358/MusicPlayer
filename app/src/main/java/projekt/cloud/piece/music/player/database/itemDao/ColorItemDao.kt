@@ -11,6 +11,9 @@ interface ColorItemDao {
     
     @Query("select * from color")
     fun query(): List<ColorItem>
+
+    @Query("select * from color where id=:id")
+    fun query(id: String): ColorItem
     
     @Query("select * from color where id=:audioId or id=:albumId order by type limit 1")
     fun query(audioId: String, albumId: String): ColorItem
