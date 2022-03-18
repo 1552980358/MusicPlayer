@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import lib.github1552980358.ktExtension.android.view.heightF
 import lib.github1552980358.ktExtension.android.view.widthF
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
@@ -148,6 +149,14 @@ class PlayControlFragment: BaseFragment() {
             true
         }
 
+    }
+
+    override fun onBackPressed(): Boolean {
+        if (bottomSheetBehavior.state != STATE_COLLAPSED) {
+            bottomSheetBehavior.state = STATE_COLLAPSED
+            return false
+        }
+        return super.onBackPressed()
     }
 
     private fun updateAudioItem(audioItem: AudioItem) = io {
