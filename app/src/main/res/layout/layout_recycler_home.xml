@@ -31,10 +31,12 @@
             android:id="@+id/text_view_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:layout_marginStart="@dimen/md_spec_list_margins_horizontal"
             android:layout_marginEnd="@dimen/md_spec_list_margins_horizontal"
             android:layout_toStartOf="@id/image_view_more"
             android:layout_toEndOf="@id/image_view_image"
+            android:maxLines="1"
             android:text="@{audioItem.title, default = ``}"
             android:textSize="@dimen/title_text_size" />
 
@@ -42,13 +44,15 @@
             android:id="@+id/subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:layout_below="@id/text_view_title"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="@dimen/md_spec_list_margins_horizontal"
             android:layout_marginEnd="@dimen/md_spec_list_margins_horizontal"
             android:layout_toStartOf="@id/image_view_more"
             android:layout_toEndOf="@id/image_view_image"
-            android:text="@{audioItem.title, default = ``}"
+            android:maxLines="1"
+            android:text="@{audioItem.artistItem.name + ` - ` + audioItem.albumItem.title, default = ``}"
             android:textSize="@dimen/subtitle_text_size" />
 
         <androidx.appcompat.widget.AppCompatImageView
