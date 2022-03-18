@@ -38,6 +38,7 @@
             android:layout_toEndOf="@id/image_view_image"
             android:maxLines="1"
             android:text="@{audioItem.title, default = ``}"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/title_text_size" />
 
         <androidx.appcompat.widget.AppCompatTextView
