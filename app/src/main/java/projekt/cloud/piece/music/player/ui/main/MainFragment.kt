@@ -4,7 +4,6 @@ import android.content.res.ColorStateList.valueOf
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -15,7 +14,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.google.android.material.transition.Hold
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -25,9 +24,10 @@ import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.databinding.FragmentMainBinding
+import projekt.cloud.piece.music.player.ui.main.album.AlbumFragment
 import projekt.cloud.piece.music.player.ui.main.home.HomeFragment
 
-class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
+class MainFragment: BaseFragment() {
 
     companion object {
         private const val TAG = "MainFragment"
@@ -37,6 +37,7 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
     private val binding get() = _binding!!
     private val appBarMain get() = binding.appBarMain
     private val toolbar get() = appBarMain.toolbar
+    private val viewPager get() = appBarMain.viewPager
     private val bottomNavigation get() = appBarMain.bottomNavigation
     private val extendedFloatingActionButton get() = appBarMain.extendedFloatingActionButton
 
@@ -77,12 +78,12 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
                 syncState()
             }
         }
-        binding.navigationView.setNavigationItemSelectedListener(this)
 
         with(appBarMain.viewPager) {
 
             val fragments = listOf(
-                HomeFragment()
+                HomeFragment(),
+                AlbumFragment()
             )
 
             adapter = object : FragmentStateAdapter(this@MainFragment) {
@@ -90,6 +91,19 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
                 override fun createFragment(position: Int) = fragments[position]
             }
 
+        }
+
+        val bottomNavigationItems = listOf(R.id.nav_home, R.id.nav_album)
+
+        viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                bottomNavigation.menu.getItem(position).isChecked = true
+            }
+        })
+
+        bottomNavigation.setOnItemSelectedListener {
+            viewPager.currentItem = bottomNavigationItems.indexOfFirst { id -> id == it.itemId }
+            true
         }
 
         extendedFloatingActionButton.setOnClickListener {
@@ -160,10 +174,6 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
         _binding = null
         viewModel.isDestroyed = true
         super.onDestroyView()
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        return true
     }
 
 }
