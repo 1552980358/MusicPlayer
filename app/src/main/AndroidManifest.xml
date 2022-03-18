@@ -41,6 +41,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ThemeSwitchActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MusicPlayer.ThemeSwitchActivity" />
+
     </application>
 
 </manifest>
