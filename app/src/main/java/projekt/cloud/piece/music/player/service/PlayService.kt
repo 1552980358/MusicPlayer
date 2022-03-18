@@ -312,7 +312,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
     override fun onCustomAction(action: String, extras: Bundle?, result: Result<Bundle>) {
         when (action) {
             ACTION_PLAY_CONFIG_CHANGED -> {
-                if (extras == null || extras.containsKey(EXTRA_CONFIGS)) {
+                if (extras == null || !extras.containsKey(EXTRA_CONFIGS)) {
                     return result.sendResult(null)
                 }
                 configs = extras.getInt(EXTRA_CONFIGS)
