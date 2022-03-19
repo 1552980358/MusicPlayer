@@ -47,19 +47,29 @@ class PlayFragment: BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = MaterialContainerTransform()
-        (sharedElementEnterTransition as Transition).addListener(object : TransitionListener {
-            override fun onTransitionStart(transition: Transition) {
-            }
-            override fun onTransitionEnd(transition: Transition) {
-                requireActivity().window.statusBarColor = TRANSPARENT
-            }
-            override fun onTransitionCancel(transition: Transition) {
-            }
-            override fun onTransitionPause(transition: Transition) {
-            }
-            override fun onTransitionResume(transition: Transition) {
-            }
-        })
+
+        /**
+         * Please look at the lifecycle of Fragment,
+         * an [onSaveInstanceState] is called when the restart of fragment is triggered,
+         * and [savedInstanceState] instance is created
+         * Hence, we have 2 status on the
+         *    1) savedInstanceState == null -> just started
+         *    2) savedInstanceState != null -> Activity restarted
+         * So, when savedInstanceState != null, just restore status bar color
+         **/
+        // Restore status bar color
+        when {
+            savedInstanceState != null -> requireActivity().window.statusBarColor = TRANSPARENT
+            else -> (sharedElementEnterTransition as Transition).addListener(object : TransitionListener {
+                override fun onTransitionStart(transition: Transition) = Unit
+                override fun onTransitionEnd(transition: Transition) {
+                    requireActivity().window.statusBarColor = TRANSPARENT
+                }
+                override fun onTransitionCancel(transition: Transition) = Unit
+                override fun onTransitionPause(transition: Transition) = Unit
+                override fun onTransitionResume(transition: Transition) = Unit
+            })
+        }
         requireActivity().window.navigationBarColor = TRANSPARENT
 
         with(circularRevelPoint) {
