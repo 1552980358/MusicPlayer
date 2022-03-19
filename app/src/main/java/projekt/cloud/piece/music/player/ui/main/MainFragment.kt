@@ -175,9 +175,12 @@ class MainFragment: BaseFragment() {
         }
     }
 
-    override fun onResume() {
-        requireActivity().window.statusBarColor = getColor(R.color.purple_500)
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
+        TypedValue().run {
+            requireActivity().theme.resolveAttribute(android.R.attr.statusBarColor, this, true)
+            requireActivity().window.statusBarColor = data
+        }
     }
 
     override fun onDestroyView() {
