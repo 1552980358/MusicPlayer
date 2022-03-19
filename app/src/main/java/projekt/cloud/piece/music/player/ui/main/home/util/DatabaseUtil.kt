@@ -19,6 +19,7 @@ import projekt.cloud.piece.music.player.database.item.AlbumItem
 import projekt.cloud.piece.music.player.database.item.ArtistItem
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.database.item.ColorItem
+import projekt.cloud.piece.music.player.database.item.ColorItem.Companion.TYPE_ARTIST
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArt
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArts40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAudioArt40Dp
@@ -107,6 +108,7 @@ object DatabaseUtil {
         database.audio.insert(*audioList.toTypedArray())
         database.album.insert(*albumList.toTypedArray())
         database.artist.insert(*artistList.toTypedArray())
+        artistList.forEach { database.color.insert(ColorItem(it.id, TYPE_ARTIST)) }
     }
 
     private fun initialImage(context: Context, database: AudioDatabase, albumList: ArrayList<AlbumItem>) {
