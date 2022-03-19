@@ -20,6 +20,7 @@ import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
+import lib.github1552980358.ktExtension.android.content.getStatusBarHeight
 import lib.github1552980358.ktExtension.android.content.register
 import lib.github1552980358.ktExtension.android.view.heightF
 import lib.github1552980358.ktExtension.android.view.widthF
@@ -40,6 +41,7 @@ import projekt.cloud.piece.music.player.util.ActivityUtil.pixelHeight
 import projekt.cloud.piece.music.player.util.AudioUtil.deviceDrawableId
 import projekt.cloud.piece.music.player.util.ColorUtil.isLight
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
+import projekt.cloud.piece.music.player.util.ContextUtil.navigationBarHeight
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArtRaw
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAudioArtRaw
 
@@ -89,6 +91,12 @@ class PlayControlFragment: BaseFragment() {
         }
         bottomSheetBehavior = BottomSheetBehavior.from(bottom.root)
         bottomSheetBehavior.peekHeight = bottomHeight * 3 / 5
+        bottom.root.apply {
+            layoutParams = layoutParams.apply {
+                height = pixelHeight - requireContext().getStatusBarHeight()
+            }
+            setContentPadding(0, 0, 0, navigationBarHeight)
+        }
         return binding.root
     }
 
