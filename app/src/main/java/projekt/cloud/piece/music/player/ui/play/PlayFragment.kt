@@ -12,7 +12,9 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import androidx.transition.Transition
+import androidx.transition.Transition.TransitionListener
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.transition.MaterialContainerTransform
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
@@ -21,7 +23,6 @@ import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.FragmentPlayBinding
-import projekt.cloud.piece.music.player.ui.play.playControl.PlayControlFragment
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
 import kotlin.math.hypot
 
@@ -36,19 +37,17 @@ class PlayFragment: BaseFragment() {
     private val toolbar get() = binding.toolbar
     private val viewPager get() = binding.viewPager
 
-    private val fragmentList = listOf<BaseFragment>(
-        PlayControlFragment()
-    )
-
     private val database get() = activityViewModel.database
     private val audioItem get() = activityViewModel.audioItem!!
 
     private val circularRevelPoint = Point()
 
+    private lateinit var viewModel: PlayViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = MaterialContainerTransform()
-        (sharedElementEnterTransition as Transition).addListener(object : Transition.TransitionListener{
+        (sharedElementEnterTransition as Transition).addListener(object : TransitionListener {
             override fun onTransitionStart(transition: Transition) {
             }
             override fun onTransitionEnd(transition: Transition) {
@@ -72,6 +71,7 @@ class PlayFragment: BaseFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        viewModel = ViewModelProvider(this)[PlayViewModel::class.java]
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_play, container, false)
         return binding.root
     }
@@ -89,8 +89,8 @@ class PlayFragment: BaseFragment() {
         updateColor(audioItem, false)
         with(viewPager) {
             adapter = object : FragmentStateAdapter(this@PlayFragment) {
-                override fun getItemCount() = fragmentList.size
-                override fun createFragment(position: Int) = fragmentList[position]
+                override fun getItemCount() = viewModel.fragmentList.size
+                override fun createFragment(position: Int) = viewModel.fragmentList[position]
             }
         }
     }
@@ -130,6 +130,6 @@ class PlayFragment: BaseFragment() {
         super.onDestroyView()
     }
 
-    override fun onBackPressed() = fragmentList[viewPager.currentItem].canBackStack
+    override fun onBackPressed() = viewModel.fragmentList[viewPager.currentItem].canBackStack
 
 }
