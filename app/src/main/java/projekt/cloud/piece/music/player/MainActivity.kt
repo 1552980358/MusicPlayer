@@ -12,8 +12,13 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
+import android.util.Log
+import android.view.View
 import androidx.core.view.WindowCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -47,6 +52,36 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
 
     private var progressJob: Job? = null
+
+    private var fragmentLifecycleCallbacks = object : FragmentLifecycleCallbacks() {
+        override fun onFragmentCreated(fm: FragmentManager, f: Fragment, savedInstanceState: Bundle?) {
+            Log.e(f::class.simpleName, "onFragmentCreated")
+        }
+        override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
+            Log.e(f::class.simpleName, "onFragmentViewCreated")
+        }
+        override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
+            Log.e(f::class.simpleName, "onFragmentStarted")
+        }
+        override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
+            Log.e(f::class.simpleName, "onFragmentResumed")
+        }
+        override fun onFragmentPaused(fm: FragmentManager, f: Fragment) {
+            Log.e(f::class.simpleName, "onFragmentPaused")
+        }
+        override fun onFragmentSaveInstanceState(fm: FragmentManager, f: Fragment, outState: Bundle) {
+            Log.e(f::class.simpleName, "onFragmentSaveInstanceState")
+        }
+        override fun onFragmentStopped(fm: FragmentManager, f: Fragment) {
+            Log.e(f::class.simpleName, "onFragmentStopped")
+        }
+        override fun onFragmentViewDestroyed(fm: FragmentManager, f: Fragment) {
+            Log.e(f::class.simpleName, "onFragmentViewDestroyed")
+        }
+        override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
+            Log.e(f::class.simpleName, "onFragmentDestroyed")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         delegate.installViewFactory()
@@ -93,7 +128,7 @@ class MainActivity : AppCompatActivity() {
                 }, null
             )
         }
-
+        supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true)
     }
 
     override fun onStart() {
@@ -117,6 +152,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks)
         super.onDestroy()
     }
 
