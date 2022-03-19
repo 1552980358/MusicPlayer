@@ -40,7 +40,6 @@ import com.google.android.exoplayer2.Player.Listener
 import kotlinx.coroutines.Job
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.register
-import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.database.item.AudioItem
@@ -244,7 +243,6 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
 
     private lateinit var defaultCoverArt: Bitmap
     private lateinit var currentCoverArt: Bitmap
-    private var loadCoverArtJob: Job? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -288,20 +286,18 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                 if (!::playlist.isInitialized || current !in 0 .. playlist.lastIndex) {
                     return super.onStartCommand(intent, flags, startId)
                 }
+                val audioItem = playlist[current]
+                currentCoverArt = loadAudioArtRaw(audioItem.id) ?: loadAlbumArtRaw(audioItem.album) ?: defaultCoverArt
                 when {
                     !configs.getConfig(SERVICE_CONFIG_FOREGROUND_SERVICE) -> {
                         configs = configs.setConfig(SERVICE_CONFIG_FOREGROUND_SERVICE, true)
-                        startForeground(createNotification(playlist[current], false, currentCoverArt))
+                        startForeground(createNotification(audioItem, false, currentCoverArt))
                     }
-                    else -> notificationManagerCompat.update(createNotification(playlist[current], false, currentCoverArt))
+                    else -> notificationManagerCompat.update(createNotification(audioItem, false, currentCoverArt))
                 }
-                loadCoverArtJob?.cancel()
-                loadCoverArtJob = loadCoverArt(playlist[current], false)
             }
             START_COMMAND_ACTION_PAUSE -> {
                 startForeground(createNotification(playlist[current], true, currentCoverArt))
-                loadCoverArtJob?.cancel()
-                loadCoverArtJob = loadCoverArt(playlist[current], true)
                 stopForeground(false)
             }
             else -> Unit
@@ -393,11 +389,6 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
 
             }
         }
-    }
-
-    private fun loadCoverArt(audioItem: AudioItem, isPaused: Boolean) = io {
-        currentCoverArt = loadAudioArtRaw(audioItem.id) ?: loadAlbumArtRaw(audioItem.album) ?: defaultCoverArt
-        notificationManagerCompat.update(createNotification(audioItem, isPaused, currentCoverArt))
     }
 
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?) = when (clientPackageName) {
