@@ -3,6 +3,7 @@ package projekt.cloud.piece.music.player.ui.main
 import android.content.res.ColorStateList.valueOf
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +21,6 @@ import com.google.android.material.transition.Hold
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import lib.github1552980358.ktExtension.android.content.intent
-import lib.github1552980358.ktExtension.androidx.fragment.app.getColor
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.R
@@ -29,8 +29,6 @@ import projekt.cloud.piece.music.player.ThemeSwitchActivity.Companion.EXTRA_IS_N
 import projekt.cloud.piece.music.player.ThemeSwitchActivity.Companion.setScreenshot
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.databinding.FragmentMainBinding
-import projekt.cloud.piece.music.player.ui.main.album.AlbumFragment
-import projekt.cloud.piece.music.player.ui.main.home.HomeFragment
 import projekt.cloud.piece.music.player.util.ViewUtil.screenshot
 
 class MainFragment: BaseFragment() {
@@ -87,14 +85,9 @@ class MainFragment: BaseFragment() {
 
         with(appBarMain.viewPager) {
 
-            val fragments = listOf(
-                HomeFragment(),
-                AlbumFragment()
-            )
-
             adapter = object : FragmentStateAdapter(this@MainFragment) {
-                override fun getItemCount() = fragments.size
-                override fun createFragment(position: Int) = fragments[position]
+                override fun getItemCount() = viewModel.fragments.size
+                override fun createFragment(position: Int) = viewModel.fragments[position]
             }
 
         }
@@ -180,7 +173,6 @@ class MainFragment: BaseFragment() {
                 }
             }
         }
-
     }
 
     override fun onResume() {
