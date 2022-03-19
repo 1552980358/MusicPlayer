@@ -1,8 +1,8 @@
 package projekt.cloud.piece.music.player.ui.play
 
 import android.graphics.Color.TRANSPARENT
-import android.graphics.Point
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -40,8 +40,6 @@ class PlayFragment: BaseFragment() {
     private val database get() = activityViewModel.database
     private val audioItem get() = activityViewModel.audioItem!!
 
-    private val circularRevelPoint = Point()
-
     private lateinit var viewModel: PlayViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,13 +69,6 @@ class PlayFragment: BaseFragment() {
             })
         }
         requireActivity().window.navigationBarColor = TRANSPARENT
-
-        with(circularRevelPoint) {
-            x = resources.displayMetrics.widthPixels / 2
-            y = (resources.displayMetrics.heightPixels - resources.displayMetrics.widthPixels) * 2 / 5 -
-                resources.getDimensionPixelSize(R.dimen.play_control_seekbar_height) * 2 +
-                resources.displayMetrics.widthPixels
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -115,9 +106,9 @@ class PlayFragment: BaseFragment() {
                     }
                     createCircularReveal(
                         binding.relativeLayout,
-                        circularRevelPoint.x, circularRevelPoint.y,
+                        viewModel.circularRevelPoint.x, viewModel.circularRevelPoint.y,
                         0F,
-                        hypot(circularRevelPoint.x.toFloat(), circularRevelPoint.y.toFloat())
+                        hypot(viewModel.circularRevelPoint.x.toFloat(), viewModel.circularRevelPoint.y.toFloat())
                     ).apply {
                         duration = ANIMATION_DURATION
                         doOnEnd { binding.root.setBackgroundColor(backgroundColor) }
