@@ -18,6 +18,9 @@ interface AudioItemDao {
     @Query("select * from audio where album=:album")
     fun queryAlbum(album: String): List<AudioItem>
 
+    @Query("select aud.* from audio aud inner join artist art on art.id = aud.artist where art.title like '%' || :artistName || '%'")
+    fun queryArtist(artistName: String): List<AudioItem>
+
     @Insert
     fun insert(vararg audioItem: AudioItem)
 
