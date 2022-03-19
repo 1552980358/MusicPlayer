@@ -129,6 +129,10 @@ class PlayFragment: BaseFragment() {
         activityViewModel.setAudioItemObserver(TAG)
         _binding = null
         super.onDestroyView()
+        TypedValue().apply {
+            requireActivity().theme.resolveAttribute(android.R.attr.statusBarColor, this, true)
+            requireActivity().window.statusBarColor = data
+        }
     }
 
     override fun onBackPressed() = viewModel.fragmentList[viewPager.currentItem].canBackStack
