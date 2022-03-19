@@ -120,6 +120,16 @@ class PlayControlFragment: BaseFragment() {
         bottom.device = getDrawable(audioManager.deviceDrawableId)
         broadcastReceiver.register(requireContext(), ACTION_HEADSET_PLUG, ACTION_CONNECTION_STATE_CHANGED)
 
+        contentControl.seekbar.setOnSeekChangeListener { progress, isReleased ->
+            if (contentControl.isSeekbarTouched != !isReleased) {
+                contentControl.isSeekbarTouched = !isReleased
+            }
+            when {
+                !isReleased -> contentControl.seekbarTouchedProgress = progress
+                else -> activityViewModel.mediaControllerCompat.transportControls.seekTo(progress)
+            }
+        }
+
         @Suppress("ClickableViewAccessibility")
         with(contentControl.root) {
             setOnTouchListener { _, motionEvent ->
