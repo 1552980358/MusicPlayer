@@ -4,13 +4,13 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_200</item>
         <item name="colorPrimaryVariant">@color/dark_variant</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnPrimary">@color/dark_on_primary</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">#6100ed</item>
         <item name="colorSecondaryVariant">#0100b9</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/dark_primary</item>
+        <item name="android:statusBarColor">?attr/colorOnPrimary</item>
         <!-- Navigation bar -->
         <item name="android:navigationBarColor">@color/black</item>
     </style>
