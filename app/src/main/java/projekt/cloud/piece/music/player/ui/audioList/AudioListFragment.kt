@@ -96,10 +96,15 @@ class AudioListFragment: BaseFragment() {
                 EXTRA_TYPE_ALBUM -> {
                     val headerImage = requireContext().loadAlbumArtRaw(item.id) ?: getDrawable(R.drawable.ic_default_album)!!.toBitmap()
                     ui { binding.imageView.setImageBitmap(headerImage) }
+                    audioList = database.audio.queryAlbum(item.id)
+                }
+                EXTRA_TYPE_ARTIST -> {
+                    val headerImage = getDrawable(R.drawable.ic_artist_default)!!.toBitmap()
+                    ui { binding.imageView.setImageBitmap(headerImage) }
+                    audioList = database.audio.queryArtist(item.title)
                 }
             }
 
-            audioList = database.audio.queryAlbum(item.id)
             audioList.forEach { it.artistItem = database.artist.query(it.artist) }
             audioList.forEach { it.albumItem = database.album.query(it.album) }
             ui { recyclerViewAdapterUtil.audioList = audioList }
