@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
@@ -37,9 +39,14 @@ import com.google.android.exoplayer2.ExoPlayer.Builder
 import com.google.android.exoplayer2.ExoPlayer.STATE_ENDED
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player.Listener
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.register
+import lib.github1552980358.ktExtension.kotlinx.coroutines.io
+import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.database.item.AudioItem
@@ -89,7 +96,10 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
         
     }
 
+    private var loadJob: Job? = null
+
     private lateinit var playbackStateCompat: PlaybackStateCompat
+    private lateinit var mediaMetadataCompat: MediaMetadataCompat
     private lateinit var mediaSessionCompat: MediaSessionCompat
     private val mediaSessionCallback = object : Callback() {
 
@@ -106,6 +116,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                 .setState(STATE_PLAYING, exoPlayer.currentPosition, DEFAULT_PLAYBACK_SPEED)
                 .build()
             mediaSessionCompat.setPlaybackState(playbackStateCompat)
+            mediaSessionCompat.setMetadata(mediaMetadataCompat)
 
             startService { putExtra(START_COMMAND_ACTION, START_COMMAND_ACTION_PLAY) }
         }
@@ -196,28 +207,42 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
 
         private fun onPlayAudioItem(audioItem: AudioItem) {
             Log.e(TAG, "onPlayAudioItem ${audioItem.id} ${audioItem.title}")
+            loadJob?.cancel()
+            loadJob = io {
+                @Suppress("BlockingMethodInNonBlockingContext")
+                runBlocking {
+                    io {
+                        playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                            .setState(STATE_BUFFERING, 0, DEFAULT_PLAYBACK_SPEED)
+                            .build()
+                        mediaSessionCompat.setPlaybackState(playbackStateCompat)
 
-            exoPlayer.stop()
+                        currentCoverArt = loadAudioArtRaw(audioItem.id) ?: loadAlbumArtRaw(audioItem.album) ?: defaultCoverArt
 
-            playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
-                .setState(STATE_BUFFERING, 0, DEFAULT_PLAYBACK_SPEED)
-                .build()
-            mediaSessionCompat.setPlaybackState(playbackStateCompat)
+                        mediaMetadataCompat = MediaMetadataCompat.Builder()
+                            .putString(METADATA_KEY_MEDIA_ID, audioItem.id)
+                            .putString(METADATA_KEY_ARTIST, audioItem.artistItem.title)
+                            .putString(METADATA_KEY_TITLE, audioItem.title)
+                            .putString(METADATA_KEY_ALBUM, audioItem.albumItem.title)
+                            .putString(METADATA_KEY_ALBUM_ART_URI, audioItem.album)
+                            .putLong(METADATA_KEY_DURATION, audioItem.duration)
+                            .putBitmap(METADATA_KEY_ALBUM_ART, currentCoverArt)
+                            .build()
 
-            mediaSessionCompat.setMetadata(
-                MediaMetadataCompat.Builder()
-                    .putString(METADATA_KEY_MEDIA_ID, audioItem.id)
-                    .putString(METADATA_KEY_TITLE, audioItem.title)
-                    .putString(METADATA_KEY_ALBUM, audioItem.albumItem.title)
-                    .putString(METADATA_KEY_ALBUM_ART_URI, audioItem.album)
-                    .putLong(METADATA_KEY_DURATION, audioItem.duration)
-                    .build()
-            )
+                        mediaSessionCompat.setMetadata(mediaMetadataCompat)
+                    }
+                    ui {
+                        exoPlayer.stop()
+                        exoPlayer.setMediaItem(MediaItem.fromUri(audioItem.id.parseAsUri))
+                        exoPlayer.prepare()
+                    }
+                }
 
-            exoPlayer.setMediaItem(MediaItem.fromUri(audioItem.id.parseAsUri))
-            exoPlayer.prepare()
+                ui {
 
-            onPlay()
+                    onPlay()
+                }
+            }
         }
 
     }
@@ -264,6 +289,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
         mediaSessionCompat = MediaSessionCompat(this, ROOT_ID).apply {
             setCallback(mediaSessionCallback)
             setPlaybackState(playbackStateCompat)
+            isActive = true
         }
 
         sessionToken = mediaSessionCompat.sessionToken
@@ -286,14 +312,12 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                 if (!::playlist.isInitialized || current !in 0 .. playlist.lastIndex) {
                     return super.onStartCommand(intent, flags, startId)
                 }
-                val audioItem = playlist[current]
-                currentCoverArt = loadAudioArtRaw(audioItem.id) ?: loadAlbumArtRaw(audioItem.album) ?: defaultCoverArt
                 when {
                     !configs.getConfig(SERVICE_CONFIG_FOREGROUND_SERVICE) -> {
                         configs = configs.setConfig(SERVICE_CONFIG_FOREGROUND_SERVICE, true)
-                        startForeground(createNotification(audioItem, false, currentCoverArt))
+                        startForeground(createNotification(playlist[current], false, currentCoverArt))
                     }
-                    else -> notificationManagerCompat.update(createNotification(audioItem, false, currentCoverArt))
+                    else -> notificationManagerCompat.update(createNotification(playlist[current], false, currentCoverArt))
                 }
             }
             START_COMMAND_ACTION_PAUSE -> {
