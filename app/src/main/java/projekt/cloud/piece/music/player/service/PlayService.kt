@@ -365,7 +365,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
             when {
 
                 configs.getConfig(PLAY_CONFIG_REPEAT_ONE) ->
-                    mediaSessionCompat.controller.transportControls.playFromMediaId(null, null)
+                    mediaSessionCompat.controller.transportControls.playFromMediaId(playlist[current].id, null)
 
                 configs.getConfig(PLAY_CONFIG_REPEAT) ->
                     mediaSessionCompat.controller.transportControls.skipToNext()
