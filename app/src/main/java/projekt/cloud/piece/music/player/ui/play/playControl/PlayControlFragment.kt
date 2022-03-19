@@ -17,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
@@ -36,6 +37,8 @@ import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT_O
 import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_SHUFFLE
 import projekt.cloud.piece.music.player.service.play.Config.getConfig
 import projekt.cloud.piece.music.player.service.play.Config.setConfig
+import projekt.cloud.piece.music.player.ui.play.PlayFragment
+import projekt.cloud.piece.music.player.ui.play.PlayViewModel
 import projekt.cloud.piece.music.player.ui.play.playControl.util.RecyclerViewAdapterUtil
 import projekt.cloud.piece.music.player.util.ActivityUtil.pixelHeight
 import projekt.cloud.piece.music.player.util.AudioUtil.deviceDrawableId
@@ -260,6 +263,22 @@ class PlayControlFragment: BaseFragment() {
                 duration = ANIMATION_DURATION
                 addUpdateListener { contentControl.secondaryColor = animatedValue as Int }
                 ui { start() }
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        with(ViewModelProvider(parentFragment as PlayFragment)[PlayViewModel::class.java]) {
+            if (!isPointSet) {
+                circularRevelPoint.apply {
+                    with(IntArray(2)) {
+                        contentControl.floatingActionButton.getLocationOnScreen(this)
+                        x = first() + contentControl.floatingActionButton.width / 2
+                        y = last() + contentControl.floatingActionButton.height / 2
+                    }
+                }
+                isPointSet = true
             }
         }
     }
