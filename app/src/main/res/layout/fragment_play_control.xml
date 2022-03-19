@@ -26,19 +26,6 @@
                 android:id="@+id/image_view_image"
                 app:bitmapAnimated="@{imageBitmap}"/>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fitsSystemWindows="true"
-                android:background="@drawable/shape_toolbar_filter">
-
-                <com.google.android.material.appbar.MaterialToolbar
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:id="@+id/toolbar" />
-
-            </RelativeLayout>
-
             <include
                 android:id="@+id/content_control_play_control"
                 layout="@layout/content_control_play_control"
