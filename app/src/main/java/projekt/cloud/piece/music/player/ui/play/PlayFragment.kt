@@ -9,6 +9,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewAnimationUtils.createCircularReveal
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.databinding.DataBindingUtil
 import androidx.transition.Transition
@@ -32,6 +33,7 @@ class PlayFragment: BaseFragment() {
 
     private var _binding: FragmentPlayBinding? = null
     private val binding get() = _binding!!
+    private val toolbar get() = binding.toolbar
     private val viewPager get() = binding.viewPager
 
     private val fragmentList = listOf<BaseFragment>(
@@ -75,6 +77,12 @@ class PlayFragment: BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        with(requireActivity() as AppCompatActivity) {
+            setSupportActionBar(toolbar)
+            toolbar.setNavigationOnClickListener { onBackPressed() }
+            supportActionBar?.setDisplayShowTitleEnabled(false)
+            invalidateOptionsMenu()
+        }
         activityViewModel.setAudioItemObserver(TAG, false) {
             updateColor(it)
         }
