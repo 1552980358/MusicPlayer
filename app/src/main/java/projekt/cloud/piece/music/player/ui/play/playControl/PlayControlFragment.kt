@@ -280,7 +280,6 @@ class PlayControlFragment: BaseFragment() {
 
     override fun onDestroyView() {
         activityViewModel.setAudioItemObserver(TAG)
-        activityViewModel.setAudioItemObserver(TAG)
         activityViewModel.setPlayStateObserver(TAG)
         activityViewModel.setProgressObservers(TAG)
         activityViewModel.setPlayConfigObserver(TAG)
