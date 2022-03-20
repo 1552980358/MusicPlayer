@@ -112,21 +112,21 @@ object ImageUtil {
     private const val PLAYLIST_RAW_DIR = "playlist_raw"
     private const val PLAYLIST_40Dp_DIR = "playlist_40dp"
     private val Context.playlistRawDir get() = getExternalFilesDir(PLAYLIST_RAW_DIR)
-    fun Context.loadPlaylistRaw(titlePinyin: String) = File(playlistRawDir, titlePinyin).tryRun { readAsBitmap() }
-    fun Context.writePlaylistRaw(titlePinyin: String, bitmap: Bitmap) =
-        tryOnly { File(playlistRawDir, titlePinyin).writeBitmap(bitmap) }
-    fun Context.removePlaylistRaw(titlePinyin: String) =
-        tryOnly { File(playlistRawDir, titlePinyin).delete() }
+    fun Context.loadPlaylistRaw(id: String) = File(playlistRawDir, id).tryRun { readAsBitmap() }
+    fun Context.writePlaylistRaw(id: String, bitmap: Bitmap) =
+        tryOnly { File(playlistRawDir, id).writeBitmap(bitmap) }
+    fun Context.removePlaylistRaw(id: String) =
+        tryOnly { File(playlistRawDir, id).delete() }
 
     private val Context.playlist40DpDir get() = getExternalFilesDir(PLAYLIST_40Dp_DIR)
     fun Context.loadPlaylist40Dp(bitmapMap: MutableMap<String, Bitmap>) =
         tryOnly { playlist40DpDir?.listFiles()?.forEach { it.readAsBitmap()?.let { bitmap -> bitmapMap[it.name] = bitmap } } }
-    fun Context.writePlaylist40Dp(titlePinyin: String, bitmap: Bitmap) =
-        tryOnly { File(playlist40DpDir, titlePinyin).writeBitmap(bitmap) }
-    fun Context.removePlaylist40Dp(titlePinyin: String) =
-        tryOnly { File(playlist40DpDir, titlePinyin).delete() }
+    fun Context.writePlaylist40Dp(id: String, bitmap: Bitmap) =
+        tryOnly { File(playlist40DpDir, id).writeBitmap(bitmap) }
+    fun Context.removePlaylist40Dp(id: String) =
+        tryOnly { File(playlist40DpDir, id).delete() }
 
-    val Bitmap.cutAsCube get(): Bitmap = when {
+    val Bitmap.asSquare get(): Bitmap = when {
         width > height -> Bitmap.createBitmap(this, (width - height) / 2, 0, height, height)
         width < height -> Bitmap.createBitmap(this, 0, (height - width) / 2, width, width)
         else -> this
