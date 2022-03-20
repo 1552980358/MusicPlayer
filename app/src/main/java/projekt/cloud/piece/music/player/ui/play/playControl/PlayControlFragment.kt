@@ -102,23 +102,11 @@ class PlayControlFragment: BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        activityViewModel.setAudioItemObserver(TAG) { audioItem -> updateAudioItem(audioItem) }
-        activityViewModel.setCoverArtBitmapObserver(TAG) { bitmap -> binding.imageBitmap = bitmap }
-        activityViewModel.setPlayStateObserver(TAG) { isPlaying ->
-            if (contentControl.isPlaying != isPlaying) {
-                contentControl.isPlaying = isPlaying
-            }
-        }
-        activityViewModel.setProgressObservers(TAG) { progress -> contentControl.progress = progress }
-        activityViewModel.setPlayConfigObserver(TAG) { playConfig -> contentControl.playConfig = playConfig }
-
         recyclerViewAdapterUtil = RecyclerViewAdapterUtil(recyclerView) {
             activityViewModel.playList?.let { playlist ->
                 activityViewModel.mediaControllerCompat.transportControls.skipToQueueItem(playlist[it].index.toLong())
             }
         }
-        activityViewModel.setPlaylistObserver(TAG) { playlist -> recyclerViewAdapterUtil.playlist = playlist }
-        activityViewModel.getPlaylistSync()
 
         contentControl.floatingActionButton.setOnClickListener {
             when {
@@ -193,6 +181,8 @@ class PlayControlFragment: BaseFragment() {
                 true
             }
         }
+
+        setObservers()
     }
 
     override fun onBackPressed(): Boolean {
@@ -201,6 +191,20 @@ class PlayControlFragment: BaseFragment() {
             return false
         }
         return super.onBackPressed()
+    }
+
+    private fun setObservers() = io {
+        activityViewModel.setAudioItemObserver(TAG) { audioItem -> updateAudioItem(audioItem) }
+        activityViewModel.setCoverArtBitmapObserver(TAG) { bitmap -> binding.imageBitmap = bitmap }
+        activityViewModel.setPlayStateObserver(TAG) { isPlaying ->
+            if (contentControl.isPlaying != isPlaying) {
+                contentControl.isPlaying = isPlaying
+            }
+        }
+        activityViewModel.setProgressObservers(TAG) { progress -> contentControl.progress = progress }
+        activityViewModel.setPlayConfigObserver(TAG) { playConfig -> contentControl.playConfig = playConfig }
+        activityViewModel.setPlaylistObserver(TAG) { playlist -> recyclerViewAdapterUtil.playlist = playlist }
+        activityViewModel.getPlaylistSync()
     }
 
     private fun updateAudioItem(audioItem: AudioItem) = io {
