@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">CloudPiece</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="nav_home">音乐</string>
+    <string name="nav_album">专辑</string>
+    <string name="nav_artist">艺术家</string>
+    <string name="nav_playlist">播放列表</string>
+
+    <string name="play_control_bottom_sheet_queue">队列</string>
+
+</resources>
