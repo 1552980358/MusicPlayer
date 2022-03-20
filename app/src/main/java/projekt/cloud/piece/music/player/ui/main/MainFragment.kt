@@ -178,7 +178,7 @@ class MainFragment: BaseFragment() {
     override fun onDestroyView() {
         countJob?.cancel()
         countJob = null
-        activityViewModel.setAudioItemObserver(TAG)
+        activityViewModel.removeAllObservers(TAG)
         _binding = null
         viewModel.isDestroyed = true
         super.onDestroyView()
