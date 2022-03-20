@@ -11,6 +11,7 @@ import android.view.ViewAnimationUtils.createCircularReveal
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.Transition
@@ -111,11 +112,9 @@ class PlayFragment: BaseFragment() {
                         hypot(viewModel.circularRevelPoint.x.toFloat(), viewModel.circularRevelPoint.y.toFloat())
                     ).apply {
                         duration = ANIMATION_DURATION
+                        doOnStart { binding.relativeLayout.visibility = VISIBLE }
                         doOnEnd { binding.root.setBackgroundColor(backgroundColor) }
-                        ui {
-                            binding.relativeLayout.visibility = VISIBLE
-                            start()
-                        }
+                        ui { start() }
                     }
                 }
                 else -> ui {
