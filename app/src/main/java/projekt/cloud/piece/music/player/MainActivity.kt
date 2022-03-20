@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.SubscriptionCallback
 import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -177,6 +178,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.audioList.find { it.id == metadata.getString(METADATA_KEY_MEDIA_ID) }?.let {
             viewModel.audioItem = it
         }
+        viewModel.coverArtBitmap = metadata.getBitmap(METADATA_KEY_ALBUM_ART)
     }
 
     private fun startPlaying(progress: Long) =  io {
