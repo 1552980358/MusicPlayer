@@ -20,9 +20,13 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
 
-    <style name="Theme.MusicPlayer.NoActionBar.VariableNavigationBar" parent="Theme.MusicPlayer.NoActionBar"/>
+    <style name="Theme.MusicPlayer.NoActionBar.VariableNavigationBar" parent="Theme.MusicPlayer.NoActionBar">
+        <item name="android:enforceNavigationBarContrast" tools:targetApi="q">false</item>
+    </style>
 
-    <style name="Theme.MusicPlayer.MainActivity" parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar" />
+    <style name="Theme.MusicPlayer.MainActivity" parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar">
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+    </style>
 
     <style name="Theme.MusicPlayer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
@@ -52,6 +56,14 @@
         <item name="cornerSizeTopRight">@dimen/fab_radius</item>
         <item name="cornerSizeBottomLeft">@dimen/fab_radius</item>
         <item name="cornerSizeBottomRight">@dimen/fab_radius</item>
+    </style>
+
+    <style name="Theme.MusicPlayer.FullscreenDialog" parent="Theme.MaterialComponents.Light.DialogWhenLarge">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="p">true</item>
     </style>
     
 </resources>
