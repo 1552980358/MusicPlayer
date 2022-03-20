@@ -283,11 +283,7 @@ class PlayControlFragment: BaseFragment() {
     }
 
     override fun onDestroyView() {
-        activityViewModel.setAudioItemObserver(TAG)
-        activityViewModel.setPlayStateObserver(TAG)
-        activityViewModel.setProgressObservers(TAG)
-        activityViewModel.setPlayConfigObserver(TAG)
-        activityViewModel.setPlaylistObserver(TAG)
+        activityViewModel.removeAllObservers(TAG)
         requireContext().unregisterReceiver(broadcastReceiver)
         activityViewModel.playList = null
         super.onDestroyView()
