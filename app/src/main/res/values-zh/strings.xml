@@ -10,4 +10,6 @@
 
     <string name="play_control_bottom_sheet_queue">队列</string>
 
+    <string name="playlist_menu_add_playlist">添加播放列表…</string>
+
 </resources>

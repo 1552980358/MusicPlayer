@@ -10,4 +10,6 @@
 
     <string name="play_control_bottom_sheet_queue">Queue</string>
 
+    <string name="playlist_menu_add_playlist">Add Playlist…</string>
+
 </resources>
