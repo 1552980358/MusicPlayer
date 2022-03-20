@@ -4,6 +4,9 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.PowerManager
+import android.os.PowerManager.PARTIAL_WAKE_LOCK
+import android.os.PowerManager.WakeLock
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
@@ -90,6 +93,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
         
         private const val TAG = "PlayService"
         private const val ROOT_ID = TAG
+        private const val WAKE_LOCK_TAG = "${APPLICATION_ID}:WakeLock"
 
         private const val DEFAULT_PLAYBACK_SPEED = 1F
         
@@ -256,6 +260,8 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
 
     private lateinit var exoPlayer: ExoPlayer
 
+    private lateinit var wakeLock: WakeLock
+
     private lateinit var playlist: List<AudioItem>
     private var current = -1
 
@@ -302,6 +308,8 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
         defaultCoverArt = getDrawable(resources, R.drawable.ic_music, null)!!.toBitmap()
         currentCoverArt = defaultCoverArt
 
+        wakeLock = (getSystemService(POWER_SERVICE) as PowerManager).newWakeLock(PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG)
+
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -314,6 +322,8 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                     !configs.getConfig(SERVICE_CONFIG_FOREGROUND_SERVICE) -> {
                         configs = configs.setConfig(SERVICE_CONFIG_FOREGROUND_SERVICE, true)
                         startForeground(createNotification(playlist[current], false, currentCoverArt))
+                        @Suppress("WakelockTimeout")
+                        wakeLock.acquire()
                     }
                     else -> notificationManagerCompat.update(createNotification(playlist[current], false, currentCoverArt))
                 }
@@ -321,6 +331,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
             START_COMMAND_ACTION_PAUSE -> {
                 startForeground(createNotification(playlist[current], true, currentCoverArt))
                 stopForeground(false)
+                wakeLock.release()
             }
             else -> handleIntent(mediaSessionCompat, intent)
         }
@@ -329,6 +340,9 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
 
     override fun onDestroy() {
         unregisterReceiver(broadcastReceiver)
+        if (wakeLock.isHeld) {
+            wakeLock.release()
+        }
         super.onDestroy()
     }
 
