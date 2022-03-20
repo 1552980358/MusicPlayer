@@ -7,6 +7,7 @@ import projekt.cloud.piece.music.player.database.item.ArtistItem
 import projekt.cloud.piece.music.player.ui.main.album.AlbumFragment
 import projekt.cloud.piece.music.player.ui.main.artist.ArtistFragment
 import projekt.cloud.piece.music.player.ui.main.home.HomeFragment
+import projekt.cloud.piece.music.player.ui.main.playlist.PlaylistFragment
 
 class MainViewModel: ViewModel() {
 
@@ -20,13 +21,17 @@ class MainViewModel: ViewModel() {
     var isArtistListLoaded = false
     lateinit var artistList: List<ArtistItem>
 
+    var isPlaylistArtLoaded = false
+
     lateinit var defaultAlbumCover: Bitmap
     lateinit var defaultArtistArt: Bitmap
+    lateinit var defaultPlaylistArt: Bitmap
 
     val fragments = listOf(
         HomeFragment(),
         AlbumFragment(),
-        ArtistFragment()
+        ArtistFragment(),
+        PlaylistFragment()
     )
 
 }
