@@ -128,18 +128,14 @@ class MainFragment: BaseFragment() {
                 }
             }
         }
-
+        activityViewModel.setCoverArtBitmapObserver(TAG) {
+            extendedFloatingActionButton.icon = BitmapDrawable(resources, it)
+        }
         activityViewModel.setAudioItemObserver(TAG) { audioItem ->
             io {
-                val drawable = BitmapDrawable(
-                    resources,
-                    audioArtMap[audioItem.id] ?: albumArtMap[audioItem.album] ?: defaultCoverArt
-                )
-
                 database.color.query(audioItem.id, audioItem.album).apply {
                     with(extendedFloatingActionButton) {
                         ui {
-                            icon = drawable
                             setTextColor(primaryColor)
                             backgroundTintList = valueOf(backgroundColor)
                             if (text != audioItem.title) {
