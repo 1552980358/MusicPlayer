@@ -39,9 +39,7 @@ import com.google.android.exoplayer2.ExoPlayer.Builder
 import com.google.android.exoplayer2.ExoPlayer.STATE_ENDED
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player.Listener
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.register
@@ -239,7 +237,6 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                 }
 
                 ui {
-
                     onPlay()
                 }
             }
