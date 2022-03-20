@@ -11,5 +11,8 @@
     <string name="play_control_bottom_sheet_queue">Queue</string>
 
     <string name="playlist_menu_add_playlist">Add Playlist…</string>
+    <string name="add_playlist_menu_save">Save</string>
+    <string name="add_playlist_title">Playlist Title</string>
+    <string name="add_playlist_description">Description</string>
 
 </resources>
