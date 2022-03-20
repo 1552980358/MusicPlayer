@@ -45,8 +45,6 @@ import projekt.cloud.piece.music.player.util.AudioUtil.deviceDrawableId
 import projekt.cloud.piece.music.player.util.ColorUtil.isLight
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
 import projekt.cloud.piece.music.player.util.ContextUtil.navigationBarHeight
-import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArtRaw
-import projekt.cloud.piece.music.player.util.ImageUtil.loadAudioArtRaw
 
 class PlayControlFragment: BaseFragment() {
 
@@ -105,6 +103,7 @@ class PlayControlFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         activityViewModel.setAudioItemObserver(TAG) { audioItem -> updateAudioItem(audioItem) }
+        activityViewModel.setCoverArtBitmapObserver(TAG) { bitmap -> binding.imageBitmap = bitmap }
         activityViewModel.setPlayStateObserver(TAG) { isPlaying ->
             if (contentControl.isPlaying != isPlaying) {
                 contentControl.isPlaying = isPlaying
@@ -205,11 +204,7 @@ class PlayControlFragment: BaseFragment() {
     }
 
     private fun updateAudioItem(audioItem: AudioItem) = io {
-        val coverArt = requireContext().loadAudioArtRaw(audioItem.id)
-            ?: requireContext().loadAlbumArtRaw(audioItem.album)
-            ?: activityViewModel.defaultCoverArt
         ui {
-            binding.imageBitmap = coverArt
             bottom.audioItem = audioItem
             contentControl.duration = audioItem.duration
         }
