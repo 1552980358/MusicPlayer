@@ -33,6 +33,7 @@ import androidx.core.content.res.ResourcesCompat.getDrawable
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
 import androidx.media.MediaBrowserServiceCompat
+import androidx.media.session.MediaButtonReceiver.handleIntent
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayer.Builder
@@ -321,7 +322,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                 startForeground(createNotification(playlist[current], true, currentCoverArt))
                 stopForeground(false)
             }
-            else -> Unit
+            else -> handleIntent(mediaSessionCompat, intent)
         }
         return super.onStartCommand(intent, flags, startId)
     }
