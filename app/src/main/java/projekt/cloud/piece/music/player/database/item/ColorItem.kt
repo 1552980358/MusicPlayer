@@ -18,7 +18,8 @@ class ColorItem(
     companion object {
         const val TYPE_AUDIO = 0
         const val TYPE_ALBUM = 1
-        const val TYPE_ARTIST = 1
+        const val TYPE_ARTIST = 2
+        const val TYPE_PLAYLIST = 3
     }
     
 }
