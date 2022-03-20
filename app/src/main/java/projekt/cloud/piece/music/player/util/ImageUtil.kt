@@ -3,15 +3,18 @@ package projekt.cloud.piece.music.player.util
 import android.content.ContentUris
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.graphics.Bitmap.createBitmap
 import android.graphics.BitmapFactory.decodeFileDescriptor
-import android.net.Uri
+import android.graphics.Matrix
 import android.net.Uri.parse
 import lib.github1552980358.ktExtension.android.graphics.getByteArray
+import lib.github1552980358.ktExtension.android.graphics.heightF
+import lib.github1552980358.ktExtension.android.graphics.widthF
 import lib.github1552980358.ktExtension.android.java.readAsBitmap
 import lib.github1552980358.ktExtension.android.java.writeBitmap
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import lib.github1552980358.ktExtension.jvm.keyword.tryRun
+import projekt.cloud.piece.music.player.R
 import java.io.File
 
 object ImageUtil {
@@ -127,8 +130,19 @@ object ImageUtil {
         tryOnly { File(playlist40DpDir, id).delete() }
 
     val Bitmap.asSquare get(): Bitmap = when {
-        width > height -> Bitmap.createBitmap(this, (width - height) / 2, 0, height, height)
-        width < height -> Bitmap.createBitmap(this, 0, (height - width) / 2, width, width)
+        width > height -> createBitmap(this, (width - height) / 2, 0, height, height)
+        width < height -> createBitmap(this, 0, (height - width) / 2, width, width)
         else -> this
     }
+
+    fun Bitmap.cutAs40Dp(context: Context) =
+        cutAs40Dp(context.resources.getDimensionPixelSize(R.dimen.md_spec_list_image_size))
+
+    private fun Bitmap.cutAs40Dp(size: Int) = cutAs40Dp(size, Matrix())
+
+    private fun Bitmap.cutAs40Dp(size: Int, matrix: Matrix) = cutAs40Dp(matrix.apply { setScale(size / widthF, size / heightF) })
+
+    private fun Bitmap.cutAs40Dp(matrix: Matrix) =
+        createBitmap(this, 0, 0, width, height, matrix, false)
+
 }
