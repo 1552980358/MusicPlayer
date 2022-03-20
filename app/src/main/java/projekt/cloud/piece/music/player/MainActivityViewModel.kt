@@ -144,6 +144,15 @@ class MainActivityViewModel: ViewModel() {
         }
     }
 
+    fun removeAllObservers(tag: String) {
+        setAudioItemObserver(tag)
+        setPlayStateObserver(tag)
+        setProgressObservers(tag)
+        setPlayConfigObserver(tag)
+        setPlaylistObserver(tag)
+        setCoverArtBitmapObserver(tag)
+    }
+
     fun updatePlayConfig(newConfig: Int) {
         mediaBrowserCompat.sendCustomAction(ACTION_PLAY_CONFIG_CHANGED, bundleOf(EXTRA_CONFIGS to newConfig), object : CustomActionCallback() {
             override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
