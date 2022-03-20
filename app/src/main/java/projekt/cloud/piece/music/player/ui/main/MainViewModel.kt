@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import projekt.cloud.piece.music.player.database.item.AlbumItem
 import projekt.cloud.piece.music.player.database.item.ArtistItem
+import projekt.cloud.piece.music.player.database.item.PlaylistItem
 import projekt.cloud.piece.music.player.ui.main.album.AlbumFragment
 import projekt.cloud.piece.music.player.ui.main.artist.ArtistFragment
 import projekt.cloud.piece.music.player.ui.main.home.HomeFragment
@@ -21,7 +22,8 @@ class MainViewModel: ViewModel() {
     var isArtistListLoaded = false
     lateinit var artistList: List<ArtistItem>
 
-    var isPlaylistArtLoaded = false
+    var isPlaylistLoaded = false
+    lateinit var playlistList: ArrayList<PlaylistItem>
 
     lateinit var defaultAlbumCover: Bitmap
     lateinit var defaultArtistArt: Bitmap
