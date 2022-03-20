@@ -88,7 +88,7 @@ class MainFragment: BaseFragment() {
 
         }
 
-        val bottomNavigationItems = listOf(R.id.nav_home, R.id.nav_album, R.id.nav_artist)
+        val bottomNavigationItems = listOf(R.id.nav_home, R.id.nav_album, R.id.nav_artist, R.id.nav_playlist)
 
         viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
