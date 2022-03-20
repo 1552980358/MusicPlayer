@@ -46,10 +46,6 @@ class MainFragment: BaseFragment() {
     private val extendedFloatingActionButton get() = appBarMain.extendedFloatingActionButton
 
     private lateinit var viewModel: MainViewModel
-
-    private val audioArtMap get() = activityViewModel.audioArtMap
-    private val albumArtMap get() = activityViewModel.albumArtMap
-    private val defaultCoverArt get() = activityViewModel.defaultCoverArt
     private val database get() = activityViewModel.database
 
     private lateinit var navController: NavController
