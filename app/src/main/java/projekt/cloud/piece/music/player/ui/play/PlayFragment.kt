@@ -126,7 +126,7 @@ class PlayFragment: BaseFragment() {
     }
 
     override fun onDestroyView() {
-        activityViewModel.setAudioItemObserver(TAG)
+        activityViewModel.removeAllObservers(TAG)
         _binding = null
         super.onDestroyView()
         TypedValue().apply {
