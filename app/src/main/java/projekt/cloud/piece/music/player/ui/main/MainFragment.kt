@@ -92,12 +92,16 @@ class MainFragment: BaseFragment() {
 
         viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                bottomNavigation.menu.getItem(position).isChecked = true
+                bottomNavigation.menu.getItem(position).apply {
+                    isChecked = true
+                    toolbar.title = title
+                }
             }
         })
 
         bottomNavigation.setOnItemSelectedListener {
             viewPager.currentItem = bottomNavigationItems.indexOfFirst { id -> id == it.itemId }
+            toolbar.title = it.title
             true
         }
 
