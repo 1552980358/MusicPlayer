@@ -126,6 +126,24 @@ class MainActivityViewModel: ViewModel() {
         }
     }
 
+    var coverArtBitmap: Bitmap? = null
+        set(value) {
+            field = value
+            value?.let { _coverArtBimapObservers.forEach { (_, observer) -> observer(it) } }
+        }
+    private val _coverArtBimapObservers = mutableMapOf<String, (Bitmap) -> Unit>()
+    fun setCoverArtBitmapObserver(tag: String, needValueInstant: Boolean = true, observer: ((Bitmap) -> Unit)? = null) {
+        when (observer) {
+            null -> _coverArtBimapObservers.remove(tag)
+            else -> {
+                _coverArtBimapObservers[tag] = observer
+                if (needValueInstant) {
+                    coverArtBitmap?.let { observer(it) }
+                }
+            }
+        }
+    }
+
     fun updatePlayConfig(newConfig: Int) {
         mediaBrowserCompat.sendCustomAction(ACTION_PLAY_CONFIG_CHANGED, bundleOf(EXTRA_CONFIGS to newConfig), object : CustomActionCallback() {
             override fun onResult(action: String?, extras: Bundle?, resultData: Bundle?) {
