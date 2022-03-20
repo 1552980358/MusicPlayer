@@ -58,7 +58,7 @@ object NotificationUtil {
         .setSmallIcon(R.drawable.ic_launcher_foreground)
         .setOngoing(false)
         .setPriority(PRIORITY_MAX)
-        .setStyle(MediaStyle().setMediaSession((this as MediaBrowserServiceCompat).sessionToken))
+        .setStyle(MediaStyle().setMediaSession((this as MediaBrowserServiceCompat).sessionToken).setShowActionsInCompactView(0, 1, 2))
         .setVibrate(longArrayOf(0))
         .setSilent(true)
         .setContentTitle(audioItem.title)
