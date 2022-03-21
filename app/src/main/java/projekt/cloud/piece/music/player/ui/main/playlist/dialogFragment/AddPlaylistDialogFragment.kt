@@ -1,22 +1,26 @@
 package projekt.cloud.piece.music.player.ui.main.playlist.dialogFragment
 
-import android.content.Intent
+import android.app.Dialog
 import android.graphics.Bitmap
-import android.graphics.Bitmap.createBitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewAnimationUtils.createCircularReveal
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.activity.result.ActivityResultLauncher
+import androidx.core.animation.doOnEnd
+import androidx.core.view.doOnAttach
 import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.database.item.PlaylistItem
 import projekt.cloud.piece.music.player.databinding.DialogFragmentAddPlaylistBinding
+import projekt.cloud.piece.music.player.util.ActivityUtil.pixelHeight
+import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
 import projekt.cloud.piece.music.player.util.ImageUtil.asSquare
-import projekt.cloud.piece.music.player.util.ImageUtil.writePlaylistRaw
+import kotlin.math.hypot
 
 class AddPlaylistDialogFragment: DialogFragment() {
 
@@ -69,9 +73,42 @@ class AddPlaylistDialogFragment: DialogFragment() {
         relativeLayout.setOnClickListener { pickImage.launch("image/*") }
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?) = super.onCreateDialog(savedInstanceState).apply {
-        window?.setLayout(MATCH_PARENT, MATCH_PARENT)
-        window?.attributes?.windowAnimations = R.style.Theme_MusicPlayer_FullscreenDialog_WindowAnimation
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        // Reference to https://stackoverflow.com/a/67878214/11685230
+        val dialog = object : Dialog(requireContext(), theme) {
+            override fun onBackPressed() {
+                this@AddPlaylistDialogFragment.dismiss()
+            }
+        }
+        dialog.window?.setLayout(MATCH_PARENT, MATCH_PARENT)
+        // window?.attributes?.windowAnimations = R.style.Theme_MusicPlayer_FullscreenDialog_WindowAnimation
+        dialog.window?.decorView?.doOnAttach {
+            createCircularReveal(
+                it,
+                resources.displayMetrics.widthPixels,
+                0,
+                0F,
+                hypot(resources.displayMetrics.widthPixels.toFloat(), requireActivity().pixelHeight.toFloat())
+            ).apply {
+                duration = ANIMATION_DURATION
+            }.start()
+        }
+        return dialog
+    }
+
+    override fun dismiss() {
+        requireDialog().window?.decorView?.doOnAttach {
+            createCircularReveal(
+                it,
+                resources.displayMetrics.widthPixels,
+                0,
+                hypot(resources.displayMetrics.widthPixels.toFloat(), requireActivity().pixelHeight.toFloat()),
+                0F
+            ).apply {
+                duration = ANIMATION_DURATION
+                doOnEnd { super.dismiss() }
+            }.start()
+        }
     }
 
     fun setCallback(callback: (PlaylistItem, Bitmap?) -> Unit) {
