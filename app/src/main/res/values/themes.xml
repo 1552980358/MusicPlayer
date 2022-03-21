@@ -60,17 +60,10 @@
 
     <style name="Theme.MusicPlayer.FullscreenDialog" parent="Theme.MaterialComponents.Light.DialogWhenLarge">
         <item name="android:windowIsFloating">false</item>
-        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:statusBarColor">?attr/colorPrimary</item>
         <item name="android:navigationBarColor">@color/white</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="p">true</item>
-        <item name="android:windowEnterAnimation">@anim/anim_add_playlist_enter</item>
-        <item name="android:windowExitAnimation">@anim/anim_add_playlist_exit</item>
-    </style>
-
-    <style name="Theme.MusicPlayer.FullscreenDialog.WindowAnimation">
-        <item name="android:windowEnterAnimation">@anim/anim_add_playlist_enter</item>
-        <item name="android:windowExitAnimation">@anim/anim_add_playlist_exit</item>
     </style>
     
 </resources>
