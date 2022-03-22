@@ -42,10 +42,6 @@ import projekt.cloud.piece.music.player.util.ImageUtil.writePlaylistRaw
 
 class PlaylistFragment: BaseFragment() {
 
-    companion object {
-        private const val FILE_DESCRIPTOR_MODE = "r"
-    }
-
     private var _binding: FragmentPlaylistBinding? = null
     private val binding get() = _binding!!
 
@@ -53,8 +49,6 @@ class PlaylistFragment: BaseFragment() {
     private lateinit var mainViewModel: MainViewModel
 
     private lateinit var navController: NavController
-
-    private lateinit var pickImage: ActivityResultLauncher<String>
 
     private var addPlaylistDialogFragment: AddPlaylistDialogFragment? = null
 
@@ -83,13 +77,6 @@ class PlaylistFragment: BaseFragment() {
             ui { recyclerViewAdapterUtil.playlistList = mainViewModel.playlistList }
             mainViewModel.isPlaylistLoaded = true
         }
-        pickImage = registerForActivityResult(GetContent()) { data ->
-            data?.let { uri ->
-                requireContext().contentResolver.openFileDescriptor(uri, FILE_DESCRIPTOR_MODE)?.fileDescriptor?.let { fileDescriptor ->
-                    addPlaylistDialogFragment?.setImageBitmap(decodeFileDescriptor(fileDescriptor))
-                }
-            }
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -116,11 +103,10 @@ class PlaylistFragment: BaseFragment() {
                                 }
                                 else -> activityViewModel.database.color.insert(ColorItem(playlistItem.id, TYPE_PLAYLIST))
                             }
+                            mainViewModel.playlistList.add(playlistItem)
+                            ui { recyclerViewAdapterUtil.playlistList = mainViewModel.playlistList }
                         }
-                        mainViewModel.playlistList.add(playlistItem)
-                        recyclerViewAdapterUtil.playlistList = mainViewModel.playlistList
                     }
-                    setPickImage(pickImage)
                 }
                 addPlaylistDialogFragment?.show(this)
             }
