@@ -12,13 +12,19 @@ import androidx.core.animation.doOnEnd
 import androidx.core.view.doOnAttach
 import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
+import lib.github1552980358.ktExtension.kotlinx.coroutines.io
+import mkaflowski.mediastylepalette.MediaNotificationProcessor
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseDialogFragment
+import projekt.cloud.piece.music.player.database.item.ColorItem
 import projekt.cloud.piece.music.player.database.item.PlaylistItem
 import projekt.cloud.piece.music.player.databinding.DialogFragmentAddPlaylistBinding
 import projekt.cloud.piece.music.player.util.ActivityUtil.pixelHeight
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
 import projekt.cloud.piece.music.player.util.ImageUtil.asSquare
+import projekt.cloud.piece.music.player.util.ImageUtil.cutAs40Dp
+import projekt.cloud.piece.music.player.util.ImageUtil.writePlaylist40Dp
+import projekt.cloud.piece.music.player.util.ImageUtil.writePlaylistRaw
 import kotlin.math.hypot
 
 class AddPlaylistDialogFragment: BaseDialogFragment() {
@@ -66,8 +72,24 @@ class AddPlaylistDialogFragment: BaseDialogFragment() {
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.menu_save -> {
-                        val playlistItem = PlaylistItem(title = editTextTitle.text.toString(), description = editTextDescription.text?.toString())
-                        callback(playlistItem, coverArt)
+                        io {
+                            val playlistItem = PlaylistItem(title = editTextTitle.text.toString(), description = editTextDescription.text?.toString())
+                            when (val bitmap = coverArt) {
+                                null -> activityViewModel.database.color.insert(ColorItem(playlistItem.id, ColorItem.TYPE_PLAYLIST))
+                                else -> {
+                                    requireContext().writePlaylistRaw(playlistItem.id, bitmap)
+                                    requireContext().writePlaylist40Dp(playlistItem.id, bitmap.cutAs40Dp(requireContext()))
+                                    MediaNotificationProcessor(requireContext(), bitmap).apply {
+                                        activityViewModel.database.color.insert(
+                                            ColorItem(playlistItem.id, ColorItem.TYPE_PLAYLIST, backgroundColor, primaryTextColor, secondaryTextColor)
+                                        )
+                                    }
+                                }
+                            }
+                            activityViewModel.database.playlist.insert(playlistItem)
+                            callback(playlistItem, coverArt)
+                        }
+
                         dismiss()
                     }
                 }
