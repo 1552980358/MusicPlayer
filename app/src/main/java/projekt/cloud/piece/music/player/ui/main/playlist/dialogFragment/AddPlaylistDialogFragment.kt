@@ -2,6 +2,7 @@ package projekt.cloud.piece.music.player.ui.main.playlist.dialogFragment
 
 import android.app.Dialog
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory.decodeFileDescriptor
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -29,9 +30,13 @@ import kotlin.math.hypot
 
 class AddPlaylistDialogFragment: BaseDialogFragment() {
 
+    private companion object {
+        const val PICK_IMAGE_MODE = "r"
+    }
+
     private lateinit var callback: (PlaylistItem, Bitmap?) -> Unit
 
-    private val pickImage get() = activityViewModel.pickImage
+    private val pickImage get() = activityViewModel.getContent
 
     private var _binding: DialogFragmentAddPlaylistBinding? = null
     private val binding get() = _binding!!
@@ -49,7 +54,13 @@ class AddPlaylistDialogFragment: BaseDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activityViewModel.setPickImageCallback { coverArt = it?.asSquare }
+        activityViewModel.setGetContentCallback { uri ->
+            coverArt = requireContext()
+                .contentResolver
+                .openFileDescriptor(uri, PICK_IMAGE_MODE)
+                ?.use { decodeFileDescriptor(it.fileDescriptor) }
+                ?.asSquare
+        }
         setStyle(STYLE_NORMAL, R.style.Theme_MusicPlayer_FullscreenDialog)
     }
 

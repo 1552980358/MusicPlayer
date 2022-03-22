@@ -2,7 +2,7 @@ package projekt.cloud.piece.music.player
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory.decodeFileDescriptor
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.CustomActionCallback
@@ -197,19 +197,15 @@ class MainActivityViewModel: ViewModel() {
         requireSyncPlaylist = true
     }
 
-    private var pickImageCallback: ((Bitmap?) -> Unit)? = null
-    lateinit var pickImage: ActivityResultLauncher<String>
-    fun registerPickImage(activity: AppCompatActivity) {
-        pickImage = activity.registerForActivityResult(GetContent()) { uri ->
-            uri?.let {
-                pickImageCallback?.let {
-                    it(activity.contentResolver.openFileDescriptor(uri, PICK_IMAGE_MODE)?.use { decodeFileDescriptor(it.fileDescriptor) })
-                }
-            }
+    private var getContentCallback: ((Uri) -> Unit)? = null
+    lateinit var getContent: ActivityResultLauncher<String>
+    fun registerGetContent(activity: AppCompatActivity) {
+        getContent = activity.registerForActivityResult(GetContent()) { uri ->
+            uri?.let { dataUri -> getContentCallback?.let { it(dataUri) } }
         }
     }
-    fun setPickImageCallback(callback: ((Bitmap?) -> Unit)? = null) {
-        this.pickImageCallback = callback
+    fun setGetContentCallback(callback: ((Uri) -> Unit)? = null) {
+        this.getContentCallback = callback
     }
 
     lateinit var mediaBrowserCompat: MediaBrowserCompat
