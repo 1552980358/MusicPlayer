@@ -12,6 +12,8 @@ import lib.github1552980358.ktExtension.androidx.fragment.app.show
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseDialogFragment
+import projekt.cloud.piece.music.player.database.item.AudioItem
+import projekt.cloud.piece.music.player.database.item.PlaylistContentItem
 import projekt.cloud.piece.music.player.database.item.PlaylistItem
 import projekt.cloud.piece.music.player.databinding.DialogFragmentAddToPlaylistBinding
 import projekt.cloud.piece.music.player.ui.addToPlaylist.util.RecyclerViewAdapterUtil
@@ -25,20 +27,20 @@ class AddToPlaylistDialogFragment: BaseDialogFragment() {
 
     private lateinit var recyclerViewAdapterUtil: RecyclerViewAdapterUtil
 
-    private lateinit var callback: (PlaylistItem) -> Unit
+    private lateinit var audioItem: AudioItem
 
     private val playlistArtCover = mutableMapOf<String, Bitmap>()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = DataBindingUtil.inflate(LayoutInflater.from(requireContext()), R.layout.dialog_fragment_add_to_playlist, null, false)
         recyclerViewAdapterUtil = RecyclerViewAdapterUtil(binding.recyclerView, playlistArtCover, getDrawable(R.drawable.ic_playlist_default)!!.toBitmap()) {
-            callback(it)
+            addToPlaylist(audioItem, it)
             dismiss()
         }
 
         binding.relativeLayout.setOnClickListener {
             AddPlaylistDialogFragment().apply {
-                setCallback { playlistItem, _ -> callback(playlistItem) }
+                setCallback { playlistItem, _ -> addToPlaylist(audioItem, playlistItem) }
             }.show(requireActivity())
             dismiss()
         }
@@ -61,8 +63,12 @@ class AddToPlaylistDialogFragment: BaseDialogFragment() {
         super.onDestroyView()
     }
 
-    fun setCallback(callback: (PlaylistItem) -> Unit) {
-        this.callback = callback
+    fun setAudioItem(audioItem: AudioItem) {
+        this.audioItem = audioItem
+    }
+
+    private fun addToPlaylist(audioItem: AudioItem, playlistItem: PlaylistItem) = io {
+        activityViewModel.database.playlistContent.insert(PlaylistContentItem(audio = audioItem.id, playlist = playlistItem.id))
     }
 
 }
