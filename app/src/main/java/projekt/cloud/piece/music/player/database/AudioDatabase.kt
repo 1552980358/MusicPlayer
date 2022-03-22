@@ -22,7 +22,8 @@ import projekt.cloud.piece.music.player.database.itemDao.PlaylistItemDao
     ColorItem::class,
     PlaylistItem::class,
     PlaylistContentItem::class],
-    version = 1)
+    version = 1,
+    exportSchema = false)
 abstract class AudioDatabase: RoomDatabase() {
 
     companion object {
