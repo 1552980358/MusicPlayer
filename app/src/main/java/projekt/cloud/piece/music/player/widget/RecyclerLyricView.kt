@@ -170,7 +170,7 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
     
     fun updateProgress(progress: Long) = lyric?.indexOf(progress)?.let { currentPosition = it }
     
-    var paddings = 0
+    private val paddings = (context as MainActivity).pixelHeight / 2
     
     private var isControlled = false
     
