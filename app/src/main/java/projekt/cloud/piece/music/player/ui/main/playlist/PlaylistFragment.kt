@@ -88,23 +88,10 @@ class PlaylistFragment: BaseFragment() {
             R.id.menu_add_playlist -> {
                 addPlaylistDialogFragment = AddPlaylistDialogFragment().apply {
                     setCallback { playlistItem, bitmap ->
-                        io {
-                            activityViewModel.database.playlist.insert(playlistItem)
-                            when {
-                                bitmap != null -> {
-                                    requireContext().writePlaylistRaw(playlistItem.id, bitmap)
-                                    requireContext().writePlaylist40Dp(playlistItem.id, bitmap.cutAs40Dp(requireContext()))
-                                    MediaNotificationProcessor(requireContext(), bitmap).apply {
-                                        activityViewModel.database.color.insert(
-                                            ColorItem(playlistItem.id, TYPE_PLAYLIST, backgroundColor, primaryTextColor, secondaryTextColor)
-                                        )
-                                    }
-                                    playlistArtMap[playlistItem.id] = bitmap
-                                }
-                                else -> activityViewModel.database.color.insert(ColorItem(playlistItem.id, TYPE_PLAYLIST))
-                            }
+                        bitmap?.let { playlistArtMap[playlistItem.id] = it }
+                        ui {
                             mainViewModel.playlistList.add(playlistItem)
-                            ui { recyclerViewAdapterUtil.playlistList = mainViewModel.playlistList }
+                            recyclerViewAdapterUtil.playlistList = mainViewModel.playlistList
                         }
                     }
                 }
