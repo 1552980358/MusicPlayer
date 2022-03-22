@@ -44,9 +44,7 @@ class PlayLyricFragment: BaseFragment() {
     }
 
     private fun updateAudioItem(audioItem: AudioItem) = io {
-        requireContext().loadLyric(audioItem.id).apply {
-            recyclerLyricView.lyric = this
-        }
+        requireContext().loadLyric(audioItem.id).let { ui { recyclerLyricView.lyric = it } }
         updateColor(audioItem)
     }
 
