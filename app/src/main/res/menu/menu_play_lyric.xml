@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <item
+        android:id="@+id/menu_add_lyric"
+        android:title="@string/play_lyric_add_lyric"
+        android:icon="@drawable/ic_add"
+        app:showAsAction="ifRoom" />
+    
+    <item
+        android:id="@+id/menu_edit_lyric"
+        android:title="@string/play_lyric_edit_lyric"
+        android:icon="@drawable/ic_edit"
+        app:showAsAction="ifRoom" />
+
+</menu>
