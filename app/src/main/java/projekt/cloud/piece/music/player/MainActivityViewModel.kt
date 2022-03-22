@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModel
 import lib.github1552980358.ktExtension.android.content.isSystemDarkMode
 import projekt.cloud.piece.music.player.database.AudioDatabase
 import projekt.cloud.piece.music.player.database.item.AudioItem
+import projekt.cloud.piece.music.player.database.item.PlaylistItem
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_PLAY_CONFIG_CHANGED
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_REQUEST_LIST
 import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT
@@ -43,6 +44,11 @@ class MainActivityViewModel: ViewModel() {
     lateinit var audioList: List<AudioItem>
     var audioArtMap = mutableMapOf<String, Bitmap>()
     var albumArtMap = mutableMapOf<String, Bitmap>()
+
+    var isPlaylistLoaded = false
+    var playlistListUpdated = false
+    lateinit var playlistList: ArrayList<PlaylistItem>
+    lateinit var defaultPlaylistArt: Bitmap
 
     var audioItem: AudioItem? = null
         set(value) {

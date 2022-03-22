@@ -22,12 +22,8 @@ class MainViewModel: ViewModel() {
     var isArtistListLoaded = false
     lateinit var artistList: List<ArtistItem>
 
-    var isPlaylistLoaded = false
-    lateinit var playlistList: ArrayList<PlaylistItem>
-
     lateinit var defaultAlbumCover: Bitmap
     lateinit var defaultArtistArt: Bitmap
-    lateinit var defaultPlaylistArt: Bitmap
 
     val fragments = listOf(
         HomeFragment(),
