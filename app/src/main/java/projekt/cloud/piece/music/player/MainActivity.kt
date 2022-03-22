@@ -94,6 +94,8 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         navController = binding.fragmentContainer.getFragment<NavHostFragment>().navController
 
+        viewModel.registerPickImage(this)
+
         if (!viewModel.isLoaded) {
 
             viewModel.database = Room.databaseBuilder(this, AudioDatabase::class.java, DATABASE_NAME).build()
