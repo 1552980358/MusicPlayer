@@ -1,6 +1,7 @@
 package projekt.cloud.piece.music.player.ui.audioList
 
 import android.content.res.ColorStateList.valueOf
+import android.graphics.Bitmap
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,6 +23,7 @@ import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_INDEX
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
 import projekt.cloud.piece.music.player.ui.audioList.util.RecyclerViewAdapterUtil
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArtRaw
+import projekt.cloud.piece.music.player.util.ImageUtil.loadPlaylistRaw
 
 class AudioListFragment: BaseFragment() {
 
@@ -31,6 +33,7 @@ class AudioListFragment: BaseFragment() {
 
         const val EXTRA_TYPE_ALBUM = 0
         const val EXTRA_TYPE_ARTIST = 1
+        const val EXTRA_TYPE_PLAYLIST = 2
     }
 
     private var _binding: FragmentAudioListBinding? = null
@@ -92,16 +95,22 @@ class AudioListFragment: BaseFragment() {
                 }
             }
 
+            val headerImage: Bitmap
             when (type) {
                 EXTRA_TYPE_ALBUM -> {
-                    val headerImage = requireContext().loadAlbumArtRaw(item.id) ?: getDrawable(R.drawable.ic_default_album)!!.toBitmap()
+                    headerImage = requireContext().loadAlbumArtRaw(item.id) ?: getDrawable(R.drawable.ic_default_album)!!.toBitmap()
                     ui { binding.imageView.setImageBitmap(headerImage) }
                     audioList = database.audio.queryAlbum(item.id)
                 }
                 EXTRA_TYPE_ARTIST -> {
-                    val headerImage = getDrawable(R.drawable.ic_artist_default)!!.toBitmap()
+                    headerImage = getDrawable(R.drawable.ic_artist_default)!!.toBitmap()
                     ui { binding.imageView.setImageBitmap(headerImage) }
                     audioList = database.audio.queryArtist(item.title)
+                }
+                EXTRA_TYPE_PLAYLIST -> {
+                    headerImage = requireContext().loadPlaylistRaw(item.id) ?: getDrawable(R.drawable.ic_playlist_default)!!.toBitmap()
+                    ui { binding.imageView.setImageBitmap(headerImage) }
+                    audioList = database.playlistContent.queryAudio(item.id)
                 }
             }
 
