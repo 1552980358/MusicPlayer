@@ -15,8 +15,10 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
+import projekt.cloud.piece.music.player.MainActivity
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.databinding.ViewRecyclerLyricBinding
+import projekt.cloud.piece.music.player.util.ActivityUtil.pixelHeight
 import projekt.cloud.piece.music.player.util.Lyric
 
 class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): RecyclerView(context, attributeSet) {
@@ -156,11 +158,14 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
             if (previousPosition > -1) {
                 adapter.notifyItemChanged(previousPosition)
             }
-            if (value > -1) {
-                adapter.notifyItemChanged(value)
-            }
-            if (!isControlled) {
-                smoothScrollToPosition(value)
+            when (value) {
+                -1 -> smoothScrollToPosition(0)
+                else -> {
+                    adapter.notifyItemChanged(value)
+                    if (!isControlled) {
+                        smoothScrollToPosition(value)
+                    }
+                }
             }
         }
     
