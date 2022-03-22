@@ -28,6 +28,7 @@ import projekt.cloud.piece.music.player.ThemeSwitchActivity
 import projekt.cloud.piece.music.player.ThemeSwitchActivity.Companion.EXTRA_IS_NIGHT
 import projekt.cloud.piece.music.player.ThemeSwitchActivity.Companion.setScreenshot
 import projekt.cloud.piece.music.player.base.BaseFragment
+import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.FragmentMainBinding
 import projekt.cloud.piece.music.player.util.ViewUtil.screenshot
 
@@ -128,47 +129,14 @@ class MainFragment: BaseFragment() {
                 }
             }
         }
+
         activityViewModel.setCoverArtBitmapObserver(TAG) {
             extendedFloatingActionButton.icon = BitmapDrawable(resources, it)
         }
-        activityViewModel.setAudioItemObserver(TAG) { audioItem ->
-            io {
-                database.color.query(audioItem.id, audioItem.album).apply {
-                    with(extendedFloatingActionButton) {
-                        ui {
-                            setTextColor(primaryColor)
-                            backgroundTintList = valueOf(backgroundColor)
-                            if (text != audioItem.title) {
-                                text = audioItem.title
-                            }
-                        }
-
-                        when {
-                            viewModel.isDestroyed -> {
-                                viewModel.isDestroyed = false
-                                when {
-                                    viewModel.isExtended -> ui { extend() }
-                                    else -> return@apply
-                                }
-                            }
-                            else -> {
-                                if (!isExtended) {
-                                    ui { extend() }
-                                    viewModel.isExtended = true
-                                }
-                            }
-                        }
-
-                        countJob?.cancel()
-                        countJob = io {
-                            delay(5000L)
-                            viewModel.isExtended = false
-                            ui { shrink() }
-                        }
-                    }
-                }
-            }
+        activityViewModel.setAudioItemObserver(TAG, false) { audioItem ->
+            updateAudioItem(audioItem)
         }
+        activityViewModel.audioItem?.let { updateAudioItem(it, false) }
     }
 
     override fun onStart() {
@@ -184,8 +152,34 @@ class MainFragment: BaseFragment() {
         countJob = null
         activityViewModel.removeAllObservers(TAG)
         _binding = null
-        viewModel.isDestroyed = true
         super.onDestroyView()
+    }
+
+    private fun updateAudioItem(audioItem: AudioItem, needExtend: Boolean = true) {
+        countJob?.cancel()
+        countJob = io {
+            database.color.query(audioItem.id, audioItem.album).apply {
+                with(extendedFloatingActionButton) {
+                    ui {
+                        setTextColor(primaryColor)
+                        backgroundTintList = valueOf(backgroundColor)
+                        if (text != audioItem.title) {
+                            text = audioItem.title
+                        }
+                    }
+
+                    if (needExtend) {
+                        if (!isExtended) {
+                            ui { extend() }
+                        }
+
+                        delay(5000L)
+                        ui { shrink() }
+                    }
+                }
+            }
+        }
+
     }
 
 }
