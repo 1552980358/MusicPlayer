@@ -20,7 +20,7 @@ import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_INT
 object BindingAdapter {
 
     @JvmStatic
-    @BindingAdapter("app:bitmapAnimated")
+    @BindingAdapter("bitmapAnimated")
     fun AppCompatImageView.setBitmapAnimated(bitmap: Bitmap?) {
         if (bitmap != null) {
             return setDrawableAnimated(BitmapDrawable(resources, bitmap))
@@ -28,7 +28,7 @@ object BindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("app:drawableAnimated")
+    @BindingAdapter("drawableAnimated")
     fun AppCompatImageView.setDrawableAnimated(newDrawable: Drawable?) {
         if (newDrawable != null) {
             if (drawable == null) {
@@ -49,7 +49,7 @@ object BindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("app:alphaAnimated")
+    @BindingAdapter("alphaAnimated")
     fun View.setAlphaAnimated(alpha: Float?) {
         if (alpha != null) {
             ofFloat(this.alpha, alpha).apply {
@@ -60,7 +60,7 @@ object BindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("app:isPlaying")
+    @BindingAdapter("isPlaying")
     fun FloatingActionButton.updatePlayingState(isPlaying: Boolean?) {
         if (isPlaying != null) {
             if (drawable == null) {
@@ -74,7 +74,7 @@ object BindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("app:textAnimated")
+    @BindingAdapter("textAnimated")
     fun AppCompatTextView.setTextAnimated(newText: String?) {
         if (newText != null) {
             if (text.isNullOrBlank()) {

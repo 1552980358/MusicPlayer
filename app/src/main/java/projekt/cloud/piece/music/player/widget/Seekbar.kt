@@ -27,7 +27,7 @@ class Seekbar(context: Context, attributeSet: AttributeSet?): View(context, attr
         const val DEFAULT_STR = "00:00"
 
         @JvmStatic
-        @BindingAdapter("app:primaryColor")
+        @BindingAdapter("primaryColor")
         fun Seekbar.setPrimaryColor(@ColorInt color: Int?) {
             if (color != null) {
                 setProgressColor(color)
@@ -35,7 +35,7 @@ class Seekbar(context: Context, attributeSet: AttributeSet?): View(context, attr
         }
 
         @JvmStatic
-        @BindingAdapter("app:secondaryColor")
+        @BindingAdapter("secondaryColor")
         fun Seekbar.setSecondaryColor(@ColorInt color: Int?) {
             if (color != null) {
                 setRemainColor(color)
@@ -43,7 +43,7 @@ class Seekbar(context: Context, attributeSet: AttributeSet?): View(context, attr
         }
 
         @JvmStatic
-        @BindingAdapter("app:circleColor")
+        @BindingAdapter("circleColor")
         fun Seekbar.setCircleColor(@ColorInt color: Int?) {
             if (color != null) {
                 setCircleColor(color)
@@ -51,7 +51,7 @@ class Seekbar(context: Context, attributeSet: AttributeSet?): View(context, attr
         }
 
         @JvmStatic
-        @BindingAdapter("app:progress")
+        @BindingAdapter("progress")
         fun Seekbar.setProgress(progress: Long?) {
             if (progress != null) {
                 this.progress = progress
@@ -59,7 +59,7 @@ class Seekbar(context: Context, attributeSet: AttributeSet?): View(context, attr
         }
 
         @JvmStatic
-        @BindingAdapter("app:duration")
+        @BindingAdapter("duration")
         fun Seekbar.setDuration(duration: Long?) {
             if (duration != null) {
                 this.duration = duration

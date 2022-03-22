@@ -19,7 +19,7 @@ class TimeView(context: Context, attributeSet: AttributeSet?): View(context, att
         private const val COLON = ":"
     
         @JvmStatic
-        @BindingAdapter(value = ["app:time", "app:timeInt"], requireAll = false)
+        @BindingAdapter(value = ["time", "timeInt"], requireAll = false)
         fun TimeView.setTime(duration: Long?, durationInt: Int?) {
             if (duration != null) {
                 this.duration = duration
@@ -30,7 +30,7 @@ class TimeView(context: Context, attributeSet: AttributeSet?): View(context, att
         }
     
         @JvmStatic
-        @BindingAdapter("app:color")
+        @BindingAdapter("color")
         fun TimeView.setColor(color: Int) {
             updateTextColor(color)
         }

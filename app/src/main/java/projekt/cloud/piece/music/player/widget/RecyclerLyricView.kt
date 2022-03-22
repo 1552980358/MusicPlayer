@@ -26,13 +26,13 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
     companion object {
     
         @JvmStatic
-        @BindingAdapter("app:lyric")
+        @BindingAdapter("lyric")
         fun RecyclerLyricView.setLyric(lyric: Lyric?) {
             this.lyric = lyric
         }
         
         @JvmStatic
-        @BindingAdapter("app:primaryColor")
+        @BindingAdapter("primaryColor")
         fun RecyclerLyricView.setPrimaryColor(colorInt: Int?) {
             if (colorInt != null) {
                 primaryColor = colorInt
@@ -40,7 +40,7 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
         }
     
         @JvmStatic
-        @BindingAdapter("app:secondaryColor")
+        @BindingAdapter("secondaryColor")
         fun RecyclerLyricView.setSecondaryColor(colorInt: Int?) {
             if (colorInt != null) {
                 secondaryColor = colorInt
@@ -48,7 +48,7 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
         }
         
         @JvmStatic
-        @BindingAdapter("app:progress")
+        @BindingAdapter("progress")
         fun RecyclerLyricView.setProgress(progress: Long?) {
             if (progress != null) {
                 updateProgress(progress)
