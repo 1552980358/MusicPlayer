@@ -54,24 +54,32 @@ class PlaylistFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mainViewModel = ViewModelProvider(parentFragment as MainFragment)[MainViewModel::class.java]
         navController = findNavController()
-        if (!mainViewModel.isPlaylistLoaded) {
-            mainViewModel.defaultPlaylistArt = getDrawable(R.drawable.ic_playlist_default)!!.toBitmap()
+        if (!activityViewModel.isPlaylistLoaded) {
+            activityViewModel.defaultPlaylistArt = getDrawable(R.drawable.ic_playlist_default)!!.toBitmap()
         }
-        recyclerViewAdapterUtil = RecyclerViewAdapterUtil(binding.root, playlistArtMap, mainViewModel.defaultPlaylistArt) { rootView, playlistItem ->
+        recyclerViewAdapterUtil = RecyclerViewAdapterUtil(binding.root, playlistArtMap, activityViewModel.defaultPlaylistArt) { rootView, playlistItem ->
             navigateToAudioList(rootView, playlistItem)
         }
         io {
-            if (!mainViewModel.isPlaylistLoaded) {
-                mainViewModel.playlistList = activityViewModel.database.playlist.query().toMutableList() as ArrayList<PlaylistItem>
+            if (!activityViewModel.isPlaylistLoaded) {
+                activityViewModel.playlistList = activityViewModel.database.playlist.query().toMutableList() as ArrayList<PlaylistItem>
             }
             requireContext().loadPlaylist40Dp(playlistArtMap)
-            ui { recyclerViewAdapterUtil.playlistList = mainViewModel.playlistList }
-            mainViewModel.isPlaylistLoaded = true
+            ui { recyclerViewAdapterUtil.playlistList = activityViewModel.playlistList }
+            activityViewModel.isPlaylistLoaded = true
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_fragment_playlist, menu)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (activityViewModel.playlistListUpdated) {
+            recyclerViewAdapterUtil.playlistList = activityViewModel.playlistList
+            activityViewModel.playlistListUpdated = false
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -81,8 +89,8 @@ class PlaylistFragment: BaseFragment() {
                     setCallback { playlistItem, bitmap ->
                         bitmap?.let { playlistArtMap[playlistItem.id] = it }
                         ui {
-                            mainViewModel.playlistList.add(playlistItem)
-                            recyclerViewAdapterUtil.playlistList = mainViewModel.playlistList
+                            activityViewModel.playlistList.add(playlistItem)
+                            recyclerViewAdapterUtil.playlistList = activityViewModel.playlistList
                         }
                     }
                 }
