@@ -1,7 +1,6 @@
 package projekt.cloud.piece.music.player.ui.main.playlist
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory.decodeFileDescriptor
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -9,8 +8,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts.GetContent
 import androidx.core.graphics.drawable.toBitmap
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -21,24 +18,18 @@ import lib.github1552980358.ktExtension.androidx.fragment.app.getDrawable
 import lib.github1552980358.ktExtension.androidx.fragment.app.show
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
-import mkaflowski.mediastylepalette.MediaNotificationProcessor
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.database.base.BaseTitledItem
-import projekt.cloud.piece.music.player.database.item.ColorItem
-import projekt.cloud.piece.music.player.database.item.ColorItem.Companion.TYPE_PLAYLIST
 import projekt.cloud.piece.music.player.database.item.PlaylistItem
 import projekt.cloud.piece.music.player.databinding.FragmentPlaylistBinding
-import projekt.cloud.piece.music.player.ui.audioList.AudioListFragment.Companion.EXTRA_TYPE_ARTIST
+import projekt.cloud.piece.music.player.ui.audioList.AudioListFragment.Companion.EXTRA_TYPE_PLAYLIST
 import projekt.cloud.piece.music.player.ui.main.MainFragment
 import projekt.cloud.piece.music.player.ui.main.MainFragmentDirections
 import projekt.cloud.piece.music.player.ui.main.MainViewModel
 import projekt.cloud.piece.music.player.ui.main.playlist.dialogFragment.AddPlaylistDialogFragment
 import projekt.cloud.piece.music.player.ui.main.playlist.util.RecyclerViewAdapterUtil
-import projekt.cloud.piece.music.player.util.ImageUtil.cutAs40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.loadPlaylist40Dp
-import projekt.cloud.piece.music.player.util.ImageUtil.writePlaylist40Dp
-import projekt.cloud.piece.music.player.util.ImageUtil.writePlaylistRaw
 
 class PlaylistFragment: BaseFragment() {
 
@@ -103,7 +94,7 @@ class PlaylistFragment: BaseFragment() {
 
     private fun navigateToAudioList(rootView: View, item: BaseTitledItem) {
         navController.navigate(
-            MainFragmentDirections.actionNavMainToNavAudioList(item, EXTRA_TYPE_ARTIST),
+            MainFragmentDirections.actionNavMainToNavAudioList(item, EXTRA_TYPE_PLAYLIST),
             FragmentNavigatorExtras(rootView to rootView.transitionName)
         )
     }
