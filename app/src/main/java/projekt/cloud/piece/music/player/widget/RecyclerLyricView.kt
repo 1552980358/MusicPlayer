@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -100,6 +102,22 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
         override fun getItemCount() = lyric?.size ?: 0
     
     }
+
+    private class CenterLinearlayoutManager(private val context: Context) : LinearLayoutManager(context) {
+
+        override fun smoothScrollToPosition(recyclerView: RecyclerView, state: State?, position: Int) {
+            CenterSmoothScroller(context).also {
+                it.targetPosition = position
+                startSmoothScroll(it)
+            }
+        }
+
+        private class CenterSmoothScroller(context: Context): LinearSmoothScroller(context) {
+            override fun calculateDtToFit(viewStart: Int, viewEnd: Int, boxStart: Int, boxEnd: Int, snapPreference: Int) =
+                (boxStart + (boxEnd - boxStart) / 2) - (viewStart + (viewEnd - viewStart) / 2)
+        }
+
+    }
     
     private val adapter = RecyclerViewAdapter()
     
@@ -110,8 +128,6 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
             adapter.notifyDataSetChanged()
             currentPosition = -1
             previousPosition = -1
-            // (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(0, resources.displayMetrics.heightPixels / 2)
-            // smoothScrollToPosition(0)
             smoothScrollToPosition(0)
         }
     
@@ -158,6 +174,7 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
     
     init {
         setAdapter(adapter)
+        layoutManager = CenterLinearlayoutManager(context)
         
         addOnScrollListener(object : OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
