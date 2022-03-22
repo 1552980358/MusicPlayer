@@ -39,8 +39,7 @@ class AddToPlaylistDialogFragment: BaseDialogFragment() {
         binding.relativeLayout.setOnClickListener {
             AddPlaylistDialogFragment().apply {
                 setCallback { playlistItem, _ -> callback(playlistItem) }
-                show(this)
-            }
+            }.show(requireActivity())
             dismiss()
         }
 
