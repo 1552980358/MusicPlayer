@@ -322,16 +322,20 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                     !configs.getConfig(SERVICE_CONFIG_FOREGROUND_SERVICE) -> {
                         configs = configs.setConfig(SERVICE_CONFIG_FOREGROUND_SERVICE, true)
                         startForeground(createNotification(playlist[current], false, currentCoverArt))
-                        @Suppress("WakelockTimeout")
-                        wakeLock.acquire()
                     }
                     else -> notificationManagerCompat.update(createNotification(playlist[current], false, currentCoverArt))
+                }
+                if (!wakeLock.isHeld) {
+                    @Suppress("WakelockTimeout")
+                    wakeLock.acquire()
                 }
             }
             START_COMMAND_ACTION_PAUSE -> {
                 startForeground(createNotification(playlist[current], true, currentCoverArt))
                 stopForeground(false)
-                wakeLock.release()
+                if (wakeLock.isHeld) {
+                    wakeLock.release()
+                }
             }
             else -> handleIntent(mediaSessionCompat, intent)
         }
