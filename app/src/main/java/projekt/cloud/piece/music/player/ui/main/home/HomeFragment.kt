@@ -92,13 +92,8 @@ class HomeFragment: BaseFragment() {
                         when (it.itemId) {
                             R.id.menu_add_to_playlist -> {
                                 AddToPlaylistDialogFragment().apply {
-                                    setCallback {
-                                        io {
-                                            activityViewModel.database.playlistContent.insert(PlaylistContentItem(audio = audioItem.id, playlist = it.id))
-                                        }
-                                    }
-                                    show(this@HomeFragment)
-                                }
+                                    setAudioItem(audioItem)
+                                }.show(this@HomeFragment)
                             }
                         }
                         true
