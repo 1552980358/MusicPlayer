@@ -14,5 +14,11 @@
     <string name="add_playlist_menu_save">Save</string>
     <string name="add_playlist_title">Playlist Title</string>
     <string name="add_playlist_description">Description</string>
+    
+    <string name="home_menu_play">Play</string>
+    <string name="home_menu_add_to_playlist">Add to Playlist…</string>
 
+    <string name="add_to_playlist_title">Add to Playlist…</string>
+    <string name="add_to_playlist_create">Create Playlist…</string>
+    
 </resources>
