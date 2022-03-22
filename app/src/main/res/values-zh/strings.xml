@@ -20,5 +20,8 @@
     
     <string name="add_to_playlist_title">添加到播放列表…</string>
     <string name="add_to_playlist_create">创建歌单…</string>
+    
+    <string name="play_lyric_add_lyric">添加…</string>
+    <string name="play_lyric_edit_lyric">编辑…</string>
 
 </resources>

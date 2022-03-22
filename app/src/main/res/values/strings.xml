@@ -21,4 +21,7 @@
     <string name="add_to_playlist_title">Add to Playlist…</string>
     <string name="add_to_playlist_create">Create Playlist…</string>
     
+    <string name="play_lyric_add_lyric">Add…</string>
+    <string name="play_lyric_edit_lyric">Edit…</string>
+    
 </resources>
