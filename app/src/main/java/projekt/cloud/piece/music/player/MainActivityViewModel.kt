@@ -2,10 +2,14 @@ package projekt.cloud.piece.music.player
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory.decodeFileDescriptor
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.CustomActionCallback
 import android.support.v4.media.session.MediaControllerCompat
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts.GetContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
 import lib.github1552980358.ktExtension.android.content.isSystemDarkMode
@@ -19,6 +23,10 @@ import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_CONFIGS
 
 class MainActivityViewModel: ViewModel() {
+
+    companion object {
+        private const val PICK_IMAGE_MODE = "r"
+    }
 
     var isLoaded = false
 
@@ -181,6 +189,21 @@ class MainActivityViewModel: ViewModel() {
             })
         }
         requireSyncPlaylist = true
+    }
+
+    private var pickImageCallback: ((Bitmap?) -> Unit)? = null
+    lateinit var pickImage: ActivityResultLauncher<String>
+    fun registerPickImage(activity: AppCompatActivity) {
+        pickImage = activity.registerForActivityResult(GetContent()) { uri ->
+            uri?.let {
+                pickImageCallback?.let {
+                    it(activity.contentResolver.openFileDescriptor(uri, PICK_IMAGE_MODE)?.use { decodeFileDescriptor(it.fileDescriptor) })
+                }
+            }
+        }
+    }
+    fun setPickImageCallback(callback: ((Bitmap?) -> Unit)? = null) {
+        this.pickImageCallback = callback
     }
 
     lateinit var mediaBrowserCompat: MediaBrowserCompat
