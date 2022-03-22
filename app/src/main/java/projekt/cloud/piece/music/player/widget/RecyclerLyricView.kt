@@ -130,7 +130,6 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
             adapter.notifyDataSetChanged()
             currentPosition = -1
             previousPosition = -1
-            smoothScrollToPosition(0)
         }
     
     var primaryColor = WHITE
