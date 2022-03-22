@@ -12,10 +12,6 @@ import projekt.cloud.piece.music.player.ui.main.playlist.PlaylistFragment
 
 class MainViewModel: ViewModel() {
 
-    var isExtended = false
-
-    var isDestroyed = false
-
     var isAlbumListLoaded = false
     lateinit var albumList: List<AlbumItem>
 
