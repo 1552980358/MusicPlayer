@@ -6,6 +6,7 @@ import android.graphics.drawable.RippleDrawable
 import android.view.LayoutInflater
 import android.view.MotionEvent.ACTION_DOWN
 import android.view.MotionEvent.ACTION_UP
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +22,7 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
                               private val albumArtMap: Map<String, Bitmap>,
                               private val defaultArtBitmap: Bitmap,
                               private val onClick: (Int) -> Unit,
-                              private val onOptionClick: (Int) -> Unit) {
+                              private val onOptionClick: (View, Int) -> Unit) {
 
     private class RecyclerViewHolder(val binding: LayoutRecyclerHomeBinding): ViewHolder(binding.root) {
         fun setAudioItem(audioItem: AudioItem) {
@@ -30,12 +31,12 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
         fun setImageBitmap(imageBitmap: Bitmap) {
             binding.imageDrawable = BitmapDrawable(binding.root.context.resources, imageBitmap)
         }
-        fun setOnClickListener(position: Int, onClick: (Int) -> Unit, onOptionClick: (Int) -> Unit) {
+        fun setOnClickListener(position: Int, onClick: (Int) -> Unit, onOptionClick: (View, Int) -> Unit) {
             binding.root.setOnClickListener {
                 onClick(position)
             }
             binding.root.setOnLongClickListener {
-                onOptionClick(position)
+                onOptionClick(binding.imageViewMore, position)
                 true
             }
             @Suppress("ClickableViewAccessibility")
@@ -51,7 +52,7 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
                     ACTION_UP -> {
                         binding.root.isPressed = false
                         if (motionEvent.y in (0F .. binding.imageViewMore.bottom.toFloat())) {
-                            onOptionClick(position)
+                            onOptionClick(view, position)
                         }
                     }
                 }
