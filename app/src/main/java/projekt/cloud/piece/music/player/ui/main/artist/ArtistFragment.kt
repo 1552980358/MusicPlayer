@@ -25,6 +25,10 @@ import projekt.cloud.piece.music.player.ui.main.artist.util.RecyclerViewAdapterU
 
 class ArtistFragment: BaseFragment() {
 
+    companion object {
+        private const val TAG = "ArtistFragment"
+    }
+
     private var _binding: FragmentArtistBinding? = null
     private val binding get() = _binding!!
 
@@ -57,13 +61,23 @@ class ArtistFragment: BaseFragment() {
                 recyclerViewAdapterUtil = RecyclerViewAdapterUtil(binding.root, mapOf(), mainViewModel.defaultArtistArt) { rootView, artistItem ->
                     navigateToAudioList(rootView, artistItem)
                 }
-                io {
-                    mainViewModel.artistList = activityViewModel.database.artist.query()
-                    mainViewModel.isArtistListLoaded = true
-                    ui { recyclerViewAdapterUtil.artistList = mainViewModel.artistList }
-                }
+                mainViewModel.isArtistListLoaded = true
+                loadArtistList()
             }
         }
+
+        activityViewModel.setRefreshObserver(TAG) { isRefreshing, _, _, artistList ->
+            if (!isRefreshing && artistList != null) {
+                mainViewModel.artistList = artistList
+                ui { recyclerViewAdapterUtil.artistList = artistList }
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        activityViewModel.removeAllObservers(TAG)
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun navigateToAudioList(rootView: View, item: BaseTitledItem) {
@@ -71,6 +85,11 @@ class ArtistFragment: BaseFragment() {
             MainFragmentDirections.actionNavMainToNavAudioList(item, EXTRA_TYPE_ARTIST),
             FragmentNavigatorExtras(rootView to rootView.transitionName)
         )
+    }
+
+    private fun loadArtistList() = io {
+        mainViewModel.artistList = activityViewModel.database.artist.query()
+        ui { recyclerViewAdapterUtil.artistList = mainViewModel.artistList }
     }
 
 }
