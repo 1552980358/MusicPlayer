@@ -15,18 +15,16 @@ import androidx.databinding.DataBindingUtil
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.androidx.fragment.app.getDrawable
 import lib.github1552980358.ktExtension.androidx.fragment.app.show
-import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.database.item.AudioItem
-import projekt.cloud.piece.music.player.database.item.PlaylistContentItem
 import projekt.cloud.piece.music.player.databinding.FragmentHomeBinding
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_INDEX
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
 import projekt.cloud.piece.music.player.ui.addToPlaylist.AddToPlaylistDialogFragment
-import projekt.cloud.piece.music.player.ui.main.home.util.DatabaseUtil.initializeApp
-import projekt.cloud.piece.music.player.ui.main.home.util.DatabaseUtil.launchAppCoroutine
+import projekt.cloud.piece.music.player.util.DatabaseUtil.initializeApp
+import projekt.cloud.piece.music.player.util.DatabaseUtil.launchAppCoroutine
 import projekt.cloud.piece.music.player.ui.main.home.util.RecyclerViewAdapterUtil
 
 class HomeFragment: BaseFragment() {

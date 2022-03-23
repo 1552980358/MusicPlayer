@@ -1,11 +1,9 @@
-package projekt.cloud.piece.music.player.ui.main.home.util
+package projekt.cloud.piece.music.player.util
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.provider.MediaStore
-import android.util.Log
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import lib.github1552980358.ktExtension.android.graphics.heightF
@@ -97,7 +95,6 @@ object DatabaseUtil {
                             path = getString(getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA))
                         )
                     )
-                    Log.e("TAG", "${audioList.last().id} ${audioList.last().title}")
                 }
                 close()
             }
