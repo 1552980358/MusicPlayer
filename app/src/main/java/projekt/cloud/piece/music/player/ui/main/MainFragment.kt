@@ -45,6 +45,7 @@ class MainFragment: BaseFragment() {
     private val viewPager get() = appBarMain.viewPager
     private val bottomNavigation get() = appBarMain.bottomNavigation
     private val extendedFloatingActionButton get() = appBarMain.extendedFloatingActionButton
+    private val swipeRefreshLayout get() = appBarMain.swipeRefreshLayout
 
     private lateinit var viewModel: MainViewModel
     private val database get() = activityViewModel.database
@@ -62,6 +63,7 @@ class MainFragment: BaseFragment() {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false)
         bottomNavigation.background = null
         navController = findNavController()
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -128,6 +130,14 @@ class MainFragment: BaseFragment() {
                     requireActivity().overridePendingTransition(0, 0)
                 }
             }
+        }
+
+        with(swipeRefreshLayout) {
+            isEnabled = false
+            isRefreshing = activityViewModel.isRefreshing
+        }
+        activityViewModel.setRefreshObserver(TAG) { isRefreshing, _, _, _ ->
+            ui { swipeRefreshLayout.isRefreshing = isRefreshing }
         }
 
         activityViewModel.setCoverArtBitmapObserver(TAG) {
