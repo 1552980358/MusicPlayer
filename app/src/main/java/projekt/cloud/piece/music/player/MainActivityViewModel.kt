@@ -181,6 +181,7 @@ class MainActivityViewModel: ViewModel() {
     }
 
     fun removeAllObservers(tag: String) {
+        setRefreshObserver(tag)
         setAudioItemObserver(tag)
         setPlayStateObserver(tag)
         setProgressObservers(tag)
