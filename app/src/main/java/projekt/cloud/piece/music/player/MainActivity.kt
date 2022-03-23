@@ -15,6 +15,7 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.util.Log
 import android.view.View
+import androidx.core.content.ContextCompat.getColor
 import androidx.core.view.WindowCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -24,6 +25,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.room.Room
+import androidx.room.RoomDatabase.Callback
+import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
@@ -31,10 +34,14 @@ import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.database.AudioDatabase
 import projekt.cloud.piece.music.player.database.AudioDatabase.Companion.DATABASE_NAME
+import projekt.cloud.piece.music.player.database.item.ColorItem
+import projekt.cloud.piece.music.player.database.item.ColorItem.Companion.TYPE_PLAYLIST
+import projekt.cloud.piece.music.player.database.item.PlaylistItem
 import projekt.cloud.piece.music.player.databinding.ActivityMainBinding
 import projekt.cloud.piece.music.player.service.PlayService
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_CONFIGS
 import projekt.cloud.piece.music.player.util.Constant.DELAY_MILLIS
+import projekt.cloud.piece.music.player.util.Constant.PLAYLIST_LIKES
 
 class MainActivity : AppCompatActivity() {
 
@@ -98,7 +105,23 @@ class MainActivity : AppCompatActivity() {
 
         if (!viewModel.isLoaded) {
 
-            viewModel.database = Room.databaseBuilder(this, AudioDatabase::class.java, DATABASE_NAME).build()
+            viewModel.database = Room.databaseBuilder(this, AudioDatabase::class.java, DATABASE_NAME)
+                .addCallback(object : Callback() {
+                    override fun onCreate(db: SupportSQLiteDatabase) {
+                        io {
+                            viewModel.database.playlist.insert(PlaylistItem(PLAYLIST_LIKES, PLAYLIST_LIKES, PLAYLIST_LIKES))
+                            viewModel.database.color.insert(
+                                ColorItem(
+                                    PLAYLIST_LIKES,
+                                    TYPE_PLAYLIST,
+                                    primaryColor = getColor(this@MainActivity, R.color.red),
+                                    secondaryColor = getColor(this@MainActivity, R.color.red)
+                                )
+                            )
+                        }
+                    }
+                })
+                .build()
 
             viewModel.subscriptionCallback = object : SubscriptionCallback() { }
             viewModel.mediaBrowserCompat = MediaBrowserCompat(
