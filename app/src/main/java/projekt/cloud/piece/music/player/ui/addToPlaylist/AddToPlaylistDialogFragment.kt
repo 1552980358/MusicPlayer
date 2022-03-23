@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import lib.github1552980358.ktExtension.androidx.fragment.app.getDrawable
 import lib.github1552980358.ktExtension.androidx.fragment.app.show
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
+import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseDialogFragment
 import projekt.cloud.piece.music.player.database.item.AudioItem
@@ -46,9 +47,13 @@ class AddToPlaylistDialogFragment: BaseDialogFragment() {
         }
 
         io {
-            val list = activityViewModel.database.playlist.query()
             requireContext().loadPlaylist40Dp(playlistArtCover)
-            recyclerViewAdapterUtil.playlistList = list
+            if (!activityViewModel.isPlaylistLoaded) {
+                activityViewModel.defaultPlaylistArt = getDrawable(R.drawable.ic_playlist_default)!!.toBitmap()
+                activityViewModel.playlistList = activityViewModel.database.playlist.query().toMutableList() as ArrayList<PlaylistItem>
+                activityViewModel.isPlaylistLoaded = true
+            }
+            ui { recyclerViewAdapterUtil.playlistList = activityViewModel.playlistList }
         }
 
         return Builder(requireContext())
