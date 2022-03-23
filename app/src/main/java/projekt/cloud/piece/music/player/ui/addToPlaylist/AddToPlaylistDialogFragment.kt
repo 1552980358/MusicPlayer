@@ -68,7 +68,6 @@ class AddToPlaylistDialogFragment: BaseDialogFragment() {
 
     private fun addToPlaylist(audioItem: AudioItem, playlistItem: PlaylistItem) = io {
         activityViewModel.database.playlistContent.insert(PlaylistContentItem(audio = audioItem.id, playlist = playlistItem.id))
-        activityViewModel.playlistList.add(playlistItem)
         activityViewModel.playlistListUpdated = true
     }
 
