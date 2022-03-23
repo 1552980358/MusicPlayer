@@ -5,6 +5,9 @@ import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.core.content.res.ResourcesCompat.getDrawable
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
@@ -12,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.database.item.PlaylistItem
 import projekt.cloud.piece.music.player.databinding.LayoutRecyclerPlaylistBinding
+import projekt.cloud.piece.music.player.util.Constant.PLAYLIST_LIKES
 
 class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
                               private val playlistMap: Map<String, Bitmap>,
@@ -22,12 +26,18 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
         fun setTitle(title: String) {
             binding.title = title
         }
+        fun setTitle(@StringRes resId: Int) =
+            setTitle(binding.root.resources.getString(resId))
+
         fun setOnClick(playlistItem: PlaylistItem, onClick: (View, PlaylistItem) -> Unit) {
             binding.root.transitionName = playlistItem.id
             binding.root.setOnClickListener { onClick(it, playlistItem) }
         }
         fun setImage(bitmap: Bitmap) {
             binding.image = BitmapDrawable(binding.root.resources, bitmap)
+        }
+        fun setImage(@DrawableRes resId: Int) {
+            binding.image = getDrawable(binding.root.context.resources, resId, null)
         }
     }
 
@@ -38,10 +48,19 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
 
         override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
             playlistList?.get(position)?.let {
-                holder.setTitle(it.title)
+                when (it.id) {
+                    PLAYLIST_LIKES -> {
+                        holder.setTitle(R.string.playlist_likes)
+                        holder.setImage(R.drawable.ic_heart_default)
+                    }
+                    else -> {
+                        holder.setTitle(it.title)
+                        holder.setImage(playlistMap[it.id] ?: defaultPlaylistArt)
+                    }
+                }
                 holder.setOnClick(it, onClick)
-                holder.setImage(playlistMap[it.id] ?: defaultPlaylistArt)
             }
+
         }
 
         override fun getItemCount() = playlistList?.size ?: 0
