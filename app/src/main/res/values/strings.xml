@@ -17,6 +17,7 @@
     
     <string name="home_menu_play">Play</string>
     <string name="home_menu_add_to_playlist">Add to Playlist…</string>
+    <string name="home_menu_refresh">Refresh</string>
 
     <string name="add_to_playlist_title">Add to Playlist…</string>
     <string name="add_to_playlist_create">Create Playlist…</string>

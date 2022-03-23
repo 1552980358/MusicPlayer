@@ -17,6 +17,7 @@
     
     <string name="home_menu_play">播放</string>
     <string name="home_menu_add_to_playlist">添加到播放列表…</string>
+    <string name="home_menu_refresh">Refresh</string>
     
     <string name="add_to_playlist_title">添加到播放列表…</string>
     <string name="add_to_playlist_create">创建歌单…</string>
