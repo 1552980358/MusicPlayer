@@ -10,6 +10,7 @@
 
     <string name="play_control_bottom_sheet_queue">队列</string>
 
+    <string name="playlist_likes">我喜欢的音乐</string>
     <string name="playlist_menu_add_playlist">添加播放列表…</string>
     <string name="add_playlist_menu_save">保存</string>
     <string name="add_playlist_title">播放列表名</string>
