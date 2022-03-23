@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import projekt.cloud.piece.music.player.database.item.ArtistItem
 
 @Dao
@@ -19,6 +20,9 @@ interface ArtistItemDao {
     fun insert(vararg artistItems: ArtistItem)
 
     @Delete
-    fun delete(artistItem: ArtistItem)
+    fun delete(vararg artistItems: ArtistItem)
+
+    @Update
+    fun update(artistItems: List<ArtistItem>)
 
 }
