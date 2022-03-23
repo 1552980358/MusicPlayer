@@ -22,6 +22,7 @@ import projekt.cloud.piece.music.player.databinding.FragmentAudioListBinding
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_INDEX
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
 import projekt.cloud.piece.music.player.ui.audioList.util.RecyclerViewAdapterUtil
+import projekt.cloud.piece.music.player.util.Constant.PLAYLIST_LIKES
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArtRaw
 import projekt.cloud.piece.music.player.util.ImageUtil.loadPlaylistRaw
 
@@ -74,9 +75,10 @@ class AudioListFragment: BaseFragment() {
             transportControls.playFromMediaId(audioList[it].id, bundleOf(EXTRA_LIST to audioList, EXTRA_INDEX to it))
         }
 
-        binding.title = item.title
         floatingActionButton.setOnClickListener {
-            transportControls.playFromMediaId(audioList.first().id, bundleOf(EXTRA_LIST to audioList, EXTRA_INDEX to 0))
+            if (audioList.isNotEmpty()) {
+                transportControls.playFromMediaId(audioList.first().id, bundleOf(EXTRA_LIST to audioList, EXTRA_INDEX to 0))
+            }
         }
 
         io {
@@ -95,11 +97,14 @@ class AudioListFragment: BaseFragment() {
                 }
             }
 
+            var title = item.title
             val headerImage: Bitmap
             when (type) {
                 EXTRA_TYPE_ALBUM -> {
-                    headerImage = requireContext().loadAlbumArtRaw(item.id) ?: getDrawable(R.drawable.ic_default_album)!!.toBitmap()
-                    ui { binding.imageView.setImageBitmap(headerImage) }
+                    when (val image = requireContext().loadAlbumArtRaw(item.id)) {
+                        null -> ui { binding.imageView.setImageResource(R.drawable.ic_default_album) }
+                        else -> ui { binding.imageView.setImageBitmap(image) }
+                    }
                     audioList = database.audio.queryAlbum(item.id)
                 }
                 EXTRA_TYPE_ARTIST -> {
@@ -108,12 +113,22 @@ class AudioListFragment: BaseFragment() {
                     audioList = database.audio.queryArtist(item.title)
                 }
                 EXTRA_TYPE_PLAYLIST -> {
-                    headerImage = requireContext().loadPlaylistRaw(item.id) ?: getDrawable(R.drawable.ic_playlist_default)!!.toBitmap()
-                    ui { binding.imageView.setImageBitmap(headerImage) }
+                    when (item.id) {
+                        PLAYLIST_LIKES -> {
+                            ui { binding.imageView.setImageResource(R.drawable.ic_heart_default) }
+                            title = getString(R.string.playlist_likes)
+                        }
+                        else -> {
+                            when (val image = requireContext().loadPlaylistRaw(item.id)) {
+                                null -> ui { binding.imageView.setImageResource(R.drawable.ic_playlist_default) }
+                                else -> ui { binding.imageView.setImageBitmap(image) }
+                            }
+                        }
+                    }
                     audioList = database.playlistContent.queryAudio(item.id)
                 }
             }
-
+            ui { binding.title = title }
             audioList.forEach { it.artistItem = database.artist.query(it.artist) }
             audioList.forEach { it.albumItem = database.album.query(it.album) }
             ui { recyclerViewAdapterUtil.audioList = audioList }
