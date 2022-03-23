@@ -13,6 +13,7 @@ import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import mkaflowski.mediastylepalette.MediaNotificationProcessor
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.database.AudioDatabase
+import projekt.cloud.piece.music.player.database.base.BaseItem
 import projekt.cloud.piece.music.player.database.item.AlbumItem
 import projekt.cloud.piece.music.player.database.item.ArtistItem
 import projekt.cloud.piece.music.player.database.item.AudioItem
@@ -46,6 +47,26 @@ object DatabaseUtil {
                            albumArtMap: MutableMap<String, Bitmap>,
                            callback: (List<AudioItem>) -> Unit) = io {
         launchApp(context, database, audioArtMap, albumArtMap, callback)
+    }
+
+    fun AudioDatabase.syncAudioList(context: Context, completeCallback: (List<AudioItem>, List<AlbumItem>, List<ArtistItem>) -> Unit) {
+        val systemAudioList = arrayListOf<AudioItem>()
+        val systemAlbumList = arrayListOf<AlbumItem>()
+        val systemArtistList = arrayListOf<ArtistItem>()
+        querySystemDatabase(context, systemAudioList, systemAlbumList, systemArtistList)
+
+        compareAudioList(this, systemAudioList)
+        compareAlbumList(context, this, systemAlbumList)
+        compareArtistList(this, systemArtistList)
+
+        systemAudioList.sortBy { it.pinyin }
+        systemAudioList.forEachIndexed { index, audioItem ->
+            audioItem.index = index
+            systemAlbumList.find { it.id == audioItem.album }?.let { audioItem.albumItem = it }
+            systemArtistList.find { it.id == audioItem.artist }?.let { audioItem.artistItem = it }
+        }
+
+        completeCallback(systemAudioList, systemAlbumList, systemArtistList)
     }
 
     private fun launchApp(context: Context,
@@ -108,7 +129,7 @@ object DatabaseUtil {
         artistList.forEach { database.color.insert(ColorItem(it.id, TYPE_ARTIST)) }
     }
 
-    private fun initialImage(context: Context, database: AudioDatabase, albumList: ArrayList<AlbumItem>) {
+    private fun initialImage(context: Context, database: AudioDatabase, albumList: List<AlbumItem>) {
         var bitmap: Bitmap?
         val matrix = Matrix()
         val bitmapSize = context.resources.getDimensionPixelSize(R.dimen.md_spec_list_image_size)
@@ -127,6 +148,61 @@ object DatabaseUtil {
                 database.color.insert(ColorItem(albumItem.id, ColorItem.TYPE_ALBUM, backgroundColor, primaryTextColor, secondaryTextColor))
             }
             bitmap.recycle()
+        }
+    }
+
+    private fun compareAudioList(database: AudioDatabase, systemList: List<AudioItem>) {
+        val databaseList = database.audio.query()
+
+        @Suppress("UNCHECKED_CAST")
+        val addList = compareItemList(systemList, databaseList) as List<AudioItem>
+        @Suppress("UNCHECKED_CAST")
+        val deleteList = compareItemList(databaseList, systemList) as List<AudioItem>
+        database.audio.delete(*deleteList.toTypedArray())
+        database.audio.insert(*addList.toTypedArray())
+        // Update data info
+        database.audio.update(systemList)
+        // Update color
+        deleteList.forEach {
+            database.color.queryForAudio(it.id)?.let { colorItem -> database.color.delete(colorItem) }
+        }
+    }
+
+    private fun compareAlbumList(context: Context, database: AudioDatabase, systemList: List<AlbumItem>) {
+        val databaseList = database.album.query()
+
+        @Suppress("UNCHECKED_CAST")
+        val addList = compareItemList(systemList, databaseList) as List<AlbumItem>
+        @Suppress("UNCHECKED_CAST")
+        val deleteList = compareItemList(databaseList, systemList) as List<AlbumItem>
+        database.album.delete(*deleteList.toTypedArray())
+        database.album.insert(*addList.toTypedArray())
+        // Update data info
+        database.album.update(systemList)
+        // Remove color
+        deleteList.forEach { database.color.delete(database.color.query(it.id)) }
+        initialImage(context, database, addList)
+    }
+
+    private fun compareArtistList(database: AudioDatabase, systemList: List<ArtistItem>) {
+        val databaseList = database.artist.query()
+        @Suppress("UNCHECKED_CAST")
+        val addList = compareItemList(systemList, databaseList) as List<ArtistItem>
+        @Suppress("UNCHECKED_CAST")
+        val deleteList = compareItemList(databaseList, systemList) as List<ArtistItem>
+        database.artist.delete(*deleteList.toTypedArray())
+        database.artist.insert(*addList.toTypedArray())
+        // Update database info
+        database.artist.update(systemList)
+        deleteList.forEach { database.color.delete(database.color.query(it.id)) }
+        addList.forEach { database.color.insert(ColorItem(it.id, TYPE_ARTIST)) }
+    }
+
+    private fun compareItemList(itemListBased: List<BaseItem>, itemListCompared: List<BaseItem>) = arrayListOf<BaseItem>().apply {
+        itemListBased.forEach { basedItem ->
+            if (itemListCompared.find { comparedItem -> basedItem.id == comparedItem.id } == null) {
+                add(basedItem)
+            }
         }
     }
 
