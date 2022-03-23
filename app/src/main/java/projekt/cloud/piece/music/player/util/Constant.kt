@@ -9,4 +9,6 @@ object Constant {
 
     const val DELAY_MILLIS = 500L
 
+    const val PLAYLIST_LIKES = "Likes"
+
 }
