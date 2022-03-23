@@ -4,6 +4,9 @@ import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
@@ -12,6 +15,7 @@ import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuCompat.setGroupDividerEnabled
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.androidx.fragment.app.getDrawable
 import lib.github1552980358.ktExtension.androidx.fragment.app.show
@@ -23,6 +27,7 @@ import projekt.cloud.piece.music.player.databinding.FragmentHomeBinding
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_INDEX
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
 import projekt.cloud.piece.music.player.ui.addToPlaylist.AddToPlaylistDialogFragment
+import projekt.cloud.piece.music.player.ui.main.MainViewModel
 import projekt.cloud.piece.music.player.util.DatabaseUtil.initializeApp
 import projekt.cloud.piece.music.player.util.DatabaseUtil.launchAppCoroutine
 import projekt.cloud.piece.music.player.ui.main.home.util.RecyclerViewAdapterUtil
@@ -37,8 +42,16 @@ class HomeFragment: BaseFragment() {
     private val binding get() = _binding!!
     private lateinit var recyclerViewAdapterUtil: RecyclerViewAdapterUtil
 
+    private lateinit var mainViewModel: MainViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mainViewModel = ViewModelProvider(parentFragment as BaseFragment)[MainViewModel::class.java]
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -62,6 +75,24 @@ class HomeFragment: BaseFragment() {
             }
         }
 
+        activityViewModel.setRefreshObserver(TAG) { isRefreshing, audioList, _, _ ->
+            if (!isRefreshing && audioList != null) {
+                activityViewModel.audioList = audioList
+                ui { recyclerViewAdapterUtil.audioList = audioList }
+            }
+        }
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_fragment_home, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_refresh -> activityViewModel.requestRefreshDatabase(requireContext())
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun initializeRecyclerView(audioList: List<AudioItem>) = ui {
