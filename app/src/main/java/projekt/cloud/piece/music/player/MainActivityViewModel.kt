@@ -12,8 +12,12 @@ import androidx.activity.result.contract.ActivityResultContracts.GetContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.Job
 import lib.github1552980358.ktExtension.android.content.isSystemDarkMode
+import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import projekt.cloud.piece.music.player.database.AudioDatabase
+import projekt.cloud.piece.music.player.database.item.AlbumItem
+import projekt.cloud.piece.music.player.database.item.ArtistItem
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.database.item.PlaylistItem
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_PLAY_CONFIG_CHANGED
@@ -22,12 +26,9 @@ import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT
 import projekt.cloud.piece.music.player.service.play.Config.shl
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_CONFIGS
+import projekt.cloud.piece.music.player.util.DatabaseUtil.syncAudioList
 
 class MainActivityViewModel: ViewModel() {
-
-    companion object {
-        private const val PICK_IMAGE_MODE = "r"
-    }
 
     var isLoaded = false
 
@@ -44,6 +45,27 @@ class MainActivityViewModel: ViewModel() {
     lateinit var audioList: List<AudioItem>
     var audioArtMap = mutableMapOf<String, Bitmap>()
     var albumArtMap = mutableMapOf<String, Bitmap>()
+
+    var isRefreshing = false
+    private var _refreshObservers = mutableMapOf<String, (Boolean, List<AudioItem>?, List<AlbumItem>?, List<ArtistItem>?) -> Unit>()
+    fun setRefreshObserver(tag: String, observer: ((Boolean, List<AudioItem>?, List<AlbumItem>?, List<ArtistItem>?) -> Unit)? = null) {
+        when (observer) {
+            null -> _refreshObservers.remove(tag)
+            else -> _refreshObservers[tag] = observer
+        }
+    }
+    fun requestRefreshDatabase(context: Context) {
+        if (!isRefreshing) {
+            io {
+                isRefreshing = true
+                _refreshObservers.forEach { (_, observer) -> observer(isRefreshing, null, null, null) }
+                database.syncAudioList(context) { audioList, albumList, artistList ->
+                    isRefreshing = false
+                    _refreshObservers.forEach { (_, observer) -> observer(isRefreshing, audioList, albumList, artistList) }
+                }
+            }
+        }
+    }
 
     var isPlaylistLoaded = false
     var playlistListUpdated = false
