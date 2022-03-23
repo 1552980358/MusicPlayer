@@ -17,7 +17,7 @@ import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.LayoutRecyclerHomeBinding
 
 class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
-                              private val audioList: List<AudioItem>,
+                              audioList: List<AudioItem>,
                               private val audioArtMap: Map<String, Bitmap>,
                               private val albumArtMap: Map<String, Bitmap>,
                               private val defaultArtBitmap: Bitmap,
@@ -79,6 +79,13 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
     }
 
     private val adapter = RecyclerViewAdapter()
+
+    var audioList = audioList
+        set(value) {
+            field = value
+            @Suppress("NotifyDataSetChanged")
+            adapter.notifyDataSetChanged()
+        }
 
     init {
         recyclerView.adapter = adapter
