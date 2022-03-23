@@ -26,6 +26,10 @@ import projekt.cloud.piece.music.player.ui.main.album.util.RecyclerViewAdapterUt
 
 class AlbumFragment: BaseFragment() {
 
+    companion object {
+        private const val TAG = "AlbumFragment"
+    }
+
     private var _binding: FragmentAlbumBinding? = null
     private val binding get() = _binding!!
 
@@ -61,11 +65,8 @@ class AlbumFragment: BaseFragment() {
                     mainViewModel.defaultAlbumCover) { rootView, item ->
                     navigateToAudioList(rootView, item)
                 }
-                io {
-                    mainViewModel.albumList = activityViewModel.database.album.query()
-                    mainViewModel.isAlbumListLoaded = true
-                    ui { recyclerViewAdapterUtil.albumList = mainViewModel.albumList }
-                }
+                mainViewModel.isAlbumListLoaded = true
+                loadAlbumList()
             }
         }
 
@@ -73,6 +74,18 @@ class AlbumFragment: BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        activityViewModel.setRefreshObserver(TAG) { isRefreshing, _, albumList, _ ->
+            if (!isRefreshing && albumList != null) {
+                mainViewModel.albumList = albumList
+                ui { recyclerViewAdapterUtil.albumList = albumList }
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        activityViewModel.removeAllObservers(TAG)
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun navigateToAudioList(rootView: View, item: BaseTitledItem) {
@@ -80,6 +93,11 @@ class AlbumFragment: BaseFragment() {
             MainFragmentDirections.actionNavMainToNavAudioList(item, EXTRA_TYPE_ALBUM),
             FragmentNavigatorExtras(rootView to rootView.transitionName)
         )
+    }
+
+    private fun loadAlbumList() = io {
+        mainViewModel.albumList = activityViewModel.database.album.query()
+        ui { recyclerViewAdapterUtil.albumList = mainViewModel.albumList }
     }
 
 }
