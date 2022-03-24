@@ -10,11 +10,15 @@ import android.media.AudioManager
 import android.media.AudioManager.ACTION_HEADSET_PLUG
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.MotionEvent.ACTION_CANCEL
 import android.view.MotionEvent.ACTION_DOWN
 import android.view.MotionEvent.ACTION_UP
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -31,6 +35,7 @@ import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.database.item.AudioItem
+import projekt.cloud.piece.music.player.database.item.PlaylistContentItem
 import projekt.cloud.piece.music.player.databinding.FragmentPlayControlBinding
 import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT
 import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT_ONE
@@ -44,6 +49,7 @@ import projekt.cloud.piece.music.player.util.ActivityUtil.pixelHeight
 import projekt.cloud.piece.music.player.util.AudioUtil.deviceDrawableId
 import projekt.cloud.piece.music.player.util.ColorUtil.isLight
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
+import projekt.cloud.piece.music.player.util.Constant.PLAYLIST_LIKES
 import projekt.cloud.piece.music.player.util.ContextUtil.navigationBarHeight
 
 class PlayControlFragment: BaseFragment() {
@@ -98,6 +104,7 @@ class PlayControlFragment: BaseFragment() {
             }
             setContentPadding(0, 0, 0, navigationBarHeight)
         }
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -185,6 +192,43 @@ class PlayControlFragment: BaseFragment() {
         setObservers()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_fragment_play_control, menu)
+        val menuItem = menu.getItem(0)
+        if (menuItem.itemId == R.id.menu_like) {
+            io {
+                activityViewModel.audioItem?.let {
+                    when (database.playlistContent.queryLike(it.id)) {
+                        null -> ui { menuItem.setIcon(R.drawable.ic_heart_stroke) }
+                        else -> ui { menuItem.setIcon(R.drawable.ic_heart_fill) }
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_like -> {
+                io {
+                    activityViewModel.audioItem?.let {
+                        when (val playlistContentItem = database.playlistContent.queryLike(it.id)) {
+                            null -> {
+                                database.playlistContent.insert(PlaylistContentItem(audio = it.id, playlist = PLAYLIST_LIKES))
+                                ui { item.setIcon(R.drawable.ic_heart_fill) }
+                            }
+                            else -> {
+                                database.playlistContent.delete(playlistContentItem)
+                                ui { item.setIcon(R.drawable.ic_heart_stroke) }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onBackPressed(): Boolean {
         if (bottomSheetBehavior.state != STATE_COLLAPSED) {
             bottomSheetBehavior.state = STATE_COLLAPSED
@@ -236,6 +280,7 @@ class PlayControlFragment: BaseFragment() {
                 }
             }
         }
+        ui { (requireActivity() as AppCompatActivity).invalidateOptionsMenu() }
         activityViewModel.getPlaylistSync()
     }
 
