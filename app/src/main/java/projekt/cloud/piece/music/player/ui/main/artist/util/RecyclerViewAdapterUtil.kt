@@ -3,7 +3,6 @@ package projekt.cloud.piece.music.player.ui.main.artist.util
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -16,10 +15,10 @@ import projekt.cloud.piece.music.player.databinding.LayoutRecyclerArtistBinding
 class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
                               private val artistArtMap: Map<String, Bitmap>,
                               private val defaultArt: Bitmap,
-                              private val onClick: (View, ArtistItem) -> Unit) {
+                              private val onClick: (ArtistItem) -> Unit) {
 
     constructor(recyclerView: RecyclerView, artistArtMap: Map<String, Bitmap>, defaultCover: Bitmap,
-                artistList: List<ArtistItem>, onClick: (View, ArtistItem) -> Unit) : this(recyclerView, artistArtMap, defaultCover, onClick) {
+                artistList: List<ArtistItem>, onClick: (ArtistItem) -> Unit) : this(recyclerView, artistArtMap, defaultCover, onClick) {
         this.artistList = artistList
     }
 
@@ -27,9 +26,9 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
         fun setTitle(title: String) {
             binding.title = title
         }
-        fun setOnClickListener(artistItem: ArtistItem, onClick: (View, ArtistItem) -> Unit) {
+        fun setOnClickListener(artistItem: ArtistItem, onClick: (ArtistItem) -> Unit) {
             binding.root.transitionName = artistItem.id
-            binding.root.setOnClickListener { onClick(it, artistItem) }
+            binding.root.setOnClickListener { onClick(artistItem) }
         }
         fun setImage(image: Bitmap) {
             binding.image = BitmapDrawable(binding.root.context.resources, image)
