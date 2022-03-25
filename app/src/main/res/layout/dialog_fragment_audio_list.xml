@@ -63,7 +63,8 @@
                 android:src="@drawable/ic_play"
                 app:layout_anchor="@id/app_bar_layout"
                 app:layout_anchorGravity="bottom|end"
-                tools:ignore="ContentDescription" />
+                tools:ignore="ContentDescription"
+                android:layout_marginEnd="@dimen/md_spec_fab_margin" />
     
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
         
