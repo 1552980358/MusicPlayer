@@ -17,6 +17,8 @@ import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.database.base.BaseTitledItem
 import projekt.cloud.piece.music.player.databinding.FragmentArtistBinding
+import projekt.cloud.piece.music.player.ui.audioList.AudioListDialogFragment
+import projekt.cloud.piece.music.player.ui.audioList.AudioListDialogFragment.Companion.ITEM_TYPE_ARTIST
 import projekt.cloud.piece.music.player.ui.audioList.AudioListFragment.Companion.EXTRA_TYPE_ARTIST
 import projekt.cloud.piece.music.player.ui.main.MainFragment
 import projekt.cloud.piece.music.player.ui.main.MainFragmentDirections
@@ -52,14 +54,14 @@ class ArtistFragment: BaseFragment() {
                     binding.root,
                     mapOf(),
                     mainViewModel.defaultAlbumCover,
-                    mainViewModel.artistList) { rootView, artistItem ->
-                    navigateToAudioList(rootView, artistItem)
+                    mainViewModel.artistList) { item ->
+                    AudioListDialogFragment().showWithArgument(item, ITEM_TYPE_ARTIST, requireActivity())
                 }
             }
             else -> {
                 mainViewModel.defaultArtistArt = getDrawable(R.drawable.ic_artist_default)!!.toBitmap()
-                recyclerViewAdapterUtil = RecyclerViewAdapterUtil(binding.root, mapOf(), mainViewModel.defaultArtistArt) { rootView, artistItem ->
-                    navigateToAudioList(rootView, artistItem)
+                recyclerViewAdapterUtil = RecyclerViewAdapterUtil(binding.root, mapOf(), mainViewModel.defaultArtistArt) { item ->
+                    AudioListDialogFragment().showWithArgument(item, ITEM_TYPE_ARTIST, requireActivity())
                 }
                 mainViewModel.isArtistListLoaded = true
                 loadArtistList()
