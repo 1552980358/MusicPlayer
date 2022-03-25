@@ -7,19 +7,15 @@ import android.view.ViewGroup
 import androidx.core.graphics.drawable.toBitmap
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import lib.github1552980358.ktExtension.androidx.fragment.app.getDrawable
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseFragment
-import projekt.cloud.piece.music.player.database.base.BaseTitledItem
 import projekt.cloud.piece.music.player.databinding.FragmentArtistBinding
 import projekt.cloud.piece.music.player.ui.audioList.AudioListDialogFragment
 import projekt.cloud.piece.music.player.ui.audioList.AudioListDialogFragment.Companion.ITEM_TYPE_ARTIST
-import projekt.cloud.piece.music.player.ui.audioList.AudioListFragment.Companion.EXTRA_TYPE_ARTIST
 import projekt.cloud.piece.music.player.ui.main.MainFragment
-import projekt.cloud.piece.music.player.ui.main.MainFragmentDirections
 import projekt.cloud.piece.music.player.ui.main.MainViewModel
 import projekt.cloud.piece.music.player.ui.main.artist.util.RecyclerViewAdapterUtil
 
