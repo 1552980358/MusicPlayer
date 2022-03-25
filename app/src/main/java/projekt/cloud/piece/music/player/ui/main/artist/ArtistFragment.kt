@@ -7,9 +7,7 @@ import android.view.ViewGroup
 import androidx.core.graphics.drawable.toBitmap
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
-import androidx.navigation.fragment.findNavController
 import lib.github1552980358.ktExtension.androidx.fragment.app.getDrawable
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
@@ -36,8 +34,6 @@ class ArtistFragment: BaseFragment() {
 
     private lateinit var mainViewModel: MainViewModel
 
-    private lateinit var navController: NavController
-
     private lateinit var recyclerViewAdapterUtil: RecyclerViewAdapterUtil
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -47,7 +43,6 @@ class ArtistFragment: BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        navController = findNavController()
         when {
             mainViewModel.isArtistListLoaded -> {
                 recyclerViewAdapterUtil = RecyclerViewAdapterUtil(
@@ -80,13 +75,6 @@ class ArtistFragment: BaseFragment() {
         activityViewModel.removeAllObservers(TAG)
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun navigateToAudioList(rootView: View, item: BaseTitledItem) {
-        navController.navigate(
-            MainFragmentDirections.actionNavMainToNavAudioList(item, EXTRA_TYPE_ARTIST),
-            FragmentNavigatorExtras(rootView to rootView.transitionName)
-        )
     }
 
     private fun loadArtistList() = io {
