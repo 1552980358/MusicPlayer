@@ -115,9 +115,9 @@ class AudioListDialogFragment: BaseDialogFragment() {
                                 null -> ui { imageView.setImageResource(R.drawable.ic_playlist_default) }
                                 else -> ui { imageView.setImageBitmap(image) }
                             }
-                            audioList = database.playlistContent.queryAudio(titledItem.id)
                         }
                     }
+                    audioList = database.playlistContent.queryAudio(titledItem.id)
                 }
             }
             binding.title = title
