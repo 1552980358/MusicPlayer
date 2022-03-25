@@ -18,7 +18,6 @@ import android.view.MotionEvent.ACTION_DOWN
 import android.view.MotionEvent.ACTION_UP
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -75,6 +74,9 @@ class PlayControlFragment: BaseFragment() {
     private lateinit var recyclerViewAdapterUtil: RecyclerViewAdapterUtil
 
     private lateinit var audioManager: AudioManager
+
+    private var heartItem: MenuItem? = null
+    private var isLiked = false
 
     private val broadcastReceiver = broadcastReceiver { _, intent, _ ->
         when (intent?.action) {
@@ -193,17 +195,10 @@ class PlayControlFragment: BaseFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
         inflater.inflate(R.menu.menu_fragment_play_control, menu)
-        val menuItem = menu.getItem(0)
-        if (menuItem.itemId == R.id.menu_like) {
-            io {
-                activityViewModel.audioItem?.let {
-                    when (database.playlistContent.queryLike(it.id)) {
-                        null -> ui { menuItem.setIcon(R.drawable.ic_heart_stroke) }
-                        else -> ui { menuItem.setIcon(R.drawable.ic_heart_fill) }
-                    }
-                }
-            }
+        heartItem = menu.getItem(0).apply {
+            updateHeatItemIO(activityViewModel.audioItem, this)
         }
     }
 
@@ -212,16 +207,17 @@ class PlayControlFragment: BaseFragment() {
             R.id.menu_like -> {
                 io {
                     activityViewModel.audioItem?.let {
-                        when (val playlistContentItem = database.playlistContent.queryLike(it.id)) {
+                        isLiked = when (val playlistContentItem = database.playlistContent.queryLike(it.id)) {
                             null -> {
                                 database.playlistContent.insert(PlaylistContentItem(audio = it.id, playlist = PLAYLIST_LIKES))
-                                ui { item.setIcon(R.drawable.ic_heart_fill) }
+                                true
                             }
                             else -> {
                                 database.playlistContent.delete(playlistContentItem)
-                                ui { item.setIcon(R.drawable.ic_heart_stroke) }
+                                false
                             }
                         }
+                        item.setIsLiked(isLiked)
                     }
                 }
             }
@@ -280,7 +276,7 @@ class PlayControlFragment: BaseFragment() {
                 }
             }
         }
-        ui { (requireActivity() as AppCompatActivity).invalidateOptionsMenu() }
+        heartItem?.let { updateHeartItem(audioItem, it) }
         activityViewModel.getPlaylistSync()
     }
 
@@ -332,6 +328,23 @@ class PlayControlFragment: BaseFragment() {
         requireContext().unregisterReceiver(broadcastReceiver)
         activityViewModel.playList = null
         super.onDestroyView()
+    }
+
+    private fun updateHeatItemIO(audioItem: AudioItem?, heartItem: MenuItem) = io { updateHeartItem(audioItem, heartItem, true) }
+
+    private fun updateHeartItem(audioItem: AudioItem?, heartItem: MenuItem, initialize: Boolean = false) {
+        val isLiked = audioItem?.let { database.playlistContent.queryLike(it.id) != null } ?: false
+        when {
+            initialize -> heartItem.setIsLiked(isLiked)
+            else -> if (isLiked != this@PlayControlFragment.isLiked) {
+                this@PlayControlFragment.isLiked = isLiked
+                heartItem.setIsLiked(isLiked)
+            }
+        }
+    }
+
+    private fun MenuItem.setIsLiked(isLiked: Boolean) = ui {
+        setIcon(if (isLiked) R.drawable.ic_heart_fill else R.drawable.ic_heart_stroke)
     }
 
     private fun compareAxis(x: Float, y: Float, view: View, rawAxis: IntArray): Boolean {
