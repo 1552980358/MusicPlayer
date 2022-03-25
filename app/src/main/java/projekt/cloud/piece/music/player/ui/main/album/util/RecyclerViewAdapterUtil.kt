@@ -16,10 +16,10 @@ import projekt.cloud.piece.music.player.databinding.LayoutRecyclerAlbumBinding
 class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
                               private val albumArtMap: Map<String, Bitmap>,
                               private val defaultCover: Bitmap,
-                              private val onClick: (View, AlbumItem) -> Unit) {
+                              private val onClick: (AlbumItem) -> Unit) {
 
     constructor(recyclerView: RecyclerView, albumArtMap: Map<String, Bitmap>, defaultCover: Bitmap,
-                albumList: List<AlbumItem>, onClick: (View, AlbumItem) -> Unit) : this(recyclerView, albumArtMap, defaultCover, onClick) {
+                albumList: List<AlbumItem>, onClick: (AlbumItem) -> Unit) : this(recyclerView, albumArtMap, defaultCover, onClick) {
         this.albumList = albumList
     }
 
@@ -27,9 +27,8 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView,
         fun setTitle(title: String) {
             binding.title = title
         }
-        fun setOnClickListener(albumItem: AlbumItem, onClick: (View, AlbumItem) -> Unit) {
-            binding.root.transitionName = albumItem.id
-            binding.root.setOnClickListener { onClick(it, albumItem) }
+        fun setOnClickListener(albumItem: AlbumItem, onClick: (AlbumItem) -> Unit) {
+            binding.root.setOnClickListener { onClick(albumItem) }
         }
         fun setImage(image: Bitmap) {
             binding.image = BitmapDrawable(binding.root.context.resources, image)
