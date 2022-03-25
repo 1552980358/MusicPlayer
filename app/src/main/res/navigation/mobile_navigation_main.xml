@@ -12,26 +12,11 @@
         <action
             android:id="@+id/action_nav_main_to_nav_play"
             app:destination="@id/nav_play" />
-        <action
-            android:id="@+id/action_nav_main_to_nav_audio_list"
-            app:destination="@id/nav_audio_list">
-            <argument
-                android:name="item"
-                app:argType="projekt.cloud.piece.music.player.database.base.BaseTitledItem" />
-            <argument
-                android:name="type"
-                app:argType="integer" />
-        </action>
     </fragment>
 
     <fragment
         android:id="@+id/nav_play"
         android:name="projekt.cloud.piece.music.player.ui.play.PlayFragment"
         tools:layout="@layout/fragment_play" />
-
-    <fragment
-        android:id="@+id/nav_audio_list"
-        android:name="projekt.cloud.piece.music.player.ui.audioList.AudioListFragment"
-        tools:layout="@layout/fragment_audio_list" />
 
 </navigation>
