@@ -4,4 +4,4 @@
     android:toYDelta="100%"
     android:fromXDelta="0%"
     android:toXDelta="0%"
-    android:duration="400" />
+    android:duration="@integer/spec_window_animation_duration" />
