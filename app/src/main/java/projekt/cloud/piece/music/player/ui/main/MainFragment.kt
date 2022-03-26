@@ -55,7 +55,6 @@ class MainFragment: BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        exitTransition = Hold()
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
     }
 
@@ -110,6 +109,7 @@ class MainFragment: BaseFragment() {
 
         extendedFloatingActionButton.setOnClickListener {
             if (activityViewModel.audioItem != null) {
+                exitTransition = Hold()
                 navController.navigate(
                     MainFragmentDirections.actionNavMainToNavPlay(),
                     FragmentNavigatorExtras(extendedFloatingActionButton to extendedFloatingActionButton.transitionName)
