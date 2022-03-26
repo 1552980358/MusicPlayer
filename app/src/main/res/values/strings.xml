@@ -26,4 +26,8 @@
     <string name="play_lyric_add_lyric">Add…</string>
     <string name="play_lyric_edit_lyric">Edit…</string>
     
+    <string name="nav_settings">Settings</string>
+    <string name="setting_file">File</string>
+    <string name="key_setting_file" translatable="false">key_setting_file</string>
+    
 </resources>
