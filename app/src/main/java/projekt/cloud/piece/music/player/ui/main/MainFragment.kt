@@ -5,6 +5,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
@@ -17,6 +18,7 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import com.google.android.material.transition.Hold
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -32,7 +34,7 @@ import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.FragmentMainBinding
 import projekt.cloud.piece.music.player.util.ViewUtil.screenshot
 
-class MainFragment: BaseFragment() {
+class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
 
     companion object {
         private const val TAG = "MainFragment"
@@ -42,6 +44,7 @@ class MainFragment: BaseFragment() {
     private val binding get() = _binding!!
     private val appBarMain get() = binding.appBarMain
     private val toolbar get() = appBarMain.toolbar
+    private val navigationView get() = binding.navigationView
     private val viewPager get() = appBarMain.viewPager
     private val bottomNavigation get() = appBarMain.bottomNavigation
     private val extendedFloatingActionButton get() = appBarMain.extendedFloatingActionButton
@@ -119,17 +122,20 @@ class MainFragment: BaseFragment() {
 
         activityViewModel.initialIsNightMode(requireContext())
 
-        binding.navigationView.getHeaderView(0).findViewById<RelativeLayout>(R.id.relative_layout).setOnClickListener {
-            binding.root.screenshot(requireActivity().window) { screenshot ->
-                setScreenshot(screenshot)
-                with(activityViewModel) {
-                    isNightMode = !isNightMode
-                    startActivity(intent(requireContext(), ThemeSwitchActivity::class.java) {
-                        putExtra(EXTRA_IS_NIGHT, isNightMode)
-                    })
-                    requireActivity().overridePendingTransition(0, 0)
+        with(navigationView) {
+            getHeaderView(0).findViewById<RelativeLayout>(R.id.relative_layout).setOnClickListener {
+                binding.root.screenshot(requireActivity().window) { screenshot ->
+                    setScreenshot(screenshot)
+                    with(activityViewModel) {
+                        isNightMode = !isNightMode
+                        startActivity(intent(requireContext(), ThemeSwitchActivity::class.java) {
+                            putExtra(EXTRA_IS_NIGHT, isNightMode)
+                        })
+                        requireActivity().overridePendingTransition(0, 0)
+                    }
                 }
             }
+            setNavigationItemSelectedListener(this@MainFragment)
         }
 
         with(swipeRefreshLayout) {
@@ -190,6 +196,16 @@ class MainFragment: BaseFragment() {
             }
         }
 
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.nav_settings -> {
+                exitTransition = null
+                navController.navigate(MainFragmentDirections.actionNavMainToNavSettings())
+            }
+        }
+        return true
     }
 
 }
