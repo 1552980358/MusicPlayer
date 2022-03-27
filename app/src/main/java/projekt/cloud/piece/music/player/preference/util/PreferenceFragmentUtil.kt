@@ -1,4 +1,4 @@
-package projekt.cloud.piece.music.player.util
+package projekt.cloud.piece.music.player.preference.util
 
 import androidx.annotation.StringRes
 import androidx.preference.Preference
