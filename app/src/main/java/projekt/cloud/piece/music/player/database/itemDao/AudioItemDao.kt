@@ -13,7 +13,7 @@ interface AudioItemDao {
     @Query("select * from audio")
     fun query(): List<AudioItem>
 
-    @Query("select * from audio where duration > :duration and size > :fileSize")
+    @Query("select * from audio where duration > :duration and size > (:fileSize * 1024)")
     fun query(duration: String, fileSize: String): List<AudioItem>
     
     @Query("select * from audio where id=:id")
