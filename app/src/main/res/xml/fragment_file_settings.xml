@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <PreferenceCategory
+        app:title="@string/setting_file_filter_duration"
+        app:iconSpaceReserved="false" >
+        
+        <SwitchPreferenceCompat
+            app:key="@string/key_setting_file_filter_duration_enable"
+            app:title="@string/setting_file_filter_duration_enable"
+            app:iconSpaceReserved="false"
+            app:defaultValue="true" />
+        
+        <EditTextPreference
+            app:key="@string/key_setting_file_filter_duration_set"
+            app:title="@string/setting_file_filter_duration_set"
+            app:defaultValue="@string/setting_file_filter_duration_default"
+            app:iconSpaceReserved="false" />
+        
+    </PreferenceCategory>
+
+</PreferenceScreen>
