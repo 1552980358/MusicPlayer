@@ -28,5 +28,9 @@
     
     <string name="nav_settings">设置</string>
     <string name="setting_file">文件</string>
+    <string name="setting_file_filtering">过滤</string>
+    <string name="setting_file_filter_duration_enable">启用时长过滤</string>
+    <string name="setting_file_filter_duration">时长</string>
+    <string name="setting_file_filter_duration_set">设置过滤最低时长</string>
 
 </resources>

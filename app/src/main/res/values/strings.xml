@@ -29,5 +29,13 @@
     <string name="nav_settings">Settings</string>
     <string name="setting_file">File</string>
     <string name="key_setting_file" translatable="false">key_setting_file</string>
+    <string name="setting_file_filtering">Filtering</string>
+    <string name="setting_file_filter_duration">Duration</string>
+    <string name="setting_file_filter_duration_enable">Enable duration filtering</string>
+    <string name="key_setting_file_filter_duration_enable" translatable="false">key_setting_file_filter_duration_enable</string>
+    <string name="setting_file_filter_duration_default" translatable="false">5000</string>
+    <string name="setting_file_filter_duration_set">Set filtering minimum duration</string>
+    <string name="setting_file_filter_duration_set_unit" translatable="false">ms</string>
+    <string name="key_setting_file_filter_duration_set" translatable="false">key_setting_file_filter_duration_set</string>
     
 </resources>
