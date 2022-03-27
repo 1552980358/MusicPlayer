@@ -202,7 +202,7 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
         when (item.itemId) {
             R.id.nav_settings -> {
                 exitTransition = null
-                navController.navigate(MainFragmentDirections.actionNavMainToNavSettings())
+                navController.navigate(MainFragmentDirections.actionNavMainToMobileNavigationMainSettings())
             }
         }
         return true
