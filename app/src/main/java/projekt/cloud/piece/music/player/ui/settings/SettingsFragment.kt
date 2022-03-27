@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.NavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
-import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.Hold
@@ -16,10 +14,7 @@ import projekt.cloud.piece.music.player.preference.util.PreferenceFragmentUtil.t
 
 class SettingsFragment: BasePreferenceFragment() {
 
-    private lateinit var navController: NavController
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        navController = findNavController()
         super.onCreate(savedInstanceState)
         exitTransition = Hold()
     }
