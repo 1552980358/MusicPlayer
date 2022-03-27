@@ -1,9 +1,11 @@
 package projekt.cloud.piece.music.player.util
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.provider.MediaStore
+import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import lib.github1552980358.ktExtension.android.graphics.heightF
@@ -24,10 +26,13 @@ import projekt.cloud.piece.music.player.util.ImageUtil.loadAlbumArts40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.loadAudioArt40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.writeAlbumArt40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.writeAlbumArtRaw
+import projekt.cloud.piece.music.player.util.SharedPreferencesUtil.SP_FILE_FILTER_DURATION_DEFAULT
+import projekt.cloud.piece.music.player.util.SharedPreferencesUtil.SP_FILE_FILTER_DURATION_INITIAL
 
 object DatabaseUtil {
 
     fun initializeApp(context: Context,
+                      sharedPreferences: SharedPreferences,
                       database: AudioDatabase,
                       audioArtMap: MutableMap<String, Bitmap>,
                       albumArtMap: MutableMap<String, Bitmap>,
@@ -38,15 +43,16 @@ object DatabaseUtil {
         querySystemDatabase(context, audioList, albumList, artistList)
         storeToDatabase(database, audioList, albumList, artistList)
         initialImage(context, database, albumList)
-        launchApp(context, database, audioArtMap, albumArtMap, callback)
+        launchApp(context, sharedPreferences, database, audioArtMap, albumArtMap, callback)
     }
 
     fun launchAppCoroutine(context: Context,
+                           sharedPreferences: SharedPreferences,
                            database: AudioDatabase,
                            audioArtMap: MutableMap<String, Bitmap>,
                            albumArtMap: MutableMap<String, Bitmap>,
                            callback: (List<AudioItem>) -> Unit) = io {
-        launchApp(context, database, audioArtMap, albumArtMap, callback)
+        launchApp(context, sharedPreferences, database, audioArtMap, albumArtMap, callback)
     }
 
     fun AudioDatabase.syncAudioList(context: Context, completeCallback: (List<AudioItem>, List<AlbumItem>, List<ArtistItem>) -> Unit) {
@@ -59,31 +65,38 @@ object DatabaseUtil {
         compareAlbumList(context, this, systemAlbumList)
         compareArtistList(this, systemArtistList)
 
-        systemAudioList.sortBy { it.pinyin }
-        systemAudioList.forEachIndexed { index, audioItem ->
-            audioItem.index = index
-            systemAlbumList.find { it.id == audioItem.album }?.let { audioItem.albumItem = it }
-            systemArtistList.find { it.id == audioItem.artist }?.let { audioItem.artistItem = it }
-        }
-
-        completeCallback(systemAudioList, systemAlbumList, systemArtistList)
+        completeCallback(loadDatabase(context, getDefaultSharedPreferences(context), this), systemAlbumList, systemArtistList)
     }
 
     private fun launchApp(context: Context,
+                          sharedPreferences: SharedPreferences,
                           database: AudioDatabase,
                           audioArtMap: MutableMap<String, Bitmap>,
                           albumArtMap: MutableMap<String, Bitmap>,
                           callback: (List<AudioItem>) -> Unit) = runBlocking {
         launch { context.loadAudioArt40Dp(audioArtMap) }
         launch { context.loadAlbumArts40Dp(albumArtMap) }
-        database.audio.query().toMutableList().apply {
+        callback(loadDatabase(context, sharedPreferences, database))
+    }
+
+    fun loadDatabase(context: Context,
+                     sharedPreferences: SharedPreferences,
+                     database: AudioDatabase): List<AudioItem> {
+        var filterDuration = SP_FILE_FILTER_DURATION_INITIAL
+        if (sharedPreferences.getBoolean(context.getString(R.string.key_setting_file_filter_duration_enable), true)) {
+            filterDuration = sharedPreferences.getString(
+                context.getString(R.string.key_setting_file_filter_duration_set),
+                SP_FILE_FILTER_DURATION_DEFAULT
+            ) ?: SP_FILE_FILTER_DURATION_DEFAULT
+        }
+        var filterFileSize = "1"
+        return database.audio.query(filterDuration, filterDuration).toMutableList().apply {
             this.sortBy { it.pinyin }
             forEachIndexed { index, audioItem ->
                 audioItem.index = index
                 audioItem.albumItem = database.album.query(audioItem.album)
                 audioItem.artistItem = database.artist.query(audioItem.artist)
             }
-            callback(this)
         }
     }
 
