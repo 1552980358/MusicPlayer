@@ -23,6 +23,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
+import kotlinx.coroutines.delay
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.getStatusBarHeight
 import lib.github1552980358.ktExtension.android.content.register
@@ -187,8 +189,6 @@ class PlayControlFragment: BaseFragment() {
                 true
             }
         }
-
-        setObservers()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -197,6 +197,12 @@ class PlayControlFragment: BaseFragment() {
         heartItem = menu.getItem(0).apply {
             updateHeatItemIO(activityViewModel.audioItem, this)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setObservers()
+        delayShowBottomSheet()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
