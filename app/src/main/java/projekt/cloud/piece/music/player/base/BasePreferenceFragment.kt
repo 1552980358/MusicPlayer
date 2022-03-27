@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceFragmentCompat
 import projekt.cloud.piece.music.player.MainActivityViewModel
 import projekt.cloud.piece.music.player.R
@@ -18,8 +20,13 @@ abstract class BasePreferenceFragment: PreferenceFragmentCompat() {
 
     protected lateinit var activityViewModel: MainActivityViewModel
 
+    protected lateinit var navController: NavController
+
+    private val toolbarNavigationIcon get() = setToolbarNavigationIcon()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        navController = findNavController()
         activityViewModel = ViewModelProvider(requireActivity())[MainActivityViewModel::class.java]
     }
 
@@ -27,6 +34,10 @@ abstract class BasePreferenceFragment: PreferenceFragmentCompat() {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_base_preference, container, false)
         // Add PreferenceFragmentCompat original preference screen content
         binding.relativeLayout.addView(super.onCreateView(inflater, container, savedInstanceState))
+        with(binding.toolbar) {
+            setNavigationIcon(toolbarNavigationIcon)
+            setNavigationOnClickListener { navController.navigateUp() }
+        }
         return binding.root
     }
 
@@ -34,5 +45,7 @@ abstract class BasePreferenceFragment: PreferenceFragmentCompat() {
         super.onDestroyView()
         _binding = null
     }
+
+    open fun setToolbarNavigationIcon() = R.drawable.ic_close
 
 }
