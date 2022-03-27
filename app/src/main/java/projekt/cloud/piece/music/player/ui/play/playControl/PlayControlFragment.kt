@@ -114,12 +114,6 @@ class PlayControlFragment: BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        recyclerViewAdapterUtil = RecyclerViewAdapterUtil(recyclerView) {
-            activityViewModel.playList?.let { playlist ->
-                activityViewModel.mediaControllerCompat.transportControls.skipToQueueItem(playlist[it].index.toLong())
-            }
-        }
-
         contentControl.floatingActionButton.setOnClickListener {
             when {
                 activityViewModel.isPlaying -> transportControls.pause()
@@ -237,6 +231,13 @@ class PlayControlFragment: BaseFragment() {
     }
 
     private fun setObservers() = io {
+        ui {
+            recyclerViewAdapterUtil = RecyclerViewAdapterUtil(recyclerView) {
+                activityViewModel.playList?.let { playlist ->
+                    activityViewModel.mediaControllerCompat.transportControls.skipToQueueItem(playlist[it].index.toLong())
+                }
+            }
+        }
         activityViewModel.setAudioItemObserver(TAG) { audioItem -> updateAudioItem(audioItem) }
         activityViewModel.setCoverArtBitmapObserver(TAG) { bitmap -> binding.imageBitmap = bitmap }
         activityViewModel.setPlayStateObserver(TAG) { isPlaying ->
