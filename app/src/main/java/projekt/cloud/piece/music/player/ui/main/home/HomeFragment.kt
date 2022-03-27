@@ -1,6 +1,7 @@
 package projekt.cloud.piece.music.player.ui.main.home
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.content.SharedPreferences
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,9 +17,11 @@ import androidx.core.os.bundleOf
 import androidx.core.view.MenuCompat.setGroupDividerEnabled
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import lib.github1552980358.ktExtension.android.graphics.toBitmap
 import lib.github1552980358.ktExtension.androidx.fragment.app.getDrawable
 import lib.github1552980358.ktExtension.androidx.fragment.app.show
+import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseFragment
@@ -31,6 +34,7 @@ import projekt.cloud.piece.music.player.ui.main.MainViewModel
 import projekt.cloud.piece.music.player.util.DatabaseUtil.initializeApp
 import projekt.cloud.piece.music.player.util.DatabaseUtil.launchAppCoroutine
 import projekt.cloud.piece.music.player.ui.main.home.util.RecyclerViewAdapterUtil
+import projekt.cloud.piece.music.player.util.DatabaseUtil.loadDatabase
 
 class HomeFragment: BaseFragment() {
 
@@ -44,9 +48,12 @@ class HomeFragment: BaseFragment() {
 
     private lateinit var mainViewModel: MainViewModel
 
+    private lateinit var sharedPreferences: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainViewModel = ViewModelProvider(parentFragment as BaseFragment)[MainViewModel::class.java]
+        sharedPreferences = getDefaultSharedPreferences(requireContext())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -58,16 +65,24 @@ class HomeFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         when {
-            activityViewModel.isLoaded -> initializeRecyclerView(activityViewModel.audioList)
+            activityViewModel.isLoaded -> io {
+                if (activityViewModel.hasSettingsUpdated) {
+                    activityViewModel.hasSettingsUpdated = false
+                    activityViewModel.audioList = loadDatabase(requireContext(), sharedPreferences, activityViewModel.database)
+                }
+                initializeRecyclerView(activityViewModel.audioList)
+            }
             else -> when (checkSelfPermission(requireContext(), READ_EXTERNAL_STORAGE)) {
-                PERMISSION_GRANTED -> launchAppCoroutine(requireContext(), activityViewModel.database, activityViewModel.audioArtMap, activityViewModel.albumArtMap) {
+                PERMISSION_GRANTED -> launchAppCoroutine(requireContext(), sharedPreferences, activityViewModel.database, activityViewModel.audioArtMap, activityViewModel.albumArtMap) {
                     activityViewModel.audioList = it
+                    loadDefaultCoverArt()
                     initializeRecyclerView(it)
                 }
                 else -> registerForActivityResult(RequestPermission()) {
                     if (it) {
-                        initializeApp(requireContext(), activityViewModel.database, activityViewModel.audioArtMap, activityViewModel.albumArtMap) { list ->
+                        initializeApp(requireContext(), sharedPreferences, activityViewModel.database, activityViewModel.audioArtMap, activityViewModel.albumArtMap) { list ->
                             activityViewModel.audioList = list
+                            loadDefaultCoverArt()
                             initializeRecyclerView(list)
                         }
                     }
@@ -95,10 +110,11 @@ class HomeFragment: BaseFragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    private fun loadDefaultCoverArt() {
+        activityViewModel.defaultCoverArt = getDrawable(R.drawable.ic_music)!!.toBitmap()!!
+    }
+
     private fun initializeRecyclerView(audioList: List<AudioItem>) = ui {
-        if (!activityViewModel.isLoaded) {
-            activityViewModel.defaultCoverArt = getDrawable(R.drawable.ic_music)!!.toBitmap()!!
-        }
         recyclerViewAdapterUtil = RecyclerViewAdapterUtil(
             binding.recyclerView,
             audioList,
