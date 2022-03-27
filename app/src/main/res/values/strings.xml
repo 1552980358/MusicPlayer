@@ -38,4 +38,12 @@
     <string name="setting_file_filter_duration_set_unit" translatable="false">ms</string>
     <string name="key_setting_file_filter_duration_set" translatable="false">key_setting_file_filter_duration_set</string>
     
+    <string name="setting_file_filter_size">File size</string>
+    <string name="setting_file_filter_size_enable">Enable file size filtering</string>
+    <string name="key_setting_file_filter_size_enable" translatable="false">key_setting_file_filter_size_enable</string>
+    <string name="setting_file_filter_size_default" translatable="false">1024</string>
+    <string name="setting_file_filter_size_set">Set filtering minimum file size</string>
+    <string name="setting_file_filter_size_set_unit" translatable="false">KB</string>
+    <string name="key_setting_file_filter_size_set" translatable="false">key_setting_file_filter_size_set</string>
+
 </resources>

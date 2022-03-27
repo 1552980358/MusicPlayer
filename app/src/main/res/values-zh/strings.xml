@@ -32,5 +32,9 @@
     <string name="setting_file_filter_duration_enable">启用时长过滤</string>
     <string name="setting_file_filter_duration">时长</string>
     <string name="setting_file_filter_duration_set">设置过滤最低时长</string>
+    
+    <string name="setting_file_filter_size">文件大小</string>
+    <string name="setting_file_filter_size_enable">启用文件大小过滤</string>
+    <string name="setting_file_filter_size_set">设置过滤最低文件大小</string>
 
 </resources>
