@@ -1,8 +1,10 @@
 package projekt.cloud.piece.music.player.preference.util
 
 import androidx.annotation.StringRes
+import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreferenceCompat
 import projekt.cloud.piece.music.player.preference.TransitionPreference
 
 object PreferenceFragmentUtil {
@@ -15,5 +17,11 @@ object PreferenceFragmentUtil {
 
     fun PreferenceFragmentCompat.transitionPreference(@StringRes resId: Int, block: TransitionPreference.() -> Unit) =
         preference<TransitionPreference>(resId)?.apply(block)
+
+    fun PreferenceFragmentCompat.editTextPreference(resId: Int, block: EditTextPreference.() -> Unit) =
+        preference<EditTextPreference>(resId)?.apply(block)
+
+    fun PreferenceFragmentCompat.switchPreference(resId: Int, block: SwitchPreferenceCompat.() -> Unit) =
+        preference<SwitchPreferenceCompat>(resId)?.apply(block)
 
 }
