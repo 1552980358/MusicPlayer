@@ -28,6 +28,8 @@ import projekt.cloud.piece.music.player.util.ImageUtil.writeAlbumArt40Dp
 import projekt.cloud.piece.music.player.util.ImageUtil.writeAlbumArtRaw
 import projekt.cloud.piece.music.player.util.SharedPreferencesUtil.SP_FILE_FILTER_DURATION_DEFAULT
 import projekt.cloud.piece.music.player.util.SharedPreferencesUtil.SP_FILE_FILTER_DURATION_INITIAL
+import projekt.cloud.piece.music.player.util.SharedPreferencesUtil.SP_FILE_FILTER_SIZE_DEFAULT
+import projekt.cloud.piece.music.player.util.SharedPreferencesUtil.SP_FILE_FILTER_SIZE_INITIAL
 
 object DatabaseUtil {
 
@@ -89,8 +91,14 @@ object DatabaseUtil {
                 SP_FILE_FILTER_DURATION_DEFAULT
             ) ?: SP_FILE_FILTER_DURATION_DEFAULT
         }
-        var filterFileSize = "1"
-        return database.audio.query(filterDuration, filterDuration).toMutableList().apply {
+        var filterFileSize = SP_FILE_FILTER_SIZE_INITIAL
+        if (sharedPreferences.getBoolean(context.getString(R.string.key_setting_file_filter_size_enable), true)) {
+            filterFileSize = sharedPreferences.getString(
+                context.getString(R.string.key_setting_file_filter_size_set),
+                SP_FILE_FILTER_SIZE_DEFAULT
+            ) ?: SP_FILE_FILTER_SIZE_DEFAULT
+        }
+        return database.audio.query(filterDuration, filterFileSize).toMutableList().apply {
             this.sortBy { it.pinyin }
             forEachIndexed { index, audioItem ->
                 audioItem.index = index
