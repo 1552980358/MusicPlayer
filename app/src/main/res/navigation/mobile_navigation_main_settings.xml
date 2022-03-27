@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation_main_settings"
+    app:startDestination="@id/nav_settings">
+    
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="projekt.cloud.piece.music.player.ui.settings.SettingsFragment"
+        tools:layout="@layout/fragment_base_preference">
+        <action
+            android:id="@+id/action_nav_settings_to_nav_file_settings"
+            app:destination="@id/nav_file_settings" />
+    </fragment>
+    
+    <fragment
+        android:id="@+id/nav_file_settings"
+        android:name="projekt.cloud.piece.music.player.ui.settings.fileSettings.FileSettingsFragment"
+        tools:layout="@layout/fragment_base_preference" />
+
+</navigation>
