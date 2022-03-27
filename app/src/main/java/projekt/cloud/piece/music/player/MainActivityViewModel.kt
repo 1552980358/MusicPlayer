@@ -67,6 +67,8 @@ class MainActivityViewModel: ViewModel() {
         }
     }
 
+    var hasSettingsUpdated = false
+
     var isPlaylistLoaded = false
     var playlistListUpdated = false
     lateinit var playlistList: ArrayList<PlaylistItem>
