@@ -26,6 +26,7 @@ class FileSettingsFragment: BasePreferenceFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.fragment_file_settings, rootKey)
         initializeDurationPreferences()
+        initializeSizePreferences()
     }
 
     private fun initializeDurationPreferences() {
@@ -46,6 +47,32 @@ class FileSettingsFragment: BasePreferenceFragment() {
             }
         }
         switchPreference(R.string.key_setting_file_filter_duration_enable) {
+            setOnPreferenceChangeListener { _, newValue ->
+                activityViewModel.hasSettingsUpdated = true
+                editTextPreference?.isEnabled = newValue as Boolean
+                true
+            }
+        }
+    }
+
+    private fun initializeSizePreferences() {
+        val editTextPreference = editTextPreference(R.string.key_setting_file_filter_size_set) {
+            setOnBindEditTextListener {
+                it.inputType = TYPE_CLASS_NUMBER
+            }
+            summaryProvider = SummaryProvider<EditTextPreference> {
+                it.text + getString(R.string.setting_file_filter_size_set_unit)
+            }
+            setOnPreferenceChangeListener { _, newValue ->
+                activityViewModel.hasSettingsUpdated = true
+                if ((newValue as String?).isNullOrBlank()) {
+                    text = getString(R.string.setting_file_filter_size_default)
+                    return@setOnPreferenceChangeListener false
+                }
+                true
+            }
+        }
+        switchPreference(R.string.key_setting_file_filter_size_enable) {
             setOnPreferenceChangeListener { _, newValue ->
                 activityViewModel.hasSettingsUpdated = true
                 editTextPreference?.isEnabled = newValue as Boolean

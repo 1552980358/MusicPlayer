@@ -19,5 +19,23 @@
             app:iconSpaceReserved="false" />
         
     </PreferenceCategory>
+    
+    <PreferenceCategory
+        app:title="@string/setting_file_filter_size"
+        app:iconSpaceReserved="false" >
+        
+        <SwitchPreferenceCompat
+            app:key="@string/key_setting_file_filter_size_enable"
+            app:title="@string/setting_file_filter_size_enable"
+            app:iconSpaceReserved="false"
+            app:defaultValue="true" />
+        
+        <EditTextPreference
+            app:key="@string/key_setting_file_filter_size_set"
+            app:title="@string/setting_file_filter_size_set"
+            app:defaultValue="@string/setting_file_filter_size_default"
+            app:iconSpaceReserved="false" />
+    
+    </PreferenceCategory>
 
 </PreferenceScreen>
