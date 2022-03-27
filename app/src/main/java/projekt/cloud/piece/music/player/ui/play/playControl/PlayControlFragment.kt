@@ -55,6 +55,7 @@ class PlayControlFragment: BaseFragment() {
 
     companion object {
         private const val TAG = "PlayControlFragment"
+        private const val BOTTOM_SHEET_SHOW_DELAY = 300L
     }
 
     private var _binding: FragmentPlayControlBinding? = null
@@ -100,6 +101,8 @@ class PlayControlFragment: BaseFragment() {
         }
         bottomSheetBehavior = BottomSheetBehavior.from(bottom.root)
         bottomSheetBehavior.peekHeight = bottomHeight * 3 / 5
+        bottomSheetBehavior.isHideable = true
+        bottomSheetBehavior.state = STATE_HIDDEN
         bottom.root.apply {
             layoutParams = layoutParams.apply {
                 height = pixelHeight - requireContext().getStatusBarHeight()
@@ -245,6 +248,14 @@ class PlayControlFragment: BaseFragment() {
         activityViewModel.setPlayConfigObserver(TAG) { playConfig -> contentControl.playConfig = playConfig }
         activityViewModel.setPlaylistObserver(TAG) { playlist -> recyclerViewAdapterUtil.playlist = playlist }
         activityViewModel.getPlaylistSync()
+    }
+
+    private fun delayShowBottomSheet() = io {
+        delay(BOTTOM_SHEET_SHOW_DELAY)
+        ui {
+            bottomSheetBehavior.state = STATE_COLLAPSED
+            bottomSheetBehavior.isHideable = false
+        }
     }
 
     private fun updateAudioItem(audioItem: AudioItem) = io {
