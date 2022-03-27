@@ -13,10 +13,11 @@
             android:id="@+id/action_nav_main_to_nav_play"
             app:destination="@id/nav_play" />
         <action
-            android:id="@+id/action_nav_main_to_nav_settings"
-            app:destination="@id/nav_settings"
+            android:id="@+id/action_nav_main_to_mobile_navigation_main_settings"
+            app:destination="@id/mobile_navigation_main_settings"
             app:popExitAnim="@anim/anim_top_to_bottom"
             app:exitAnim="@anim/anim_hold"
+            app:popEnterAnim="@anim/anim_hold"
             app:enterAnim="@anim/anim_bottom_to_top"/>
     </fragment>
 
@@ -25,9 +26,8 @@
         android:name="projekt.cloud.piece.music.player.ui.play.PlayFragment"
         tools:layout="@layout/fragment_play" />
     
-    <fragment
-        android:id="@+id/nav_settings"
-        android:name="projekt.cloud.piece.music.player.ui.settings.SettingsFragment"
-        tools:layout="@layout/fragment_base_preference"/>
+    <include
+        android:id="@+id/mobile_navigation_main_settings"
+        app:graph="@navigation/mobile_navigation_main_settings" />
 
 </navigation>
