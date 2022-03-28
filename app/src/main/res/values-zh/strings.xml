@@ -36,5 +36,16 @@
     <string name="setting_file_filter_size">文件大小</string>
     <string name="setting_file_filter_size_enable">启用文件大小过滤</string>
     <string name="setting_file_filter_size_set">设置过滤最低文件大小</string>
+    
+    <string name="play_detail_item_title">标题</string>
+    <string name="play_detail_item_artist">艺术家</string>
+    <string name="play_detail_item_album">专辑</string>
+    <string name="play_detail_item_duration">歌曲时长</string>
+    <string name="play_detail_item_type">文件类型</string>
+    <string name="play_detail_item_size">歌曲文件大小</string>
+    <string name="play_detail_item_path">歌曲文件路径</string>
+    <string name="play_detail_item_bit_rate">比特率</string>
+    <string name="play_detail_item_sample_rate">采样率</string>
+    <string name="play_detail_item_bit_depth">采样深度</string>
 
 </resources>

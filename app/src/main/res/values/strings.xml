@@ -45,5 +45,20 @@
     <string name="setting_file_filter_size_set">Set filtering minimum file size</string>
     <string name="setting_file_filter_size_set_unit" translatable="false">KB</string>
     <string name="key_setting_file_filter_size_set" translatable="false">key_setting_file_filter_size_set</string>
-
+    
+    <string name="play_detail_item_title">Title</string>
+    <string name="play_detail_item_artist">Artist</string>
+    <string name="play_detail_item_album">Album</string>
+    <string name="play_detail_item_duration">Duration</string>
+    <string name="play_detail_item_type">File Type</string>
+    <string name="play_detail_item_size">File Size</string>
+    <string name="play_detail_item_size_unit" translatable="false">MB</string>
+    <string name="play_detail_item_path">Path</string>
+    <string name="play_detail_item_bit_rate">Bit Rate</string>
+    <string name="play_detail_item_bit_rate_unit" translatable="false">Kbps</string>
+    <string name="play_detail_item_sample_rate">Sample Rate</string>
+    <string name="play_detail_item_sample_rate_unit" translatable="false">kHz</string>
+    <string name="play_detail_item_bit_depth">Bit Depth</string>
+    <string name="play_detail_item_bit_depth_unit" translatable="false">bits</string>
+    
 </resources>
