@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <data>
         
@@ -18,7 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/spec_card_view_margins"
-        android:layout_marginBottom="@dimen/spec_card_view_margins">
+        android:layout_marginBottom="@dimen/spec_card_view_margins"
+        app:cardElevation="@dimen/md_spec_card_view_outline">
         
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
