@@ -94,6 +94,7 @@ class PlayFragment: BaseFragment() {
                 override fun getItemCount() = viewModel.fragmentList.size
                 override fun createFragment(position: Int) = viewModel.fragmentList[position]
             }
+            setCurrentItem(1, false)
         }
     }
 
