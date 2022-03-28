@@ -61,6 +61,7 @@ class PlayLyricFragment: BaseFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
         inflater.inflate(R.menu.menu_play_lyric, menu)
     }
 
