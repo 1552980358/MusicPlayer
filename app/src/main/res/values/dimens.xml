@@ -17,6 +17,8 @@
     <dimen name="linear_layout_weighted_length">0dp</dimen>
 
     <dimen name="md_spec_double_line_list_height">64dp</dimen>
+    
+    <dimen name="spec_card_view_margins">8dp</dimen>
 
     <dimen name="nav_header_height">120dp</dimen>
     <dimen name="nav_header_margin_top">16dp</dimen>
