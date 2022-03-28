@@ -6,6 +6,11 @@
 ## Maintenance period
 - In long-term
 
+## Screenshots
+Main             |  Play
+:-------------------------:|:-------------------------:
+![Main](arts/screenshot_main.jpg) | ![Play](arts/screenshot_play.jpg)
+
 ## Supported API
 - Android L - 5.0 (API 21)
 - Android L_MR1 - 5.1 (API 22)
