@@ -35,6 +35,8 @@ class PlayDetailFragment: BaseFragment() {
 
     companion object {
         private const val TAG = "PlayDetailFragment"
+        private const val DEFAULT_SAMPLE_RATE = 44100
+        private const val DEFAULT_BIT_PER_SAMPLE = 16
     }
 
     private var _binding: FragmentPlayDetailBinding? = null
@@ -121,6 +123,8 @@ class PlayDetailFragment: BaseFragment() {
 
         val mediaExtractor = mediaExtractorAsync.await()
         if (mediaExtractor.trackCount == 0) {
+            detailList[8].title = "${(sampleRateStr?.toInt() ?: DEFAULT_SAMPLE_RATE).asKilo} ${getString(R.string.play_detail_item_sample_rate_unit)}"
+            detailList[9].title = "$DEFAULT_BIT_PER_SAMPLE ${getString(R.string.play_detail_item_bit_depth_unit)}"
             return@io
         }
 
@@ -130,10 +134,10 @@ class PlayDetailFragment: BaseFragment() {
             sampleRateAsync = async { trackFormat.readTrackFormat(KEY_SAMPLE_RATE) }
         }
         val bitPerSampleAsync = async { trackFormat.readTrackFormat("bits-per-sample") }
-        val sampleRate = sampleRateAsync?.await() ?: sampleRateStr?.toInt() ?: 44100
+        val sampleRate = sampleRateAsync?.await() ?: sampleRateStr?.toInt() ?: DEFAULT_SAMPLE_RATE
         detailList[8].title = "${sampleRate.asKilo} ${getString(R.string.play_detail_item_sample_rate_unit)}"
 
-        val bitPerSample = bitPerSampleAsync.await() ?: 16
+        val bitPerSample = bitPerSampleAsync.await() ?: DEFAULT_BIT_PER_SAMPLE
         detailList[9].title = "$bitPerSample ${getString(R.string.play_detail_item_bit_depth_unit)}"
     }
 
