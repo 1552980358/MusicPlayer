@@ -55,7 +55,7 @@ object LyricUtil {
     
     private val Long.timeMs get() = this % 1000
     
-    private val Long.timeStr get() = timeMin.with2DigitLeadingZero + ':' +
+    val Long.timeStr get() = timeMin.with2DigitLeadingZero + ':' +
         timeSec.with2DigitLeadingZero + '.' +
         timeMs.with3DigitLeadingZero
     
