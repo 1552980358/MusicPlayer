@@ -14,10 +14,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.R
@@ -45,16 +41,15 @@ class PlayDetailFragment: BaseFragment() {
 
     private lateinit var recyclerViewAdapterUtil: RecyclerViewAdapterUtil
 
-    private val detailList = arrayListOf<DetailItem>()
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_play_detail, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val detailList = arrayListOf<DetailItem>()
         recyclerViewAdapterUtil = RecyclerViewAdapterUtil(recyclerView, detailList)
-        initializeList()
+        initializeList(detailList)
     }
 
     override fun onDestroyView() {
@@ -63,7 +58,7 @@ class PlayDetailFragment: BaseFragment() {
         _binding = null
     }
 
-    private fun initializeList() = io {
+    private fun initializeList(detailList: ArrayList<DetailItem>) = io {
         with(detailList) {
             add(DetailItem(R.string.play_detail_item_title))        // 0
             add(DetailItem(R.string.play_detail_item_artist))       // 1
@@ -76,40 +71,25 @@ class PlayDetailFragment: BaseFragment() {
             add(DetailItem(R.string.play_detail_item_sample_rate))  // 8
             add(DetailItem(R.string.play_detail_item_bit_depth))    // 9
         }
-        activityViewModel.setAudioItemObserver(TAG, false) {
-            updateAudioItemIO(it)
-        }
-        activityViewModel.audioItem?.let {
-            updateAudioItem(it)
-            ui { recyclerViewAdapterUtil.notifyUpdate() }
+        activityViewModel.setAudioItemObserver(TAG) {
+            updateAudioItem(detailList, it)
         }
     }
 
-    private fun updateAudioItemIO(audioItem: AudioItem) = io {
-        updateAudioItem(audioItem)
-        ui { recyclerViewAdapterUtil.notifyUpdate() }
-    }
-
-    private fun updateAudioItem(audioItem: AudioItem) = runBlocking {
-        updateFileData(audioItem)
+    private fun updateAudioItem(detailList: List<DetailItem>, audioItem: AudioItem) = io {
         detailList[0].title = audioItem.title
         detailList[1].title = audioItem.artistItem.title
         detailList[2].title = audioItem.albumItem.title
         detailList[3].title = audioItem.duration.timeStr
         detailList[5].title = "${audioItem.size.asMegabyte} ${getString(R.string.play_detail_item_size_unit)}"
         detailList[6].title = audioItem.path
-    }
 
-    private fun updateFileData(audioItem: AudioItem) = io {
-        val mediaExtractorAsync = async(IO) {
-            MediaExtractor().apply { setDataSource(requireContext(), audioItem.id.parseAsUri, null) }
-        }
         var sampleRateStr: String? = null
         MediaMetadataRetriever().apply {
             setDataSource(requireContext(), audioItem.id.parseAsUri)
 
             extractMetadata(METADATA_KEY_MIMETYPE)?.let {
-                 detailList[4].title = it.substring(it.indexOf('/') + 1)
+                detailList[4].title = it.substring(it.indexOf('/') + 1)
             }
 
             extractMetadata(METADATA_KEY_BITRATE)?.let {
@@ -121,24 +101,28 @@ class PlayDetailFragment: BaseFragment() {
             }
         }
 
-        val mediaExtractor = mediaExtractorAsync.await()
+        val mediaExtractor = MediaExtractor().apply {
+            @Suppress("BlockingMethodInNonBlockingContext")
+            setDataSource(requireContext(), audioItem.id.parseAsUri, null)
+        }
         if (mediaExtractor.trackCount == 0) {
             detailList[8].title = "${(sampleRateStr?.toInt() ?: DEFAULT_SAMPLE_RATE).asKilo} ${getString(R.string.play_detail_item_sample_rate_unit)}"
             detailList[9].title = "$DEFAULT_BIT_PER_SAMPLE ${getString(R.string.play_detail_item_bit_depth_unit)}"
+            ui { recyclerViewAdapterUtil.notifyUpdate() }
             return@io
         }
 
         val trackFormat = mediaExtractor.getTrackFormat(0)
-        var sampleRateAsync: Deferred<Int?>? = null
-        if (sampleRateStr == null) {
-            sampleRateAsync = async { trackFormat.readTrackFormat(KEY_SAMPLE_RATE) }
-        }
-        val bitPerSampleAsync = async { trackFormat.readTrackFormat("bits-per-sample") }
-        val sampleRate = sampleRateAsync?.await() ?: sampleRateStr?.toInt() ?: DEFAULT_SAMPLE_RATE
-        detailList[8].title = "${sampleRate.asKilo} ${getString(R.string.play_detail_item_sample_rate_unit)}"
 
-        val bitPerSample = bitPerSampleAsync.await() ?: DEFAULT_BIT_PER_SAMPLE
-        detailList[9].title = "$bitPerSample ${getString(R.string.play_detail_item_bit_depth_unit)}"
+        detailList[8].title = "${(sampleRateStr?.toInt() 
+            ?: trackFormat.readTrackFormat(KEY_SAMPLE_RATE) 
+            ?: DEFAULT_SAMPLE_RATE).asKilo} ${getString(R.string.play_detail_item_sample_rate_unit)}"
+
+        detailList[9].title =
+            "${trackFormat.readTrackFormat("bits-per-sample") 
+                ?: DEFAULT_BIT_PER_SAMPLE} ${getString(R.string.play_detail_item_bit_depth_unit)}"
+
+        ui { recyclerViewAdapterUtil.notifyUpdate() }
     }
 
     private fun MediaFormat.readTrackFormat(key: String): Int? =
