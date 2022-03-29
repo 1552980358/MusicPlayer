@@ -68,55 +68,50 @@
             android:id="@+id/linear_layout_wrapper"
             android:orientation="vertical">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginHorizontal="@dimen/play_control_control_margin_horizontal">
 
-                <RelativeLayout
+                <projekt.cloud.piece.music.player.widget.Seekbar
+                    android:id="@+id/seekbar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <projekt.cloud.piece.music.player.widget.TimeView
-                        android:id="@+id/time_view_progress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        app:alphaAnimated="@{isSeekbarTouched ? 0.5F : 1F}"
-                        app:color="@{primaryColor}"
-                        app:time="@{progress}" />
-
-                    <projekt.cloud.piece.music.player.widget.TimeView
-                        android:id="@+id/time_view_duration"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        app:color="@{secondaryColor}"
-                        app:time="@{duration}" />
-
-                    <projekt.cloud.piece.music.player.widget.Seekbar
-                        android:id="@+id/seekbar"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/play_control_seekbar_height"
-                        android:layout_toStartOf="@id/time_view_duration"
-                        android:layout_toEndOf="@id/time_view_progress"
-                        app:circleColor="@{circleColor}"
-                        app:duration="@{duration}"
-                        app:primaryColor="@{primaryColor}"
-                        app:progress="@{progress}"
-                        app:secondaryColor="@{secondaryColor}" />
-
-                </RelativeLayout>
-
+                    android:layout_height="@dimen/play_control_seekbar_height"
+                    app:circleColor="@{circleColor}"
+                    app:duration="@{duration}"
+                    app:primaryColor="@{primaryColor}"
+                    app:progress="@{progress}"
+                    app:secondaryColor="@{secondaryColor}" />
+                
+                <projekt.cloud.piece.music.player.widget.TimeView
+                    android:id="@+id/time_view_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/seekbar"
+                    app:alphaAnimated="@{isSeekbarTouched ? 0.5F : 1F}"
+                    app:color="@{primaryColor}"
+                    app:time="@{progress}" />
+                
+                <projekt.cloud.piece.music.player.widget.TimeView
+                    android:id="@+id/time_view_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/seekbar"
+                    app:color="@{secondaryColor}"
+                    app:time="@{duration}" />
+                
                 <projekt.cloud.piece.music.player.widget.TimeView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/seekbar"
+                    android:layout_toEndOf="@id/time_view_progress"
                     app:alphaAnimated="@{isSeekbarTouched ? 1F : 0F}"
                     app:color="@{primaryColor}"
                     app:time="@{seekbarTouchedProgress}" />
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            </RelativeLayout>
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
