@@ -132,7 +132,10 @@ class PlayControlFragment: BaseFragment() {
             }
             when {
                 !isReleased -> contentControl.seekbarTouchedProgress = progress
-                else -> activityViewModel.mediaControllerCompat.transportControls.seekTo(progress)
+                else -> {
+                    activityViewModel.mediaControllerCompat.transportControls.seekTo(progress)
+                    contentControl.progress = progress
+                }
             }
         }
 
