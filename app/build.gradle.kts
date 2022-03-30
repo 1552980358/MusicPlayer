@@ -25,6 +25,7 @@ android {
         @Suppress("UNUSED_VARIABLE")
         val debug by getting {
             isMinifyEnabled = false
+            applicationIdSuffix = ".debug"
         }
     }
     compileOptions {
