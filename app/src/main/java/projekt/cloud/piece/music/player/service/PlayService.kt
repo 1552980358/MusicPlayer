@@ -3,6 +3,7 @@ package projekt.cloud.piece.music.player.service
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
+import android.media.AudioManager.ACTION_HEADSET_PLUG
 import android.os.Bundle
 import android.os.PowerManager
 import android.os.PowerManager.PARTIAL_WAKE_LOCK
@@ -71,6 +72,8 @@ import projekt.cloud.piece.music.player.service.play.Config.setConfig
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_CONFIGS
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_INDEX
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
+import projekt.cloud.piece.music.player.service.play.Extra.HEADSET_PLUG_STATE_EXTRA
+import projekt.cloud.piece.music.player.service.play.Extra.HEADSET_PLUG_STATE_UNPLUGGED
 import projekt.cloud.piece.music.player.service.play.MediaIdUtil.parseAsUri
 import projekt.cloud.piece.music.player.service.play.NotificationUtil.createNotification
 import projekt.cloud.piece.music.player.service.play.NotificationUtil.createNotificationManager
@@ -255,6 +258,12 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
             BROADCAST_ACTION_PAUSE -> mediaSessionCompat.controller.transportControls.pause()
             BROADCAST_ACTION_PREV -> mediaSessionCompat.controller.transportControls.skipToPrevious()
             BROADCAST_ACTION_NEXT -> mediaSessionCompat.controller.transportControls.skipToNext()
+            ACTION_HEADSET_PLUG -> {
+                if (intent.getIntExtra(HEADSET_PLUG_STATE_EXTRA, 2) == HEADSET_PLUG_STATE_UNPLUGGED
+                    && playbackStateCompat.state == STATE_PLAYING) {
+                    mediaSessionCompat.controller.transportControls.pause()
+                }
+            }
         }
     }
 
@@ -301,7 +310,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
         exoPlayer = Builder(this).build()
         exoPlayer.addListener(this)
 
-        broadcastReceiver.register(this, BROADCAST_ACTION_PLAY, BROADCAST_ACTION_PAUSE, BROADCAST_ACTION_PREV, BROADCAST_ACTION_NEXT)
+        broadcastReceiver.register(this, BROADCAST_ACTION_PLAY, BROADCAST_ACTION_PAUSE, BROADCAST_ACTION_PREV, BROADCAST_ACTION_NEXT, ACTION_HEADSET_PLUG)
 
         notificationManagerCompat = createNotificationManager
 
