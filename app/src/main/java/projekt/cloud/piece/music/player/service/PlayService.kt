@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.media.AudioManager.ACTION_HEADSET_PLUG
+import android.media.AudioManager.AUDIOFOCUS_REQUEST_GRANTED
 import android.os.Bundle
 import android.os.PowerManager
 import android.os.PowerManager.PARTIAL_WAKE_LOCK
@@ -68,6 +69,7 @@ import projekt.cloud.piece.music.player.service.play.Action.BROADCAST_ACTION_PRE
 import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION
 import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION_PAUSE
 import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION_PLAY
+import projekt.cloud.piece.music.player.service.play.AudioFocus
 import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT
 import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT_ONE
 import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_SHUFFLE
@@ -106,6 +108,9 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
         private const val WAKE_LOCK_TAG = "${APPLICATION_ID}:WakeLock"
 
         private const val DEFAULT_PLAYBACK_SPEED = 1F
+
+        private const val VOLUME_FULL = 1F
+        private const val VOLUME_LOSS_DUCK = 0.25F
         
     }
 
@@ -120,6 +125,10 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
             Log.e(TAG, "onPlay")
 
             if (playbackStateCompat.state != STATE_BUFFERING && playbackStateCompat.state != STATE_PAUSED) {
+                return
+            }
+
+            if (audioFocus.request() != AUDIOFOCUS_REQUEST_GRANTED) {
                 return
             }
 
@@ -140,6 +149,8 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
             if (playbackStateCompat.state != STATE_BUFFERING && playbackStateCompat.state != STATE_PLAYING) {
                 return
             }
+
+            audioFocus.release()
 
             exoPlayer.pause()
 
@@ -295,6 +306,8 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
     private lateinit var defaultCoverArt: Bitmap
     private lateinit var currentCoverArt: Bitmap
 
+    private lateinit var audioFocus: AudioFocus
+
     override fun onCreate() {
         super.onCreate()
 
@@ -323,6 +336,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
 
         exoPlayer = Builder(this).build()
         exoPlayer.addListener(this)
+        exoPlayer.volume = VOLUME_FULL
 
         broadcastReceiver.register(
             this,
@@ -340,6 +354,30 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
         currentCoverArt = defaultCoverArt
 
         wakeLock = (getSystemService(POWER_SERVICE) as PowerManager).newWakeLock(PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG)
+
+        audioFocus = AudioFocus(
+            this,
+            onGain = {
+                if (playbackStateCompat.state == STATE_PAUSED && !exoPlayer.isPlaying) {
+                    mediaSessionCompat.controller.transportControls.play()
+                }
+                exoPlayer.volume = VOLUME_FULL
+            },
+            onLoss = {
+                if (playbackStateCompat.state == STATE_PLAYING && exoPlayer.isPlaying) {
+                    mediaSessionCompat.controller.transportControls.pause()
+                }
+            },
+            onLossTransient = {
+                if (playbackStateCompat.state == STATE_PLAYING && exoPlayer.isPlaying) {
+                    audioFocus.needRelease = false
+                    mediaSessionCompat.controller.transportControls.pause()
+                }
+            },
+            onLossTransientCanDuck = {
+                exoPlayer.volume = VOLUME_LOSS_DUCK
+            }
+        )
 
     }
 
