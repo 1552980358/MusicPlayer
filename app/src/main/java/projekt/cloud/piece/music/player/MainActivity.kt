@@ -16,6 +16,7 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat.getColor
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -95,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         delegate.installViewFactory()
         delegate.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
