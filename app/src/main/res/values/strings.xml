@@ -46,6 +46,8 @@
     <string name="setting_file_filter_size_set_unit" translatable="false">KB</string>
     <string name="key_setting_file_filter_size_set" translatable="false">key_setting_file_filter_size_set</string>
     
+    <string name="setting_play">Audio Play</string>
+    <string name="key_setting_play" translatable="false">key_setting_play</string>
     <string name="setting_play_audio_focus">Audio Focus</string>
     <string name="setting_play_audio_focus_enable">Enable graining audio focus</string>
     <string name="setting_play_audio_focus_description">Enabling will cause pause of other playback progress, disabling will allow having playback progress at the same time</string>
