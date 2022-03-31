@@ -1,5 +1,8 @@
 package projekt.cloud.piece.music.player.service
 
+import android.bluetooth.BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED
+import android.bluetooth.BluetoothHeadset.EXTRA_STATE
+import android.bluetooth.BluetoothProfile.STATE_DISCONNECTED
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
@@ -264,6 +267,12 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                     mediaSessionCompat.controller.transportControls.pause()
                 }
             }
+            ACTION_CONNECTION_STATE_CHANGED -> {
+                if (intent.getIntExtra(EXTRA_STATE, -1) == STATE_DISCONNECTED
+                    && playbackStateCompat.state == STATE_PLAYING) {
+                    mediaSessionCompat.controller.transportControls.pause()
+                }
+            }
         }
     }
 
@@ -310,7 +319,15 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
         exoPlayer = Builder(this).build()
         exoPlayer.addListener(this)
 
-        broadcastReceiver.register(this, BROADCAST_ACTION_PLAY, BROADCAST_ACTION_PAUSE, BROADCAST_ACTION_PREV, BROADCAST_ACTION_NEXT, ACTION_HEADSET_PLUG)
+        broadcastReceiver.register(
+            this,
+            BROADCAST_ACTION_PLAY,
+            BROADCAST_ACTION_PAUSE,
+            BROADCAST_ACTION_PREV,
+            BROADCAST_ACTION_NEXT,
+            ACTION_HEADSET_PLUG,
+            ACTION_CONNECTION_STATE_CHANGED
+        )
 
         notificationManagerCompat = createNotificationManager
 
