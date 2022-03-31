@@ -62,6 +62,7 @@ import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_PLAY_CONFIG_CHANGED
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_REQUEST_LIST
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_SYNC_SERVICE
+import projekt.cloud.piece.music.player.service.play.Action.ACTION_UPDATE_CONFIG
 import projekt.cloud.piece.music.player.service.play.Action.BROADCAST_ACTION_NEXT
 import projekt.cloud.piece.music.player.service.play.Action.BROADCAST_ACTION_PAUSE
 import projekt.cloud.piece.music.player.service.play.Action.BROADCAST_ACTION_PLAY
@@ -70,6 +71,7 @@ import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION
 import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION_PAUSE
 import projekt.cloud.piece.music.player.service.play.Action.START_COMMAND_ACTION_PLAY
 import projekt.cloud.piece.music.player.service.play.AudioFocus
+import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_AUDIO_FOCUS
 import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT
 import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT_ONE
 import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_SHUFFLE
@@ -77,6 +79,7 @@ import projekt.cloud.piece.music.player.service.play.Config.SERVICE_CONFIG_FOREG
 import projekt.cloud.piece.music.player.service.play.Config.getConfig
 import projekt.cloud.piece.music.player.service.play.Config.setConfig
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_CONFIGS
+import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_CONFIG_VALUE
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_INDEX
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
 import projekt.cloud.piece.music.player.service.play.Extra.HEADSET_PLUG_STATE_EXTRA
@@ -128,7 +131,8 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                 return
             }
 
-            if (audioFocus.request() != AUDIOFOCUS_REQUEST_GRANTED) {
+            if (configs.getConfig(PLAY_CONFIG_AUDIO_FOCUS)
+                && audioFocus.request() != AUDIOFOCUS_REQUEST_GRANTED) {
                 return
             }
 
@@ -322,6 +326,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
             .addCustomAction(ACTION_SYNC_SERVICE, ACTION_SYNC_SERVICE, R.drawable.ic_launcher_foreground)
             .addCustomAction(ACTION_PLAY_CONFIG_CHANGED, ACTION_PLAY_CONFIG_CHANGED, R.drawable.ic_launcher_foreground)
             .addCustomAction(ACTION_REQUEST_LIST, ACTION_REQUEST_LIST, R.drawable.ic_launcher_foreground)
+            .addCustomAction(ACTION_UPDATE_CONFIG, ACTION_UPDATE_CONFIG, R.drawable.ic_launcher_foreground)
             .setExtras(bundleOf(EXTRA_CONFIGS to configs))
             .build()
 
@@ -447,7 +452,28 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                 result.sendResult(bundleOf(EXTRA_LIST to arrangedPlaylist))
             }
             ACTION_REQUEST_LIST -> result.sendResult(bundleOf(EXTRA_LIST to arrangedPlaylist))
+            ACTION_UPDATE_CONFIG -> {
+                if (extras != null && extras.containsKey(EXTRA_CONFIGS) && extras.containsKey(EXTRA_CONFIG_VALUE)) {
+                    handleConfigUpdate(extras.getInt(EXTRA_CONFIGS), extras.getBoolean(EXTRA_CONFIG_VALUE))
+                }
+                result.sendResult(null)
+            }
             else -> result.sendError(null)
+        }
+    }
+
+    private fun handleConfigUpdate(config: Int, newValue: Boolean) {
+        configs = configs.setConfig(config, newValue)
+        sharedPreferences.writeConfigs(configs)
+        when (config) {
+            PLAY_CONFIG_AUDIO_FOCUS -> {
+                if (!newValue) {
+                    if (audioFocus.isGained) {
+                        audioFocus.needRelease = true
+                        audioFocus.release()
+                    }
+                }
+            }
         }
     }
 
