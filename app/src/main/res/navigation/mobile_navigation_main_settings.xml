@@ -13,11 +13,20 @@
         <action
             android:id="@+id/action_nav_settings_to_nav_file_settings"
             app:destination="@id/nav_file_settings" />
+        <action
+            android:id="@+id/action_nav_settings_to_play_settings_fragment"
+            app:destination="@id/play_settings_fragment" />
+
     </fragment>
     
     <fragment
         android:id="@+id/nav_file_settings"
         android:name="projekt.cloud.piece.music.player.ui.settings.fileSettings.FileSettingsFragment"
+        tools:layout="@layout/fragment_base_preference" />
+    
+    <fragment
+        android:id="@+id/play_settings_fragment"
+        android:name="projekt.cloud.piece.music.player.ui.settings.playSettings.PlaySettingsFragment"
         tools:layout="@layout/fragment_base_preference" />
 
 </navigation>
