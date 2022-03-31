@@ -31,4 +31,6 @@ object Config {
 
     const val SERVICE_CONFIG_FOREGROUND_SERVICE = 3
 
+    const val PLAY_CONFIG_AUDIO_FOCUS = 4
+
 }
