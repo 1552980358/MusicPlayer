@@ -30,6 +30,15 @@ class SettingsFragment: BasePreferenceFragment() {
                 true
             }
         }
+        transitionPreference(R.string.key_setting_play) {
+            setOnPreferenceClickListener {
+                navController.navigate(
+                    SettingsFragmentDirections.actionNavSettingsToPlaySettingsFragment(),
+                    FragmentNavigatorExtras(itemView to itemView.transitionName)
+                )
+                true
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
