@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <SwitchPreferenceCompat
+        app:key="@string/key_setting_play_audio_focus_enable"
+        app:title="@string/setting_play_audio_focus_enable"
+        app:summary="@string/setting_play_audio_focus_description"
+        app:defaultValue="true"
+        app:iconSpaceReserved="false" />
+
+</PreferenceScreen>
