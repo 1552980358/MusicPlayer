@@ -12,4 +12,7 @@ object Extra {
      **/
     const val HEADSET_PLUG_STATE_EXTRA = "state"
     const val HEADSET_PLUG_STATE_UNPLUGGED = 0
+
+    const val EXTRA_CONFIG = "EXTRA_CONFIG"
+    const val EXTRA_CONFIG_VALUE = "EXTRA_CONFIG_VALUE"
 }
