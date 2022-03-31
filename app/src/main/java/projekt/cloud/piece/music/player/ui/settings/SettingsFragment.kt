@@ -22,7 +22,6 @@ class SettingsFragment: BasePreferenceFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.fragment_settings, rootKey)
         transitionPreference(R.string.key_setting_file) {
-            rootTransitionName = getString(R.string.key_setting_file)
             setOnPreferenceClickListener {
                 navController.navigate(
                     SettingsFragmentDirections.actionNavSettingsToNavFileSettings(),
