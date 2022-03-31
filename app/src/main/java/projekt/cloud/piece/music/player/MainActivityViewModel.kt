@@ -12,7 +12,6 @@ import androidx.activity.result.contract.ActivityResultContracts.GetContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.Job
 import lib.github1552980358.ktExtension.android.content.isSystemDarkMode
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import projekt.cloud.piece.music.player.database.AudioDatabase
@@ -22,10 +21,13 @@ import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.database.item.PlaylistItem
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_PLAY_CONFIG_CHANGED
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_REQUEST_LIST
+import projekt.cloud.piece.music.player.service.play.Action.ACTION_UPDATE_CONFIG
 import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT
 import projekt.cloud.piece.music.player.service.play.Config.shl
+import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_CONFIG
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_LIST
 import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_CONFIGS
+import projekt.cloud.piece.music.player.service.play.Extra.EXTRA_CONFIG_VALUE
 import projekt.cloud.piece.music.player.util.DatabaseUtil.syncAudioList
 
 class MainActivityViewModel: ViewModel() {
@@ -231,6 +233,14 @@ class MainActivityViewModel: ViewModel() {
     }
     fun setGetContentCallback(callback: ((Uri) -> Unit)? = null) {
         this.getContentCallback = callback
+    }
+
+    fun updateConfig(config: Int, newValue: Boolean) {
+        mediaBrowserCompat.sendCustomAction(
+            ACTION_UPDATE_CONFIG,
+            bundleOf(EXTRA_CONFIG to config, EXTRA_CONFIG_VALUE to newValue),
+            null
+        )
     }
 
     lateinit var mediaBrowserCompat: MediaBrowserCompat
