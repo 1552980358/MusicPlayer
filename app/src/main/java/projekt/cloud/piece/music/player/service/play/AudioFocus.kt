@@ -70,13 +70,21 @@ class AudioFocus(context: Context,
         else -> AudioFocusRequestImpl21()
     }
 
+    var isGained = false
+
     var needRelease = true
 
-    fun request() = audioFocusRequestImpl.request()
+    fun request(): Int {
+        isGained = true
+        return audioFocusRequestImpl.request()
+    }
 
     fun release() {
         when {
-            needRelease -> audioFocusRequestImpl.release()
+            needRelease -> {
+                isGained = false
+                audioFocusRequestImpl.release()
+            }
             else -> needRelease = true
         }
     }
