@@ -8,18 +8,12 @@ import androidx.preference.PreferenceViewHolder
 
 class TransitionPreference(context: Context, attributeSet: AttributeSet?): Preference(context, attributeSet) {
 
-    var rootTransitionName: String? = null
-        set(value) {
-            field = value
-            notifyChanged()
-        }
-
     lateinit var itemView: View
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
         itemView = holder.itemView
-        rootTransitionName?.let { holder.itemView.transitionName = it }
+        holder.itemView.transitionName = key
     }
 
 }
