@@ -1,8 +1,12 @@
 package projekt.cloud.piece.music.player.ui.main.home
 
+import android.Manifest.permission.BLUETOOTH
+import android.Manifest.permission.BLUETOOTH_CONNECT
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.SharedPreferences
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.S
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -11,7 +15,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
+import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuCompat.setGroupDividerEnabled
@@ -63,7 +67,10 @@ class HomeFragment: BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
+        val permissionRequestList = arrayListOf(READ_EXTERNAL_STORAGE, BLUETOOTH)
+        if (SDK_INT >= S) {
+            permissionRequestList.add(BLUETOOTH_CONNECT)
+        }
         when {
             activityViewModel.isLoaded -> io {
                 if (activityViewModel.hasSettingsUpdated) {
@@ -78,15 +85,16 @@ class HomeFragment: BaseFragment() {
                     loadDefaultCoverArt()
                     initializeRecyclerView(it)
                 }
-                else -> registerForActivityResult(RequestPermission()) {
-                    if (it) {
-                        initializeApp(requireContext(), sharedPreferences, activityViewModel.database, activityViewModel.audioArtMap, activityViewModel.albumArtMap) { list ->
-                            activityViewModel.audioList = list
-                            loadDefaultCoverArt()
-                            initializeRecyclerView(list)
-                        }
+                else -> registerForActivityResult(RequestMultiplePermissions()) {
+                    if (it.filter { (_, value) -> !value }.isNotEmpty()) {
+                        return@registerForActivityResult
                     }
-                }.launch(READ_EXTERNAL_STORAGE)
+                    initializeApp(requireContext(), sharedPreferences, activityViewModel.database, activityViewModel.audioArtMap, activityViewModel.albumArtMap) { list ->
+                        activityViewModel.audioList = list
+                        loadDefaultCoverArt()
+                        initializeRecyclerView(list)
+                    }
+                }.launch(permissionRequestList.toTypedArray())
             }
         }
 
