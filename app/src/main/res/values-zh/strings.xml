@@ -37,6 +37,10 @@
     <string name="setting_file_filter_size_enable">启用文件大小过滤</string>
     <string name="setting_file_filter_size_set">设置过滤最低文件大小</string>
     
+    <string name="setting_play_audio_focus">音频焦点</string>
+    <string name="setting_play_audio_focus_enable">启用获取音频焦点</string>
+    <string name="setting_play_audio_focus_description">启用将会导致播放时其他音频暂停，禁用后将允许其他音频同时播放</string>
+    
     <string name="play_detail_item_title">标题</string>
     <string name="play_detail_item_artist">艺术家</string>
     <string name="play_detail_item_album">专辑</string>
