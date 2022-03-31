@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.MusicPlayer" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
@@ -14,7 +14,5 @@
         <!-- Navigation bar -->
         <item name="android:navigationBarColor">@color/black</item>
     </style>
-
-    <style name="Theme.MusicPlayer.MainActivity" parent="Theme.MusicPlayer.NoActionBar.VariableNavigationBar"/>
 
 </resources>
