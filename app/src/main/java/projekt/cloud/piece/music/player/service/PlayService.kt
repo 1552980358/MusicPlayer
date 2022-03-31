@@ -23,6 +23,8 @@ import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.MediaSessionCompat.Callback
 import android.support.v4.media.session.PlaybackStateCompat
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_PAUSE
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY_PAUSE
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SEEK_TO
@@ -95,7 +97,9 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
     companion object {
         
         const val PLAYBACK_STATE_ACTIONS =
-            ACTION_PLAY_PAUSE or ACTION_STOP or ACTION_SEEK_TO or ACTION_PLAY_FROM_MEDIA_ID or ACTION_SKIP_TO_NEXT or ACTION_SKIP_TO_PREVIOUS or ACTION_SKIP_TO_QUEUE_ITEM
+            ACTION_PLAY or ACTION_PAUSE or ACTION_PLAY_PAUSE or ACTION_STOP or
+                ACTION_SEEK_TO or
+                ACTION_PLAY_FROM_MEDIA_ID or ACTION_SKIP_TO_NEXT or ACTION_SKIP_TO_PREVIOUS or ACTION_SKIP_TO_QUEUE_ITEM
         
         private const val TAG = "PlayService"
         private const val ROOT_ID = TAG
@@ -311,6 +315,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
         mediaSessionCompat = MediaSessionCompat(this, ROOT_ID).apply {
             setCallback(mediaSessionCallback)
             setPlaybackState(playbackStateCompat)
+
             isActive = true
         }
 
