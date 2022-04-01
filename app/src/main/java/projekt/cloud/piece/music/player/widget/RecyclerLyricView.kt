@@ -56,7 +56,7 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
                 updateProgress(progress)
             }
         }
-        
+
     }
 
     private class RecyclerViewHolder(private val binding: ViewRecyclerLyricBinding): ViewHolder(binding.root) {
@@ -215,7 +215,7 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
                 if (!isControlled) {
                     countJob?.cancel()
                     countJob = io {
-                        delay(5000L)
+                        delay(SCROLL_WAIT_DELAY)
                         if (!isControlled) {
                             if (currentPosition > -1) {
                                 smoothScrollToPosition(currentPosition)
