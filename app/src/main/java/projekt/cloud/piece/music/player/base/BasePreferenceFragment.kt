@@ -23,6 +23,7 @@ abstract class BasePreferenceFragment: PreferenceFragmentCompat() {
     protected lateinit var navController: NavController
 
     private val toolbarNavigationIcon get() = setToolbarNavigationIcon()
+    private val toolbarTitle get() = setTitle()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +37,7 @@ abstract class BasePreferenceFragment: PreferenceFragmentCompat() {
         binding.relativeLayout.addView(super.onCreateView(inflater, container, savedInstanceState))
         with(binding.toolbar) {
             setNavigationIcon(toolbarNavigationIcon)
+            setTitle(toolbarTitle)
             setNavigationOnClickListener { navController.navigateUp() }
         }
         return binding.root
@@ -47,5 +49,7 @@ abstract class BasePreferenceFragment: PreferenceFragmentCompat() {
     }
 
     open fun setToolbarNavigationIcon() = R.drawable.ic_back
+
+    abstract fun setTitle(): Int
 
 }
