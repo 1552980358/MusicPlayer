@@ -32,6 +32,7 @@ import projekt.cloud.piece.music.player.ThemeSwitchActivity.Companion.setScreens
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.FragmentMainBinding
+import projekt.cloud.piece.music.player.util.Constant.SCROLL_WAIT_DELAY
 import projekt.cloud.piece.music.player.util.ViewUtil.screenshot
 
 class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
@@ -189,7 +190,7 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
                             ui { extend() }
                         }
 
-                        delay(5000L)
+                        delay(SCROLL_WAIT_DELAY)
                         ui { shrink() }
                     }
                 }
