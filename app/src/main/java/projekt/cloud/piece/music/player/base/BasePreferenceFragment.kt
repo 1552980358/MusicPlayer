@@ -46,6 +46,6 @@ abstract class BasePreferenceFragment: PreferenceFragmentCompat() {
         _binding = null
     }
 
-    open fun setToolbarNavigationIcon() = R.drawable.ic_close
+    open fun setToolbarNavigationIcon() = R.drawable.ic_back
 
 }
