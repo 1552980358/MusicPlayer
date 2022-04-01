@@ -34,4 +34,6 @@ class PlaySettingsFragment: BasePreferenceFragment() {
 
     }
 
+    override fun setTitle() = R.string.setting_play
+
 }

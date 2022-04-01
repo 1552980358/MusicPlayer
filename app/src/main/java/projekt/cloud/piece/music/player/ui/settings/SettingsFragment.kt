@@ -63,4 +63,6 @@ class SettingsFragment: BasePreferenceFragment() {
 
     override fun setToolbarNavigationIcon() = R.drawable.ic_close
 
+    override fun setTitle() = R.string.nav_settings
+
 }

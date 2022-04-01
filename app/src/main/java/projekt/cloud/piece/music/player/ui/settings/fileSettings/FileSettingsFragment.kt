@@ -29,6 +29,8 @@ class FileSettingsFragment: BasePreferenceFragment() {
         initializeSizePreferences()
     }
 
+    override fun setTitle() = R.string.setting_file
+
     private fun initializeDurationPreferences() {
         val editTextPreference = editTextPreference(R.string.key_setting_file_filter_duration_set) {
             setOnBindEditTextListener {
