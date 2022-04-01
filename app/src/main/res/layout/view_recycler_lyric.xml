@@ -29,15 +29,13 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/text_view"
             android:gravity="center"
             android:text="@{lyric}"
             android:typeface="@{Typeface.defaultFromStyle(textStyle == null ? Typeface.NORMAL : textStyle)}"
-            android:paddingStart="@dimen/view_recycler_lyric_padding_horizontal"
-            android:paddingEnd="@dimen/view_recycler_lyric_padding_horizontal"
-            android:paddingTop="@dimen/view_recycler_lyric_padding_vertical"
-            android:paddingBottom="@dimen/view_recycler_lyric_padding_vertical"
+            android:paddingHorizontal="@dimen/view_recycler_lyric_padding_horizontal"
             android:textColor="@{textColor}"
-            android:textSize="@dimen/title_text_size" />
+            android:textSize="@dimen/view_recycler_lyric_text_size" />
 
     </RelativeLayout>
 
