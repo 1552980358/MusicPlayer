@@ -81,6 +81,4 @@ class FileSettingsFragment: BasePreferenceFragment() {
         }
     }
 
-    override fun setToolbarNavigationIcon() = R.drawable.ic_back
-
 }
