@@ -61,4 +61,6 @@ class SettingsFragment: BasePreferenceFragment() {
         .apply { isAccessible = true }
         .get(this as PreferenceFragmentCompat) as RecyclerView
 
+    override fun setToolbarNavigationIcon() = R.drawable.ic_close
+
 }
