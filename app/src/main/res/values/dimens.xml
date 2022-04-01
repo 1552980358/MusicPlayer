@@ -40,8 +40,8 @@
     <dimen name="progressbar_indicator_thick">4dp</dimen>
     <dimen name="seekbar_wrap_height">10dp</dimen>
 
-    <dimen name="view_recycler_lyric_padding_horizontal">10dp</dimen>
-    <dimen name="view_recycler_lyric_padding_vertical">5dp</dimen>
+    <dimen name="view_recycler_lyric_text_size">24sp</dimen>
+    <dimen name="view_recycler_lyric_padding_horizontal">16dp</dimen>
 
     <dimen name="play_control_seekbar_height">15dp</dimen>
     <dimen name="play_control_control_fab_border_width">0dp</dimen>
