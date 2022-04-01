@@ -126,8 +126,18 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
         }
 
         private class CenterSmoothScroller(context: Context): LinearSmoothScroller(context) {
+
+            private companion object {
+                const val TIME_SPENT_SCROLLING = ANIMATION_DURATION_HALF_INT
+            }
+
             override fun calculateDtToFit(viewStart: Int, viewEnd: Int, boxStart: Int, boxEnd: Int, snapPreference: Int) =
                 (boxStart + (boxEnd - boxStart) / 2) - (viewStart + (viewEnd - viewStart) / 2)
+
+            override fun calculateTimeForScrolling(dx: Int): Int {
+                return TIME_SPENT_SCROLLING
+            }
+
         }
 
     }
