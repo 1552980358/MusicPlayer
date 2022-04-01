@@ -2,6 +2,8 @@
     <string name="app_name">CloudPiece</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    
+    <string name="neutral">默认</string>
 
     <string name="nav_home">音乐</string>
     <string name="nav_album">专辑</string>
@@ -52,5 +54,7 @@
     <string name="play_detail_item_bit_rate">比特率</string>
     <string name="play_detail_item_sample_rate">采样率</string>
     <string name="play_detail_item_bit_depth">采样深度</string>
-
+    
+    <string name="lyric_text_size_title">设置歌词字体大小</string>
+    
 </resources>

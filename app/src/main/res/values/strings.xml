@@ -2,6 +2,8 @@
     <string name="app_name">Cloud Piece</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    
+    <string name="neutral">Default</string>
 
     <string name="nav_home">AudioTrack</string>
     <string name="nav_album">Album</string>
@@ -67,5 +69,9 @@
     <string name="play_detail_item_sample_rate_unit" translatable="false">kHz</string>
     <string name="play_detail_item_bit_depth">Bit Depth</string>
     <string name="play_detail_item_bit_depth_unit" translatable="false">bits</string>
+    
+    <string name="lyric_text_size_title">Set lyric text size</string>
+    <string name="lyric_text_size_unit" translatable="false">dp</string>
+    <string name="key_lyric_text_size" translatable="false">key_lyric_text_size</string>
     
 </resources>
