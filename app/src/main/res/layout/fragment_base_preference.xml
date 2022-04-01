@@ -17,7 +17,9 @@
             <com.google.android.material.appbar.MaterialToolbar
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:id="@+id/toolbar" />
+                android:id="@+id/toolbar"
+                app:popupTheme="@style/Theme.MusicPlayer.PopupOverlay"
+                android:theme="@style/Theme.MusicPlayer.AppBarOverlay" />
             
         </com.google.android.material.appbar.AppBarLayout>
     
