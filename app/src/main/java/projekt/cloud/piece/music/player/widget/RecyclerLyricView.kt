@@ -19,6 +19,8 @@ import projekt.cloud.piece.music.player.MainActivity
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.databinding.ViewRecyclerLyricBinding
 import projekt.cloud.piece.music.player.util.ActivityUtil.pixelHeight
+import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_HALF_INT
+import projekt.cloud.piece.music.player.util.Constant.SCROLL_WAIT_DELAY
 import projekt.cloud.piece.music.player.util.Lyric
 
 class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): RecyclerView(context, attributeSet) {
@@ -76,6 +78,14 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
         fun setNoPadding() {
             binding.relativeLayout.setPadding(0, 0, 0, 0)
         }
+        fun setTextSize(textSize: Float) {
+            binding.textView.textSize = textSize
+            with(binding.root) {
+                layoutParams = layoutParams.apply {
+                    setPadding(paddingLeft, paddingTop + textSize.toInt(), paddingRight, paddingBottom + textSize.toInt())
+                }
+            }
+        }
     }
     
     private inner class RecyclerViewAdapter: Adapter<RecyclerViewHolder>() {
@@ -99,6 +109,7 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
                 }
                 holder.setLyric(it[position].toString())
             }
+            holder.setTextSize(textSize)
         }
     
         override fun getItemCount() = lyric?.size ?: 0
@@ -175,6 +186,14 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
     private var isControlled = false
     
     private var countJob: Job? = null
+
+    var textSize = resources.getDimension(R.dimen.view_recycler_lyric_text_size) / resources.displayMetrics.density
+        set(value) {
+            field = value
+            lyric?.let {
+                adapter.notifyItemRangeChanged(0, it.size)
+            }
+        }
     
     init {
         setAdapter(adapter)
