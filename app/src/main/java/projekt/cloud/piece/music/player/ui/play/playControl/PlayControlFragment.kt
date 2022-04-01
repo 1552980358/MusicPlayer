@@ -23,6 +23,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import kotlinx.coroutines.delay
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
@@ -69,6 +70,7 @@ class PlayControlFragment: BaseFragment() {
     private val imageViewNext get() = contentControl.imageViewNext
     private val imageViewShuffle get() = contentControl.imageViewShuffle
     private val recyclerView get() = bottom.recyclerView
+    private val relativeLayout get() = bottom.relativeLayout
 
     private val database get() = activityViewModel.database
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<CardView>
@@ -110,6 +112,11 @@ class PlayControlFragment: BaseFragment() {
                 height = pixelHeight - requireContext().getStatusBarHeight()
             }
             setContentPadding(0, 0, 0, navigationBarHeight)
+        }
+        relativeLayout.setOnClickListener {
+            if (bottomSheetBehavior.state == STATE_COLLAPSED) {
+                bottomSheetBehavior.state = STATE_EXPANDED
+            }
         }
         setHasOptionsMenu(true)
         return binding.root
