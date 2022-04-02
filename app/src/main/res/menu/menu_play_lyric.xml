@@ -13,5 +13,10 @@
         android:title="@string/play_lyric_edit_lyric"
         android:icon="@drawable/ic_edit"
         app:showAsAction="ifRoom" />
+    
+    <item
+        android:id="@+id/menu_lyric_text_size"
+        android:title="@string/play_lyric_text_size"
+        app:showAsAction="never" />
 
 </menu>
