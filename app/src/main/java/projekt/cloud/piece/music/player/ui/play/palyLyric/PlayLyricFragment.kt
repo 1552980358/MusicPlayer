@@ -73,6 +73,9 @@ class PlayLyricFragment: BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        recyclerLyricView.onClickListener = {
+            activityViewModel.mediaControllerCompat.transportControls.seekTo(it.time)
+        }
         io {
             activityViewModel.setAudioItemObserver(TAG) { updateAudioItem(it) }
             activityViewModel.setProgressObservers(TAG) { recyclerLyricView.updateProgress(it) }
