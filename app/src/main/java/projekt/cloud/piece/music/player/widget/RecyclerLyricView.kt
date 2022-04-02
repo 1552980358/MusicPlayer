@@ -37,7 +37,7 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
         }
         fun setTopPadding(padding: Int, textSize: Float) {
             binding.textView.setTextSize(COMPLEX_UNIT_PX, textSize)
-            binding.relativeLayout.setPadding(0, padding, 0, 0)
+            binding.relativeLayout.setPadding(0, padding, 0, textSize.toInt() / 2)
         }
         fun setBottomPadding(padding: Int, textSize: Float) {
             binding.textView.setTextSize(COMPLEX_UNIT_PX, textSize)
