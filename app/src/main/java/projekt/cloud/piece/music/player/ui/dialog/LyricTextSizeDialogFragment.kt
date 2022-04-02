@@ -1,6 +1,7 @@
 package projekt.cloud.piece.music.player.ui.dialog
 
 import android.content.SharedPreferences
+import android.os.Bundle
 import androidx.preference.PreferenceManager
 import lib.github1552980358.ktExtension.android.content.commit
 import projekt.cloud.piece.music.player.R
@@ -14,9 +15,10 @@ class LyricTextSizeDialogFragment: BaseValueSelectDialogFragment() {
         const val DEFAULT = "24"
     }
 
-    private var sharedPreferences: SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
 
-    init {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         hasDefaultButton = true
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
         initialValue =
