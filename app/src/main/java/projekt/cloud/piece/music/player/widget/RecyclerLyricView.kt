@@ -5,9 +5,9 @@ import android.graphics.Color.WHITE
 import android.graphics.Typeface.BOLD
 import android.graphics.Typeface.NORMAL
 import android.util.AttributeSet
+import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -24,40 +24,6 @@ import projekt.cloud.piece.music.player.util.Constant.SCROLL_WAIT_DELAY
 import projekt.cloud.piece.music.player.util.Lyric
 
 class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): RecyclerView(context, attributeSet) {
-    
-    companion object {
-    
-        @JvmStatic
-        @BindingAdapter("lyric")
-        fun RecyclerLyricView.setLyric(lyric: Lyric?) {
-            this.lyric = lyric
-        }
-        
-        @JvmStatic
-        @BindingAdapter("primaryColor")
-        fun RecyclerLyricView.setPrimaryColor(colorInt: Int?) {
-            if (colorInt != null) {
-                primaryColor = colorInt
-            }
-        }
-    
-        @JvmStatic
-        @BindingAdapter("secondaryColor")
-        fun RecyclerLyricView.setSecondaryColor(colorInt: Int?) {
-            if (colorInt != null) {
-                secondaryColor = colorInt
-            }
-        }
-        
-        @JvmStatic
-        @BindingAdapter("progress")
-        fun RecyclerLyricView.setProgress(progress: Long?) {
-            if (progress != null) {
-                updateProgress(progress)
-            }
-        }
-
-    }
 
     private class RecyclerViewHolder(private val binding: ViewRecyclerLyricBinding): ViewHolder(binding.root) {
         fun setTextStyle(textStyle: Int) {
@@ -79,10 +45,10 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
             binding.relativeLayout.setPadding(0, 0, 0, 0)
         }
         fun setTextSize(textSize: Float) {
-            binding.textView.textSize = textSize
+            binding.textView.setTextSize(COMPLEX_UNIT_PX, textSize)
             with(binding.root) {
                 layoutParams = layoutParams.apply {
-                    setPadding(paddingLeft, paddingTop + textSize.toInt(), paddingRight, paddingBottom + textSize.toInt())
+                    setPadding(paddingLeft, paddingTop + textSize.toInt() / 2, paddingRight, paddingBottom + textSize.toInt() / 2)
                 }
             }
         }
@@ -197,7 +163,7 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
     
     private var countJob: Job? = null
 
-    var textSize = resources.getDimension(R.dimen.view_recycler_lyric_text_size) / resources.displayMetrics.density
+    var textSize = resources.getDimension(R.dimen.view_recycler_lyric_text_size)
         set(value) {
             field = value
             lyric?.let {
