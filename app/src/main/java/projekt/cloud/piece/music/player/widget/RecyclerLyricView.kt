@@ -35,22 +35,17 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
         fun setLyric(lyric: String) {
             binding.lyric = lyric
         }
-        fun setTopPadding(padding: Int) {
+        fun setTopPadding(padding: Int, textSize: Float) {
+            binding.textView.setTextSize(COMPLEX_UNIT_PX, textSize)
             binding.relativeLayout.setPadding(0, padding, 0, 0)
         }
-        fun setBottomPadding(padding: Int) {
-            binding.relativeLayout.setPadding(0, 0, 0, padding)
-        }
-        fun setNoPadding() {
-            binding.relativeLayout.setPadding(0, 0, 0, 0)
-        }
-        fun setTextSize(textSize: Float) {
+        fun setBottomPadding(padding: Int, textSize: Float) {
             binding.textView.setTextSize(COMPLEX_UNIT_PX, textSize)
-            with(binding.root) {
-                layoutParams = layoutParams.apply {
-                    setPadding(paddingLeft, paddingTop + textSize.toInt() / 2, paddingRight, paddingBottom + textSize.toInt() / 2)
-                }
-            }
+            binding.relativeLayout.setPadding(0, textSize.toInt() / 2, 0, padding)
+        }
+        fun setNoPadding(textSize: Float) {
+            binding.textView.setTextSize(COMPLEX_UNIT_PX, textSize)
+            binding.relativeLayout.setPadding(0, textSize.toInt() / 2, 0, textSize.toInt() / 2)
         }
     }
     
@@ -62,9 +57,9 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
         override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
             lyric?.let {
                 when (position) {
-                    0 -> holder.setTopPadding(paddings)
-                    it.size - 1 -> holder.setBottomPadding(paddings)
-                    else -> holder.setNoPadding()
+                    0 -> holder.setTopPadding(paddings, textSize)
+                    it.size - 1 -> holder.setBottomPadding(paddings, textSize)
+                    else -> holder.setNoPadding(textSize)
                 }
                 if (position == currentPosition) {
                     holder.setTextColor(primaryColor)
@@ -75,7 +70,6 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
                 }
                 holder.setLyric(it[position].toString())
             }
-            holder.setTextSize(textSize)
         }
     
         override fun getItemCount() = lyric?.size ?: 0
