@@ -22,6 +22,7 @@ import projekt.cloud.piece.music.player.util.ActivityUtil.pixelHeight
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_HALF_INT
 import projekt.cloud.piece.music.player.util.Constant.SCROLL_WAIT_DELAY
 import projekt.cloud.piece.music.player.util.Lyric
+import projekt.cloud.piece.music.player.util.LyricItem
 
 class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): RecyclerView(context, attributeSet) {
 
@@ -47,6 +48,9 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
             binding.textView.setTextSize(COMPLEX_UNIT_PX, textSize)
             binding.relativeLayout.setPadding(0, textSize.toInt() / 2, 0, textSize.toInt() / 2)
         }
+        fun setOnClick(onClick: () -> Unit) {
+            binding.relativeLayout.setOnClickListener { onClick() }
+        }
     }
     
     private inner class RecyclerViewAdapter: Adapter<RecyclerViewHolder>() {
@@ -68,7 +72,10 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
                     holder.setTextColor(secondaryColor)
                     holder.setTextStyle(NORMAL)
                 }
-                holder.setLyric(it[position].toString())
+                with(it[position]) {
+                    holder.setLyric(toString())
+                    holder.setOnClick { onClickListener?.let { onClick -> onClick(this) } }
+                }
             }
         }
     
@@ -164,7 +171,9 @@ class RecyclerLyricView(context: Context, attributeSet: AttributeSet?): Recycler
                 adapter.notifyItemRangeChanged(0, it.size)
             }
         }
-    
+
+    var onClickListener: ((LyricItem) -> Unit)? = null
+
     init {
         setAdapter(adapter)
         layoutManager = CenterLinearlayoutManager(context)
