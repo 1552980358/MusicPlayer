@@ -27,6 +27,7 @@
     
     <string name="play_lyric_add_lyric">添加…</string>
     <string name="play_lyric_edit_lyric">编辑…</string>
+    <string name="play_lyric_text_size">字体大小</string>
     
     <string name="nav_settings">设置</string>
     <string name="setting_file">文件</string>
