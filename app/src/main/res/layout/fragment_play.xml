@@ -29,7 +29,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:id="@+id/toolbar"
-                app:navigationIcon="@drawable/ic_close" />
+                app:navigationIcon="@drawable/ic_close"
+                app:popupTheme="@style/Theme.MusicPlayer.PopupOverlay"
+                android:theme="@style/Theme.MusicPlayer.AppBarOverlay" />
 
         </RelativeLayout>
 
