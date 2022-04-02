@@ -1,7 +1,10 @@
 package projekt.cloud.piece.music.player.ui.play.palyLyric
 
 import android.animation.ObjectAnimator.ofArgb
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.TypedValue.COMPLEX_UNIT_SP
+import android.util.TypedValue.applyDimension
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -9,6 +12,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.preference.PreferenceManager
+import lib.github1552980358.ktExtension.androidx.fragment.app.show
 import lib.github1552980358.ktExtension.jvm.keyword.tryOnly
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
@@ -16,6 +21,8 @@ import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.FragmentPlayLyricBinding
+import projekt.cloud.piece.music.player.ui.dialog.LyricTextSizeDialogFragment
+import projekt.cloud.piece.music.player.ui.dialog.LyricTextSizeDialogFragment.Companion.DEFAULT
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
 import projekt.cloud.piece.music.player.util.LyricUtil.decodeLyric
 import projekt.cloud.piece.music.player.util.LyricUtil.loadLyric
@@ -31,6 +38,13 @@ class PlayLyricFragment: BaseFragment() {
     private var _binding: FragmentPlayLyricBinding? = null
     private val binding get() = _binding!!
     private val recyclerLyricView get() = binding.recyclerLyricView
+
+    private lateinit var sharedPreferences: SharedPreferences
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_play_lyric, container, false)
@@ -50,6 +64,11 @@ class PlayLyricFragment: BaseFragment() {
 
         }
         setHasOptionsMenu(true)
+        if (sharedPreferences.contains(getString(R.string.key_lyric_text_size))) {
+            sharedPreferences.getString(getString(R.string.key_lyric_text_size), DEFAULT)?.let {
+                updateLyricTextSize(it)
+            }
+        }
         return binding.root
     }
 
@@ -68,6 +87,10 @@ class PlayLyricFragment: BaseFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_add_lyric -> activityViewModel.getContent.launch(GET_CONTENT_LAUNCH_TYPE)
+            R.id.menu_lyric_text_size -> LyricTextSizeDialogFragment()
+                .setSharedPreferences(sharedPreferences)
+                .setOnChange { newValue -> newValue?.let { updateLyricTextSize(it) } }
+                .show(requireActivity())
         }
         return super.onOptionsItemSelected(item)
     }
@@ -76,6 +99,10 @@ class PlayLyricFragment: BaseFragment() {
         activityViewModel.removeAllObservers(TAG)
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun updateLyricTextSize(dpStr: String) {
+        recyclerLyricView.textSize = applyDimension(COMPLEX_UNIT_SP, dpStr.toFloat(), resources.displayMetrics)
     }
 
     private fun updateAudioItem(audioItem: AudioItem) = io {
