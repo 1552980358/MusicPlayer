@@ -23,7 +23,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/relative_layout">
+        android:id="@+id/relative_layout"
+        android:background="?attr/selectableItemBackground">
 
         <!-- Typeface method token from https://stackoverflow.com/a/64423913/11685230 -->
         <androidx.appcompat.widget.AppCompatTextView
