@@ -9,9 +9,9 @@ import projekt.cloud.piece.music.player.base.BaseValueSelectDialogFragment
 
 class LyricTextSizeDialogFragment: BaseValueSelectDialogFragment() {
 
-    private companion object {
-        const val MIN = 16
-        const val MAX = 30
+    companion object {
+        private const val MIN = 16
+        private const val MAX = 30
         const val DEFAULT = "24"
     }
 
