@@ -44,7 +44,7 @@
                     android:layout_width="@dimen/play_control_bottom_header_icon_size"
                     android:layout_height="@dimen/play_control_bottom_header_icon_size"
                     android:layout_marginEnd="@dimen/play_control_bottom_header_common_margin_padding"
-                    app:drawableAnimated="@{device}"
+                    android:src="@{device}"
                     android:tint="?android:attr/textColorPrimary"
                     tools:ignore="ContentDescription" />
 
