@@ -59,6 +59,7 @@ import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.database.item.AudioItem
+import projekt.cloud.piece.music.player.service.play.Action.ACTION_NOTIFY_METADATA_UPDATED
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_PLAY_CONFIG_CHANGED
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_REQUEST_LIST
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_SYNC_SERVICE
@@ -327,6 +328,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
             .addCustomAction(ACTION_PLAY_CONFIG_CHANGED, ACTION_PLAY_CONFIG_CHANGED, R.drawable.ic_launcher_foreground)
             .addCustomAction(ACTION_REQUEST_LIST, ACTION_REQUEST_LIST, R.drawable.ic_launcher_foreground)
             .addCustomAction(ACTION_UPDATE_CONFIG, ACTION_UPDATE_CONFIG, R.drawable.ic_launcher_foreground)
+            .addCustomAction(ACTION_NOTIFY_METADATA_UPDATED, ACTION_NOTIFY_METADATA_UPDATED, R.drawable.ic_launcher_foreground)
             .setExtras(bundleOf(EXTRA_CONFIGS to configs))
             .build()
 
@@ -456,6 +458,16 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                 if (extras != null && extras.containsKey(EXTRA_CONFIGS) && extras.containsKey(EXTRA_CONFIG_VALUE)) {
                     handleConfigUpdate(extras.getInt(EXTRA_CONFIGS), extras.getBoolean(EXTRA_CONFIG_VALUE))
                 }
+                result.sendResult(null)
+            }
+            ACTION_NOTIFY_METADATA_UPDATED -> {
+                val audioItem = playlist[current]
+                currentCoverArt = loadAudioArtRaw(audioItem.id) ?: loadAlbumArtRaw(audioItem.album) ?: defaultCoverArt
+                mediaMetadataCompat = MediaMetadataCompat.Builder(mediaMetadataCompat)
+                    .putBitmap(METADATA_KEY_ALBUM_ART, currentCoverArt)
+                    .build()
+                mediaSessionCompat.setMetadata(mediaMetadataCompat)
+                notificationManagerCompat.update(createNotification(audioItem, playbackStateCompat.state == STATE_PAUSED, currentCoverArt))
                 result.sendResult(null)
             }
             else -> result.sendError(null)
