@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:background="@color/black">
+    
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/Theme.MusicPlayer.AppBarOverlay"
+            android:fitsSystemWindows="true">
+        
+            <com.google.android.material.appbar.MaterialToolbar
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/toolbar"
+                app:navigationIcon="@drawable/ic_close"
+                app:popupTheme="@style/Theme.MusicPlayer.PopupOverlay"
+                app:menu="@menu/menu_dialog_add_playlist"/>
+    
+        </com.google.android.material.appbar.AppBarLayout>
+        
+        <projekt.cloud.piece.music.player.widget.CropImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/crop_image_view"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+        
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>
