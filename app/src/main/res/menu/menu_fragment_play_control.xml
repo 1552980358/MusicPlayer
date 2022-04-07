@@ -6,5 +6,10 @@
         android:id="@+id/menu_like"
         android:title=""
         app:showAsAction="ifRoom" />
+    
+    <item
+        android:id="@+id/menu_set_art"
+        android:title="@string/play_control_menu_cover_art"
+        app:showAsAction="never" />
 
 </menu>
