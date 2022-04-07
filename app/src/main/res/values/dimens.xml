@@ -55,5 +55,7 @@
     <dimen name="play_control_bottom_header_icon_size">40dp</dimen>
     <dimen name="play_control_bottom_queue_margins">10dp</dimen>
 
+    <dimen name="crop_image_view_circle_radius">8dp</dimen>
+    <dimen name="crop_image_view_crop_line_width">2dp</dimen>
 
 </resources>
