@@ -3,8 +3,11 @@ package projekt.cloud.piece.music.player.ui.play.playControl
 import android.animation.ValueAnimator.ofArgb
 import android.bluetooth.BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED
 import android.content.Context.AUDIO_SERVICE
+import android.graphics.Bitmap
+import android.graphics.Bitmap.createBitmap
 import android.graphics.Color.BLACK
 import android.graphics.Color.WHITE
+import android.graphics.Matrix
 import android.graphics.drawable.RippleDrawable
 import android.media.AudioManager
 import android.media.AudioManager.ACTION_HEADSET_PLUG
@@ -32,11 +35,15 @@ import lib.github1552980358.ktExtension.android.content.register
 import lib.github1552980358.ktExtension.android.view.heightF
 import lib.github1552980358.ktExtension.android.view.widthF
 import lib.github1552980358.ktExtension.androidx.fragment.app.getDrawable
+import lib.github1552980358.ktExtension.androidx.fragment.app.show
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
+import mkaflowski.mediastylepalette.MediaNotificationProcessor
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.database.item.AudioItem
+import projekt.cloud.piece.music.player.database.item.ColorItem
+import projekt.cloud.piece.music.player.database.item.ColorItem.Companion.TYPE_AUDIO
 import projekt.cloud.piece.music.player.database.item.PlaylistContentItem
 import projekt.cloud.piece.music.player.databinding.FragmentPlayControlBinding
 import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT
@@ -44,6 +51,7 @@ import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_REPEAT_O
 import projekt.cloud.piece.music.player.service.play.Config.PLAY_CONFIG_SHUFFLE
 import projekt.cloud.piece.music.player.service.play.Config.getConfig
 import projekt.cloud.piece.music.player.service.play.Config.setConfig
+import projekt.cloud.piece.music.player.ui.dialog.CropImageDialogFragment
 import projekt.cloud.piece.music.player.ui.play.PlayFragment
 import projekt.cloud.piece.music.player.ui.play.PlayViewModel
 import projekt.cloud.piece.music.player.ui.play.playControl.util.RecyclerViewAdapterUtil
@@ -53,12 +61,15 @@ import projekt.cloud.piece.music.player.util.ColorUtil.isLight
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
 import projekt.cloud.piece.music.player.util.Constant.PLAYLIST_LIKES
 import projekt.cloud.piece.music.player.util.ContextUtil.navigationBarHeight
+import projekt.cloud.piece.music.player.util.ImageUtil.writeAudioArt40Dp
+import projekt.cloud.piece.music.player.util.ImageUtil.writeAudioArtRaw
 
 class PlayControlFragment: BaseFragment() {
 
     companion object {
         private const val TAG = "PlayControlFragment"
         private const val BOTTOM_SHEET_SHOW_DELAY = 300L
+        private const val GET_CONTENT_MIME_IMAGE = "image/*"
     }
 
     private var _binding: FragmentPlayControlBinding? = null
@@ -234,6 +245,18 @@ class PlayControlFragment: BaseFragment() {
                     }
                 }
             }
+            R.id.menu_set_art -> {
+                with(activityViewModel) {
+                    audioItem?.let { audioItem ->
+                        setGetContentCallback { uri ->
+                            CropImageDialogFragment().setArgs(uri) {
+                                updateAudioArt(audioItem, it)
+                            }.show(requireActivity())
+                        }
+                    }
+                    getContent.launch(GET_CONTENT_MIME_IMAGE)
+                }
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -356,6 +379,33 @@ class PlayControlFragment: BaseFragment() {
         requireContext().unregisterReceiver(broadcastReceiver)
         activityViewModel.playList = null
         super.onDestroyView()
+    }
+
+    private fun updateAudioArt(audioItem: AudioItem, bitmap: Bitmap) = io {
+        MediaNotificationProcessor(requireContext(), bitmap).also {
+            when (val colorItem = activityViewModel.database.color.queryForAudio(audioItem.id)) {
+                null -> activityViewModel.database.color.insert(ColorItem(audioItem.id, TYPE_AUDIO, it.backgroundColor, it.primaryTextColor, it.secondaryTextColor))
+                else -> activityViewModel.database.color.update(colorItem.apply {
+                    backgroundColor = it.backgroundColor
+                    primaryColor = it.primaryTextColor
+                    secondaryColor = it.secondaryTextColor
+                })
+            }
+        }
+
+        requireContext().writeAudioArtRaw(audioItem.id, bitmap)
+        val bitmap40Dp = createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, Matrix().apply {
+            (resources.getDimension(R.dimen.md_spec_list_image_size) / bitmap.width).apply {
+                setScale(this, this)
+            }
+        }, false)
+        requireContext().writeAudioArt40Dp(audioItem.id, bitmap40Dp)
+
+        activityViewModel.audioArtMap[audioItem.id] = bitmap40Dp
+
+        if (activityViewModel.audioItem == audioItem) {
+            activityViewModel.notifyUpdateMetadata()
+        }
     }
 
     private fun updateHeatItemIO(audioItem: AudioItem?, heartItem: MenuItem) = io { updateHeartItem(audioItem, heartItem, true) }
