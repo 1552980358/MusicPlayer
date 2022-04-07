@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import projekt.cloud.piece.music.player.database.item.ColorItem
 import projekt.cloud.piece.music.player.database.item.ColorItem.Companion.TYPE_AUDIO
 
@@ -27,5 +28,8 @@ interface ColorItemDao {
     
     @Delete
     fun delete(vararg colorItems: ColorItem)
+
+    @Update
+    fun update(colorItem: ColorItem)
     
 }
