@@ -19,6 +19,7 @@ import projekt.cloud.piece.music.player.database.item.AlbumItem
 import projekt.cloud.piece.music.player.database.item.ArtistItem
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.database.item.PlaylistItem
+import projekt.cloud.piece.music.player.service.play.Action.ACTION_NOTIFY_METADATA_UPDATED
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_PLAY_CONFIG_CHANGED
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_REQUEST_LIST
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_UPDATE_CONFIG
@@ -242,6 +243,10 @@ class MainActivityViewModel: ViewModel() {
             null
         )
     }
+
+    fun notifyUpdateMetadata() = mediaBrowserCompat.sendCustomAction(
+        ACTION_NOTIFY_METADATA_UPDATED, null, null
+    )
 
     lateinit var mediaBrowserCompat: MediaBrowserCompat
     lateinit var subscriptionCallback: MediaBrowserCompat.SubscriptionCallback
