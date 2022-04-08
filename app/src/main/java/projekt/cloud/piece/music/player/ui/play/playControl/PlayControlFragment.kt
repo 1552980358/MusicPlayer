@@ -107,9 +107,6 @@ class PlayControlFragment: BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_play_control, container, false)
-        binding.imageViewImage.apply {
-            layoutParams = layoutParams.apply { height = resources.displayMetrics.widthPixels }
-        }
         val bottomHeight = requireActivity().pixelHeight - resources.displayMetrics.widthPixels
         contentControl.linearLayoutWrapper.apply {
             layoutParams = layoutParams.apply { height = bottomHeight * 2 / 5 }
