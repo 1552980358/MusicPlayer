@@ -165,10 +165,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     override fun onBackPressed() {
         when (val currentFragment = supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first()) {
             is BaseFragment -> if (currentFragment.canBackStack) {
