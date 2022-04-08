@@ -1,13 +1,8 @@
 package projekt.cloud.piece.music.player.util
 
 import android.animation.ValueAnimator.ofFloat
-import android.graphics.Bitmap
 import android.graphics.drawable.AnimatedVectorDrawable
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.TransitionDrawable
 import android.view.View
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.animation.doOnEnd
 import androidx.databinding.BindingAdapter
@@ -15,38 +10,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_HALF
-import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION_INT
 
 object BindingAdapter {
-
-    @JvmStatic
-    @BindingAdapter("bitmapAnimated")
-    fun AppCompatImageView.setBitmapAnimated(bitmap: Bitmap?) {
-        if (bitmap != null) {
-            return setDrawableAnimated(BitmapDrawable(resources, bitmap))
-        }
-    }
-
-    @JvmStatic
-    @BindingAdapter("drawableAnimated")
-    fun AppCompatImageView.setDrawableAnimated(newDrawable: Drawable?) {
-        if (newDrawable != null) {
-            if (drawable == null) {
-                return setImageDrawable(newDrawable)
-            }
-            TransitionDrawable(
-                arrayOf(
-                    when (val lastDrawable = drawable) {
-                        is TransitionDrawable -> lastDrawable.getDrawable(1)
-                        else -> drawable
-                    },
-                    newDrawable)
-            ).apply {
-                setImageDrawable(this)
-                startTransition(ANIMATION_DURATION_INT)
-            }
-        }
-    }
 
     @JvmStatic
     @BindingAdapter("alphaAnimated")
