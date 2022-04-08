@@ -3,6 +3,7 @@ package projekt.cloud.piece.music.player.database.itemDao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import androidx.room.Update
 import projekt.cloud.piece.music.player.database.item.AlbumItem
@@ -16,7 +17,7 @@ interface AlbumItemDao {
     @Query("select * from album where id=:id")
     fun query(id: String): AlbumItem
 
-    @Insert
+    @Insert(onConflict = REPLACE)
     fun insert(vararg albumItem: AlbumItem)
 
     @Delete
