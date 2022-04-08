@@ -46,12 +46,14 @@ class TransitionalImageView(context: Context, attributeSet: AttributeSet): Linea
             linearLayout.background = background
             return
         }
+        ui { animator?.cancel() }
         animator = ValueAnimator.ofFloat(1F, 0F).apply {
             duration = ANIMATION_DURATION
             addUpdateListener { linearLayout.alpha = animatedValue as Float }
             doOnEnd {
                 linearLayout.background = background
                 linearLayout.alpha = 1F
+                animator = null
             }
             ui { start() }
         }
