@@ -19,19 +19,19 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
+            
+            <projekt.cloud.piece.music.player.widget.TransitionalImageView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/image_view_image"
-                app:bitmapAnimated="@{imageBitmap}"/>
+                android:id="@+id/transitional_image_view"
+                app:bitmap="@{imageBitmap}"/>
 
             <include
                 android:id="@+id/content_control_play_control"
                 layout="@layout/content_control_play_control"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/image_view_image" />
+                android:layout_below="@id/transitional_image_view" />
 
         </RelativeLayout>
 
