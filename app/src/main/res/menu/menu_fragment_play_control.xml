@@ -8,6 +8,12 @@
         app:showAsAction="ifRoom" />
     
     <item
+        android:id="@+id/menu_timer"
+        android:title="@string/play_control_menu_timer"
+        android:icon="@drawable/ic_round_timer_24"
+        app:showAsAction="ifRoom" />
+    
+    <item
         android:id="@+id/menu_set_art"
         android:title="@string/play_control_menu_cover_art"
         app:showAsAction="never" />
