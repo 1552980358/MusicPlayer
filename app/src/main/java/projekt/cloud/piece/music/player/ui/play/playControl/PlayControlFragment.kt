@@ -28,6 +28,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
 import lib.github1552980358.ktExtension.android.content.getStatusBarHeight
@@ -54,6 +55,7 @@ import projekt.cloud.piece.music.player.service.play.Config.setConfig
 import projekt.cloud.piece.music.player.ui.dialog.CropImageDialogFragment
 import projekt.cloud.piece.music.player.ui.play.PlayFragment
 import projekt.cloud.piece.music.player.ui.play.PlayViewModel
+import projekt.cloud.piece.music.player.ui.play.playControl.sleepTimer.SleepTimerDialogFragment
 import projekt.cloud.piece.music.player.ui.play.playControl.util.RecyclerViewAdapterUtil
 import projekt.cloud.piece.music.player.util.ActivityUtil.pixelHeight
 import projekt.cloud.piece.music.player.util.AudioUtil.deviceDrawableId
@@ -70,6 +72,7 @@ class PlayControlFragment: BaseFragment() {
         private const val TAG = "PlayControlFragment"
         private const val BOTTOM_SHEET_SHOW_DELAY = 300L
         private const val GET_CONTENT_MIME_IMAGE = "image/*"
+        private const val TIME_MINUTE_MS = 60000
     }
 
     private var _binding: FragmentPlayControlBinding? = null
@@ -93,6 +96,8 @@ class PlayControlFragment: BaseFragment() {
 
     private var heartItem: MenuItem? = null
     private var isLiked = false
+
+    private var timerSchedule: Job? = null
 
     private val broadcastReceiver = broadcastReceiver { _, intent, _ ->
         when (intent?.action) {
@@ -254,6 +259,27 @@ class PlayControlFragment: BaseFragment() {
                     getContent.launch(GET_CONTENT_MIME_IMAGE)
                 }
             }
+            R.id.menu_timer -> {
+                SleepTimerDialogFragment()
+                    .setPositiveClick {
+                        it?.toLong()?.let {
+                            timerSchedule?.cancel()
+                            timerSchedule = io {
+                                delay(it * TIME_MINUTE_MS)
+                                transportControls.pause()
+                                timerSchedule = null
+                            }
+                            item.setIcon(R.drawable.ic_twotone_timer_24)
+                        }
+                    }
+                    .setStop {
+                        timerSchedule?.cancel()
+                        timerSchedule = null
+                        item.setIcon(R.drawable.ic_round_timer_24)
+                    }
+                    .setEnableStop(timerSchedule != null)
+                    .show(requireActivity())
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -263,6 +289,7 @@ class PlayControlFragment: BaseFragment() {
             bottomSheetBehavior.state = STATE_COLLAPSED
             return false
         }
+        timerSchedule?.cancel()
         return super.onBackPressed()
     }
 
