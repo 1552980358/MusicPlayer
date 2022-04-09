@@ -20,6 +20,13 @@
 
     <dimen name="md_spec_double_line_list_height">64dp</dimen>
     
+    <dimen name="md_spec_card_48dp">48dp</dimen>
+    <dimen name="md_spec_card_margin">16dp</dimen>
+    <dimen name="md_spec_card_child_margin">8dp</dimen>
+    <dimen name="md_spec_card_button_size">24dp</dimen>
+    <dimen name="md_spec_card_button_margin_vertical">12dp</dimen>
+    <dimen name="md_spec_card_button_margin_horizontal">16dp</dimen>
+    
     <dimen name="spec_card_view_margins">8dp</dimen>
 
     <dimen name="nav_header_height">120dp</dimen>
