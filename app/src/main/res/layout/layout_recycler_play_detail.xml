@@ -7,48 +7,19 @@
         
         <variable
             name="title"
-            type="String" />
+            type="Integer" />
         
         <variable
             name="content"
-            type="Integer" />
+            type="String" />
         
     </data>
     
-    <com.google.android.material.card.MaterialCardView
+    <projekt.cloud.piece.music.player.widget.CollapsingCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/spec_card_view_margins"
         android:layout_marginBottom="@dimen/spec_card_view_margins"
-        app:cardElevation="@dimen/md_spec_card_view_outline">
-        
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/linear_layout"
-            android:padding="@dimen/md_spec_list_paddings"
-            android:orientation="vertical"
-            android:background="?attr/selectableItemBackground">
-            
-            <com.google.android.material.textview.MaterialTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:text="@{title}"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textSize="@dimen/title_text_size" />
-            
-            <com.google.android.material.textview.MaterialTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@{content}"
-                android:textSize="@dimen/subtitle_text_size" />
-            
-        </androidx.appcompat.widget.LinearLayoutCompat>
-        
-    </com.google.android.material.card.MaterialCardView>
-
+        app:title="@{title}"
+        app:content="@{content}" />
 </layout>
