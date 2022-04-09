@@ -77,23 +77,23 @@ class PlayDetailFragment: BaseFragment() {
     }
 
     private fun updateAudioItem(detailList: List<DetailItem>, audioItem: AudioItem) = io {
-        detailList[0].title = audioItem.title
-        detailList[1].title = audioItem.artistItem.title
-        detailList[2].title = audioItem.albumItem.title
-        detailList[3].title = audioItem.duration.timeStr
-        detailList[5].title = "${audioItem.size.asMegabyte} ${getString(R.string.play_detail_item_size_unit)}"
-        detailList[6].title = audioItem.path
+        detailList[0].content = audioItem.title
+        detailList[1].content = audioItem.artistItem.title
+        detailList[2].content = audioItem.albumItem.title
+        detailList[3].content = audioItem.duration.timeStr
+        detailList[5].content = "${audioItem.size.asMegabyte} ${getString(R.string.play_detail_item_size_unit)}"
+        detailList[6].content = audioItem.path
 
         var sampleRateStr: String? = null
         MediaMetadataRetriever().apply {
             setDataSource(requireContext(), audioItem.id.parseAsUri)
 
             extractMetadata(METADATA_KEY_MIMETYPE)?.let {
-                detailList[4].title = it.substring(it.indexOf('/') + 1)
+                detailList[4].content = it.substring(it.indexOf('/') + 1)
             }
 
             extractMetadata(METADATA_KEY_BITRATE)?.let {
-                detailList[7].title = "${it.toInt().asKilo} ${getString(R.string.play_detail_item_bit_rate_unit)}"
+                detailList[7].content = "${it.toInt().asKilo} ${getString(R.string.play_detail_item_bit_rate_unit)}"
             }
 
             if (SDK_INT > VERSION_CODES.R) {
@@ -106,19 +106,19 @@ class PlayDetailFragment: BaseFragment() {
             setDataSource(requireContext(), audioItem.id.parseAsUri, null)
         }
         if (mediaExtractor.trackCount == 0) {
-            detailList[8].title = "${(sampleRateStr?.toInt() ?: DEFAULT_SAMPLE_RATE).asKilo} ${getString(R.string.play_detail_item_sample_rate_unit)}"
-            detailList[9].title = "$DEFAULT_BIT_PER_SAMPLE ${getString(R.string.play_detail_item_bit_depth_unit)}"
+            detailList[8].content = "${(sampleRateStr?.toInt() ?: DEFAULT_SAMPLE_RATE).asKilo} ${getString(R.string.play_detail_item_sample_rate_unit)}"
+            detailList[9].content = "$DEFAULT_BIT_PER_SAMPLE ${getString(R.string.play_detail_item_bit_depth_unit)}"
             ui { recyclerViewAdapterUtil.notifyUpdate() }
             return@io
         }
 
         val trackFormat = mediaExtractor.getTrackFormat(0)
 
-        detailList[8].title = "${(sampleRateStr?.toInt() 
+        detailList[8].content = "${(sampleRateStr?.toInt() 
             ?: trackFormat.readTrackFormat(KEY_SAMPLE_RATE) 
             ?: DEFAULT_SAMPLE_RATE).asKilo} ${getString(R.string.play_detail_item_sample_rate_unit)}"
 
-        detailList[9].title =
+        detailList[9].content =
             "${trackFormat.readTrackFormat("bits-per-sample") 
                 ?: DEFAULT_BIT_PER_SAMPLE} ${getString(R.string.play_detail_item_bit_depth_unit)}"
 
