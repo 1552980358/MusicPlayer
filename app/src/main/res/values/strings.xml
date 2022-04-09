@@ -56,7 +56,26 @@
     <string name="setting_play_audio_focus_description">Enabling will cause pause of other playback progress, disabling will allow having playback progress at the same time</string>
     <string name="key_setting_play_audio_focus_enable" translatable="false">key_setting_play_audio_focus_enable</string>
     
-    <string name="play_control_menu_cover_art">Set Cover Art…</string>
+    <string name="play_control_menu_cover_art">Set Cover Art…</string>'
+    <string name="play_control_menu_timer">Sleep Timer</string>
+    
+    <string name="sleep_timer_title">Sleep Timer</string>
+    <string name="sleep_timer_unit">min</string>
+    <string-array name="sleep_timer_time" translatable="false">
+        <item>10</item>
+        <item>15</item>
+        <item>30</item>
+        <item>45</item>
+        <item>60</item>
+        <item>90</item>
+        <item>120</item>
+        <item>180</item>
+        <item>240</item>
+        <item>300</item>
+        <item>360</item>
+    </string-array>
+    <string name="sleep_timer_start">Start</string>
+    <string name="sleep_timer_stop">Stop Timer</string>
     
     <string name="play_detail_item_title">Title</string>
     <string name="play_detail_item_artist">Artist</string>
