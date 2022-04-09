@@ -15,7 +15,6 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView, list: List<DetailItem>
         fun setItem(item: DetailItem) {
             binding.content = item.content
             binding.title = item.title
-            binding.linearLayout.setOnClickListener { item.onClick?.let { it() } }
         }
     }
 
