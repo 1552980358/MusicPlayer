@@ -1,10 +1,9 @@
 # Projekt Cloud Piece MusicPlayer
 
 ## Package Name
-- `projekt.cloud.piece.music.player`
+`projekt.cloud.piece.music.player`
 
-## Maintenance period
-- In long-term
+[![BuildProject](https://github.com/1552980358/MusicPlayer/actions/workflows/BuildProject.yml/badge.svg)](https://github.com/1552980358/MusicPlayer/actions)
 
 ## Screenshots
 Main             |  Play
