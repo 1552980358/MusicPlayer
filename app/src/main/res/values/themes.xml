@@ -69,6 +69,12 @@
         <item name="android:windowLightNavigationBar" tools:targetApi="p">true</item>
     </style>
     
+    <style name="Theme.MusicPlayer.AddPlaylistDialogFragment" parent="Theme.MusicPlayer.FullscreenDialog">
+        <item name="android:windowEnterAnimation">@anim/anim_bottom_to_top</item>
+        <item name="android:windowExitAnimation">@anim/anim_top_to_bottom</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+    
     <style name="Theme.MusicPlayer.CropImageDialogFragment" parent="Theme.MusicPlayer.FullscreenDialog">
         <item name="android:windowEnterAnimation">@anim/anim_bottom_to_top</item>
         <item name="android:windowExitAnimation">@anim/anim_top_to_bottom</item>
