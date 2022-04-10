@@ -44,7 +44,7 @@ class ArtistFragment: BaseFragment() {
                 recyclerViewAdapterUtil = RecyclerViewAdapterUtil(
                     binding.root,
                     mapOf(),
-                    mainViewModel.defaultAlbumCover,
+                    mainViewModel.defaultArtistArt,
                     mainViewModel.artistList) { item ->
                     AudioListDialogFragment().showWithArgument(item, ITEM_TYPE_ARTIST, requireActivity())
                 }
