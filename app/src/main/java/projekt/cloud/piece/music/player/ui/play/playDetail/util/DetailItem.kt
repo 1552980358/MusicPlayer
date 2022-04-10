@@ -8,4 +8,5 @@ data class DetailItem(@StringRes val title: Int) {
     }
     var onClick: (() -> Unit)? = null
     var content = EMPTY_STR
+    var isExpanded = false
 }
