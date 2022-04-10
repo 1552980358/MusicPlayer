@@ -33,6 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/text_view_position"
             android:maxLines="1"
+            android:scrollbars="none"
             android:text="@{audioItem.title, default = ``}"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/title_text_size" />
@@ -44,6 +45,7 @@
             android:layout_toEndOf="@id/text_view_position"
             android:layout_below="@id/text_view_title"
             android:maxLines="1"
+            android:scrollbars="none"
             android:text="@{audioItem.artistItem.title + ` - ` + audioItem.albumItem.title}" />
 
     </RelativeLayout>

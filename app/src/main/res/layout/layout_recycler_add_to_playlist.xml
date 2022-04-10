@@ -37,6 +37,7 @@
             android:text="@{title}"
             android:layout_toEndOf="@id/image_view"
             android:layout_centerVertical="true"
+            android:scrollbars="none"
             android:textSize="@dimen/title_text_size"
             android:textColor="?android:attr/textColorPrimary" />
         

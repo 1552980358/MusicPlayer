@@ -26,6 +26,7 @@
             android:layout_height="@dimen/md_spec_list_image_size"
             android:id="@+id/text_view_position"
             android:gravity="center"
+            android:scrollbars="none"
             android:text="@{position}"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/title_text_size" />
@@ -38,6 +39,7 @@
             android:layout_marginStart="@dimen/md_spec_list_margins_horizontal"
             android:layout_toEndOf="@id/text_view_position"
             android:maxLines="1"
+            android:scrollbars="none"
             android:text="@{audioItem.title, default = ``}"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/title_text_size" />
@@ -52,6 +54,7 @@
             android:layout_marginStart="@dimen/md_spec_list_margins_horizontal"
             android:layout_toEndOf="@id/text_view_position"
             android:maxLines="1"
+            android:scrollbars="none"
             android:text="@{audioItem.artistItem.title, default = ``}"
             android:textSize="@dimen/subtitle_text_size" />
 

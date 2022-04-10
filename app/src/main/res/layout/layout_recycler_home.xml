@@ -37,6 +37,7 @@
             android:layout_toStartOf="@id/image_view_more"
             android:layout_toEndOf="@id/image_view_image"
             android:maxLines="1"
+            android:scrollbars="none"
             android:text="@{audioItem.title, default = ``}"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/title_text_size" />
@@ -53,6 +54,7 @@
             android:layout_toStartOf="@id/image_view_more"
             android:layout_toEndOf="@id/image_view_image"
             android:maxLines="1"
+            android:scrollbars="none"
             android:text="@{audioItem.artistItem.title + ` - ` + audioItem.albumItem.title, default = ``}"
             android:textSize="@dimen/subtitle_text_size" />
 

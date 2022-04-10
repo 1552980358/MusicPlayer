@@ -36,6 +36,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/text_view_title"
             android:layout_toEndOf="@id/image_view"
+            android:scrollbars="none"
             android:text="@{title}"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/title_text_size" />
@@ -46,6 +47,7 @@
             android:layout_below="@id/text_view_title"
             android:layout_alignParentBottom="true"
             android:layout_toEndOf="@id/image_view"
+            android:scrollbars="none"
             android:text="@{subtitle}"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/title_text_size" />

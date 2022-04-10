@@ -35,6 +35,7 @@
             android:layout_toEndOf="@id/image_view"
             android:ellipsize="end"
             android:maxLines="1"
+            android:scrollbars="none"
             android:text="@{title}"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/title_text_size" />
