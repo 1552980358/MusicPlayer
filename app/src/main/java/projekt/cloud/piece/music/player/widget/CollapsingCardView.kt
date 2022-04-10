@@ -70,8 +70,14 @@ class CollapsingCardView(context: Context, attributeSet: AttributeSet?): Materia
 
     fun setIsExpand(isExpand: Boolean) {
         binding.textViewContent.visibility = when {
-            isExpand -> VISIBLE
-            else -> GONE
+            isExpand -> {
+                imageViewIndicator.setImageResource(R.drawable.ic_baseline_arrow_down_24)
+                VISIBLE
+            }
+            else -> {
+                imageViewIndicator.setImageResource(R.drawable.ic_baseline_arrow_left_24)
+                GONE
+            }
         }
         isExpanded = isExpand
     }
