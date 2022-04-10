@@ -60,9 +60,9 @@ class PlayDetailFragment: BaseFragment() {
 
     private fun initializeList(detailList: ArrayList<DetailItem>) = io {
         with(detailList) {
-            add(DetailItem(R.string.play_detail_item_title))        // 0
-            add(DetailItem(R.string.play_detail_item_artist))       // 1
-            add(DetailItem(R.string.play_detail_item_album))        // 2
+            add(DetailItem(R.string.play_detail_item_title).apply { isExpanded = true })        // 0
+            add(DetailItem(R.string.play_detail_item_artist).apply { isExpanded = true })       // 1
+            add(DetailItem(R.string.play_detail_item_album).apply { isExpanded = true })        // 2
             add(DetailItem(R.string.play_detail_item_duration))     // 3
             add(DetailItem(R.string.play_detail_item_type))     // 4
             add(DetailItem(R.string.play_detail_item_size))         // 5
