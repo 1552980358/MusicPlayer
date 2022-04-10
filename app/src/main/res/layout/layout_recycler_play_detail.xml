@@ -18,8 +18,10 @@
     <projekt.cloud.piece.music.player.widget.CollapsingCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/root"
         android:layout_marginHorizontal="@dimen/spec_card_view_margins"
         android:layout_marginBottom="@dimen/spec_card_view_margins"
         app:title="@{title}"
         app:content="@{content}" />
+    
 </layout>
