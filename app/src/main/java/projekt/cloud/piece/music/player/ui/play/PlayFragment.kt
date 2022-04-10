@@ -45,7 +45,9 @@ class PlayFragment: BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = MaterialContainerTransform()
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            scrimColor = TRANSPARENT
+        }
 
         /**
          * Please look at the lifecycle of Fragment,
