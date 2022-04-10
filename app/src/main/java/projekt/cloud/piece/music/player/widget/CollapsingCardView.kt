@@ -68,6 +68,14 @@ class CollapsingCardView(context: Context, attributeSet: AttributeSet?): Materia
         }
     }
 
+    fun setIsExpand(isExpand: Boolean) {
+        binding.textViewContent.visibility = when {
+            isExpand -> VISIBLE
+            else -> GONE
+        }
+        isExpanded = isExpand
+    }
+
     private fun expand() {
         textViewContent.measure(textViewContentWidth, textViewContentHeight)
         animator = ValueAnimator.ofInt(0, textViewContent.measuredHeight).apply {
