@@ -5,5 +5,5 @@ import androidx.room.PrimaryKey
 import java.io.Serializable
 
 open class BaseItem(
-    @PrimaryKey @ColumnInfo(name = "id") val id: String
+    @PrimaryKey @ColumnInfo(name = "id") var id: String
 ): Serializable
