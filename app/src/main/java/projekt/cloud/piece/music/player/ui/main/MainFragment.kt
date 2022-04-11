@@ -205,6 +205,10 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
                 exitTransition = null
                 navController.navigate(MainFragmentDirections.actionNavMainToMobileNavigationMainSettings())
             }
+            R.id.nav_statistics -> {
+                exitTransition = null
+                navController.navigate(MainFragmentDirections.actionNavMainToStatisticsFragment())
+            }
         }
         return true
     }
