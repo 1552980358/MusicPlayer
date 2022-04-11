@@ -9,9 +9,11 @@ import projekt.cloud.piece.music.player.database.item.AlbumItem
 import projekt.cloud.piece.music.player.database.item.ArtistItem
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.database.item.ColorItem
+import projekt.cloud.piece.music.player.database.item.PlayRecordItem
 import projekt.cloud.piece.music.player.database.item.PlaylistContentItem
 import projekt.cloud.piece.music.player.database.item.PlaylistItem
 import projekt.cloud.piece.music.player.database.itemDao.ColorItemDao
+import projekt.cloud.piece.music.player.database.itemDao.PlayRecordItemDao
 import projekt.cloud.piece.music.player.database.itemDao.PlaylistContentItemDao
 import projekt.cloud.piece.music.player.database.itemDao.PlaylistItemDao
 
@@ -21,7 +23,8 @@ import projekt.cloud.piece.music.player.database.itemDao.PlaylistItemDao
     ArtistItem::class,
     ColorItem::class,
     PlaylistItem::class,
-    PlaylistContentItem::class],
+    PlaylistContentItem::class,
+    PlayRecordItem::class],
     version = 1,
     exportSchema = false)
 abstract class AudioDatabase: RoomDatabase() {
@@ -47,5 +50,8 @@ abstract class AudioDatabase: RoomDatabase() {
 
     abstract fun playlistContentItem(): PlaylistContentItemDao
     val playlistContent get() = playlistContentItem()
+
+    abstract fun playRecordItem(): PlayRecordItemDao
+    val playRecord get() = playRecordItem()
 
 }
