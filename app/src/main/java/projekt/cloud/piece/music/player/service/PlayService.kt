@@ -45,6 +45,7 @@ import androidx.core.os.bundleOf
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver.handleIntent
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
+import androidx.room.Room
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayer.Builder
 import com.google.android.exoplayer2.ExoPlayer.STATE_ENDED
@@ -58,6 +59,8 @@ import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
 import projekt.cloud.piece.music.player.R
+import projekt.cloud.piece.music.player.database.AudioDatabase
+import projekt.cloud.piece.music.player.database.AudioDatabase.Companion.DATABASE_NAME
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_NOTIFY_METADATA_UPDATED
 import projekt.cloud.piece.music.player.service.play.Action.ACTION_PLAY_CONFIG_CHANGED
@@ -313,6 +316,8 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
 
     private lateinit var audioFocus: AudioFocus
 
+    private val database by lazy { Room.databaseBuilder(this@PlayService, AudioDatabase::class.java, DATABASE_NAME).build() }
+
     override fun onCreate() {
         super.onCreate()
 
@@ -505,10 +510,13 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
 
     override fun onPlaybackStateChanged(playbackState: Int) {
         if (playbackState == STATE_ENDED) {
+            val audioItem = playlist[current]
+            io {
+                database.playRecord.insert(audioItem.id)
+            }
             when {
-
                 configs.getConfig(PLAY_CONFIG_REPEAT_ONE) ->
-                    mediaSessionCompat.controller.transportControls.playFromMediaId(playlist[current].id, null)
+                    mediaSessionCompat.controller.transportControls.playFromMediaId(audioItem.id, null)
 
                 configs.getConfig(PLAY_CONFIG_REPEAT) ->
                     mediaSessionCompat.controller.transportControls.skipToNext()
@@ -523,7 +531,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                         .build()
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
 
-                    exoPlayer.setMediaItem(MediaItem.fromUri(playlist[current].id.parseAsUri))
+                    exoPlayer.setMediaItem(MediaItem.fromUri(audioItem.id.parseAsUri))
                     exoPlayer.prepare()
 
                     playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
@@ -533,7 +541,6 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
 
                     startService { putExtra(START_COMMAND_ACTION, START_COMMAND_ACTION_PAUSE) }
                 }
-
             }
         }
     }
