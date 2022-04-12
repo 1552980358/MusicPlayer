@@ -47,6 +47,7 @@
     
     <string name="play_control_menu_cover_art">设置封面图片…</string>
     <string name="play_control_menu_timer">睡眠定时</string>
+    <string name="play_control_menu_keep_screen_on">保持屏幕常亮</string>
     
     <string name="sleep_timer_title">睡眠定时</string>
     <string name="sleep_timer_unit">分钟</string>
