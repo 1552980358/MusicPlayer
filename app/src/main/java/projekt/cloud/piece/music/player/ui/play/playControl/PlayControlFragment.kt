@@ -3,6 +3,7 @@ package projekt.cloud.piece.music.player.ui.play.playControl
 import android.animation.ValueAnimator.ofArgb
 import android.bluetooth.BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED
 import android.content.Context.AUDIO_SERVICE
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Bitmap.createBitmap
 import android.graphics.Color.BLACK
@@ -21,9 +22,11 @@ import android.view.MotionEvent.ACTION_DOWN
 import android.view.MotionEvent.ACTION_UP
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 import androidx.cardview.widget.CardView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
@@ -31,6 +34,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import lib.github1552980358.ktExtension.android.content.broadcastReceiver
+import lib.github1552980358.ktExtension.android.content.commit
 import lib.github1552980358.ktExtension.android.content.getStatusBarHeight
 import lib.github1552980358.ktExtension.android.content.register
 import lib.github1552980358.ktExtension.android.view.heightF
@@ -73,6 +77,8 @@ class PlayControlFragment: BaseFragment() {
         private const val BOTTOM_SHEET_SHOW_DELAY = 300L
         private const val GET_CONTENT_MIME_IMAGE = "image/*"
         private const val TIME_MINUTE_MS = 60000
+
+        private const val MENU_ITEM_KEEP_SCREEN_ON = 3
     }
 
     private var _binding: FragmentPlayControlBinding? = null
@@ -105,9 +111,12 @@ class PlayControlFragment: BaseFragment() {
         }
     }
 
+    private lateinit var sharedPreferences: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         audioManager = requireContext().getSystemService(AUDIO_SERVICE) as AudioManager
+        sharedPreferences = getDefaultSharedPreferences(requireActivity())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -220,6 +229,10 @@ class PlayControlFragment: BaseFragment() {
         heartItem = menu.getItem(0).apply {
             updateHeatItemIO(activityViewModel.audioItem, this)
         }
+        menu.getItem(MENU_ITEM_KEEP_SCREEN_ON).apply {
+            isChecked = sharedPreferences.getBoolean(getString(R.string.key_keep_screen_on), false)
+            setScreenOn(isChecked)
+        }
     }
 
     override fun onStart() {
@@ -280,6 +293,12 @@ class PlayControlFragment: BaseFragment() {
                     .setEnableStop(timerSchedule != null)
                     .show(requireActivity())
             }
+            R.id.menu_keep_screen_on -> {
+                val isChecked = !item.isChecked
+                item.isChecked = isChecked
+                setScreenOn(isChecked)
+                sharedPreferences.commit(getString(R.string.key_keep_screen_on), isChecked)
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -291,6 +310,11 @@ class PlayControlFragment: BaseFragment() {
         }
         timerSchedule?.cancel()
         return super.onBackPressed()
+    }
+
+    private fun setScreenOn(keepScreenOn: Boolean) = when {
+        keepScreenOn -> requireActivity().window?.addFlags(FLAG_KEEP_SCREEN_ON)
+        else -> requireActivity().window?.clearFlags(FLAG_KEEP_SCREEN_ON)
     }
 
     private fun setObservers() = io {
@@ -399,6 +423,7 @@ class PlayControlFragment: BaseFragment() {
     }
 
     override fun onDestroyView() {
+        requireActivity().window?.clearFlags(FLAG_KEEP_SCREEN_ON)
         activityViewModel.removeAllObservers(TAG)
         requireContext().unregisterReceiver(broadcastReceiver)
         activityViewModel.playList = null
