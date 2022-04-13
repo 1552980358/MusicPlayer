@@ -47,6 +47,7 @@ class PlayFragment: BaseFragment() {
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = MaterialContainerTransform().apply {
             scrimColor = TRANSPARENT
+            duration = ANIMATION_DURATION
         }
 
         /**
