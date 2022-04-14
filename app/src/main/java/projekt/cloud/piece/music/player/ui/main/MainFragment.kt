@@ -115,7 +115,7 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
             if (activityViewModel.audioItem != null) {
                 exitTransition = Hold()
                 navController.navigate(
-                    MainFragmentDirections.actionNavMainToNavPlay(),
+                    MainFragmentDirections.actionToPlayFragment(),
                     FragmentNavigatorExtras(extendedFloatingActionButton to extendedFloatingActionButton.transitionName)
                 )
             }
@@ -203,11 +203,11 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
         when (item.itemId) {
             R.id.nav_settings -> {
                 exitTransition = null
-                navController.navigate(MainFragmentDirections.actionNavMainToMobileNavigationMainSettings())
+                navController.navigate(MainFragmentDirections.actionToSettings())
             }
             R.id.nav_statistics -> {
                 exitTransition = null
-                navController.navigate(MainFragmentDirections.actionNavMainToStatisticsFragment())
+                navController.navigate(MainFragmentDirections.actionToStatisticsFragment())
             }
         }
         return true

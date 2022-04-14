@@ -3,24 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/nav_main">
+    app:startDestination="@id/main_fragment">
 
     <fragment
-        android:id="@+id/nav_main"
+        android:id="@+id/main_fragment"
         android:name="projekt.cloud.piece.music.player.ui.main.MainFragment"
         tools:layout="@layout/fragment_main">
         <action
-            android:id="@+id/action_nav_main_to_nav_play"
-            app:destination="@id/nav_play" />
+            android:id="@+id/action_to_play_fragment"
+            app:destination="@id/play_fragment" />
         <action
-            android:id="@+id/action_nav_main_to_mobile_navigation_main_settings"
-            app:destination="@id/mobile_navigation_main_settings"
+            android:id="@+id/action_to_settings"
+            app:destination="@id/settings"
             app:popExitAnim="@anim/anim_top_to_bottom"
             app:exitAnim="@anim/anim_hold"
             app:popEnterAnim="@anim/anim_hold"
             app:enterAnim="@anim/anim_bottom_to_top"/>
         <action
-            android:id="@+id/action_nav_main_to_statisticsFragment"
+            android:id="@+id/action_to_statisticsFragment"
             app:destination="@id/statisticsFragment"
             app:popExitAnim="@anim/anim_top_to_bottom"
             app:exitAnim="@anim/anim_hold"
@@ -29,12 +29,12 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_play"
+        android:id="@+id/play_fragment"
         android:name="projekt.cloud.piece.music.player.ui.play.PlayFragment"
         tools:layout="@layout/fragment_play" />
     
     <include
-        android:id="@+id/mobile_navigation_main_settings"
+        android:id="@+id/settings"
         app:graph="@navigation/mobile_navigation_main_settings" />
     
     <fragment
