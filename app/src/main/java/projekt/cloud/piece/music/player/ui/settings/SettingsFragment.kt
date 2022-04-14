@@ -24,7 +24,7 @@ class SettingsFragment: BasePreferenceFragment() {
         transitionPreference(R.string.key_setting_file) {
             setOnPreferenceClickListener {
                 navController.navigate(
-                    SettingsFragmentDirections.actionNavSettingsToNavFileSettings(),
+                    SettingsFragmentDirections.actionToFileSettings(),
                     FragmentNavigatorExtras(itemView to itemView.transitionName)
                 )
                 true
@@ -33,7 +33,7 @@ class SettingsFragment: BasePreferenceFragment() {
         transitionPreference(R.string.key_setting_play) {
             setOnPreferenceClickListener {
                 navController.navigate(
-                    SettingsFragmentDirections.actionNavSettingsToPlaySettingsFragment(),
+                    SettingsFragmentDirections.actionToPlaySettings(),
                     FragmentNavigatorExtras(itemView to itemView.transitionName)
                 )
                 true

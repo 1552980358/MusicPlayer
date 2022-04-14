@@ -4,23 +4,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation_main_settings"
-    app:startDestination="@id/nav_settings">
+    app:startDestination="@id/setting_fragment">
     
     <fragment
-        android:id="@+id/nav_settings"
+        android:id="@+id/setting_fragment"
         android:name="projekt.cloud.piece.music.player.ui.settings.SettingsFragment"
         tools:layout="@layout/fragment_base_preference">
         <action
-            android:id="@+id/action_nav_settings_to_nav_file_settings"
-            app:destination="@id/nav_file_settings" />
+            android:id="@+id/action_to_file_settings"
+            app:destination="@id/file_settings_fragment" />
         <action
-            android:id="@+id/action_nav_settings_to_play_settings_fragment"
+            android:id="@+id/action_to_play_settings"
             app:destination="@id/play_settings_fragment" />
 
     </fragment>
     
     <fragment
-        android:id="@+id/nav_file_settings"
+        android:id="@+id/file_settings_fragment"
         android:name="projekt.cloud.piece.music.player.ui.settings.fileSettings.FileSettingsFragment"
         tools:layout="@layout/fragment_base_preference" />
     
