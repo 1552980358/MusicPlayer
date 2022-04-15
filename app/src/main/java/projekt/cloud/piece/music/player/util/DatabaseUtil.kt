@@ -125,7 +125,7 @@ object DatabaseUtil {
                     if (albumList.find { it.id == album} == null) {
                         albumList.add(AlbumItem(album, getString(getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.ALBUM))))
                     }
-                    @Suppress("InlinedApi")
+                    @Suppress("InlinedApi", "DEPRECATION")
                     audioList.add(
                         AudioItem(
                             id = getString(getColumnIndexOrThrow(MediaStore.Audio.AudioColumns._ID)),
