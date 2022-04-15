@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import lib.github1552980358.ktExtension.androidx.fragment.app.show
 import lib.github1552980358.ktExtension.kotlinx.coroutines.io
 import lib.github1552980358.ktExtension.kotlinx.coroutines.ui
 import projekt.cloud.piece.music.player.R
@@ -21,6 +22,7 @@ import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.database.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.FragmentPlayDetailBinding
 import projekt.cloud.piece.music.player.service.play.MediaIdUtil.parseAsUri
+import projekt.cloud.piece.music.player.ui.dialog.EditTitleDialogFragment
 import projekt.cloud.piece.music.player.ui.play.playDetail.util.DetailItem
 import projekt.cloud.piece.music.player.ui.play.playDetail.util.RecyclerViewAdapterUtil
 import projekt.cloud.piece.music.player.util.LyricUtil.timeStr
@@ -60,7 +62,28 @@ class PlayDetailFragment: BaseFragment() {
 
     private fun initializeList(detailList: ArrayList<DetailItem>) = io {
         with(detailList) {
-            add(DetailItem(R.string.play_detail_item_title).apply { isExpanded = true })        // 0
+            add(
+                DetailItem(R.string.play_detail_item_title).apply {                             // 0
+                    isExpanded = true
+                    onClick = {
+                        activityViewModel.audioItem?.let {
+                            EditTitleDialogFragment()
+                                .setAudioItem(it)
+                                .setOnChange { audioItem, nickname ->
+                                    audioItem.nickname = nickname
+                                    if (activityViewModel.audioItem == audioItem) {
+                                        // Call for update
+                                        activityViewModel.audioItem = audioItem
+                                    }
+                                    io {
+                                        activityViewModel.database.audio.update(audioItem)
+                                    }
+                                }
+                                .show(requireActivity())
+                        }
+                    }
+                }
+            )
             add(DetailItem(R.string.play_detail_item_artist).apply { isExpanded = true })       // 1
             add(DetailItem(R.string.play_detail_item_album).apply { isExpanded = true })        // 2
             add(DetailItem(R.string.play_detail_item_duration))     // 3
