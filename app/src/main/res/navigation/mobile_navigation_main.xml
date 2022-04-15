@@ -14,7 +14,7 @@
             app:destination="@id/play_fragment" />
         <action
             android:id="@+id/action_to_settings"
-            app:destination="@id/settings"
+            app:destination="@id/mobile_navigation_main_settings"
             app:popExitAnim="@anim/anim_top_to_bottom"
             app:exitAnim="@anim/anim_hold"
             app:popEnterAnim="@anim/anim_hold"
@@ -34,7 +34,7 @@
         tools:layout="@layout/fragment_play" />
     
     <include
-        android:id="@+id/settings"
+        android:id="@+id/mobile_navigation_main_settings"
         app:graph="@navigation/mobile_navigation_main_settings" />
     
     <fragment
