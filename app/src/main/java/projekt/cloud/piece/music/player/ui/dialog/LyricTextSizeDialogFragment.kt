@@ -24,11 +24,12 @@ class LyricTextSizeDialogFragment: BaseValueSelectDialogFragment() {
         initialValue =
             sharedPreferences.getString(getString(R.string.key_lyric_text_size), DEFAULT)
                 ?: DEFAULT
+        suffix = getString(R.string.lyric_text_size_unit)
     }
 
     override fun setTitle() = R.string.lyric_text_size_title
 
-    override fun setSelectionTitle() = R.string.lyric_text_size_unit
+    override fun setSelectionTitle() = R.string.lyric_text_size_hint
 
     override fun setSelectionList() = arrayListOf<String>().apply {
         (MIN .. MAX).forEach { add(it.toString()) }
