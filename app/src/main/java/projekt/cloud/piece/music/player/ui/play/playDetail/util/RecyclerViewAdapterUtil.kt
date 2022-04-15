@@ -16,6 +16,7 @@ class RecyclerViewAdapterUtil(recyclerView: RecyclerView, list: List<DetailItem>
             binding.content = item.content
             binding.title = item.title
             binding.root.setIsExpand(item.isExpanded)
+            binding.root.setOnClick(item.onClick)
         }
     }
 
