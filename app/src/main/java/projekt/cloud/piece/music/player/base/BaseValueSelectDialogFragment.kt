@@ -18,6 +18,9 @@ abstract class BaseValueSelectDialogFragment: BaseAlertDialogFragment() {
     private var _binding: DialogFragmentBaseValueSelectionBinding? = null
     private val binding get() = _binding!!
 
+    protected var prefix: String? = null
+    protected var suffix: String? = null
+
     override fun createView(): View {
         _binding = DataBindingUtil.inflate(
             layoutInflater,
@@ -38,6 +41,8 @@ abstract class BaseValueSelectDialogFragment: BaseAlertDialogFragment() {
                 initialValue?.let { autoCompleteTextView.setText(it, false) }
             }
             setHint(selectionTitle)
+            prefix?.let { prefixText = it }
+            suffix?.let { suffixText = it }
         }
         return binding.root
     }
