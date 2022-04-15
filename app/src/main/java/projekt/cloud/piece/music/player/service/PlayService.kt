@@ -443,7 +443,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                 val currentAudioItem = playlist[current]
                 playlist = when {
                     configs.getConfig(PLAY_CONFIG_SHUFFLE) -> playlist.shuffled()
-                    else -> playlist.sortedBy { it.pinyin }
+                    else -> playlist.sortedBy { it.nicknamePinyin ?: it.pinyin }
                 }
                 current = playlist.indexOfFirst { it.id == currentAudioItem.id }
                 playlist.forEachIndexed { index, audioItem -> audioItem.index = index }

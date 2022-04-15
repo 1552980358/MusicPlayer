@@ -99,7 +99,7 @@ object DatabaseUtil {
             ) ?: SP_FILE_FILTER_SIZE_DEFAULT
         }
         return database.audio.query(filterDuration, filterFileSize).toMutableList().apply {
-            this.sortBy { it.pinyin }
+            this.sortBy { it.nicknamePinyin ?: it.pinyin }
             forEachIndexed { index, audioItem ->
                 audioItem.index = index
                 audioItem.albumItem = database.album.query(audioItem.album)
