@@ -66,6 +66,7 @@
     <string name="play_detail_item_bit_depth">采样深度</string>
     
     <string name="lyric_text_size_title">设置歌词字体大小</string>
+    <string name="lyric_text_size_hint">字体大小</string>
     
     <string name="nav_statistics">播放统计</string>
 
