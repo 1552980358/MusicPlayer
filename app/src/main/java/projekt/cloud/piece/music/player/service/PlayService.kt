@@ -238,7 +238,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
         }
 
         private fun onPlayAudioItem(audioItem: AudioItem) {
-            Log.e(TAG, "onPlayAudioItem ${audioItem.id} ${audioItem.title}")
+            Log.e(TAG, "onPlayAudioItem ${audioItem.id} ${audioItem.nickname ?: audioItem.title}")
             loadJob?.cancel()
             loadJob = io {
                 @Suppress("BlockingMethodInNonBlockingContext")
@@ -254,7 +254,7 @@ class PlayService: MediaBrowserServiceCompat(), Listener {
                         mediaMetadataCompat = MediaMetadataCompat.Builder()
                             .putString(METADATA_KEY_MEDIA_ID, audioItem.id)
                             .putString(METADATA_KEY_ARTIST, audioItem.artistItem.title)
-                            .putString(METADATA_KEY_TITLE, audioItem.title)
+                            .putString(METADATA_KEY_TITLE, audioItem.nickname ?: audioItem.title)
                             .putString(METADATA_KEY_ALBUM, audioItem.albumItem.title)
                             .putString(METADATA_KEY_ALBUM_ART_URI, audioItem.album)
                             .putLong(METADATA_KEY_DURATION, audioItem.duration)

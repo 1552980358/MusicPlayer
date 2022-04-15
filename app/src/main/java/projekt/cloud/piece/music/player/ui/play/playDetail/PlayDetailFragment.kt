@@ -77,7 +77,7 @@ class PlayDetailFragment: BaseFragment() {
     }
 
     private fun updateAudioItem(detailList: List<DetailItem>, audioItem: AudioItem) = io {
-        detailList[0].content = audioItem.title
+        detailList[0].content = audioItem.nickname ?: audioItem.title
         detailList[1].content = audioItem.artistItem.title
         detailList[2].content = audioItem.albumItem.title
         detailList[3].content = audioItem.duration.timeStr

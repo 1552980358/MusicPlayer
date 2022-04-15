@@ -34,7 +34,7 @@
             android:layout_toEndOf="@id/text_view_position"
             android:maxLines="1"
             android:scrollbars="none"
-            android:text="@{audioItem.title, default = ``}"
+            android:text="@{audioItem.nickname == null ? audioItem.title : audioItem.nickname}"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/title_text_size" />
 

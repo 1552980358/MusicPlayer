@@ -61,7 +61,7 @@ object NotificationUtil {
         .setStyle(MediaStyle().setMediaSession((this as MediaBrowserServiceCompat).sessionToken).setShowActionsInCompactView(0, 1, 2))
         .setVibrate(longArrayOf(0))
         .setSilent(true)
-        .setContentTitle(audioItem.title)
+        .setContentTitle(audioItem.nickname ?: audioItem.title)
         .setContentText("${audioItem.artistItem.title} - ${audioItem.albumItem.title}")
         .setLargeIcon(largeBitmap)
         .addAction(R.drawable.ic_prev, null, getBroadcast(this, 0, Intent(BROADCAST_ACTION_PREV), pendingIntentFlag))
