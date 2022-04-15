@@ -20,13 +20,13 @@ class LyricTextSizeDialogFragment: BaseValueSelectDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        hasDefaultButton = true
+        hasDefault = true
         initialValue =
             sharedPreferences.getString(getString(R.string.key_lyric_text_size), DEFAULT)
                 ?: DEFAULT
     }
 
-    override fun setDialogTitle() = R.string.lyric_text_size_title
+    override fun setTitle() = R.string.lyric_text_size_title
 
     override fun setSelectionTitle() = R.string.lyric_text_size_unit
 

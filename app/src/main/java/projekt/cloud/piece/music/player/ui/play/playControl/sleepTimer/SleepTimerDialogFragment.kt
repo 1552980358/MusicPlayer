@@ -5,7 +5,7 @@ import projekt.cloud.piece.music.player.base.BaseValueSelectDialogFragment
 
 class SleepTimerDialogFragment: BaseValueSelectDialogFragment() {
 
-    override fun setDialogTitle() = R.string.sleep_timer_title
+    override fun setTitle() = R.string.sleep_timer_title
 
     override fun setSelectionTitle() = R.string.sleep_timer_unit
 
@@ -33,7 +33,7 @@ class SleepTimerDialogFragment: BaseValueSelectDialogFragment() {
     }
 
     fun setEnableStop(enable: Boolean) = apply {
-        hasDefaultButton = enable
+        hasDefault = enable
     }
 
 }
