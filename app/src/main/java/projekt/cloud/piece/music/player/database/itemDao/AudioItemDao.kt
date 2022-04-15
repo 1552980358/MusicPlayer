@@ -33,6 +33,9 @@ interface AudioItemDao {
     fun delete(vararg audioItems: AudioItem)
 
     @Update
+    fun update(audioItem: AudioItem)
+
+    @Update
     fun update(audioItems: List<AudioItem>)
 
 }
