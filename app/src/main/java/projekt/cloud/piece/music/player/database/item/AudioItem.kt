@@ -26,6 +26,16 @@ class AudioItem(
     
     @Ignore
     lateinit var albumItem: AlbumItem
+
+
+    @ColumnInfo(name = "nickname")
+    var nickname: String? = null
+        set(value) {
+            field = value
+            nicknamePinyin = value?.pinyin
+        }
+    @ColumnInfo(name = "nicknamePinyin")
+    var nicknamePinyin: String? = null
     
     val durationInt get() = duration.toInt()
     
