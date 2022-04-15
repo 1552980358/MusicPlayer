@@ -99,6 +99,10 @@
     <string name="lyric_text_size_unit" translatable="false">sp</string>
     <string name="key_lyric_text_size" translatable="false">key_lyric_text_size</string>
     
+    <string name="edit_title_title">Edit Audio Title</string>
+    <string name="edit_title_hint">Title</string>
+    <string name="edit_title_neutral">Use Default</string>
+    
     <string name="nav_statistics">Play Statistics</string>
     
 </resources>

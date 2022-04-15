@@ -68,6 +68,10 @@
     <string name="lyric_text_size_title">设置歌词字体大小</string>
     <string name="lyric_text_size_hint">字体大小</string>
     
+    <string name="edit_title_title">编辑歌曲标题</string>
+    <string name="edit_title_hint">标题</string>
+    <string name="edit_title_neutral">使用默认</string>
+    
     <string name="nav_statistics">播放统计</string>
 
 </resources>
