@@ -51,21 +51,7 @@ class CollapsingCardView(context: Context, attributeSet: AttributeSet?): Materia
 
     init {
         addView(binding.root)
-        setOnClickListener {
-            isExpanded = !isExpanded
-            when {
-                isExpanded -> {
-                    expand()
-                    imageViewIndicator.setImageResource(R.drawable.ani_arrow_expand)
-                    (imageViewIndicator.drawable as AnimatedVectorDrawable).start()
-                }
-                else -> {
-                    collapse()
-                    imageViewIndicator.setImageResource(R.drawable.ani_arrow_collapse)
-                    (imageViewIndicator.drawable as AnimatedVectorDrawable).start()
-                }
-            }
-        }
+        setOnClickListener()
     }
 
     fun setIsExpand(isExpand: Boolean) {
@@ -119,6 +105,30 @@ class CollapsingCardView(context: Context, attributeSet: AttributeSet?): Materia
 
     fun setContentText(content: String) {
         binding.content = content
+    }
+
+    fun setOnClick(onClick: (() -> Unit)?) {
+        if (onClick == null) {
+            return setOnClickListener()
+        }
+        setOnClickListener { onClick() }
+        imageViewIndicator.setImageDrawable(null)
+    }
+
+    private fun setOnClickListener() = setOnClickListener {
+        isExpanded = !isExpanded
+        when {
+            isExpanded -> {
+                expand()
+                imageViewIndicator.setImageResource(R.drawable.ani_arrow_expand)
+                (imageViewIndicator.drawable as AnimatedVectorDrawable).start()
+            }
+            else -> {
+                collapse()
+                imageViewIndicator.setImageResource(R.drawable.ani_arrow_collapse)
+                (imageViewIndicator.drawable as AnimatedVectorDrawable).start()
+            }
+        }
     }
 
 }
