@@ -12,7 +12,7 @@
             app:iconSpaceReserved="false"
             app:defaultValue="true" />
         
-        <EditTextPreference
+        <projekt.cloud.piece.music.player.preference.TextInputPreference
             app:key="@string/key_setting_file_filter_duration_set"
             app:title="@string/setting_file_filter_duration_set"
             app:defaultValue="@string/setting_file_filter_duration_default"
