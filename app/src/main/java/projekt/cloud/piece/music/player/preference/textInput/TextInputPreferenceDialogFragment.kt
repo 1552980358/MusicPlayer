@@ -40,6 +40,7 @@ class TextInputPreferenceDialogFragment: BaseInputDialogFragment() {
     }
 
     fun setDefaultValue(defaultValue: String?) = apply {
+        hasDefault = defaultValue != null
         this.defaultValue = defaultValue
     }
 
