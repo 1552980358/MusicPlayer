@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat.START
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -170,6 +171,14 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
         activityViewModel.removeAllObservers(TAG)
         _binding = null
         super.onDestroyView()
+    }
+
+    override fun onBackPressed(): Boolean {
+        if (binding.root.isDrawerOpen(START)) {
+            binding.root.close()
+            return false
+        }
+        return super.onBackPressed()
     }
 
     private fun updateAudioItem(audioItem: AudioItem, needExtend: Boolean = true) {
