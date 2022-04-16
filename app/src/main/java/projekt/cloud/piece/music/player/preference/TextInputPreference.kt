@@ -31,7 +31,9 @@ class TextInputPreference(context: Context, attributeSet: AttributeSet?): Prefer
 
     private var onChange: ((String?) -> Unit)? = null
 
-    private var defaultValue: String? = null
+    private val defaultValue get() = Preference::class.java
+        .getDeclaredField("mDefaultValue").apply { isAccessible = true }
+        .get(this) as String?
 
     private var inputType = TYPE_CLASS_TEXT
 
@@ -86,10 +88,7 @@ class TextInputPreference(context: Context, attributeSet: AttributeSet?): Prefer
         this.onChange = onChange
     }
 
-    override fun onGetDefaultValue(a: TypedArray, index: Int): Any? {
-        defaultValue = a.getString(index)
-        return null
-    }
+    override fun onGetDefaultValue(a: TypedArray, index: Int) = a.getString(index)
 
     fun setInputType(inputType: Int) {
         this.inputType = inputType
