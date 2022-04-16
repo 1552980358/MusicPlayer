@@ -39,6 +39,7 @@
     <string name="setting_file_filter_size">文件大小</string>
     <string name="setting_file_filter_size_enable">启用文件大小过滤</string>
     <string name="setting_file_filter_size_set">设置过滤最低文件大小</string>
+    <string name="setting_file_filter_size_set_hint">文件大小</string>
     
     <string name="setting_play">播放</string>
     <string name="setting_play_audio_focus">音频焦点</string>
