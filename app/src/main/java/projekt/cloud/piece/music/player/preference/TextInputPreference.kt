@@ -21,7 +21,13 @@ class TextInputPreference(context: Context, attributeSet: AttributeSet?): Prefer
     private var hint = 0
 
     private var prefix: String? = null
+        get() {
+            return field ?: EMPTY_STR
+        }
     private var suffix: String? = null
+        get() {
+            return field ?: EMPTY_STR
+        }
 
     private var onChange: ((String?) -> Unit)? = null
 
@@ -90,7 +96,7 @@ class TextInputPreference(context: Context, attributeSet: AttributeSet?): Prefer
     }
 
     private fun updateSummary() {
-        dataValue?.let { summary = (prefix ?: EMPTY_STR) + it + (suffix ?: EMPTY_STR) }
+        dataValue?.let { summary = prefix + it + suffix }
     }
 
     override fun onAttached() {
