@@ -1,9 +1,19 @@
 package projekt.cloud.piece.music.player.base
 
+import android.text.InputType.TYPE_CLASS_TEXT
 import android.view.View
 import projekt.cloud.piece.music.player.databinding.DialogFragmentBaseInputBinding
 
 abstract class BaseInputDialogFragment: BaseAlertDialogFragment() {
+
+    companion object {
+
+        @JvmStatic
+        fun <T: BaseInputDialogFragment> T.setInputType(inputType: Int) = apply {
+            this.inputType = inputType
+        }
+
+    }
 
     abstract fun setHint(): Int
     private val hint get() = setHint()
@@ -13,6 +23,8 @@ abstract class BaseInputDialogFragment: BaseAlertDialogFragment() {
 
     protected var prefix: String? = null
     protected var suffix: String? = null
+
+    private var inputType = TYPE_CLASS_TEXT
 
     override fun createView(): View {
         _binding = DialogFragmentBaseInputBinding.inflate(layoutInflater)
@@ -24,6 +36,7 @@ abstract class BaseInputDialogFragment: BaseAlertDialogFragment() {
         }
 
         binding.textInputEditText.setText(originValue)
+        binding.textInputEditText.inputType = inputType
 
         return binding.root
     }
