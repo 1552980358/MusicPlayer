@@ -15,14 +15,14 @@ class SleepTimerDialogFragment: BaseValueSelectDialogFragment() {
     private lateinit var onStopClick: () -> Unit
 
     override fun setSelectionList() = resources.getStringArray(R.array.sleep_timer_time).toList().apply {
-        initialValue = this[2]
+        originValue = this[2]
     }
 
     override fun onPositiveClick(newValue: String?) = onPositive(newValue)
 
     override fun setNeutralButtonText() = R.string.sleep_timer_stop
 
-    override fun onDefaultClick() = onStopClick()
+    override fun onDefaultClick(defaultValue: String?) = onStopClick()
 
     fun setPositiveClick(onPositive: (String?) -> Unit) = apply {
         this.onPositive = onPositive

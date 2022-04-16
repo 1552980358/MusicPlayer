@@ -38,7 +38,7 @@ abstract class BaseValueSelectDialogFragment: BaseAlertDialogFragment() {
                         selectionList
                     )
                 )
-                initialValue?.let { autoCompleteTextView.setText(it, false) }
+                originValue?.let { autoCompleteTextView.setText(it, false) }
             }
             setHint(selectionTitle)
             prefix?.let { prefixText = it }

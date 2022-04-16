@@ -21,9 +21,10 @@ class LyricTextSizeDialogFragment: BaseValueSelectDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         hasDefault = true
-        initialValue =
+        originValue =
             sharedPreferences.getString(getString(R.string.key_lyric_text_size), DEFAULT)
                 ?: DEFAULT
+        defaultValue = DEFAULT
         suffix = getString(R.string.lyric_text_size_unit)
     }
 
@@ -40,7 +41,7 @@ class LyricTextSizeDialogFragment: BaseValueSelectDialogFragment() {
         onChange?.let { it(newValue) }
     }
 
-    override fun onDefaultClick() = onPositiveClick(DEFAULT)
+    override fun onDefaultClick(defaultValue: String?) = onPositiveClick(defaultValue)
 
     fun setSharedPreferences(sharedPreferences: SharedPreferences) = apply {
         this.sharedPreferences = sharedPreferences

@@ -23,7 +23,7 @@ abstract class BaseInputDialogFragment: BaseAlertDialogFragment() {
             suffix?.let { suffixText = it }
         }
 
-        binding.textInputEditText.setText(initialValue)
+        binding.textInputEditText.setText(originValue)
 
         return binding.root
     }

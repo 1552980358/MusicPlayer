@@ -14,7 +14,7 @@ class EditTitleDialogFragment: BaseInputDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         hasDefault = true
-        initialValue = audioItem.nickname ?: audioItem.title
+        originValue = audioItem.nickname ?: audioItem.title
     }
 
     override fun setHint() = R.string.edit_title_hint
@@ -29,8 +29,8 @@ class EditTitleDialogFragment: BaseInputDialogFragment() {
         }
     }
 
-    override fun onDefaultClick() {
-        onChange?.let { it(audioItem, null) }
+    override fun onDefaultClick(defaultValue: String?) {
+        onChange?.let { it(audioItem, defaultValue) }
     }
 
     fun setOnChange(onChange: (AudioItem, String?) -> Unit) = apply {

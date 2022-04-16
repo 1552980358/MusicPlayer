@@ -27,20 +27,20 @@ abstract class BaseAlertDialogFragment: BaseDialogFragment() {
     private val positiveValue get() = setPositiveClickValue()
 
     open fun onNegativeClick(originValue: String?) = Unit
+    protected var originValue: String? = null
 
     protected var hasDefault = false
-    open fun onDefaultClick() = Unit
-
-    protected var initialValue: String? = null
+    open fun onDefaultClick(defaultValue: String?) = Unit
+    protected var defaultValue: String? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?) = AlertDialog.Builder(requireContext())
         .setTitle(title)
         .setView(contentView)
         .setPositiveButton(positiveButtonText) { _, _ -> onPositiveClick(positiveValue) }
-        .setNegativeButton(negativeButtonText) { _, _ -> onNegativeClick(initialValue) }
+        .setNegativeButton(negativeButtonText) { _, _ -> onNegativeClick(originValue) }
         .apply {
             if (hasDefault) {
-                setNeutralButton(neutralButtonText) { _, _ -> onDefaultClick() }
+                setNeutralButton(neutralButtonText) { _, _ -> onDefaultClick(defaultValue) }
             }
         }
         .create()
