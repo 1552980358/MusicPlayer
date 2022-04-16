@@ -1,6 +1,7 @@
 package projekt.cloud.piece.music.player.preference
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.text.InputType.TYPE_CLASS_TEXT
 import android.util.AttributeSet
 import androidx.fragment.app.FragmentActivity
@@ -35,7 +36,6 @@ class TextInputPreference(context: Context, attributeSet: AttributeSet?): Prefer
         }
 
     init {
-        dataValue = sharedPreferences?.getString(key, defaultValue)
         setOnPreferenceClickListener {
             TextInputPreferenceDialogFragment()
                 .setTitle(dialogTitle)
@@ -80,11 +80,9 @@ class TextInputPreference(context: Context, attributeSet: AttributeSet?): Prefer
         this.onChange = onChange
     }
 
-    fun setDefaultValue(defaultValue: String?) {
-        this.defaultValue = defaultValue
-        if (dataValue == null) {
-            dataValue = sharedPreferences?.getString(key, defaultValue)
-        }
+    override fun onGetDefaultValue(a: TypedArray, index: Int): Any? {
+        defaultValue = a.getString(index)
+        return null
     }
 
     fun setInputType(inputType: Int) {
@@ -93,6 +91,14 @@ class TextInputPreference(context: Context, attributeSet: AttributeSet?): Prefer
 
     private fun updateSummary() {
         dataValue?.let { summary = (prefix ?: EMPTY_STR) + it + (suffix ?: EMPTY_STR) }
+    }
+
+    override fun onAttached() {
+        super.onAttached()
+        /**
+         * Look at source code [getSharedPreferences], a null will be gotten before attached
+         **/
+        dataValue = sharedPreferences?.getString(key, defaultValue) ?: defaultValue
     }
 
 }
