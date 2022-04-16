@@ -38,6 +38,7 @@
     <string name="key_setting_file_filter_duration_enable" translatable="false">key_setting_file_filter_duration_enable</string>
     <string name="setting_file_filter_duration_default" translatable="false">5000</string>
     <string name="setting_file_filter_duration_set">Set filtering minimum duration</string>
+    <string name="setting_file_filter_duration_set_hint">Duration</string>
     <string name="setting_file_filter_duration_set_unit" translatable="false">ms</string>
     <string name="key_setting_file_filter_duration_set" translatable="false">key_setting_file_filter_duration_set</string>
     
