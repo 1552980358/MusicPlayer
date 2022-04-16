@@ -5,6 +5,7 @@ import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
+import projekt.cloud.piece.music.player.preference.TextInputPreference
 import projekt.cloud.piece.music.player.preference.TransitionPreference
 
 object PreferenceFragmentUtil {
@@ -23,5 +24,8 @@ object PreferenceFragmentUtil {
 
     fun PreferenceFragmentCompat.switchPreference(resId: Int, block: SwitchPreferenceCompat.() -> Unit) =
         preference<SwitchPreferenceCompat>(resId)?.apply(block)
+
+    fun PreferenceFragmentCompat.textInputPreference(resId: Int, block: TextInputPreference.() -> Unit) =
+        preference<TextInputPreference>(resId)?.apply(block)
 
 }
