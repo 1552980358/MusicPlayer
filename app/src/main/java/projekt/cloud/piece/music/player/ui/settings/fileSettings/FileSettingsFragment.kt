@@ -10,6 +10,7 @@ import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BasePreferenceFragment
 import projekt.cloud.piece.music.player.preference.util.PreferenceFragmentUtil.editTextPreference
 import projekt.cloud.piece.music.player.preference.util.PreferenceFragmentUtil.switchPreference
+import projekt.cloud.piece.music.player.preference.util.PreferenceFragmentUtil.textInputPreference
 
 class FileSettingsFragment: BasePreferenceFragment() {
 
@@ -58,26 +59,19 @@ class FileSettingsFragment: BasePreferenceFragment() {
     }
 
     private fun initializeSizePreferences() {
-        val editTextPreference = editTextPreference(R.string.key_setting_file_filter_size_set) {
-            setOnBindEditTextListener {
-                it.inputType = TYPE_CLASS_NUMBER
-            }
-            summaryProvider = SummaryProvider<EditTextPreference> {
-                it.text + getString(R.string.setting_file_filter_size_set_unit)
-            }
-            setOnPreferenceChangeListener { _, newValue ->
+        val textInputPreference = textInputPreference(R.string.key_setting_file_filter_size_set) {
+            setDialogTitle(R.string.setting_file_filter_size_set)
+            setHint(R.string.setting_file_filter_size_set_hint)
+            setSuffix(getString(R.string.setting_file_filter_size_set_unit))
+            setInputType(TYPE_CLASS_NUMBER)
+            setOnChange {
                 activityViewModel.hasSettingsUpdated = true
-                if ((newValue as String?).isNullOrBlank()) {
-                    text = getString(R.string.setting_file_filter_size_default)
-                    return@setOnPreferenceChangeListener false
-                }
-                true
             }
         }
         switchPreference(R.string.key_setting_file_filter_size_enable) {
             setOnPreferenceChangeListener { _, newValue ->
                 activityViewModel.hasSettingsUpdated = true
-                editTextPreference?.isEnabled = newValue as Boolean
+                textInputPreference?.isEnabled = newValue as Boolean
                 true
             }
         }
