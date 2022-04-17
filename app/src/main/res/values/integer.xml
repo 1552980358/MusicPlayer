@@ -3,4 +3,6 @@
     
     <integer name="animation_duration_normal">400</integer>
     
+    <integer name="single_line">1</integer>
+    
 </resources>
