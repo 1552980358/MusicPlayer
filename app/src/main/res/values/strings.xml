@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">CloudPiece</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    
+    <string name="transition_to_play_fragment">transition_to_play_fragment</string>
+    
+    <string name="main_bottom_navigation_audio_track">AudioTrack</string>
+    <string name="main_bottom_navigation_artist">Artist</string>
+    <string name="main_bottom_navigation_album">Album</string>
+    <string name="main_bottom_navigation_playlist">Playlist</string>
+
 </resources>
