@@ -43,16 +43,25 @@ android {
 }
 
 dependencies {
-    val navVersion = rootProject.extra["navVersion"]
+    val coroutinesVersion = "1.6.1"
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
+
     implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("androidx.core:core-ktx:1.7.0")
+    val navVersion = rootProject.extra["navVersion"]
     implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
+    val lifecycleVersion = "2.4.1"
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
+    implementation("androidx.media:media:1.5.0")
+    implementation("androidx.preference:preference-ktx:1.2.0")
     val roomVersion = "2.4.2"
     implementation ("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
+    ksp("androidx.databinding:databinding-compiler-common:${rootProject.extra["gradleVersion"]}")
 
     implementation("com.google.android.material:material:1.5.0")
     val exoPlayerVersion = "2.16.1"
