@@ -13,4 +13,14 @@ open class BaseTitledItem(id: String, @ColumnInfo(name = "title") val title: Str
     @ColumnInfo(name = "pinyin")
     var pinyin = title.pinyin
 
+    @ColumnInfo(name = "nickname")
+    var nickname: String? = null
+        set(value) {
+            field = value
+            nicknamePinyin = value?.pinyin
+        }
+
+    @ColumnInfo(name = "nickname_pinyin")
+    var nicknamePinyin: String? = null
+
 }
