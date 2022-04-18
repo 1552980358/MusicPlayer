@@ -43,8 +43,10 @@ object ImageUtil {
     private const val ART_OPEN_MODE = "r"
     private const val ALBUM_ART_URI = "content://media/external/audio/albumart"
     private val Long.artUri get() = ContentUris.withAppendedId(Uri.parse(ALBUM_ART_URI), this)
-    fun Context.extractArtBitmap(album: Long) = contentResolver.openFileDescriptor(album.artUri, ART_OPEN_MODE)?.use {
-        BitmapFactory.decodeFileDescriptor(it.fileDescriptor)
+    fun Context.extractArtBitmap(album: Long) = tryRun {
+        contentResolver.openFileDescriptor(album.artUri, ART_OPEN_MODE)?.use {
+            BitmapFactory.decodeFileDescriptor(it.fileDescriptor)
+        }
     }
 
     private const val SMALL_ART_SIZE_DP = 40
