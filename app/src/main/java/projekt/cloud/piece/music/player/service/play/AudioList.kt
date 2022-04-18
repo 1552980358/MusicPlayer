@@ -2,8 +2,9 @@ package projekt.cloud.piece.music.player.service.play
 
 import android.support.v4.media.MediaMetadataCompat
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
+import java.io.Serializable
 
-class AudioList {
+class AudioList: Serializable {
     
     private val _audioList = ArrayList<AudioItem>()
     fun updateList(currentIndex: Int, audioList: List<AudioItem>, isShuffle: Boolean = false): AudioItem {
