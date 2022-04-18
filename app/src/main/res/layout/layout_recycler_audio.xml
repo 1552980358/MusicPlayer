@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/app_compat_image_view_avatar"
             android:text="@{audio.title}"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
         
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="match_parent"
@@ -35,7 +35,8 @@
             android:layout_below="@id/material_text_view_title"
             android:layout_alignParentBottom="true"
             android:layout_toEndOf="@id/app_compat_image_view_avatar"
-            android:text="@{audio.artistName + ` - ` + audio.albumTitle, default = ``}"/>
+            android:text="@{audio.artistName + ` - ` + audio.albumTitle, default = ``}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
     
     </RelativeLayout>
     
