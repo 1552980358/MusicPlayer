@@ -1,5 +1,9 @@
 package projekt.cloud.piece.music.player
 
+import android.content.Context
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.Job
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
@@ -13,6 +17,11 @@ import projekt.cloud.piece.music.player.util.AudioUtil.launchApplication
  *   @type ArrayList<Observer<*>>
  *  [audioList]
  *   @type List<AudioItem>
+ *  [requestPermissions]
+ *   @type Array<String>
+ *  [onPermissionResult]
+ *   @type (Map<String, Boolean>) -> Unit)?
+ *   @default null
  *
  *  Methods:
  *   [register]
@@ -76,5 +85,17 @@ class MainActivityViewModel: ViewModel() {
                 }
             }
         }
+
+    /***********************************************************/
+    lateinit var requestPermissions: ActivityResultLauncher<Array<String>>
+    private var onPermissionResult: ((Map<String, Boolean>) -> Unit)? = null
+    fun setOnPermissionResult(onPermissionResult: (Map<String, Boolean>) -> Unit) {
+        this.onPermissionResult = onPermissionResult
+    }
+    fun registerForActivityResult(appCompatActivity: AppCompatActivity) {
+        requestPermissions = appCompatActivity.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
+            onPermissionResult?.let { it(results) }
+        }
+    }
 
 }
