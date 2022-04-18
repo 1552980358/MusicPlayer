@@ -3,6 +3,13 @@ package projekt.cloud.piece.music.player.service
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_PAUSE
@@ -77,6 +84,25 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
                     }
                 )
             }
+        }
+
+        override fun onSkipToPrevious() {
+            if (audioList.isHead) {
+                if (!configs.nAnd(CONFIG_PLAY_REPEAT, CONFIG_PLAY_REPEAT_ONE)) {
+                    return onSeekTo(0)
+                }
+                return playAudioItem(audioList.last)
+            }
+        }
+
+        override fun onSkipToNext() {
+            if (audioList.isLast) {
+                if (!configs.nAnd(CONFIG_PLAY_REPEAT, CONFIG_PLAY_REPEAT_ONE)) {
+                    return onSeekTo(0)
+                }
+                return playAudioItem(audioList.head)
+            }
+            playAudioItem(audioList.next)
         }
         
         private fun playAudioItem(audioItem: AudioItem) {
