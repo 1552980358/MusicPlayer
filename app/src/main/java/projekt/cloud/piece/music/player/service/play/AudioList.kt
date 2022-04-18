@@ -1,6 +1,5 @@
 package projekt.cloud.piece.music.player.service.play
 
-import android.support.v4.media.MediaMetadataCompat
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import java.io.Serializable
 
@@ -12,24 +11,31 @@ class AudioList: Serializable {
         _audioList.addAll(audioList)
        
         updateIndex()
-        
-        when {
-            isShuffle -> {
-                _audioList.shuffle()
-                current = _audioList.indexOfFirst { it.index == currentIndex }
-                updateIndex()
-            }
-            else -> current = currentIndex
+
+        var index = currentIndex
+        if (isShuffle) {
+            _audioList.shuffle()
+            index = _audioList.indexOfFirst { it.index == currentIndex }
+            updateIndex()
         }
-        return audioItem
+        return setIndex(index)
     }
     
     private var current = 0
-    val currentIndex get() = current
-    fun setCurrentIndex(index: Int): AudioItem {
+    val index get() = current
+    fun setIndex(index: Int): AudioItem {
         current = index
         return audioItem
     }
+
+    val prev get() = setIndex(--current)
+    val next get() = setIndex(++current)
+
+    val head get() = setIndex(0)
+    val last get() = setIndex(_audioList.lastIndex)
+
+    val isLast get() = current == _audioList.lastIndex
+    val isHead get() = current == 0
     
     val audioItem get() = _audioList[current]
     
