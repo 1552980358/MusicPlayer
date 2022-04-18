@@ -15,6 +15,8 @@ import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_PREVI
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_STOP
 import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.ExoPlayer
@@ -82,6 +84,10 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     private val audioList = AudioList()
 
     private val configs = Configs()
+    
+    private val defaultAudioArt =
+        ContextCompat.getDrawable(this, R.drawable.ic_round_audiotrack_200)!!.toBitmap()
+    private var audioArt = defaultAudioArt
     
     override fun onCreate() {
         super.onCreate()
