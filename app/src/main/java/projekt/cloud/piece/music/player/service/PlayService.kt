@@ -45,8 +45,6 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
         
     }
     
-    private val audioList = AudioList()
-    
     private lateinit var mediaSessionCompat: MediaSessionCompat
     private val mediaSessionCallback = object : MediaSessionCompat.Callback() {
         
@@ -80,7 +78,9 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     
     private var exoPlayer = ExoPlayer.Builder(this)
         .build()
-    
+
+    private val audioList = AudioList()
+
     private val configs = Configs()
     
     override fun onCreate() {
