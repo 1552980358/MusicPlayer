@@ -37,6 +37,9 @@ class AudioItem(id: String,
     lateinit var artistItem: ArtistItem
     @Ignore
     lateinit var albumItem: AlbumItem
+    
+    @Ignore
+    var index = -1
 
     val artistName get() = artistItem.title
     val albumTitle get() = albumItem.title
