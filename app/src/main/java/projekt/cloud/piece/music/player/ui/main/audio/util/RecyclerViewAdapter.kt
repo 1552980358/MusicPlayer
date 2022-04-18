@@ -5,13 +5,23 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import kotlinx.coroutines.Job
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.LayoutRecyclerAudioBinding
+import projekt.cloud.piece.music.player.util.CoroutineUtil.io
+import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
+import projekt.cloud.piece.music.player.util.ImageUtil.readAlbumArtLarge
 
 class RecyclerViewAdapter(recyclerView: RecyclerView) {
 
     private class RecyclerViewHolder(private val binding: LayoutRecyclerAudioBinding): ViewHolder(binding.root) {
+        private var job: Job? = null
         fun bindView(audioItem: AudioItem) {
+            job?.cancel()
+            job = io {
+                val imageBitmap = binding.root.context.readAlbumArtLarge(audioItem.album)
+                ui { binding.appCompatImageViewAvatar.setImageBitmap(imageBitmap) }
+            }
             binding.audio = audioItem
         }
     }
