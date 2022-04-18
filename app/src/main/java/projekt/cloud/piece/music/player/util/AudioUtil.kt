@@ -10,6 +10,8 @@ import projekt.cloud.piece.music.player.database.audio.item.ArtistItem
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
+import projekt.cloud.piece.music.player.util.ImageUtil.extractArtBitmap
+import projekt.cloud.piece.music.player.util.ImageUtil.saveAlbumArt
 
 /**
  * Object [AudioUtil]
@@ -22,7 +24,7 @@ import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
  * [loadApplication]
  * [scanSystemDatabase]
  * [storeToAudioRoom]
- *
+ * [extractAlbumArts]
  **/
 object AudioUtil {
 
@@ -50,7 +52,7 @@ object AudioUtil {
             artistList.toTypedArray(),
             albumList.toTypedArray()
         )
-
+        extractAlbumArts(albumList)
     }
 
     private fun Context.loadApplication() = audioRoom.queryAudio
@@ -97,6 +99,14 @@ object AudioUtil {
             artistDao.insert(*artists)
             albumDao.insert(*albums)
             audioDao.insert(*audios)
+        }
+    }
+
+    private fun Context.extractAlbumArts(albumList: List<AlbumItem>) {
+        albumList.forEach {
+            extractArtBitmap(it.idLong)?.apply {
+                saveAlbumArt(it.id, this)
+            }
         }
     }
 
