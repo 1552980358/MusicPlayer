@@ -30,7 +30,9 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
+import kotlinx.coroutines.runBlocking
 import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
@@ -66,7 +68,28 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     
     private lateinit var mediaSessionCompat: MediaSessionCompat
     private val mediaSessionCallback = object : MediaSessionCompat.Callback() {
-        
+
+        override fun onPlay() {
+            if (playbackStateCompat.state == STATE_PLAYING || exoPlayer.isPlaying) {
+                return
+            }
+            
+            exoPlayer.play()
+            playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                .setState(STATE_PLAYING, exoPlayer.currentPosition, DEFAULT_PLAYBACK_SPEED)
+                .build()
+        }
+    
+        override fun onPause() {
+            if (playbackStateCompat.state == STATE_PAUSED || !exoPlayer.isPlaying) {
+                return
+            }
+            
+            exoPlayer.pause()
+            playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                .setState(STATE_PAUSED, exoPlayer.currentPosition, DEFAULT_PLAYBACK_SPEED)
+                .build()
+        }
         
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
             extras?.let {
