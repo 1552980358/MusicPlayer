@@ -5,6 +5,6 @@
     android:layout_height="match_parent"
     android:id="@+id/root"
     android:transitionName="@string/transition_to_play_fragment"
-    android:background="@color/white">
+    android:background="?android:attr/colorBackground">
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
