@@ -94,9 +94,9 @@ object AudioUtil {
                                          artists: Array<ArtistItem>,
                                          albums: Array<AlbumItem>) {
         with(audioRoom) {
-            audioDao.insert(*audios)
             artistDao.insert(*artists)
             albumDao.insert(*albums)
+            audioDao.insert(*audios)
         }
     }
 
