@@ -1,8 +1,10 @@
 package projekt.cloud.piece.music.player
 
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.Job
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
-import kotlin.reflect.KClass
+import projekt.cloud.piece.music.player.util.AudioUtil.initialApplication
+import projekt.cloud.piece.music.player.util.AudioUtil.launchApplication
 
 /**
  * Class [MainActivityViewModel], inherit to [ViewModel]
@@ -16,6 +18,8 @@ import kotlin.reflect.KClass
  *   [register]
  *   [unregister]
  *   [unregisterAll]
+ *   [initialApplication]
+ *   [launchApplication]
  *
  * Inner Class [Observer]
  *
@@ -43,6 +47,24 @@ class MainActivityViewModel: ViewModel() {
         observers.add(Observer(tag, variableTag, callback))
     fun unregister(tag: String, varTag: String) = observers.removeAll { it.tag == tag && it.varTag == varTag }
     fun unregisterAll(tag: String) = observers.removeAll { it.tag == tag }
+
+    private var job: Job? = null
+    fun initialApplication(context: Context, callback: (List<AudioItem>?) -> Unit) {
+        job?.cancel()
+        job = context.initialApplication {
+            audioList = it
+            callback(it)
+            job = null
+        }
+    }
+    fun launchApplication(context: Context, callback: (List<AudioItem>?) -> Unit) {
+        job?.cancel()
+        job = context.launchApplication {
+            audioList = it
+            callback(it)
+            job = null
+        }
+    }
 
     var audioList: List<AudioItem>? = null
         set(value) {
