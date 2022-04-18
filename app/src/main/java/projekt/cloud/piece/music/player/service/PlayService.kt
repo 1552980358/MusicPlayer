@@ -61,7 +61,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
                             @Suppress("UNCHECKED_CAST")
                             audioList.updateList(index, it.getSerializable(EXTRA_AUDIO_LIST) as List<AudioItem>)
         
-                        else -> audioList.setCurrentIndex(index)
+                        else -> audioList.setIndex(index)
                     }
                 )
             }
