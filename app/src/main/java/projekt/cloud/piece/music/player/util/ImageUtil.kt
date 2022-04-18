@@ -11,6 +11,33 @@ import projekt.cloud.piece.music.player.util.TryUtil.tryRun
 import projekt.cloud.piece.music.player.util.UnitUtil.dp2PxF
 import java.io.File
 
+/**
+ * Object [ImageUtil]
+ *
+ * Constants:
+ *  [ART_OPEN_MODE]
+ *  [ALBUM_ART_URI]
+ *  [SMALL_ART_SIZE_DP]
+ *  [DIR_ALBUM_ART_LARGE]
+ *  [DIR_ALBUM_ART_SMALL]
+ *
+ * Getters:
+ *  [artUri]
+ *
+ * Methods:
+ *  [extractArtBitmap]
+ *
+ *  [getAlbumArtLargeFile]
+ *  [saveAlbumArtLarge]
+ *  [readAlbumArtLarge]
+ *
+ *  [getAlbumArtSmallFile]
+ *  [saveAlbumArtSmall]
+ *  [readAlbumArtSmall]
+ *
+ *  [saveAlbumArt]
+ *
+ **/
 object ImageUtil {
 
     private const val ART_OPEN_MODE = "r"
