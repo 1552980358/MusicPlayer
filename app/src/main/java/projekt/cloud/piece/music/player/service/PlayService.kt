@@ -14,7 +14,10 @@ import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_NEXT
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_STOP
+import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
@@ -22,12 +25,19 @@ import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
+import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import projekt.cloud.piece.music.player.service.play.AudioList
+import projekt.cloud.piece.music.player.service.play.AudioUtil.formUri
+import projekt.cloud.piece.music.player.service.play.AudioUtil.parseUri
+import projekt.cloud.piece.music.player.service.play.Config.CONFIG_PLAY_REPEAT
+import projekt.cloud.piece.music.player.service.play.Config.CONFIG_PLAY_REPEAT_ONE
 import projekt.cloud.piece.music.player.service.play.Configs
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_AUDIO_LIST
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_CONFIGS
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_INDEX
+import projekt.cloud.piece.music.player.util.CoroutineUtil.io
+import projekt.cloud.piece.music.player.util.ImageUtil.readAlbumArtLarge
 
 /**
  * Class [PlayService]
@@ -70,7 +80,34 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
         }
         
         private fun playAudioItem(audioItem: AudioItem) {
-        
+            exoPlayer.setMediaItem(MediaItem.fromUri(audioItem.id.parseUri))
+            
+            playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                .setState(STATE_BUFFERING, 0, DEFAULT_PLAYBACK_SPEED)
+                .build()
+            mediaSessionCompat.setPlaybackState(playbackStateCompat)
+            
+            prepareAudio(audioItem)
+            
+            mediaMetadataCompat = MediaMetadataCompat.Builder()
+                .putString(METADATA_KEY_TITLE, audioItem.title)
+                .putString(METADATA_KEY_ARTIST, audioItem.artistName)
+                .putString(METADATA_KEY_ALBUM, audioItem.albumTitle)
+                .putString(METADATA_KEY_MEDIA_ID, audioItem.id)
+                .putString(METADATA_KEY_ALBUM_ART_URI, audioItem.album.formUri)
+                .putBitmap(METADATA_KEY_ALBUM_ART, audioArt)
+                .putLong(METADATA_KEY_DURATION, audioItem.duration)
+                .build()
+            mediaSessionCompat.setMetadata(mediaMetadataCompat)
+            
+            onPlay()
+        }
+
+        private fun prepareAudio(audioItem: AudioItem) = runBlocking {
+            io {
+                audioArt = readAlbumArtLarge(audioItem.album) ?: defaultAudioArt
+            }
+            exoPlayer.prepare()
         }
         
     }
