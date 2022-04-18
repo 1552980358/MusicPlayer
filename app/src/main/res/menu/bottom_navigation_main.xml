@@ -24,6 +24,8 @@
         android:icon="@drawable/ic_round_playlist_24"
         android:title="@string/main_bottom_navigation_playlist" />
     
-    <item android:title="" />
+    <item
+        android:title=""
+        android:enabled="false" />
 
 </menu>
