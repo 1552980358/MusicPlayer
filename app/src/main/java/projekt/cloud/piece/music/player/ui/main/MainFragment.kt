@@ -93,8 +93,6 @@ class MainFragment: BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        bottomNavigationView.background = null
-
         with(requireActivity() as AppCompatActivity) {
             setSupportActionBar(materialToolbar)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
