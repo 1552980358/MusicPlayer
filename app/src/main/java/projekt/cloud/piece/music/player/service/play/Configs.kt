@@ -7,8 +7,16 @@ class Configs: Serializable {
     var configs = 0
         private set
     
-    fun check(config: Int) =
+    fun isTrue(config: Int) =
         ((configs shr config) and 1) == 1
+
+    fun isFalse(config: Int) = !isTrue(config)
+
+    fun and(vararg configs: Int) =
+        configs.indexOfFirst { isFalse(it) } == -1
+
+    fun nAnd(vararg configs: Int) =
+        configs.indexOfFirst { isTrue(it) } == -1
     
     operator fun set(config: Int, newValue: Boolean) {
         configs = when {
