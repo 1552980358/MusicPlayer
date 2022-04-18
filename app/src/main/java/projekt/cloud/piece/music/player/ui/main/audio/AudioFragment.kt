@@ -8,6 +8,7 @@ import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.TAG_AUDIO_LIST
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import projekt.cloud.piece.music.player.ui.main.audio.util.RecyclerViewAdapter
@@ -51,7 +52,7 @@ class AudioFragment: BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        containerViewModel.register<List<AudioItem>>(TAG, true) {
+        containerViewModel.register<List<AudioItem>>(TAG, TAG_AUDIO_LIST) {
             recyclerViewAdapter.audioList = it
         }
     }
