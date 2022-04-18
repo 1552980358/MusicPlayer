@@ -1,7 +1,7 @@
 <resources>
     
     <!-- Base application theme. -->
-    <style name="Theme.CloudPiece" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.CloudPiece" parent="Theme.Material3.DayNight.NoActionBar">
     </style>
     
 </resources>
