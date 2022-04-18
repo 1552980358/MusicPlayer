@@ -3,6 +3,34 @@ package projekt.cloud.piece.music.player.service.play
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import java.io.Serializable
 
+/**
+ * Class [AudioList]
+ *  implements [Serializable]
+ *
+ * Final Variables:
+ *  [_audioList]
+ *   @type [ArrayList]<[AudioItem]>
+ *
+ * Variables:
+ *  [current]
+ *
+ * Getters:
+ *  [index]
+ *  [prev]
+ *  [next]
+ *  [head]
+ *  [last]
+ *  [isHead]
+ *  [isLast]
+ *  [audioItem]
+ *
+ * Methods:
+ *  [updateList]
+ *  [setIndex]
+ *  [get]
+ *  [updateIndex]
+ *
+ **/
 class AudioList: Serializable {
     
     private val _audioList = ArrayList<AudioItem>()
