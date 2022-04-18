@@ -6,8 +6,6 @@
         <item name="android:navigationBarColor">?attr/colorPrimaryDark</item>
     </style>
     
-    <style name="Theme.CloudPiece.Material2" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
-    
     <style name="Theme.MusicPlayer.AppBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="Theme.CloudPiece.Toolbar" parent="ThemeOverlay.AppCompat.Light" />
     
