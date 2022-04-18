@@ -22,47 +22,35 @@ import kotlin.reflect.KClass
  **/
 class MainActivityViewModel: ViewModel() {
 
+    companion object {
+        const val TAG_AUDIO_LIST = "TAG_AUDIO_LIST"
+    }
+
     /**
      * Inner Class [Observer]
      * Final Variables:
      *  [tag]
      *   @type String
-     *  [oneTimeUse]
-     *   @type Boolean
-     *   @default false
-     *  [clazz]
-     *   @type KClass
+     *  [varTag]
+     *   @type String
      *  [callback]
      *   @type (T>) -> Unit
      */
-    class Observer<T: Any>(val tag: String,
-                      val oneTimeUse: Boolean = false,
-                      val clazz: KClass<T>,
-                      val callback: (T?) -> Unit)
-
+    private class Observer<T>(val tag: String, val varTag: String, val callback: (T?) -> Unit)
     private val observers = ArrayList<Observer<*>>()
 
-    inline fun <reified T: Any> register(tag: String, oneTimeUse: Boolean, noinline callback: (T?) -> Unit) =
-        register(Observer(tag, oneTimeUse, T::class, callback))
-    fun <T: Any> register(observer: Observer<T>) =
-        observers.add(observer)
-
-    inline fun <reified T: Any> unregister(tag: String) =
-        unregister(tag, T::class)
-    fun <T: Any> unregister(tag: String, kClass: KClass<T>) =
-        observers.removeAll { it.tag == tag && it.clazz == kClass }
+    fun <T> register(tag: String, variableTag: String, callback: (T?) -> Unit) =
+        observers.add(Observer(tag, variableTag, callback))
+    fun unregister(tag: String, varTag: String) = observers.removeAll { it.tag == tag && it.varTag == varTag }
     fun unregisterAll(tag: String) = observers.removeAll { it.tag == tag }
 
-    private var audioList: List<AudioItem>? = null
+    var audioList: List<AudioItem>? = null
         set(value) {
             field = value
             observers.forEach {
-                if (it.clazz == AudioItem::class) {
+                if (it.varTag == TAG_AUDIO_LIST) {
                     @Suppress("UNCHECKED_CAST")
-                    (it.callback as (List<AudioItem>?) -> Unit)(value)
-                    if (it.oneTimeUse) {
-                        observers.remove(it)
-                    }
+                    (it as Observer<List<AudioItem>?>).callback(value)
                 }
             }
         }
