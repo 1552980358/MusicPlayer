@@ -1,11 +1,14 @@
 package projekt.cloud.piece.music.player.ui.main
 
+import android.Manifest.permission
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -132,6 +135,19 @@ class MainFragment: BaseFragment() {
                 MainFragmentDirections.actionMainFragmentToPlayFragment(),
                 FragmentNavigatorExtras(extFab to extFab.transitionName)
             )
+        }
+
+        when (ContextCompat.checkSelfPermission(requireContext(), permission.READ_EXTERNAL_STORAGE)) {
+            PERMISSION_GRANTED -> containerViewModel.launchApplication(requireActivity(), {})
+            else -> {
+                containerViewModel.setOnPermissionResult {
+                    if (it.filter { (_, value) -> !value }.isNotEmpty()) {
+                        return@setOnPermissionResult
+                    }
+                    containerViewModel.initialApplication(requireContext(), {})
+                }
+                containerViewModel.requestPermissions.launch(arrayOf(permission.READ_EXTERNAL_STORAGE))
+            }
         }
     }
 
