@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         delegate.onCreate(savedInstanceState)
 
         viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
+        viewModel.registerForActivityResult(this)
 
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
