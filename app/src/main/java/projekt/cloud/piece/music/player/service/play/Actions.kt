@@ -1,9 +1,16 @@
 package projekt.cloud.piece.music.player.service.play
 
+import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
+
 object Actions {
     
     const val ACTION_START_COMMAND = "ACTION_START_COMMAND"
     const val ACTION_START_COMMAND_PLAY = "ACTION_START_COMMAND_PLAY"
     const val ACTION_START_COMMAND_PAUSE = "ACTION_START_COMMAND_PAUSE"
+    
+    const val ACTION_BROADCAST_PREV = "${APPLICATION_ID}.ACTION_BROADCAST_PREV"
+    const val ACTION_BROADCAST_PLAY = "${APPLICATION_ID}.ACTION_BROADCAST_PLAY"
+    const val ACTION_BROADCAST_PAUSE = "${APPLICATION_ID}.ACTION_BROADCAST_PAUSE"
+    const val ACTION_BROADCAST_NEXT = "${APPLICATION_ID}.ACTION_BROADCAST_NEXT"
     
 }
