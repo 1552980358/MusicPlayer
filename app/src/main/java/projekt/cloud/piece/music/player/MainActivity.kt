@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
@@ -16,6 +18,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import projekt.cloud.piece.music.player.database.Database.audioRoom
 import projekt.cloud.piece.music.player.databinding.ActivityMainBinding
 import projekt.cloud.piece.music.player.service.PlayService
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
@@ -125,6 +128,11 @@ class MainActivity : AppCompatActivity() {
         this + (this % DELAY_DIFF_MILLIS).apply { delay(this) }
     
     private fun metadataChanged(metadata: MediaMetadataCompat) {
+        io {
+            val audioItem = audioRoom.queryAudio(metadata.getString(METADATA_KEY_MEDIA_ID))
+            ui { viewModel.audioItem = audioItem }
+        }
+        viewModel.bitmapArt = metadata.getBitmap(METADATA_KEY_ALBUM_ART)
     }
 
 }
