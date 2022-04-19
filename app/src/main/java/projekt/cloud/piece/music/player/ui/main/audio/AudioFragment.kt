@@ -55,6 +55,17 @@ class AudioFragment: BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        recyclerViewAdapter.setOnClick { audioItem, audioList ->
+            requireActivity().mediaController
+                .transportControls
+                .playFromMediaId(
+                    audioItem?.id,
+                    bundleOf(
+                        EXTRA_AUDIO_ITEM to audioItem,
+                        EXTRA_AUDIO_LIST to audioList
+                    )
+                )
+        }
         containerViewModel.register<List<AudioItem>>(TAG, LABEL_AUDIO_LIST) {
             recyclerViewAdapter.audioList = it
         }
