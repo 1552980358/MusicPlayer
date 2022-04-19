@@ -2,6 +2,8 @@ package projekt.cloud.piece.music.player.ui.main
 
 import android.Manifest.permission
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,14 +22,21 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import com.google.android.material.transition.Hold
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_AUDIO_ITEM
+import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_BITMAP_ART
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseFragment
+import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.FragmentMainBinding
 import projekt.cloud.piece.music.player.ui.main.album.AlbumFragment
 import projekt.cloud.piece.music.player.ui.main.artist.ArtistFragment
 import projekt.cloud.piece.music.player.ui.main.audio.AudioFragment
 import projekt.cloud.piece.music.player.ui.main.base.RecyclerViewScrollHandler
 import projekt.cloud.piece.music.player.ui.main.playlist.PlaylistFragment
+import projekt.cloud.piece.music.player.util.CoroutineUtil.io
+import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
 
 /**
  * Class [MainFragment], inherit to [BaseFragment]
@@ -55,6 +64,11 @@ import projekt.cloud.piece.music.player.ui.main.playlist.PlaylistFragment
  *
  **/
 class MainFragment: BaseFragment() {
+    
+    companion object {
+        private const val TAG = "MainFragment"
+        private const val DELAY_EXT_FAB_UPDATED = 5000L
+    }
 
     /**
      * Inner Class [MainFragmentViewModel]
@@ -83,6 +97,8 @@ class MainFragment: BaseFragment() {
     private val extFab get() = appBarMain.extendedFloatingActionButton
 
     private lateinit var navController: NavController
+    
+    private var countJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -159,9 +175,25 @@ class MainFragment: BaseFragment() {
                     FragmentNavigatorExtras(extFab to extFab.transitionName)
                 )
             }
-            setIconResource(R.drawable.ic_round_audiotrack_24)
-            shrink()
+            
             setAnimateShowBeforeLayout(true)
+            
+            when (val bitmap = containerViewModel.bitmapArt) {
+                null -> setIconResource(R.drawable.ic_round_audiotrack_24)
+                else -> icon = BitmapDrawable(resources, bitmap)
+            }
+            when (val audioItem = containerViewModel.audioItem) {
+                null -> shrink()
+                else -> updateAudioItem(audioItem)
+            }
+            
+            containerViewModel.register<Bitmap>(TAG, LABEL_BITMAP_ART) {
+                it?.let { icon = BitmapDrawable(resources, it) }
+            }
+        }
+    
+        containerViewModel.register<AudioItem>(TAG, LABEL_AUDIO_ITEM) {
+            it?.let { updateAudioItem(it) }
         }
 
         when (ContextCompat.checkSelfPermission(requireContext(), permission.READ_EXTERNAL_STORAGE)) {
@@ -181,6 +213,18 @@ class MainFragment: BaseFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+    
+    private fun updateAudioItem(audioItem: AudioItem) {
+        extFab.text = audioItem.title
+        countJob?.cancel()
+        countJob = io {
+            if (!extFab.isExtended) {
+                ui { extFab.extend() }
+            }
+            delay(DELAY_EXT_FAB_UPDATED)
+            ui { extFab.shrink() }
+        }
     }
 
 }
