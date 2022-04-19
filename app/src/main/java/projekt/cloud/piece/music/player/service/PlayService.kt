@@ -1,5 +1,6 @@
 package projekt.cloud.piece.music.player.service
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -29,6 +30,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
 import androidx.media.MediaBrowserServiceCompat
+import androidx.media.session.MediaButtonReceiver.handleIntent
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -36,15 +38,20 @@ import kotlinx.coroutines.runBlocking
 import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
+import projekt.cloud.piece.music.player.service.play.Actions.ACTION_START_COMMAND_PLAY
+import projekt.cloud.piece.music.player.service.play.Actions.ACTION_START_COMMAND
+import projekt.cloud.piece.music.player.service.play.Actions.ACTION_START_COMMAND_PAUSE
 import projekt.cloud.piece.music.player.service.play.AudioList
 import projekt.cloud.piece.music.player.service.play.AudioUtil.formUri
 import projekt.cloud.piece.music.player.service.play.AudioUtil.parseUri
 import projekt.cloud.piece.music.player.service.play.Config.CONFIG_PLAY_REPEAT
 import projekt.cloud.piece.music.player.service.play.Config.CONFIG_PLAY_REPEAT_ONE
+import projekt.cloud.piece.music.player.service.play.Config.CONFIG_SERVICE_FOREGROUND
 import projekt.cloud.piece.music.player.service.play.Configs
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_AUDIO_LIST
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_CONFIGS
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_INDEX
+import projekt.cloud.piece.music.player.service.play.ServiceNotification
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.ImageUtil.readAlbumArtLarge
 
@@ -174,6 +181,8 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
 
     private val configs = Configs()
     
+    private val serviceNotification = ServiceNotification(this)
+    
     private val defaultAudioArt =
         ContextCompat.getDrawable(this, R.drawable.ic_round_audiotrack_200)!!.toBitmap()
     private var audioArt = defaultAudioArt
@@ -196,6 +205,30 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
         }
         
         exoPlayer.addListener(this)
+    }
+    
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        when (intent?.getStringExtra(ACTION_START_COMMAND)) {
+            ACTION_START_COMMAND_PLAY -> {
+                when {
+                    configs.isFalse(CONFIG_SERVICE_FOREGROUND) -> {
+                        serviceNotification.startForeground(this, audioList.audioItem, true, audioArt)
+                        configs[CONFIG_SERVICE_FOREGROUND] = true
+                    }
+                    
+                    else -> serviceNotification.updateNotification(this, audioList.audioItem, true, audioArt)
+                }
+            }
+            
+            ACTION_START_COMMAND_PAUSE -> {
+                serviceNotification.startForeground(this, audioList.audioItem, false, audioArt)
+                stopForeground(false)
+                configs[CONFIG_SERVICE_FOREGROUND] = false
+            }
+            
+            else -> handleIntent(mediaSessionCompat, intent)
+        }
+        return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?) = when {
