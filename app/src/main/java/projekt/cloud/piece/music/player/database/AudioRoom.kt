@@ -45,5 +45,10 @@ abstract class AudioRoom: RoomDatabase() {
         it.artistItem = artistDao.query(it.artist)
         it.albumItem = albumDao.query(it.album)
     }
+    
+    fun queryAudio(id: String) = audioDao.query(id).apply {
+        artistItem = artistDao.query(artist)
+        albumItem = albumDao.query(album)
+    }
 
 }
