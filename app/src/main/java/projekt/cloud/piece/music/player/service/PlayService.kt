@@ -51,7 +51,7 @@ import projekt.cloud.piece.music.player.service.play.Config.CONFIG_SERVICE_FOREG
 import projekt.cloud.piece.music.player.service.play.Configs
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_AUDIO_LIST
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_CONFIGS
-import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_INDEX
+import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_AUDIO_ITEM
 import projekt.cloud.piece.music.player.service.play.ServiceNotification
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.ImageUtil.readAlbumArtLarge
@@ -106,18 +106,15 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
         
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
             extras?.let {
-                if (!it.containsKey(EXTRA_INDEX)) {
+                if (!it.containsKey(EXTRA_AUDIO_ITEM) && !it.containsKey(EXTRA_AUDIO_LIST)) {
                     return
                 }
-                val index = it.getInt(EXTRA_INDEX)
                 playAudioItem(
-                    when {
-                        it.containsKey(EXTRA_AUDIO_LIST) ->
-                            @Suppress("UNCHECKED_CAST")
-                            audioList.updateList(index, it.getSerializable(EXTRA_AUDIO_LIST) as List<AudioItem>)
-        
-                        else -> audioList.setIndex(index)
-                    }
+                    @Suppress("UNCHECKED_CAST")
+                    audioList.updateList(
+                        it.getSerializable(EXTRA_AUDIO_ITEM) as AudioItem,
+                        it.getSerializable(EXTRA_AUDIO_LIST) as List<AudioItem>
+                    )
                 )
             }
         }
