@@ -16,6 +16,9 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import com.google.android.material.transition.Hold
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseFragment
@@ -23,6 +26,7 @@ import projekt.cloud.piece.music.player.databinding.FragmentMainBinding
 import projekt.cloud.piece.music.player.ui.main.album.AlbumFragment
 import projekt.cloud.piece.music.player.ui.main.artist.ArtistFragment
 import projekt.cloud.piece.music.player.ui.main.audio.AudioFragment
+import projekt.cloud.piece.music.player.ui.main.base.RecyclerViewScrollHandler
 import projekt.cloud.piece.music.player.ui.main.playlist.PlaylistFragment
 
 /**
@@ -93,8 +97,6 @@ class MainFragment: BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        bottomNavigationView.background = null
-
         with(requireActivity() as AppCompatActivity) {
             setSupportActionBar(materialToolbar)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -104,6 +106,24 @@ class MainFragment: BaseFragment() {
                 syncState()
             }
         }
+        
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottomNavigationView)
+        bottomSheetBehavior.isHideable = true
+        bottomSheetBehavior.isDraggable = false
+        bottomSheetBehavior.state = STATE_EXPANDED
+        
+        val recyclerViewScrollHandler = RecyclerViewScrollHandler(
+            onLeaveBottom = {
+                bottomSheetBehavior.state = STATE_EXPANDED
+                extFab.show()
+            },
+            onScrolledToBottom = {
+                bottomSheetBehavior.state = STATE_HIDDEN
+                extFab.hide()
+            }
+        )
+    
+        fragmentList.forEach { it.setRecyclerViewScrollHandler(recyclerViewScrollHandler) }
 
         val bottomNavigationItems = listOf(R.id.nav_audio_track, R.id.nav_album, R.id.nav_artist, R.id.nav_playlist)
 
@@ -118,23 +138,30 @@ class MainFragment: BaseFragment() {
                     bottomNavigationView.menu.getItem(position).apply {
                         isChecked = true
                     }
+                    recyclerViewScrollHandler.clearState()
                 }
             })
 
             bottomNavigationView.setOnItemSelectedListener {
                 currentItem = bottomNavigationItems.indexOfFirst { id -> id == it.itemId }
+                recyclerViewScrollHandler.clearState()
                 true
             }
         }
 
-        extFab.setOnClickListener {
-            if (exitTransition == null || exitTransition !is Hold) {
-                exitTransition = Hold()
+        with(extFab) {
+            setOnClickListener {
+                if (exitTransition == null || exitTransition !is Hold) {
+                    exitTransition = Hold()
+                }
+                navController.navigate(
+                    MainFragmentDirections.actionMainFragmentToPlayFragment(),
+                    FragmentNavigatorExtras(extFab to extFab.transitionName)
+                )
             }
-            navController.navigate(
-                MainFragmentDirections.actionMainFragmentToPlayFragment(),
-                FragmentNavigatorExtras(extFab to extFab.transitionName)
-            )
+            setIconResource(R.drawable.ic_round_audiotrack_24)
+            shrink()
+            setAnimateShowBeforeLayout(true)
         }
 
         when (ContextCompat.checkSelfPermission(requireContext(), permission.READ_EXTERNAL_STORAGE)) {
