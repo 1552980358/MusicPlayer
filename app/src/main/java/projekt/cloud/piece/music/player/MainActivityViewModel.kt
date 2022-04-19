@@ -13,22 +13,26 @@ import projekt.cloud.piece.music.player.util.AudioUtil.launchApplication
 /**
  * Class [MainActivityViewModel], inherit to [ViewModel]
  * Variables:
- *  [observers]
- *   @type ArrayList<Observer<*>>
- *  [audioList]
- *   @type List<AudioItem>
  *  [requestPermissions]
  *   @type Array<String>
  *  [onPermissionResult]
  *   @type (Map<String, Boolean>) -> Unit)?
  *   @default null
+ *  [observers]
+ *   @type ArrayList<Observer<*>>
+ *  [audioList]
+ *   @type List<AudioItem>
+ *  [isPlaying]
+ *   @type Boolean
+ *  [position]
+ *   @type Int
  *
  *  Methods:
+ *   [initialApplication]
+ *   [launchApplication]
  *   [register]
  *   [unregister]
  *   [unregisterAll]
- *   [initialApplication]
- *   [launchApplication]
  *
  * Inner Class [Observer]
  *
@@ -39,6 +43,35 @@ class MainActivityViewModel: ViewModel() {
         const val LABEL_AUDIO_LIST = "LABEL_AUDIO_LIST"
         const val LABEL_IS_PLAYING = "LABEL_IS_PLAYING"
         const val LABEL_POSITION = "LABEL_POSITION"
+    }
+    
+    lateinit var requestPermissions: ActivityResultLauncher<Array<String>>
+    private var onPermissionResult: ((Map<String, Boolean>) -> Unit)? = null
+    fun setOnPermissionResult(onPermissionResult: (Map<String, Boolean>) -> Unit) {
+        this.onPermissionResult = onPermissionResult
+    }
+    fun registerForActivityResult(appCompatActivity: AppCompatActivity) {
+        requestPermissions = appCompatActivity.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
+            onPermissionResult?.let { it(results) }
+        }
+    }
+    
+    private var job: Job? = null
+    fun initialApplication(context: Context, callback: (List<AudioItem>?) -> Unit) {
+        job?.cancel()
+        job = context.initialApplication {
+            audioList = it
+            callback(it)
+            job = null
+        }
+    }
+    fun launchApplication(context: Context, callback: (List<AudioItem>?) -> Unit) {
+        job?.cancel()
+        job = context.launchApplication {
+            audioList = it
+            callback(it)
+            job = null
+        }
     }
 
     /**
@@ -67,24 +100,6 @@ class MainActivityViewModel: ViewModel() {
         }
     }
 
-    private var job: Job? = null
-    fun initialApplication(context: Context, callback: (List<AudioItem>?) -> Unit) {
-        job?.cancel()
-        job = context.initialApplication {
-            audioList = it
-            callback(it)
-            job = null
-        }
-    }
-    fun launchApplication(context: Context, callback: (List<AudioItem>?) -> Unit) {
-        job?.cancel()
-        job = context.launchApplication {
-            audioList = it
-            callback(it)
-            job = null
-        }
-    }
-
     var audioList: List<AudioItem>? = null
         set(value) {
             field = value
@@ -102,17 +117,5 @@ class MainActivityViewModel: ViewModel() {
             field = value
             onObserved(LABEL_POSITION, value)
         }
-
-    /***********************************************************/
-    lateinit var requestPermissions: ActivityResultLauncher<Array<String>>
-    private var onPermissionResult: ((Map<String, Boolean>) -> Unit)? = null
-    fun setOnPermissionResult(onPermissionResult: (Map<String, Boolean>) -> Unit) {
-        this.onPermissionResult = onPermissionResult
-    }
-    fun registerForActivityResult(appCompatActivity: AppCompatActivity) {
-        requestPermissions = appCompatActivity.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
-            onPermissionResult?.let { it(results) }
-        }
-    }
 
 }
