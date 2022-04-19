@@ -1,6 +1,7 @@
 package projekt.cloud.piece.music.player
 
 import android.content.Context
+import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -37,6 +38,7 @@ class MainActivityViewModel: ViewModel() {
 
     companion object {
         const val TAG_AUDIO_LIST = "TAG_AUDIO_LIST"
+        const val TAG_PLAYBACK_STATE = "TAG_PLAYBACK_STATE"
     }
 
     /**
@@ -87,6 +89,12 @@ class MainActivityViewModel: ViewModel() {
         set(value) {
             field = value
             onObserved(TAG_AUDIO_LIST, value)
+        }
+    
+    var playbackState = STATE_NONE
+        set(value) {
+            field = value
+            onObserved(TAG_PLAYBACK_STATE, value)
         }
 
     /***********************************************************/
