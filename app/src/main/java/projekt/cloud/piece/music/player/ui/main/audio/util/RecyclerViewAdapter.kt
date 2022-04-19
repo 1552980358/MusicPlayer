@@ -72,7 +72,7 @@ class RecyclerViewAdapter(recyclerView: RecyclerView) {
         }
 
         override fun onClick(v: View?) {
-            onClick?.let { it(binding.audio, audioList) }
+            onClick?.invoke(binding.audio, audioList)
         }
 
         override fun onLongClick(v: View?): Boolean {
