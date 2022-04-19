@@ -15,7 +15,6 @@ import java.io.Serializable
  *  [current]
  *
  * Getters:
- *  [index]
  *  [prev]
  *  [next]
  *  [head]
@@ -34,23 +33,18 @@ import java.io.Serializable
 class AudioList: Serializable {
     
     private val _audioList = ArrayList<AudioItem>()
-    fun updateList(currentIndex: Int, audioList: List<AudioItem>, isShuffle: Boolean = false): AudioItem {
+    fun updateList(audioItem: AudioItem, audioList: List<AudioItem>, isShuffle: Boolean = false): AudioItem {
         _audioList.clear()
         _audioList.addAll(audioList)
-       
-        updateIndex()
-
-        var index = currentIndex
+        
         if (isShuffle) {
             _audioList.shuffle()
-            index = _audioList.indexOfFirst { it.index == currentIndex }
-            updateIndex()
         }
-        return setIndex(index)
+        updateIndex()
+        return setIndex(_audioList.indexOfFirst { it.id == audioItem.id })
     }
     
     private var current = 0
-    val index get() = current
     fun setIndex(index: Int): AudioItem {
         current = index
         return audioItem
