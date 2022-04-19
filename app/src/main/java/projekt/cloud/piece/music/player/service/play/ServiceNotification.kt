@@ -2,10 +2,14 @@ package projekt.cloud.piece.music.player.service.play
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.M
+import android.os.Build.VERSION_CODES.O
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.PRIORITY_MAX
 import androidx.core.app.NotificationManagerCompat
@@ -14,6 +18,10 @@ import androidx.media.MediaBrowserServiceCompat
 import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
+import projekt.cloud.piece.music.player.service.play.Actions.ACTION_BROADCAST_NEXT
+import projekt.cloud.piece.music.player.service.play.Actions.ACTION_BROADCAST_PAUSE
+import projekt.cloud.piece.music.player.service.play.Actions.ACTION_BROADCAST_PLAY
+import projekt.cloud.piece.music.player.service.play.Actions.ACTION_BROADCAST_PREV
 
 /**
  * Class [ServiceNotification]
@@ -64,10 +72,22 @@ class ServiceNotification(context: Context) {
             .setLargeIcon(largeBitmap)
             .setContentTitle(audioItem.title)
             .setContentText("${audioItem.artistName} - ${audioItem.albumTitle}")
+            .addAction(R.drawable.ic_round_skip_previous_24, null, PendingIntent.getBroadcast(service, 0, Intent(ACTION_BROADCAST_PREV), pendingIntentFlag))
+            .addPlayStateButton(service, isPlaying)
+            .addAction(R.drawable.ic_round_skip_next_24, null, PendingIntent.getBroadcast(service, 0, Intent(ACTION_BROADCAST_NEXT), pendingIntentFlag))
             .build()
     
+    private fun NotificationCompat.Builder.addPlayStateButton(service: Service, isPlaying: Boolean) = apply {
+        when {
+            isPlaying -> addAction(R.drawable.ic_round_pause_24, null, PendingIntent.getBroadcast(service, 0, Intent(ACTION_BROADCAST_PAUSE), pendingIntentFlag))
+            else -> addAction(R.drawable.ic_round_play_arrow_24, null, PendingIntent.getBroadcast(service, 0, Intent(ACTION_BROADCAST_PLAY), pendingIntentFlag))
+        }
+    }
+    
+    private val pendingIntentFlag get() = if (SDK_INT >= M) PendingIntent.FLAG_IMMUTABLE else 0
+    
     private val NotificationManagerCompat.notificationChannel get() = apply {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (SDK_INT >= O) {
             createNotificationChannel(
                 NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH).apply {
                     enableVibration(false)
