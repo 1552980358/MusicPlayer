@@ -127,6 +127,9 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
             }
             playAudioItem(audioList.next)
         }
+    
+        override fun onSkipToQueueItem(index: Long)  =
+            playAudioItem(audioList.setIndex(index.toInt()))
         
         private fun playAudioItem(audioItem: AudioItem) {
             exoPlayer.setMediaItem(MediaItem.fromUri(audioItem.id.parseUri))
