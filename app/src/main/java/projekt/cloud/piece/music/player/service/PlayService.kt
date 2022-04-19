@@ -87,6 +87,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
             playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
                 .setState(STATE_PLAYING, exoPlayer.currentPosition, DEFAULT_PLAYBACK_SPEED)
                 .build()
+            mediaSessionCompat.setPlaybackState(playbackStateCompat)
             
             startSelf { putExtra(ACTION_START_COMMAND, ACTION_START_COMMAND_PLAY) }
         }
@@ -100,6 +101,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
             playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
                 .setState(STATE_PAUSED, exoPlayer.currentPosition, DEFAULT_PLAYBACK_SPEED)
                 .build()
+            mediaSessionCompat.setPlaybackState(playbackStateCompat)
     
             startSelf { putExtra(ACTION_START_COMMAND, ACTION_START_COMMAND_PAUSE) }
         }
