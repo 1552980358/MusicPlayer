@@ -56,6 +56,14 @@ class MainActivityViewModel: ViewModel() {
         observers.add(Observer(tag, variableTag, callback))
     fun unregister(tag: String, varTag: String) = observers.removeAll { it.tag == tag && it.varTag == varTag }
     fun unregisterAll(tag: String) = observers.removeAll { it.tag == tag }
+    private fun <T> onObserved(varTag: String, value: T?) {
+        observers.forEach {
+            if (it.varTag == varTag) {
+                @Suppress("UNCHECKED_CAST")
+                (it as Observer<T>).callback(value)
+            }
+        }
+    }
 
     private var job: Job? = null
     fun initialApplication(context: Context, callback: (List<AudioItem>?) -> Unit) {
@@ -78,12 +86,7 @@ class MainActivityViewModel: ViewModel() {
     var audioList: List<AudioItem>? = null
         set(value) {
             field = value
-            observers.forEach {
-                if (it.varTag == TAG_AUDIO_LIST) {
-                    @Suppress("UNCHECKED_CAST")
-                    (it as Observer<List<AudioItem>?>).callback(value)
-                }
-            }
+            onObserved(TAG_AUDIO_LIST, value)
         }
 
     /***********************************************************/
