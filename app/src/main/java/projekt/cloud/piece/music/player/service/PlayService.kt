@@ -54,6 +54,7 @@ import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_INDEX
 import projekt.cloud.piece.music.player.service.play.ServiceNotification
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.ImageUtil.readAlbumArtLarge
+import projekt.cloud.piece.music.player.util.ServiceUtil.startSelf
 
 /**
  * Class [PlayService]
@@ -85,6 +86,8 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
             playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
                 .setState(STATE_PLAYING, exoPlayer.currentPosition, DEFAULT_PLAYBACK_SPEED)
                 .build()
+            
+            startSelf { putExtra(ACTION_START_COMMAND, ACTION_START_COMMAND_PLAY) }
         }
     
         override fun onPause() {
@@ -96,6 +99,8 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
             playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
                 .setState(STATE_PAUSED, exoPlayer.currentPosition, DEFAULT_PLAYBACK_SPEED)
                 .build()
+    
+            startSelf { putExtra(ACTION_START_COMMAND, ACTION_START_COMMAND_PAUSE) }
         }
         
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
