@@ -1,6 +1,7 @@
 package projekt.cloud.piece.music.player
 
 import android.content.Context
+import android.graphics.Bitmap
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +21,8 @@ import projekt.cloud.piece.music.player.util.AudioUtil.launchApplication
  *   @default null
  *  [observers]
  *   @type ArrayList<Observer<*>>
+ *  [audioItem]
+ *   @type AudioItem
  *  [audioList]
  *   @type List<AudioItem>
  *  [isPlaying]
@@ -40,7 +43,9 @@ import projekt.cloud.piece.music.player.util.AudioUtil.launchApplication
 class MainActivityViewModel: ViewModel() {
 
     companion object {
+        const val LABEL_AUDIO_ITEM = "LABEL_AUDIO_ITEM"
         const val LABEL_AUDIO_LIST = "LABEL_AUDIO_LIST"
+        const val LABEL_BITMAP_ART = "LABEL_BITMAP_ART"
         const val LABEL_IS_PLAYING = "LABEL_IS_PLAYING"
         const val LABEL_POSITION = "LABEL_POSITION"
     }
@@ -99,11 +104,23 @@ class MainActivityViewModel: ViewModel() {
             }
         }
     }
+    
+    var audioItem: AudioItem? = null
+        set(value) {
+            field = value
+            onObserved(LABEL_AUDIO_ITEM, value)
+        }
 
     var audioList: List<AudioItem>? = null
         set(value) {
             field = value
             onObserved(LABEL_AUDIO_LIST, value)
+        }
+    
+    var bitmapArt: Bitmap? = null
+        set(value) {
+            field = value
+            onObserved(LABEL_BITMAP_ART, value)
         }
     
     var isPlaying = false
