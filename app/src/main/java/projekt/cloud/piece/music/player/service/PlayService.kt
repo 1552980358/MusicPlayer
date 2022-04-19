@@ -244,6 +244,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     }
 
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
+        result.detach()
     }
     
     override fun onPlaybackStateChanged(playbackState: Int) {
