@@ -55,8 +55,7 @@ class AudioFragment: BaseMainFragment() {
             addOnScrollListener(object: RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     if (recyclerViewAdapter.audioList?.isEmpty() == false
-                        && !recyclerView.canScrollVertically(1)
-                        && newState == SCROLL_STATE_IDLE) {
+                        && !recyclerView.canScrollVertically(1)) {
                         return onScrolledToBottom()
                     }
                     onLeaveBottom()
