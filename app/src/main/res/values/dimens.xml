@@ -2,6 +2,6 @@
 <resources>
     <dimen name="bottom_navigation_bar_margin_end">16dp</dimen>
     
-    <dimen name="fab_margin_horizontal">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
     <dimen name="fab_radius">4dp</dimen>
 </resources>
