@@ -1,6 +1,6 @@
 package projekt.cloud.piece.music.player.ui.main.album
 
-import projekt.cloud.piece.music.player.base.BaseFragment
+import projekt.cloud.piece.music.player.ui.main.base.BaseMainFragment
 
-class AlbumFragment: BaseFragment() {
+class AlbumFragment: BaseMainFragment() {
 }
