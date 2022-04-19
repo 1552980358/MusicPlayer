@@ -15,6 +15,24 @@ import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 
+/**
+ * Class [ServiceNotification]
+ *  @param context: [Context]
+ *
+ * Constants:
+ *  [CHANNEL_NAME]
+ *  [CHANNEL_ID]
+ *  [NOTIFICATION_ID]
+ *
+ * Getters:
+ *  [notificationChannel]
+ *
+ *  Methods:
+ *   [startForeground]
+ *   [updateNotification]
+ *   [createNotification]
+ *
+ **/
 class ServiceNotification(context: Context) {
     
     companion object {
