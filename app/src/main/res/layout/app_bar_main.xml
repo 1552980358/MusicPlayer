@@ -28,22 +28,13 @@
         android:layout_height="match_parent"
         android:id="@+id/view_pager_2"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
-    
-    <com.google.android.material.bottomappbar.BottomAppBar
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/bottom_app_bar"
-        android:layout_gravity="bottom"
-        android:animateLayoutChanges="true"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior">
-        
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/bottom_navigation_view"
-            app:menu="@menu/bottom_navigation_main" />
-    
-    </com.google.android.material.bottomappbar.BottomAppBar>
+        android:id="@+id/bottom_navigation_view"
+        app:menu="@menu/bottom_navigation_main"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:layout_width="wrap_content"
@@ -51,14 +42,12 @@
         android:id="@+id/extended_floating_action_button"
         android:backgroundTint="?attr/colorPrimaryDark"
         android:ellipsize="end"
-        android:layout_marginHorizontal="@dimen/fab_margin_horizontal"
+        android:layout_margin="@dimen/fab_margin"
         android:maxLines="@integer/single_line"
         android:textColor="@color/white"
         android:transitionName="@string/transition_to_play_fragment"
+        android:layout_gravity="bottom|end"
         app:iconTint="@null"
-        app:layout_anchor="@id/bottom_app_bar"
-        app:layout_anchorGravity="top|end"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         style="@style/Theme.CloudPiece.ExtendedFloatingActionBar" />
     
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
