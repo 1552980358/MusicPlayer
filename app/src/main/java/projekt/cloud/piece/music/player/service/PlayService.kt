@@ -1,6 +1,7 @@
 package projekt.cloud.piece.music.player.service
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -179,18 +180,17 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     private lateinit var mediaMetadataCompat: MediaMetadataCompat
     private lateinit var playbackStateCompat: PlaybackStateCompat
     
-    private var exoPlayer = ExoPlayer.Builder(this)
-        .build()
+    private val exoPlayer by lazy { ExoPlayer.Builder(this).build() }
 
     private val audioList = AudioList()
 
     private val configs = Configs()
     
-    private val serviceNotification = ServiceNotification(this)
+    private val serviceNotification by lazy { ServiceNotification(this) }
     
-    private val defaultAudioArt =
-        ContextCompat.getDrawable(this, R.drawable.ic_round_audiotrack_200)!!.toBitmap()
-    private var audioArt = defaultAudioArt
+    private lateinit var defaultAudioArt: Bitmap
+    
+    private lateinit var audioArt: Bitmap
     
     override fun onCreate() {
         super.onCreate()
@@ -208,6 +208,8 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
             
             this@PlayService.sessionToken = sessionToken
         }
+        
+        defaultAudioArt = ContextCompat.getDrawable(this, R.drawable.ic_round_audiotrack_200)!!.toBitmap()
         
         exoPlayer.addListener(this)
     }
