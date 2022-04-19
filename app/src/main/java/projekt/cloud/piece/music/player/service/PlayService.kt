@@ -39,6 +39,10 @@ import kotlinx.coroutines.runBlocking
 import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
+import projekt.cloud.piece.music.player.service.play.Actions.ACTION_BROADCAST_NEXT
+import projekt.cloud.piece.music.player.service.play.Actions.ACTION_BROADCAST_PAUSE
+import projekt.cloud.piece.music.player.service.play.Actions.ACTION_BROADCAST_PLAY
+import projekt.cloud.piece.music.player.service.play.Actions.ACTION_BROADCAST_PREV
 import projekt.cloud.piece.music.player.service.play.Actions.ACTION_START_COMMAND_PLAY
 import projekt.cloud.piece.music.player.service.play.Actions.ACTION_START_COMMAND
 import projekt.cloud.piece.music.player.service.play.Actions.ACTION_START_COMMAND_PAUSE
@@ -53,6 +57,8 @@ import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_AUDIO_LIST
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_CONFIGS
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_AUDIO_ITEM
 import projekt.cloud.piece.music.player.service.play.ServiceNotification
+import projekt.cloud.piece.music.player.util.BroadcastReceiverImpl
+import projekt.cloud.piece.music.player.util.BroadcastReceiverImpl.Companion.broadcastReceiver
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.ImageUtil.readAlbumArtLarge
 import projekt.cloud.piece.music.player.util.ServiceUtil.startSelf
@@ -176,6 +182,20 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
         
     }
     
+    private val transportControls get() = mediaSessionCompat.controller.transportControls
+    
+    private val broadcastReceiver = broadcastReceiver {
+        setActions(ACTION_BROADCAST_PREV, ACTION_BROADCAST_PLAY, ACTION_BROADCAST_PAUSE, ACTION_BROADCAST_NEXT)
+        setOnReceive { _, intent ->
+            when (intent?.action) {
+                ACTION_BROADCAST_PREV -> transportControls.skipToPrevious()
+                ACTION_BROADCAST_PLAY -> transportControls.play()
+                ACTION_BROADCAST_PAUSE -> transportControls.pause()
+                ACTION_BROADCAST_NEXT -> transportControls.skipToNext()
+            }
+        }
+    }
+    
     private lateinit var mediaMetadataCompat: MediaMetadataCompat
     private lateinit var playbackStateCompat: PlaybackStateCompat
     
@@ -209,6 +229,8 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
         }
         
         defaultAudioArt = ContextCompat.getDrawable(this, R.drawable.ic_round_audiotrack_200)!!.toBitmap()
+        
+        broadcastReceiver.register(this)
         
         exoPlayer.addListener(this)
     }
