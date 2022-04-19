@@ -1,7 +1,6 @@
 package projekt.cloud.piece.music.player
 
 import android.content.Context
-import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -37,30 +36,31 @@ import projekt.cloud.piece.music.player.util.AudioUtil.launchApplication
 class MainActivityViewModel: ViewModel() {
 
     companion object {
-        const val TAG_AUDIO_LIST = "TAG_AUDIO_LIST"
-        const val TAG_PLAYBACK_STATE = "TAG_PLAYBACK_STATE"
+        const val LABEL_AUDIO_LIST = "LABEL_AUDIO_LIST"
+        const val LABEL_IS_PLAYING = "LABEL_IS_PLAYING"
+        const val LABEL_POSITION = "LABEL_POSITION"
     }
 
     /**
      * Inner Class [Observer]
      * Final Variables:
-     *  [tag]
+     *  [owner]
      *   @type String
-     *  [varTag]
+     *  [label]
      *   @type String
      *  [callback]
      *   @type (T>) -> Unit
      */
-    private class Observer<T>(val tag: String, val varTag: String, val callback: (T?) -> Unit)
+    private class Observer<T>(val owner: String, val label: String, val callback: (T?) -> Unit)
     private val observers = ArrayList<Observer<*>>()
 
     fun <T> register(tag: String, variableTag: String, callback: (T?) -> Unit) =
         observers.add(Observer(tag, variableTag, callback))
-    fun unregister(tag: String, varTag: String) = observers.removeAll { it.tag == tag && it.varTag == varTag }
-    fun unregisterAll(tag: String) = observers.removeAll { it.tag == tag }
-    private fun <T> onObserved(varTag: String, value: T?) {
+    fun unregister(tag: String, varTag: String) = observers.removeAll { it.owner == tag && it.label == varTag }
+    fun unregisterAll(tag: String) = observers.removeAll { it.owner == tag }
+    private fun <T> onObserved(label: String, value: T?) {
         observers.forEach {
-            if (it.varTag == varTag) {
+            if (it.label == label) {
                 @Suppress("UNCHECKED_CAST")
                 (it as Observer<T>).callback(value)
             }
@@ -88,13 +88,19 @@ class MainActivityViewModel: ViewModel() {
     var audioList: List<AudioItem>? = null
         set(value) {
             field = value
-            onObserved(TAG_AUDIO_LIST, value)
+            onObserved(LABEL_AUDIO_LIST, value)
         }
     
-    var playbackState = STATE_NONE
+    var isPlaying = false
         set(value) {
             field = value
-            onObserved(TAG_PLAYBACK_STATE, value)
+            onObserved(LABEL_IS_PLAYING, value)
+        }
+    
+    var position = 0L
+        set(value) {
+            field = value
+            onObserved(LABEL_POSITION, value)
         }
 
     /***********************************************************/
