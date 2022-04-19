@@ -12,6 +12,9 @@ interface AudioDao {
 
     @Query("select * from audio")
     fun queryAll(): List<AudioItem>
+    
+    @Query("select * from audio where id = :id")
+    fun query(id: String): AudioItem
 
     @Insert
     fun insert(vararg audios: AudioItem)
