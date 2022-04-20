@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -132,7 +133,14 @@ class MainActivity : AppCompatActivity() {
             val audioItem = audioRoom.queryAudio(metadata.getString(METADATA_KEY_MEDIA_ID))
             ui { viewModel.audioItem = audioItem }
         }
-        viewModel.bitmapArt = metadata.getBitmap(METADATA_KEY_ALBUM_ART)
+        when {
+            metadata.containsKey(METADATA_KEY_ALBUM_ART_URI) -> {
+                viewModel.bitmapArt = metadata.getBitmap(METADATA_KEY_ALBUM_ART)
+            }
+
+            else -> viewModel.bitmapArt = null
+        }
+
     }
 
 }
