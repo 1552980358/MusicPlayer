@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.devtools.ksp")
+    id("kotlin-kapt")
 }
 
 android {
@@ -39,6 +40,9 @@ android {
         viewBinding = true
         dataBinding = true
     }
+    kapt {
+        generateStubs = true
+    }
     lint.abortOnError = false
 }
 
@@ -61,7 +65,7 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
-    ksp("androidx.databinding:databinding-compiler-common:${rootProject.extra["gradleVersion"]}")
+    kapt("androidx.databinding:databinding-compiler-common:${rootProject.extra["gradleVersion"]}")
 
     implementation("com.google.android.material:material:1.5.0")
     val exoPlayerVersion = "2.16.1"
