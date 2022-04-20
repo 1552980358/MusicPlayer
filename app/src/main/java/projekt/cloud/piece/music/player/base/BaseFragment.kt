@@ -25,4 +25,7 @@ open class BaseFragment: Fragment() {
         containerViewModel = ViewModelProvider(requireActivity() as MainActivity)[MainActivityViewModel::class.java]
     }
 
+    val canReturn get() = onBackPressed()
+    protected open fun onBackPressed() = true
+
 }
