@@ -8,7 +8,7 @@
         <item name="extendedFloatingActionButtonStyle">@style/Theme.CloudPiece.ExtendedFloatingActionBar</item>
     </style>
     
-    <style name="Theme.MusicPlayer.AppBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.CloudPiece.AppBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="Theme.CloudPiece.Toolbar" parent="ThemeOverlay.AppCompat.Light" />
     
     <style name="Theme.CloudPiece.ExtendedFloatingActionBar" parent="Widget.Material3.ExtendedFloatingActionButton.Icon.Primary">
