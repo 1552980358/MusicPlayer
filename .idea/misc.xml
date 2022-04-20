@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/drawable/ic_round_audiotrack_24.xml" value="0.235" />
         <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/layout/activity_main.xml" value="0.3515625" />
+        <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/layout/app_bar_main.xml" value="0.17806484295845998" />
       </map>
     </option>
   </component>
