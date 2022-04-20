@@ -7,15 +7,15 @@ class RecyclerViewScrollHandler(private val onScrolledToBottom: () -> Unit,
     
     fun onScrolledToBottom() {
         if (!isBottom) {
-            onScrolledToBottom.invoke()
             isBottom = true
+            onScrolledToBottom.invoke()
         }
     }
     
     fun onLeaveBottom() {
         if (isBottom) {
-            onLeaveBottom.invoke()
             isBottom = false
+            onLeaveBottom.invoke()
         }
     }
     
