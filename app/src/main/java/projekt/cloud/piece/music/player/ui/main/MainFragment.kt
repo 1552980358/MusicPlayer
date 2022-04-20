@@ -126,8 +126,9 @@ class MainFragment: BaseFragment() {
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomNavigationView)
         bottomSheetBehavior.isHideable = true
         bottomSheetBehavior.isDraggable = false
+        bottomSheetBehavior.peekHeight = 0
         bottomSheetBehavior.state = STATE_EXPANDED
-        
+
         val recyclerViewScrollHandler = RecyclerViewScrollHandler(
             onLeaveBottom = {
                 bottomSheetBehavior.state = STATE_EXPANDED
