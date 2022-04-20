@@ -47,7 +47,6 @@
         android:textColor="@color/white"
         android:transitionName="@string/transition_to_play_fragment"
         android:layout_gravity="bottom|end"
-        app:iconTint="@null"
-        style="@style/Theme.CloudPiece.ExtendedFloatingActionBar" />
+        app:iconTint="@null" />
     
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
