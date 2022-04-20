@@ -4,12 +4,14 @@
     <style name="Theme.CloudPiece" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:statusBarColor">?attr/colorPrimaryDark</item>
         <item name="android:navigationBarColor">?attr/colorPrimaryDark</item>
+
+        <item name="extendedFloatingActionButtonStyle">@style/Theme.CloudPiece.ExtendedFloatingActionBar</item>
     </style>
     
     <style name="Theme.MusicPlayer.AppBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="Theme.CloudPiece.Toolbar" parent="ThemeOverlay.AppCompat.Light" />
     
-    <style name="Theme.CloudPiece.ExtendedFloatingActionBar" parent="Widget.MaterialComponents.ExtendedFloatingActionButton.Icon">
+    <style name="Theme.CloudPiece.ExtendedFloatingActionBar" parent="Widget.Material3.ExtendedFloatingActionButton.Icon.Primary">
         <item name="shapeAppearanceOverlay">@style/ExtendedFloatingActionButtonStyle</item>
     </style>
     
