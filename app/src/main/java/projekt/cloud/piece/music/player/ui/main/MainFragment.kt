@@ -188,7 +188,10 @@ class MainFragment: BaseFragment() {
             }
             
             containerViewModel.register<Bitmap>(TAG, LABEL_BITMAP_ART) {
-                it?.let { icon = BitmapDrawable(resources, it) }
+                when (it) {
+                    null -> setIconResource(R.drawable.ic_round_audiotrack_24)
+                    else -> icon = BitmapDrawable(resources, it)
+                }
             }
         }
     
