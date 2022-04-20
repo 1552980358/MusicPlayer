@@ -215,6 +215,8 @@ class MainFragment: BaseFragment() {
     }
 
     override fun onDestroyView() {
+        containerViewModel.unregisterAll(TAG)
+        countJob?.cancel()
         super.onDestroyView()
         _binding = null
     }
