@@ -164,8 +164,8 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
                 .putString(METADATA_KEY_ARTIST, audioItem.artistName)
                 .putString(METADATA_KEY_ALBUM, audioItem.albumTitle)
                 .putString(METADATA_KEY_MEDIA_ID, audioItem.id)
-                .putString(METADATA_KEY_ALBUM_ART_URI, audioItem.album.formUri)
-                .putBitmap(METADATA_KEY_ALBUM_ART, audioArt)
+                .apply { if (audioArt != null) putString(METADATA_KEY_ALBUM_ART_URI, audioItem.album.formUri) }
+                .putBitmap(METADATA_KEY_ALBUM_ART, audioArt ?: defaultAudioArt)
                 .putLong(METADATA_KEY_DURATION, audioItem.duration)
                 .build()
             mediaSessionCompat.setMetadata(mediaMetadataCompat)
@@ -175,7 +175,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
 
         private fun prepareAudio(audioItem: AudioItem) = runBlocking {
             io {
-                audioArt = readAlbumArtLarge(audioItem.album) ?: defaultAudioArt
+                audioArt = readAlbumArtLarge(audioItem.album)
             }
             exoPlayer.prepare()
         }
@@ -209,7 +209,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     
     private lateinit var defaultAudioArt: Bitmap
     
-    private lateinit var audioArt: Bitmap
+    private var audioArt: Bitmap? = null
     
     override fun onCreate() {
         super.onCreate()
@@ -238,6 +238,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.getStringExtra(ACTION_START_COMMAND)) {
             ACTION_START_COMMAND_PLAY -> {
+                val audioArt = audioArt ?: defaultAudioArt
                 when {
                     configs.isFalse(CONFIG_SERVICE_FOREGROUND) -> {
                         serviceNotification.startForeground(this, audioList.audioItem, true, audioArt)
@@ -249,7 +250,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
             }
             
             ACTION_START_COMMAND_PAUSE -> {
-                serviceNotification.startForeground(this, audioList.audioItem, false, audioArt)
+                serviceNotification.startForeground(this, audioList.audioItem, false, audioArt ?: defaultAudioArt)
                 stopForeground(false)
                 configs[CONFIG_SERVICE_FOREGROUND] = false
             }
@@ -269,7 +270,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     }
     
     override fun onPlaybackStateChanged(playbackState: Int) {
-    
+
     }
 
 }
