@@ -4,4 +4,6 @@
     
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="fab_radius">4dp</dimen>
+    
+    <dimen name="time_view_text_size">16sp</dimen>
 </resources>
