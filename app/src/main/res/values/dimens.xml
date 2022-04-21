@@ -6,4 +6,9 @@
     <dimen name="fab_radius">4dp</dimen>
     
     <dimen name="time_view_text_size">16sp</dimen>
+
+    <dimen name="progress_bar_default_height">16dp</dimen>
+    <dimen name="progress_bar_default_radius">6dp</dimen>
+    <dimen name="progress_bar_default_remain_thick">2dp</dimen>
+    <dimen name="progress_bar_default_circle_stroke_width">2dp</dimen>
 </resources>

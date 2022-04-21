@@ -9,4 +9,10 @@
         
     </declare-styleable>
     
+    <declare-styleable name="ProgressBar">
+        <attr name="circleRadius" format="dimension" />
+        <attr name="circleStrokeWidth" format="dimension" />
+        <attr name="remain_thick" format="dimension" />
+    </declare-styleable>
+    
 </resources>
