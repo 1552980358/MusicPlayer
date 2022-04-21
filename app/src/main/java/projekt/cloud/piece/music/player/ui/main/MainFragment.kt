@@ -134,15 +134,12 @@ class MainFragment: BaseFragment() {
             }
         )
     
-        viewModel.fragmentList.forEach { it.setRecyclerViewScrollHandler(recyclerViewScrollHandler) }
+        viewModel.forEach { it.setRecyclerViewScrollHandler(recyclerViewScrollHandler) }
 
         val bottomNavigationItems = listOf(R.id.nav_audio_track, R.id.nav_album, R.id.nav_artist, R.id.nav_playlist)
 
         with(viewPager2) {
-            adapter = object : FragmentStateAdapter(this@MainFragment) {
-                override fun getItemCount() = viewModel.size
-                override fun createFragment(position: Int) = viewModel[position]
-            }
+            viewModel.setUpViewPager2(this@MainFragment, this)
 
             registerOnPageChangeCallback(object : OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
