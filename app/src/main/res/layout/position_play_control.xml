@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <data>
+        
+        <variable
+            name="position"
+            type="Long" />
+        
+        <variable
+            name="duration"
+            type="Long" />
+        
+        <variable
+            name="primaryColor"
+            type="Integer" />
+        
+        <variable
+            name="secondaryColor"
+            type="Integer" />
+        
+    </data>
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+    </RelativeLayout>
+
+</layout>

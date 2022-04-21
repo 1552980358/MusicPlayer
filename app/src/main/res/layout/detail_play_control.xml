@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/fragment_play_control">
+    
+    <data>
+        
+        <variable
+            name="primaryColor"
+            type="Integer" />
+        
+        <variable
+            name="secondaryColor"
+            type="Integer" />
+        
+        <variable
+            name="audioItem"
+            type="projekt.cloud.piece.music.player.database.audio.item.AudioItem" />
+        
+    </data>
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/md_spec_item_height_72"
+        android:padding="@dimen/md_spec_item_spacing_horizontal_16"
+        android:paddingVertical="@dimen/md_spec_item_spacing_vertical_16">
+        
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/material_text_view_title"
+            android:text="@{audioItem.title}"
+            android:textColor="@{primaryColor}"
+            android:textSize="@dimen/md_spec_item_text_size_title_16" />
+    
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{audioItem.artistName + ` - ` + audioItem.albumTitle}"
+            android:textColor="@{secondaryColor}"
+            android:textSize="@dimen/md_spec_item_text_size_subtitle_12"
+            android:layout_below="@id/material_text_view_title" />
+        
+    </RelativeLayout>
+
+</layout>
