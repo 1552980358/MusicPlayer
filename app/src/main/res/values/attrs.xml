@@ -3,4 +3,10 @@
     
     <attr name="extFabTextColor" format="color" />
     
+    <declare-styleable name="TimeView">
+        
+        <attr name="text_size" format="dimension" />
+        
+    </declare-styleable>
+    
 </resources>
