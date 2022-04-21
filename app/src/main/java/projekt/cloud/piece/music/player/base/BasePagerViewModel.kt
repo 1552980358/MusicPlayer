@@ -2,7 +2,7 @@ package projekt.cloud.piece.music.player.base
 
 import androidx.lifecycle.ViewModel
 
-abstract class BaseViewModel<F: BaseFragment>: ViewModel() {
+abstract class BasePagerViewModel<F: BaseFragment>: ViewModel() {
 
     @Suppress("LeakingThis")
     private val _fragmentList = arrayListOf(*setFragments())
