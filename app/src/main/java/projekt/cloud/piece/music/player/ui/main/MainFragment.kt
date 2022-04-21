@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -28,11 +27,13 @@ import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_AU
 import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_BITMAP_ART
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseFragment
+import projekt.cloud.piece.music.player.base.BasePagerViewModel
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.FragmentMainBinding
 import projekt.cloud.piece.music.player.ui.main.album.AlbumFragment
 import projekt.cloud.piece.music.player.ui.main.artist.ArtistFragment
 import projekt.cloud.piece.music.player.ui.main.audio.AudioFragment
+import projekt.cloud.piece.music.player.ui.main.base.BaseMainFragment
 import projekt.cloud.piece.music.player.ui.main.base.RecyclerViewScrollHandler
 import projekt.cloud.piece.music.player.ui.main.playlist.PlaylistFragment
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
@@ -45,10 +46,6 @@ import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
  *   [viewModel]
  *   [_binding]
  *   [navController]
- *
- * Getters:
- *   [fragmentList]
- *   [fragmentsCount]
  *
  *   [binding]
  *   [root]
@@ -77,15 +74,12 @@ class MainFragment: BaseFragment() {
      *   [fragmentList]
      *
      **/
-    class MainFragmentViewModel: ViewModel() {
-        val fragmentList = listOf(
-            AudioFragment(), ArtistFragment(), AlbumFragment(), PlaylistFragment()
-        )
+    class MainFragmentViewModel: BasePagerViewModel<BaseMainFragment>() {
+        override fun setFragments() =
+            arrayOf(AudioFragment(), ArtistFragment(), AlbumFragment(), PlaylistFragment())
     }
 
     private lateinit var viewModel: MainFragmentViewModel
-    private val fragmentList get() = viewModel.fragmentList
-    private val fragmentsCount get() = viewModel.fragmentList.size
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
@@ -140,14 +134,14 @@ class MainFragment: BaseFragment() {
             }
         )
     
-        fragmentList.forEach { it.setRecyclerViewScrollHandler(recyclerViewScrollHandler) }
+        viewModel.fragmentList.forEach { it.setRecyclerViewScrollHandler(recyclerViewScrollHandler) }
 
         val bottomNavigationItems = listOf(R.id.nav_audio_track, R.id.nav_album, R.id.nav_artist, R.id.nav_playlist)
 
         with(viewPager2) {
             adapter = object : FragmentStateAdapter(this@MainFragment) {
-                override fun getItemCount() = fragmentsCount
-                override fun createFragment(position: Int) = fragmentList[position]
+                override fun getItemCount() = viewModel.size
+                override fun createFragment(position: Int) = viewModel[position]
             }
 
             registerOnPageChangeCallback(object : OnPageChangeCallback() {
