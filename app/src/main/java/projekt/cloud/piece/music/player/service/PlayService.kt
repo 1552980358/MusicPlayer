@@ -134,6 +134,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
                 }
                 return playAudioItem(audioList.last)
             }
+            playAudioItem(audioList.prev)
         }
 
         override fun onSkipToNext() {
