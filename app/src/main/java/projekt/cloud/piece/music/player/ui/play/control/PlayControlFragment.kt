@@ -3,8 +3,12 @@ package projekt.cloud.piece.music.player.ui.play.control
 import android.animation.ValueAnimator
 import android.graphics.Bitmap
 import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent.ACTION_CANCEL
+import android.view.MotionEvent.ACTION_DOWN
+import android.view.MotionEvent.ACTION_UP
 import android.view.View
 import android.view.ViewGroup
 import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_AUDIO_ITEM
@@ -27,6 +31,12 @@ class PlayControlFragment: BaseFragment() {
 
     private var _binding: FragmentPlayControlBinding? = null
     private val binding get() = _binding!!
+    private val root get() = binding.root
+    private val buttonPlayControl get() = binding.buttonsPlayControl
+    private val appCompatImageViewRepeat get() = buttonPlayControl.appCompatImageViewRepeat
+    private val appCompatImageViewPrev get() = buttonPlayControl.appCompatImageViewPrev
+    private val appCompatImageViewNext get() = buttonPlayControl.appCompatImageViewNext
+    private val appCompatImageViewShuffle get() = buttonPlayControl.appCompatImageViewShuffle
     
     private val floatingActionButton get() = binding.buttonsPlayControl.floatingActionButton
 
@@ -61,6 +71,24 @@ class PlayControlFragment: BaseFragment() {
         }
         containerViewModel.register<Long>(TAG, LABEL_POSITION) {
             binding.position = it
+        }
+
+        @Suppress("ClickableViewAccessibility")
+        with(root) {
+            setOnTouchListener { _, event ->
+                when (event.action) {
+                    ACTION_DOWN -> {
+                        (background as RippleDrawable).setHotspot(event.x, event.y)
+                        isPressed = true
+                    }
+                    ACTION_CANCEL -> isPressed = false
+                    ACTION_UP -> {
+                        isPressed = false
+                        processTouchEvent(event.rawX, event.rawY)
+                    }
+                }
+                true
+            }
         }
         
         with(floatingActionButton) {
@@ -97,6 +125,48 @@ class PlayControlFragment: BaseFragment() {
             }
         }
     }
+
+    private fun processTouchEvent(rawX: Float, rawY: Float) {
+        val rawPosition = IntArray(2)
+        when {
+            compareViewLocation(rawX, rawY, appCompatImageViewRepeat, rawPosition) -> {
+            }
+
+            compareViewLocation(rawX, rawY, appCompatImageViewPrev, rawPosition) ->
+                transportControls.skipToPrevious()
+
+            compareViewLocation(rawX, rawY, appCompatImageViewNext, rawPosition) ->
+                transportControls.skipToNext()
+
+            compareViewLocation(rawX, rawY, appCompatImageViewShuffle, rawPosition) -> {
+            }
+        }
+    }
+
+    private fun compareViewLocation(touchX: Float, touchY: Float, view: View, position: IntArray): Boolean {
+        view.getLocationOnScreen(position)
+        return compareViewLocation(
+            touchX,
+            touchY,
+            position[0],
+            position[1],
+            view.width,
+            view.height
+        )
+    }
+
+    private fun compareViewLocation(touchX: Float,
+                                    touchY: Float,
+                                    viewX: Int,
+                                    viewY: Int,
+                                    viewWidth: Int,
+                                    viewHeight: Int) =
+        compareViewAxis(touchX, viewX.toFloat(), viewWidth)
+            && compareViewAxis(touchY, viewY.toFloat(), viewHeight)
+
+    private fun compareViewAxis(touchAxis: Float, viewAxis: Float, viewSize: Int) =
+        touchAxis in viewAxis .. viewAxis + viewSize
+
 
     private fun updateColorsAnimated(background: Int, primary: Int, secondary: Int) {
         ValueAnimator.ofArgb(binding.backgroundColor!!, background).apply {
