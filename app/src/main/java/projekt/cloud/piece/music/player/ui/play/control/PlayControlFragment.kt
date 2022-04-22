@@ -34,12 +34,15 @@ class PlayControlFragment: BaseFragment() {
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPlayControlBinding.inflate(layoutInflater, container, false)
-        binding.imageBitmap = containerViewModel.bitmapArt
-        binding.audioItem = containerViewModel.audioItem
-        containerViewModel.colorItem?.let {
-            binding.backgroundColor = it.background
-            binding.primaryColor = it.primary
-            binding.secondaryColor = it.secondary
+        with(binding) {
+            imageBitmap = containerViewModel.bitmapArt
+            audioItem = containerViewModel.audioItem
+            containerViewModel.colorItem?.let {
+                backgroundColor = it.background
+                primaryColor = it.primary
+                secondaryColor = it.secondary
+            }
+            position = containerViewModel.position
         }
         return binding.root
     }
