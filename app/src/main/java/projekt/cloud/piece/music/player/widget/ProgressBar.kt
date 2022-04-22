@@ -187,13 +187,11 @@ class ProgressBar(context: Context, attributeSet: AttributeSet?): View(context, 
 
         val heightF = heightF
         val halfHeight = heightF / 2
-        val progress = (widthF - height - paintProgress.strokeWidth * 2) *
-            (if (isControlled) progressControlled else progress) /
-            duration + halfHeight
+        val progress = (widthF - heightF) * (if (isControlled) progressControlled else progress) / duration + halfHeight
 
         // Draw remain first
         canvas.drawLine(
-            progress, halfHeight, width - paintDuration.strokeWidth, halfHeight, paintDuration
+            progress, halfHeight, width - paintDuration.strokeWidth - halfHeight, halfHeight, paintDuration
         )
 
         val strokeHalfWidth = paintProgress.strokeWidth / 2
@@ -229,10 +227,11 @@ class ProgressBar(context: Context, attributeSet: AttributeSet?): View(context, 
     }
 
     private fun updateProgress(motionEvent: MotionEvent) {
+        val halfHeight = height / 2
         progressControlled = when {
-            motionEvent.x < 0 -> 0
-            motionEvent.x > width - height -> duration
-            else -> ((motionEvent.x - height / 2) * duration / (width - height / 2)).toLong()
+            motionEvent.x < halfHeight -> 0
+            motionEvent.x > width - halfHeight -> duration
+            else -> ((motionEvent.x - halfHeight) * duration / (width - height)).toLong()
         }
     }
 
