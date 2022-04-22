@@ -1,19 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/fragment_play_control">
+
     <data>
+
+        <import type="android.support.v4.media.session.PlaybackStateCompat" />
+
+        <import type="projekt.cloud.piece.music.player.R" />
     
         <variable
             name="buttonColor"
             type="Integer" />
+
+        <variable
+            name="repeatMode"
+            type="Integer" />
+
+        <variable
+            name="shuffleMode"
+            type="Integer" />
         
     </data>
     
-    <RelativeLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/linear_layout_weighted"
+            android:layout_weight="2" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/linear_layout_weighted"
+            android:layout_weight="3"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="@dimen/linear_layout_weighted"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/app_compat_image_view_repeat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:alpha="@{repeatMode == PlaybackStateCompat.REPEAT_MODE_NONE ? 0.5F : 1F}"
+                    android:src="@{repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE ? @drawable/ic_baseline_repeat_one_24 : @drawable/ic_baseline_repeat_24}"
+                    android:tint="@{buttonColor != null ? buttonColor : @color/white}" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/floating_action_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginHorizontal="@dimen/md_spec_item_spacing_horizontal_16"
+                    android:backgroundTint="@color/white"
+                    tools:ignore="ContentDescription" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@id/floating_action_button"
+                    android:tint="@{buttonColor != null ? buttonColor : @color/white}"
+                    app:srcCompat="@drawable/ic_baseline_skip_prev_24" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@id/floating_action_button"
+                    android:tint="@{buttonColor != null ? buttonColor : @color/white}"
+                    app:srcCompat="@drawable/ic_baseline_skip_next_24" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="@dimen/linear_layout_weighted"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/app_compat_image_view_shuffle"
+                    android:alpha="@{shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ? 1F : 0.5F}"
+                    android:layout_centerInParent="true"
+                    android:tint="@{buttonColor != null ? buttonColor : @color/white}"
+                    app:srcCompat="@drawable/ic_baseline_shuffle_24" />
+
+            </RelativeLayout>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
     
-    </RelativeLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </layout>
