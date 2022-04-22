@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:bind="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <data>
+
+        <import type="android.graphics.Color" />
         
         <variable
             name="imageBitmap"
             type="android.graphics.Bitmap" />
-    
-        <variable
-            name="primaryColor"
-            type="Integer" />
-    
-        <variable
-            name="secondaryColor"
-            type="Integer" />
-        
+
         <variable
             name="buttonColor"
             type="Integer" />
@@ -24,7 +18,19 @@
         <variable
             name="audioItem"
             type="projekt.cloud.piece.music.player.database.audio.item.AudioItem" />
-        
+
+        <variable
+            name="backgroundColor"
+            type="Integer" />
+
+        <variable
+            name="primaryColor"
+            type="Integer" />
+
+        <variable
+            name="secondaryColor"
+            type="Integer" />
+
         <variable
             name="position"
             type="Long" />
@@ -34,7 +40,8 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/root">
+        android:id="@+id/root"
+        android:orientation="vertical">
         
         <projekt.cloud.piece.music.player.widget.TransitionImageView
             android:layout_width="match_parent"
@@ -46,22 +53,23 @@
         <include
             android:id="@+id/detail_play_control"
             layout="@layout/detail_play_control"
-            bind:primaryColor="@{primaryColor}"
-            bind:secondaryColor="@{secondaryColor}"
-            bind:audioItem="@{audioItem}" />
+            app:primaryColor="@{primaryColor}"
+            app:secondaryColor="@{secondaryColor}"
+            app:audioItem="@{audioItem}" />
         
         <include
             android:id="@+id/position_play_control"
             layout="@layout/position_play_control"
-            bind:position="@{position}"
-            bind:duration="@{audioItem.duration}"
-            bind:primaryColor="@{primaryColor}"
-            bind:secondaryColor="@{secondaryColor}" />
+            app:position="@{position}"
+            app:durationLong="@{audioItem.duration}"
+            app:primaryColor="@{primaryColor}"
+            app:secondaryColor="@{secondaryColor}"
+            app:backgroundColor="@{backgroundColor}"/>
         
         <include
             android:id="@+id/buttons_play_control"
             layout="@layout/buttons_play_control"
-            bind:buttonColor="@{buttonColor}" />
+            app:buttonColor="@{buttonColor}" />
         
     </androidx.appcompat.widget.LinearLayoutCompat>
     
