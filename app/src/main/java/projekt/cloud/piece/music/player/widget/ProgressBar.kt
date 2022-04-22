@@ -3,6 +3,7 @@ package projekt.cloud.piece.music.player.widget
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Paint.Cap.ROUND
 import android.graphics.Paint.Style.FILL
 import android.graphics.Paint.Style.STROKE
 import android.util.AttributeSet
@@ -90,6 +91,7 @@ class ProgressBar(context: Context, attributeSet: AttributeSet?): View(context, 
     private val paintDuration = Paint().apply {
         isAntiAlias = true
         style = STROKE
+        strokeCap = ROUND
     }
 
     private var circleRadius: Float
@@ -188,13 +190,6 @@ class ProgressBar(context: Context, attributeSet: AttributeSet?): View(context, 
         // Draw remain first
         canvas.drawLine(
             progress, halfHeight, width - paintProgress.strokeWidth / 2, halfHeight, paintDuration
-        )
-        canvas.drawArc(
-            width - paintDuration.strokeWidth, halfHeight - paintDuration.strokeWidth / 2,
-            widthF, halfHeight + paintDuration.strokeWidth / 2,
-            270F, 180F,
-            true,
-            paintDuration
         )
 
         // Draw start edge
