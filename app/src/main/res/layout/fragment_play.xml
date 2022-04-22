@@ -1,28 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/root"
-    android:transitionName="@string/transition_to_play_fragment"
-    android:background="?android:attr/colorBackground">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android">
     
-    <androidx.viewpager2.widget.ViewPager2
+    <data>
+        
+        <variable
+            name="backgroundColor"
+            type="Integer" />
+        
+    </data>
+    
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/view_pager_2" />
-    
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@null">
+        android:id="@+id/root"
+        android:transitionName="@string/transition_to_play_fragment"
+        android:background="@{backgroundColor}">
         
-        <com.google.android.material.appbar.MaterialToolbar
+        <androidx.viewpager2.widget.ViewPager2
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:id="@+id/material_toolbar"
-            android:theme="@style/Theme.CloudPiece.Toolbar" />
-         
-    </com.google.android.material.appbar.AppBarLayout>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+            android:layout_height="match_parent"
+            android:id="@+id/view_pager_2" />
+        
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null">
+            
+            <com.google.android.material.appbar.MaterialToolbar
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:id="@+id/material_toolbar"
+                android:theme="@style/Theme.CloudPiece.Toolbar" />
+        
+        </com.google.android.material.appbar.AppBarLayout>
+    
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    
+</layout>
