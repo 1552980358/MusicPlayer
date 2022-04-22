@@ -77,6 +77,7 @@ class PlayFragment: BaseFragment() {
         viewModel[viewPager2.currentItem].canReturn
 
     override fun onDestroyView() {
+        containerViewModel.unregisterAll(TAG)
         super.onDestroyView()
         _binding = null
     }
