@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Paint.Cap.ROUND
-import android.graphics.Paint.Style.FILL
+import android.graphics.Paint.Style.FILL_AND_STROKE
 import android.graphics.Paint.Style.STROKE
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -85,7 +85,7 @@ class ProgressBar(context: Context, attributeSet: AttributeSet?): View(context, 
 
     private val paintProgress = Paint().apply {
         isAntiAlias = true
-        style = FILL
+        style = FILL_AND_STROKE
     }
 
     private val paintDuration = Paint().apply {
@@ -137,6 +137,10 @@ class ProgressBar(context: Context, attributeSet: AttributeSet?): View(context, 
                 R.styleable.ProgressBar_remain_thick,
                 resources.getDimension(R.dimen.progress_bar_default_remain_thick)
             )
+            paintProgress.strokeWidth = getDimension(
+                R.styleable.ProgressBar_progressStrokeWidth,
+                resources.getDimension(R.dimen.progress_bar_default_progress_stroke_width)
+            )
         }
 
         @Suppress("ClickableViewAccessibility")
@@ -183,24 +187,41 @@ class ProgressBar(context: Context, attributeSet: AttributeSet?): View(context, 
 
         val heightF = heightF
         val halfHeight = heightF / 2
-        val progress = (widthF - height) *
+        val progress = (widthF - height - paintProgress.strokeWidth * 2) *
             (if (isControlled) progressControlled else progress) /
             duration + halfHeight
 
         // Draw remain first
         canvas.drawLine(
-            progress, halfHeight, width - paintProgress.strokeWidth / 2, halfHeight, paintDuration
+            progress, halfHeight, width - paintDuration.strokeWidth, halfHeight, paintDuration
         )
 
+        val strokeHalfWidth = paintProgress.strokeWidth / 2
         // Draw start edge
-        canvas.drawArc(0F, 0F, heightF, heightF, 90F, 180F, true, paintProgress)
+        canvas.drawArc(
+            strokeHalfWidth,
+            strokeHalfWidth,
+            heightF,
+            heightF - strokeHalfWidth,
+            90F,
+            180F,
+            true,
+            paintProgress
+        )
 
         // Draw progress rect
-        canvas.drawRect(halfHeight, 0F, progress, heightF, paintProgress)
+        canvas.drawRect(halfHeight, strokeHalfWidth, progress, heightF - strokeHalfWidth, paintProgress)
 
         // Draw end edge
         canvas.drawArc(
-            progress - halfHeight, 0F, progress + halfHeight, heightF, 270F, 180F, true, paintProgress
+            progress - halfHeight + strokeHalfWidth,
+            paintProgress.strokeWidth / 2,
+            progress + halfHeight - strokeHalfWidth,
+            heightF - strokeHalfWidth,
+            270F,
+            180F,
+            true,
+            paintProgress
         )
 
         // Draw circle
