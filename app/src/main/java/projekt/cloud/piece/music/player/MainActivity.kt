@@ -102,8 +102,8 @@ class MainActivity : AppCompatActivity() {
         @Suppress("SwitchIntDef")
         when (state.state) {
             STATE_PLAYING -> {
-                viewModel.isPlaying = false
                 countJob?.cancel()
+                viewModel.isPlaying = true
                 countJob = startPlayback(state.position)
             }
             
@@ -131,7 +131,11 @@ class MainActivity : AppCompatActivity() {
     private fun metadataChanged(metadata: MediaMetadataCompat) {
         io {
             val audioItem = audioRoom.queryAudio(metadata.getString(METADATA_KEY_MEDIA_ID))
-            ui { viewModel.audioItem = audioItem }
+            val colorItem = audioRoom.queryColor(audioItem.id, audioItem.album)
+            ui {
+                viewModel.audioItem = audioItem
+                viewModel.colorItem = colorItem
+            }
         }
         when {
             metadata.containsKey(METADATA_KEY_ALBUM_ART_URI) -> {
