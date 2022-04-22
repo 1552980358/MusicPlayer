@@ -129,7 +129,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
 
         override fun onSkipToPrevious() {
             if (audioList.isHead) {
-                if (!configs.nAnd(CONFIG_PLAY_REPEAT, CONFIG_PLAY_REPEAT_ONE)) {
+                if (configs.nAnd(CONFIG_PLAY_REPEAT, CONFIG_PLAY_REPEAT_ONE)) {
                     return onSeekTo(0)
                 }
                 return playAudioItem(audioList.last)
@@ -139,7 +139,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
 
         override fun onSkipToNext() {
             if (audioList.isLast) {
-                if (!configs.nAnd(CONFIG_PLAY_REPEAT, CONFIG_PLAY_REPEAT_ONE)) {
+                if (configs.nAnd(CONFIG_PLAY_REPEAT, CONFIG_PLAY_REPEAT_ONE)) {
                     return onSeekTo(0)
                 }
                 return playAudioItem(audioList.head)
