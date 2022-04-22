@@ -25,7 +25,7 @@ class TransitionImageView(context: Context, attributeSet: AttributeSet?): ViewGr
         @JvmStatic
         @BindingAdapter("default_image")
         fun TransitionImageView.setDefaultImageDrawable(drawable: Drawable?) {
-            this.setDefaultImage(drawable)
+            defaultImage = drawable
         }
 
     }
@@ -53,10 +53,6 @@ class TransitionImageView(context: Context, attributeSet: AttributeSet?): ViewGr
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         appCompatImageView.layout(0, 0, measuredWidth, measuredHeight)
-    }
-
-    fun setDefaultImage(defaultImage: Drawable?) {
-        this.defaultImage = defaultImage
     }
 
     fun setBitmap(bitmap: Bitmap?) {
