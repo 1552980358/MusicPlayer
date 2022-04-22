@@ -7,15 +7,18 @@ import androidx.room.RoomDatabase
 import projekt.cloud.piece.music.player.database.audio.dao.AlbumDao
 import projekt.cloud.piece.music.player.database.audio.dao.ArtistDao
 import projekt.cloud.piece.music.player.database.audio.dao.AudioDao
+import projekt.cloud.piece.music.player.database.audio.dao.ColorDao
 import projekt.cloud.piece.music.player.database.audio.item.AlbumItem
 import projekt.cloud.piece.music.player.database.audio.item.ArtistItem
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
+import projekt.cloud.piece.music.player.database.audio.item.ColorItem
 
 @Database(
     entities = [
         AudioItem::class,
         ArtistItem::class,
-        AlbumItem::class
+        AlbumItem::class,
+        ColorItem::class
     ],
     version = 1,
     exportSchema = false
@@ -32,14 +35,17 @@ abstract class AudioRoom: RoomDatabase() {
 
     }
 
-    abstract fun audioDao(): AudioDao
+    protected abstract fun audioDao(): AudioDao
     val audioDao get() = audioDao()
 
-    abstract fun artistDao(): ArtistDao
+    protected abstract fun artistDao(): ArtistDao
     val artistDao get() = artistDao()
 
-    abstract fun albumDao(): AlbumDao
+    protected abstract fun albumDao(): AlbumDao
     val albumDao get() = albumDao()
+
+    protected abstract fun colorDao(): ColorDao
+    val colorDao get() = colorDao()
 
     val queryAudio get() = audioDao.queryAll().onEach {
         it.artistItem = artistDao.query(it.artist)
@@ -50,5 +56,8 @@ abstract class AudioRoom: RoomDatabase() {
         artistItem = artistDao.query(artist)
         albumItem = albumDao.query(album)
     }
+
+    fun queryColor(audio: String, album: String) =
+        colorDao.query(audio, album)
 
 }
