@@ -34,15 +34,17 @@ class PlayControlFragment: BaseFragment() {
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPlayControlBinding.inflate(layoutInflater, container, false)
+        binding.imageBitmap = containerViewModel.bitmapArt
+        binding.audioItem = containerViewModel.audioItem
+        containerViewModel.colorItem?.let {
+            binding.backgroundColor = it.background
+            binding.primaryColor = it.primary
+            binding.secondaryColor = it.secondary
+        }
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.imageBitmap = containerViewModel.bitmapArt
-        binding.audioItem = containerViewModel.audioItem
-        containerViewModel.colorItem?.let {
-            updateColors(it.background, it.primary, it.secondary)
-        }
         containerViewModel.register<AudioItem>(TAG, LABEL_AUDIO_ITEM) {
             binding.audioItem = it
         }
@@ -92,13 +94,7 @@ class PlayControlFragment: BaseFragment() {
             }
         }
     }
-    
-    private fun updateColors(background: Int, primary: Int, secondary: Int) {
-        binding.backgroundColor = background
-        binding.primaryColor = primary
-        binding.secondaryColor = secondary
-    }
-    
+
     private fun updateColorsAnimated(background: Int, primary: Int, secondary: Int) {
         ValueAnimator.ofArgb(binding.backgroundColor!!, background).apply {
             duration = ANIMATION_DURATION
