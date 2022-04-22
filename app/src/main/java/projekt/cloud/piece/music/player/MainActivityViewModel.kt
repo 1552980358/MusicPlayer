@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.Job
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
+import projekt.cloud.piece.music.player.database.audio.item.ColorItem
 import projekt.cloud.piece.music.player.util.AudioUtil.initialApplication
 import projekt.cloud.piece.music.player.util.AudioUtil.launchApplication
 
@@ -46,6 +47,7 @@ class MainActivityViewModel: ViewModel() {
         const val LABEL_AUDIO_ITEM = "LABEL_AUDIO_ITEM"
         const val LABEL_AUDIO_LIST = "LABEL_AUDIO_LIST"
         const val LABEL_BITMAP_ART = "LABEL_BITMAP_ART"
+        const val LABEL_COLOR_ITEM = "LABEL_COLOR_ITEM"
         const val LABEL_IS_PLAYING = "LABEL_IS_PLAYING"
         const val LABEL_POSITION = "LABEL_POSITION"
     }
@@ -121,6 +123,12 @@ class MainActivityViewModel: ViewModel() {
         set(value) {
             field = value
             onObserved(LABEL_BITMAP_ART, value)
+        }
+    
+    var colorItem: ColorItem? = null
+        set(value) {
+            field = value
+            onObserved(LABEL_COLOR_ITEM, value)
         }
     
     var isPlaying = false
