@@ -73,6 +73,8 @@ dependencies {
     implementation("com.google.android.exoplayer:exoplayer-hls:$exoPlayerVersion")
 
     implementation("com.github.1552980358:C2Pinyin:1.0.0")
+    
+    implementation("com.github.mkaflowski:Media-Style-Palette:1.3")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
