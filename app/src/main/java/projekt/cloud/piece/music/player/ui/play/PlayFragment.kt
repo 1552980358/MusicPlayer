@@ -48,7 +48,7 @@ class PlayFragment: BaseFragment() {
         sharedElementEnterTransition = MaterialContainerTransform().apply {
             duration = ANIMATION_DURATION
         }
-        viewModel = ViewModelProvider(requireActivity())[PlayFragmentViewModel::class.java]
+        viewModel = ViewModelProvider(this)[PlayFragmentViewModel::class.java]
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
