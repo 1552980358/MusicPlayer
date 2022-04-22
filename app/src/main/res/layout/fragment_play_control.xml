@@ -41,6 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/root"
+        android:background="?attr/selectableItemBackground"
         android:orientation="vertical">
         
         <projekt.cloud.piece.music.player.widget.TransitionImageView
