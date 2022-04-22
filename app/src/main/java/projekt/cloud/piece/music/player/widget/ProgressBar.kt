@@ -200,7 +200,7 @@ class ProgressBar(context: Context, attributeSet: AttributeSet?): View(context, 
 
         // Draw end edge
         canvas.drawArc(
-            progress - heightF, 0F, progress + heightF, heightF, 270F, 180F, true, paintProgress
+            progress - halfHeight, 0F, progress + halfHeight, heightF, 270F, 180F, true, paintProgress
         )
 
         // Draw circle
