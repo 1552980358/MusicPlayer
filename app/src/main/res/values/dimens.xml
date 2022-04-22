@@ -11,4 +11,5 @@
     <dimen name="progress_bar_default_radius">6dp</dimen>
     <dimen name="progress_bar_default_remain_thick">2dp</dimen>
     <dimen name="progress_bar_default_circle_stroke_width">2dp</dimen>
+    <dimen name="progress_bar_default_progress_stroke_width">0.5dp</dimen>
 </resources>
