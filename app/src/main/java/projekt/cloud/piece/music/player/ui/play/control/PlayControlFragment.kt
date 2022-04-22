@@ -32,6 +32,7 @@ class PlayControlFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.imageBitmap = containerViewModel.bitmapArt
+        binding.audioItem = containerViewModel.audioItem
         containerViewModel.colorItem?.let {
             updateColors(it.background, it.primary, it.secondary)
         }
