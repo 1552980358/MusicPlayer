@@ -23,12 +23,13 @@ import java.io.Serializable
             childColumns = ["album"],
             onDelete = NO_ACTION
         )
-    ]
+    ],
+    inheritSuperIndices = true
 )
 class AudioItem(id: String,
                 title: String,
-                @ColumnInfo(name = "artist") val artist: String,
-                @ColumnInfo(name = "album") val album: String,
+                @ColumnInfo(name = "artist", index = true) val artist: String,
+                @ColumnInfo(name = "album", index = true) val album: String,
                 @ColumnInfo(name = "duration") val duration: Long,
                 @ColumnInfo(name = "size") val size: Long,
                 @ColumnInfo(name = "path") val path: String): BaseTitledItem(id, title), Serializable {

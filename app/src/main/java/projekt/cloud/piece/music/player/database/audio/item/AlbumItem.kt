@@ -4,5 +4,5 @@ import androidx.room.Entity
 import projekt.cloud.piece.music.player.database.audio.item.base.BaseTitledItem
 import java.io.Serializable
 
-@Entity(tableName = "album")
+@Entity(tableName = "album", inheritSuperIndices = true)
 class AlbumItem(id: String, title: String): BaseTitledItem(id, title), Serializable

@@ -5,6 +5,10 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
-open class BaseItem(@PrimaryKey @ColumnInfo(name = "id") val id: String): Serializable {
+open class BaseItem(@PrimaryKey @ColumnInfo(name = "id", index = true) var id: String): Serializable {
+    
+    @Ignore
+    constructor(id: Long): this(id.toString())
+
     val idLong get() = id.toLong()
 }

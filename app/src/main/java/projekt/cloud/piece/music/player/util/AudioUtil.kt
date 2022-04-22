@@ -4,10 +4,12 @@ import android.content.Context
 import android.provider.MediaStore.Audio.AudioColumns
 import android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 import androidx.annotation.MainThread
+import mkaflowski.mediastylepalette.MediaNotificationProcessor
 import projekt.cloud.piece.music.player.database.Database.audioRoom
 import projekt.cloud.piece.music.player.database.audio.item.AlbumItem
 import projekt.cloud.piece.music.player.database.audio.item.ArtistItem
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
+import projekt.cloud.piece.music.player.database.audio.item.ColorItem
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
 import projekt.cloud.piece.music.player.util.ImageUtil.extractArtBitmap
@@ -47,12 +49,14 @@ object AudioUtil {
         val artistList = ArrayList<ArtistItem>()
         val albumList = ArrayList<AlbumItem>()
         scanSystemDatabase(audioList, artistList, albumList)
+        val colorList = arrayListOf(ColorItem())
+        extractAlbumArts(albumList, colorList)
         storeToAudioRoom(
             audioList.toTypedArray(),
             artistList.toTypedArray(),
-            albumList.toTypedArray()
+            albumList.toTypedArray(),
+            colorList.toTypedArray()
         )
-        extractAlbumArts(albumList)
     }
 
     private fun Context.loadApplication() = audioRoom.queryAudio
@@ -94,18 +98,27 @@ object AudioUtil {
 
     private fun Context.storeToAudioRoom(audios: Array<AudioItem>,
                                          artists: Array<ArtistItem>,
-                                         albums: Array<AlbumItem>) {
+                                         albums: Array<AlbumItem>,
+                                         colors: Array<ColorItem>) {
         with(audioRoom) {
             artistDao.insert(*artists)
             albumDao.insert(*albums)
             audioDao.insert(*audios)
+            colorDao.insert(*colors)
         }
     }
 
-    private fun Context.extractAlbumArts(albumList: List<AlbumItem>) {
+    private fun Context.extractAlbumArts(albumList: List<AlbumItem>, colorList: ArrayList<ColorItem>) {
         albumList.forEach {
             extractArtBitmap(it.idLong)?.apply {
                 saveAlbumArt(it.id, this)
+                with(MediaNotificationProcessor(this@extractAlbumArts, this)) {
+                    colorList.add(
+                        ColorItem(
+                            backgroundColor, primaryTextColor, secondaryTextColor, album = it.id
+                        )
+                    )
+                }
             }
         }
     }
