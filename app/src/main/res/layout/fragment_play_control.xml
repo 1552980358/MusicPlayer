@@ -35,6 +35,14 @@
             name="position"
             type="Long" />
         
+        <variable
+            name="repeatMode"
+            type="Integer" />
+        
+        <variable
+            name="shuffleMode"
+            type="Integer" />
+        
     </data>
     
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -70,6 +78,8 @@
         <include
             android:id="@+id/buttons_play_control"
             layout="@layout/buttons_play_control"
+            app:repeatMode="@{repeatMode}"
+            app:shuffleMode="@{shuffleMode}"
             app:buttonColor="@{buttonColor}" />
         
     </androidx.appcompat.widget.LinearLayoutCompat>
