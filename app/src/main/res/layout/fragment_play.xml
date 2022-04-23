@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <data>
         
         <variable
             name="backgroundColor"
+            type="Integer" />
+        
+        <variable
+            name="exitButtonColor"
             type="Integer" />
         
     </data>
@@ -31,7 +36,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:id="@+id/material_toolbar"
-                android:theme="@style/Theme.CloudPiece.Toolbar" />
+                app:navigationIcon="@drawable/ic_round_close_24"
+                app:navigationIconTint="@{exitButtonColor}" />
         
         </com.google.android.material.appbar.AppBarLayout>
     
