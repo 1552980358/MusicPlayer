@@ -1,6 +1,7 @@
 package projekt.cloud.piece.music.player.base
 
 import android.os.Bundle
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import projekt.cloud.piece.music.player.MainActivity
@@ -27,5 +28,11 @@ open class BaseFragment: Fragment() {
 
     val canReturn get() = onBackPressed()
     protected open fun onBackPressed() = true
+
+    protected fun sendCustomAction(action: String, vararg extras: Pair<String, Any>) {
+        requireActivity().mediaController
+            .transportControls
+            .sendCustomAction(action, bundleOf(*extras))
+    }
 
 }
