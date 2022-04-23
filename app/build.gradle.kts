@@ -66,6 +66,9 @@ dependencies {
     ksp("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
     kapt("androidx.databinding:databinding-compiler-common:${rootProject.extra["gradleVersion"]}")
+    val datastoreVersion = "1.0.0"
+    implementation("androidx.datastore:datastore:$datastoreVersion")
+    implementation("androidx.datastore:datastore-preferences:$datastoreVersion")
 
     implementation("com.google.android.material:material:1.5.0")
     val exoPlayerVersion = "2.16.1"
