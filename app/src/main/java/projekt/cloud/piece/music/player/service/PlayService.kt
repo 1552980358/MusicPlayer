@@ -162,37 +162,6 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     
         override fun onSkipToQueueItem(index: Long)  =
             playAudioItem(audioList.setIndex(index.toInt()))
-        
-        private fun playAudioItem(audioItem: AudioItem) {
-            exoPlayer.setMediaItem(MediaItem.fromUri(audioItem.id.parseUri))
-            
-            playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
-                .setState(STATE_BUFFERING, 0, DEFAULT_PLAYBACK_SPEED)
-                .build()
-            mediaSessionCompat.setPlaybackState(playbackStateCompat)
-            
-            prepareAudio(audioItem)
-            
-            mediaMetadataCompat = MediaMetadataCompat.Builder()
-                .putString(METADATA_KEY_TITLE, audioItem.title)
-                .putString(METADATA_KEY_ARTIST, audioItem.artistName)
-                .putString(METADATA_KEY_ALBUM, audioItem.albumTitle)
-                .putString(METADATA_KEY_MEDIA_ID, audioItem.id)
-                .apply { if (audioArt != null) putString(METADATA_KEY_ALBUM_ART_URI, audioItem.album.formUri) }
-                .putBitmap(METADATA_KEY_ALBUM_ART, audioArt ?: defaultAudioArt)
-                .putLong(METADATA_KEY_DURATION, audioItem.duration)
-                .build()
-            mediaSessionCompat.setMetadata(mediaMetadataCompat)
-            
-            onPlay()
-        }
-
-        private fun prepareAudio(audioItem: AudioItem) = runBlocking {
-            io {
-                audioArt = readAlbumArtLarge(audioItem.album)
-            }
-            exoPlayer.prepare()
-        }
 
         override fun onCustomAction(action: String?, extras: Bundle?) {
             when (action) {
@@ -324,6 +293,37 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     
     override fun onPlaybackStateChanged(playbackState: Int) {
 
+    }
+
+    private fun playAudioItem(audioItem: AudioItem) {
+        exoPlayer.setMediaItem(MediaItem.fromUri(audioItem.id.parseUri))
+
+        playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+            .setState(STATE_BUFFERING, 0, DEFAULT_PLAYBACK_SPEED)
+            .build()
+        mediaSessionCompat.setPlaybackState(playbackStateCompat)
+
+        prepareAudio(audioItem)
+
+        mediaMetadataCompat = MediaMetadataCompat.Builder()
+            .putString(METADATA_KEY_TITLE, audioItem.title)
+            .putString(METADATA_KEY_ARTIST, audioItem.artistName)
+            .putString(METADATA_KEY_ALBUM, audioItem.albumTitle)
+            .putString(METADATA_KEY_MEDIA_ID, audioItem.id)
+            .apply { if (audioArt != null) putString(METADATA_KEY_ALBUM_ART_URI, audioItem.album.formUri) }
+            .putBitmap(METADATA_KEY_ALBUM_ART, audioArt ?: defaultAudioArt)
+            .putLong(METADATA_KEY_DURATION, audioItem.duration)
+            .build()
+        mediaSessionCompat.setMetadata(mediaMetadataCompat)
+
+        transportControls.play()
+    }
+
+    private fun prepareAudio(audioItem: AudioItem) = runBlocking {
+        io {
+            audioArt = readAlbumArtLarge(audioItem.album)
+        }
+        exoPlayer.prepare()
     }
 
 }
