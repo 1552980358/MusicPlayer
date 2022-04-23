@@ -7,6 +7,11 @@ import android.graphics.Color.WHITE
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ALL
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_NONE
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ONE
+import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
+import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_NONE
 import android.view.LayoutInflater
 import android.view.MotionEvent.ACTION_CANCEL
 import android.view.MotionEvent.ACTION_DOWN
@@ -18,11 +23,17 @@ import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_BI
 import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_COLOR_ITEM
 import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_IS_PLAYING
 import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_POSITION
+import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_REPEAT_MODE
+import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_SHUFFLE_MODE
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import projekt.cloud.piece.music.player.database.audio.item.ColorItem
 import projekt.cloud.piece.music.player.databinding.FragmentPlayControlBinding
+import projekt.cloud.piece.music.player.service.play.Actions.ACTION_UPDATE_REPEAT_MODE
+import projekt.cloud.piece.music.player.service.play.Actions.ACTION_UPDATE_SHUFFLE_MODE
+import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_REPEAT_MODE
+import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_SHUFFLE_MODE
 import projekt.cloud.piece.music.player.util.ColorUtil.isLight
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
 
@@ -60,6 +71,8 @@ class PlayControlFragment: BaseFragment() {
                 }
             }
             position = containerViewModel.position
+            repeatMode = containerViewModel.repeatMode
+            shuffleMode = containerViewModel.shuffleMode
         }
         return binding.root
     }
@@ -78,6 +91,12 @@ class PlayControlFragment: BaseFragment() {
         }
         containerViewModel.register<Long>(TAG, LABEL_POSITION) {
             binding.position = it
+        }
+        containerViewModel.register<Int>(TAG, LABEL_REPEAT_MODE) {
+            binding.repeatMode = it
+        }
+        containerViewModel.register<Int>(TAG, LABEL_SHUFFLE_MODE) {
+            binding.shuffleMode = it
         }
 
         @Suppress("ClickableViewAccessibility")
@@ -137,6 +156,18 @@ class PlayControlFragment: BaseFragment() {
         val rawPosition = IntArray(2)
         when {
             compareViewLocation(rawX, rawY, appCompatImageViewRepeat, rawPosition) -> {
+                sendCustomAction(
+                    ACTION_UPDATE_REPEAT_MODE,
+                    Pair(
+                        EXTRA_REPEAT_MODE,
+                        when (binding.repeatMode) {
+                            REPEAT_MODE_ALL -> REPEAT_MODE_ONE
+                            REPEAT_MODE_ONE -> REPEAT_MODE_NONE
+                            REPEAT_MODE_NONE -> REPEAT_MODE_ALL
+                            else -> REPEAT_MODE_ALL
+                        }
+                    )
+                )
             }
 
             compareViewLocation(rawX, rawY, appCompatImageViewPrev, rawPosition) ->
@@ -146,6 +177,17 @@ class PlayControlFragment: BaseFragment() {
                 transportControls.skipToNext()
 
             compareViewLocation(rawX, rawY, appCompatImageViewShuffle, rawPosition) -> {
+                sendCustomAction(
+                    ACTION_UPDATE_SHUFFLE_MODE,
+                    Pair(
+                        EXTRA_SHUFFLE_MODE,
+                        when (binding.shuffleMode) {
+                            SHUFFLE_MODE_NONE -> SHUFFLE_MODE_ALL
+                            SHUFFLE_MODE_ALL -> SHUFFLE_MODE_NONE
+                            else -> SHUFFLE_MODE_NONE
+                        }
+                    )
+                )
             }
         }
     }
