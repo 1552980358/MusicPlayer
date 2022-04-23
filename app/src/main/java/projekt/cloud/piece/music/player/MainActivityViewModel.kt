@@ -109,38 +109,50 @@ class MainActivityViewModel: ViewModel() {
     
     var audioItem: AudioItem? = null
         set(value) {
-            field = value
-            onObserved(LABEL_AUDIO_ITEM, value)
+            if (field != value) {
+                field = value
+                onObserved(LABEL_AUDIO_ITEM, value)
+            }
         }
 
     var audioList: List<AudioItem>? = null
         set(value) {
-            field = value
-            onObserved(LABEL_AUDIO_LIST, value)
+            if (field != value) {
+                field = value
+                onObserved(LABEL_AUDIO_LIST, value)
+            }
         }
     
     var bitmapArt: Bitmap? = null
         set(value) {
-            field = value
-            onObserved(LABEL_BITMAP_ART, value)
+            if (field != value) {
+                field = value
+                onObserved(LABEL_BITMAP_ART, value)
+            }
         }
     
     var colorItem: ColorItem? = null
         set(value) {
-            field = value
-            onObserved(LABEL_COLOR_ITEM, value)
+            if (field != value) {
+                field = value
+                onObserved(LABEL_COLOR_ITEM, value)
+            }
         }
     
     var isPlaying = false
         set(value) {
-            field = value
-            onObserved(LABEL_IS_PLAYING, value)
+            if (field != value) {
+                field = value
+                onObserved(LABEL_IS_PLAYING, value)
+            }
         }
     
     var position = 0L
         set(value) {
-            field = value
-            onObserved(LABEL_POSITION, value)
+            if (field != value) {
+                field = value
+                onObserved(LABEL_POSITION, value)
+            }
         }
 
 }
