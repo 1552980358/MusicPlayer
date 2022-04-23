@@ -23,6 +23,11 @@ import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_NEXT
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_STOP
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ALL
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_NONE
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ONE
+import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
+import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_NONE
 import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
@@ -38,6 +43,8 @@ import com.google.android.exoplayer2.Player
 import kotlinx.coroutines.runBlocking
 import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
 import projekt.cloud.piece.music.player.R
+import projekt.cloud.piece.music.player.dataStore.DataStore.readConfigs
+import projekt.cloud.piece.music.player.dataStore.DataStore.writeConfig
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import projekt.cloud.piece.music.player.service.play.Actions.ACTION_BROADCAST_NEXT
 import projekt.cloud.piece.music.player.service.play.Actions.ACTION_BROADCAST_PAUSE
@@ -46,20 +53,26 @@ import projekt.cloud.piece.music.player.service.play.Actions.ACTION_BROADCAST_PR
 import projekt.cloud.piece.music.player.service.play.Actions.ACTION_START_COMMAND_PLAY
 import projekt.cloud.piece.music.player.service.play.Actions.ACTION_START_COMMAND
 import projekt.cloud.piece.music.player.service.play.Actions.ACTION_START_COMMAND_PAUSE
+import projekt.cloud.piece.music.player.service.play.Actions.ACTION_UPDATE_REPEAT_MODE
+import projekt.cloud.piece.music.player.service.play.Actions.ACTION_UPDATE_SHUFFLE_MODE
 import projekt.cloud.piece.music.player.service.play.AudioList
 import projekt.cloud.piece.music.player.service.play.AudioUtil.formUri
 import projekt.cloud.piece.music.player.service.play.AudioUtil.parseUri
 import projekt.cloud.piece.music.player.service.play.Config.CONFIG_PLAY_REPEAT
 import projekt.cloud.piece.music.player.service.play.Config.CONFIG_PLAY_REPEAT_ONE
+import projekt.cloud.piece.music.player.service.play.Config.CONFIG_PLAY_SHUFFLE
 import projekt.cloud.piece.music.player.service.play.Config.CONFIG_SERVICE_FOREGROUND
 import projekt.cloud.piece.music.player.service.play.Configs
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_AUDIO_LIST
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_CONFIGS
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_AUDIO_ITEM
+import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_REPEAT_MODE
+import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_SHUFFLE_MODE
 import projekt.cloud.piece.music.player.service.play.ServiceNotification
 import projekt.cloud.piece.music.player.util.BroadcastReceiverImpl
 import projekt.cloud.piece.music.player.util.BroadcastReceiverImpl.Companion.broadcastReceiver
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
+import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
 import projekt.cloud.piece.music.player.util.ImageUtil.readAlbumArtLarge
 import projekt.cloud.piece.music.player.util.ServiceUtil.startSelf
 
@@ -180,7 +193,26 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
             }
             exoPlayer.prepare()
         }
-        
+
+        override fun onCustomAction(action: String?, extras: Bundle?) {
+            when (action) {
+                ACTION_UPDATE_REPEAT_MODE -> {
+                    extras?.getInt(EXTRA_REPEAT_MODE)?.let { repeatMode ->
+                        mediaSessionCompat.setRepeatMode(repeatMode)
+                        configs[CONFIG_PLAY_REPEAT] = repeatMode == REPEAT_MODE_ALL
+                        configs[CONFIG_PLAY_REPEAT_ONE] = repeatMode == REPEAT_MODE_ONE
+                        writeConfig(configs)
+                    }
+                }
+                ACTION_UPDATE_SHUFFLE_MODE -> {
+                    extras?.getInt(EXTRA_SHUFFLE_MODE)?.let { shuffleMode ->
+                        mediaSessionCompat.setShuffleMode(shuffleMode)
+                        configs[CONFIG_PLAY_SHUFFLE] = shuffleMode == SHUFFLE_MODE_ALL
+                        writeConfig(configs)
+                    }
+                }
+            }
+        }
     }
     
     private val transportControls get() = mediaSessionCompat.controller.transportControls
@@ -214,10 +246,12 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     
     override fun onCreate() {
         super.onCreate()
-    
+
         playbackStateCompat = PlaybackStateCompat.Builder()
             .setState(STATE_NONE, 0, DEFAULT_PLAYBACK_SPEED)
             .setActions(PLAYBACK_STATE_ACTIONS)
+            .addCustomAction(ACTION_UPDATE_REPEAT_MODE, ACTION_UPDATE_REPEAT_MODE, R.drawable.ic_launcher_foreground)
+            .addCustomAction(ACTION_UPDATE_SHUFFLE_MODE, ACTION_UPDATE_SHUFFLE_MODE, R.drawable.ic_launcher_foreground)
             .setExtras(bundleOf(EXTRA_CONFIGS to configs))
             .build()
     
@@ -227,6 +261,24 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
             isActive = true
             
             this@PlayService.sessionToken = sessionToken
+        }
+
+        readConfigs(configs) {
+            ui {
+                mediaSessionCompat.setRepeatMode(
+                    when {
+                        it.isTrue(CONFIG_PLAY_REPEAT) -> REPEAT_MODE_ALL
+                        it.isTrue(CONFIG_PLAY_REPEAT_ONE) -> REPEAT_MODE_ONE
+                        else -> REPEAT_MODE_NONE
+                    }
+                )
+                mediaSessionCompat.setShuffleMode(
+                    when {
+                        it.isTrue(CONFIG_PLAY_SHUFFLE) -> SHUFFLE_MODE_ALL
+                        else -> SHUFFLE_MODE_NONE
+                    }
+                )
+            }
         }
         
         defaultAudioArt = ContextCompat.getDrawable(this, R.drawable.ic_round_audiotrack_200)!!.toBitmap()
