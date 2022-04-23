@@ -163,6 +163,14 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
         override fun onSkipToQueueItem(index: Long)  =
             playAudioItem(audioList.setIndex(index.toInt()))
 
+        override fun onSeekTo(pos: Long) {
+            exoPlayer.seekTo(pos)
+            playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                .setState(playbackStateCompat.state, pos, DEFAULT_PLAYBACK_SPEED)
+                .build()
+            mediaSessionCompat.setPlaybackState(playbackStateCompat)
+        }
+
         override fun onCustomAction(action: String?, extras: Bundle?) {
             when (action) {
                 ACTION_UPDATE_REPEAT_MODE -> {
