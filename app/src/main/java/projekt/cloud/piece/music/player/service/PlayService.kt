@@ -2,6 +2,7 @@ package projekt.cloud.piece.music.player.service
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.media.metrics.PlaybackStateEvent.STATE_ENDED
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -50,9 +51,9 @@ import projekt.cloud.piece.music.player.service.play.Actions.ACTION_BROADCAST_NE
 import projekt.cloud.piece.music.player.service.play.Actions.ACTION_BROADCAST_PAUSE
 import projekt.cloud.piece.music.player.service.play.Actions.ACTION_BROADCAST_PLAY
 import projekt.cloud.piece.music.player.service.play.Actions.ACTION_BROADCAST_PREV
-import projekt.cloud.piece.music.player.service.play.Actions.ACTION_START_COMMAND_PLAY
 import projekt.cloud.piece.music.player.service.play.Actions.ACTION_START_COMMAND
 import projekt.cloud.piece.music.player.service.play.Actions.ACTION_START_COMMAND_PAUSE
+import projekt.cloud.piece.music.player.service.play.Actions.ACTION_START_COMMAND_PLAY
 import projekt.cloud.piece.music.player.service.play.Actions.ACTION_UPDATE_REPEAT_MODE
 import projekt.cloud.piece.music.player.service.play.Actions.ACTION_UPDATE_SHUFFLE_MODE
 import projekt.cloud.piece.music.player.service.play.AudioList
@@ -63,13 +64,12 @@ import projekt.cloud.piece.music.player.service.play.Config.CONFIG_PLAY_REPEAT_O
 import projekt.cloud.piece.music.player.service.play.Config.CONFIG_PLAY_SHUFFLE
 import projekt.cloud.piece.music.player.service.play.Config.CONFIG_SERVICE_FOREGROUND
 import projekt.cloud.piece.music.player.service.play.Configs
+import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_AUDIO_ITEM
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_AUDIO_LIST
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_CONFIGS
-import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_AUDIO_ITEM
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_REPEAT_MODE
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_SHUFFLE_MODE
 import projekt.cloud.piece.music.player.service.play.ServiceNotification
-import projekt.cloud.piece.music.player.util.BroadcastReceiverImpl
 import projekt.cloud.piece.music.player.util.BroadcastReceiverImpl.Companion.broadcastReceiver
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
@@ -292,7 +292,32 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     }
     
     override fun onPlaybackStateChanged(playbackState: Int) {
+        if (playbackState == STATE_ENDED) {
+            when {
+                configs[CONFIG_PLAY_REPEAT] -> transportControls.skipToNext()
+                configs[CONFIG_PLAY_REPEAT_ONE] -> playAudioItem(audioList.audioItem)
+                else -> {
+                    if (!audioList.isLast) {
+                        return transportControls.skipToNext()
+                    }
 
+                    playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                        .setState(STATE_BUFFERING, 0, DEFAULT_PLAYBACK_SPEED)
+                        .build()
+                    mediaSessionCompat.setPlaybackState(playbackStateCompat)
+
+                    exoPlayer.setMediaItem(MediaItem.fromUri(audioList.audioItem.id.parseUri))
+                    exoPlayer.prepare()
+
+                    playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                        .setState(STATE_PAUSED, 0, DEFAULT_PLAYBACK_SPEED)
+                        .build()
+                    mediaSessionCompat.setPlaybackState(playbackStateCompat)
+
+                    startSelf { putExtra(ACTION_START_COMMAND, ACTION_START_COMMAND_PAUSE) }
+                }
+            }
+        }
     }
 
     private fun playAudioItem(audioItem: AudioItem) {
