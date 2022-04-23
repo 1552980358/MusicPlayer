@@ -30,6 +30,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/material_text_view_title"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="@{audioItem.title}"
             android:textColor="@{primaryColor}"
             android:textSize="@dimen/md_spec_item_text_size_title_16" />
@@ -37,6 +39,8 @@
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="@{audioItem.artistName + ` - ` + audioItem.albumTitle}"
             android:textColor="@{secondaryColor}"
             android:textSize="@dimen/md_spec_item_text_size_subtitle_12"
