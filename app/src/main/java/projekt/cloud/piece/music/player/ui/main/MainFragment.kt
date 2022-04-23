@@ -89,15 +89,12 @@ class MainFragment: BaseFragment() {
     private val viewPager2 get() = appBarMain.viewPager2
     private val bottomNavigationView get() = appBarMain.bottomNavigationView
     private val extFab get() = appBarMain.extendedFloatingActionButton
-
-    private lateinit var navController: NavController
     
     private var countJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         exitTransition = Hold()
-        navController = findNavController()
         viewModel = ViewModelProvider(this)[MainFragmentViewModel::class.java]
     }
 
