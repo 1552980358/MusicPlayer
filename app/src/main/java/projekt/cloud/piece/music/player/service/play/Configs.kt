@@ -24,7 +24,9 @@ class Configs: Serializable {
             else -> configs and config.shl.inv()
         }
     }
-    
+
+    operator fun get(config: Int) = isTrue(config)
+
     fun update(config: Int, newValue: Boolean) = apply {
         this[config] = newValue
     }
