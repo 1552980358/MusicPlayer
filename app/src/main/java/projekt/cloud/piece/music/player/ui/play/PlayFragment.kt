@@ -1,7 +1,8 @@
 package projekt.cloud.piece.music.player.ui.play
 
 import android.animation.ValueAnimator
-import android.graphics.Color.TRANSPARENT
+import android.graphics.Color.BLACK
+import android.graphics.Color.WHITE
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import projekt.cloud.piece.music.player.database.audio.item.ColorItem
 import projekt.cloud.piece.music.player.databinding.FragmentPlayBinding
 import projekt.cloud.piece.music.player.ui.play.control.PlayControlFragment
 import projekt.cloud.piece.music.player.ui.play.lyric.PlayLyricFragment
+import projekt.cloud.piece.music.player.util.ColorUtil.isLight
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
 
 /**
@@ -51,6 +53,7 @@ class PlayFragment: BaseFragment() {
     private val binding get() = _binding!!
     private val root get() = binding.root
     private val viewPager2 get() = binding.viewPager2
+    private val materialToolbar get() = binding.materialToolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,15 +65,26 @@ class PlayFragment: BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPlayBinding.inflate(inflater, container, false)
-        binding.backgroundColor = containerViewModel.colorItem?.background ?: TRANSPARENT
+        containerViewModel.colorItem?.background?.let {
+            binding.backgroundColor = it
+            binding.exitButtonColor = it.closeButtonColor
+        }
         return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.setUpViewPager2(this, viewPager2)
         containerViewModel.register<ColorItem>(TAG, LABEL_COLOR_ITEM) { colorItem ->
-            colorItem?.let { updateBackgroundColor(binding.backgroundColor!!, it.background) }
+            colorItem?.let {
+                updateBackgroundColor(binding.backgroundColor!!, it.background)
+                ValueAnimator.ofArgb(binding.exitButtonColor!!, it.background.closeButtonColor).apply {
+                    duration = ANIMATION_DURATION
+                    addUpdateListener { binding.exitButtonColor = it.animatedValue as Int }
+                    start()
+                }
+            }
         }
+
     }
 
     override fun onBackPressed() =
@@ -81,6 +95,9 @@ class PlayFragment: BaseFragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    private val Int.closeButtonColor get() =
+        if (isLight) BLACK else WHITE
 
     private fun updateBackgroundColor(@ColorInt originColor: Int, @ColorInt newColor: Int) {
         ValueAnimator.ofArgb(originColor, newColor).apply {
