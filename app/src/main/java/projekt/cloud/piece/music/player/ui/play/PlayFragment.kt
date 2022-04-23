@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.ColorInt
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.transition.MaterialContainerTransform
 import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_COLOR_ITEM
@@ -74,6 +75,12 @@ class PlayFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.setUpViewPager2(this, viewPager2)
+        with(requireActivity() as AppCompatActivity) {
+            setSupportActionBar(materialToolbar)
+            materialToolbar.setNavigationOnClickListener {
+                navController.navigateUp()
+            }
+        }
         containerViewModel.register<ColorItem>(TAG, LABEL_COLOR_ITEM) { colorItem ->
             colorItem?.let {
                 updateBackgroundColor(binding.backgroundColor!!, it.background)
