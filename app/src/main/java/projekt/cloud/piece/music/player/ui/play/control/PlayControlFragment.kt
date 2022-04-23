@@ -152,6 +152,12 @@ class PlayControlFragment: BaseFragment() {
         }
     }
 
+    override fun onDestroyView() {
+        containerViewModel.unregisterAll(TAG)
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun processTouchEvent(rawX: Float, rawY: Float) {
         val rawPosition = IntArray(2)
         when {
