@@ -2,6 +2,8 @@ package projekt.cloud.piece.music.player.ui.play.control
 
 import android.animation.ValueAnimator
 import android.graphics.Bitmap
+import android.graphics.Color.BLACK
+import android.graphics.Color.WHITE
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
@@ -21,6 +23,7 @@ import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import projekt.cloud.piece.music.player.database.audio.item.ColorItem
 import projekt.cloud.piece.music.player.databinding.FragmentPlayControlBinding
+import projekt.cloud.piece.music.player.util.ColorUtil.isLight
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
 
 class PlayControlFragment: BaseFragment() {
@@ -51,6 +54,10 @@ class PlayControlFragment: BaseFragment() {
                 backgroundColor = it.background
                 primaryColor = it.primary
                 secondaryColor = it.secondary
+                buttonColor = when {
+                    it.background.isLight -> BLACK
+                    else -> WHITE
+                }
             }
             position = containerViewModel.position
         }
@@ -182,6 +189,14 @@ class PlayControlFragment: BaseFragment() {
         ValueAnimator.ofArgb(binding.secondaryColor!!, secondary).apply {
             duration = ANIMATION_DURATION
             addUpdateListener { binding.secondaryColor = animatedValue as Int }
+            start()
+        }
+        ValueAnimator.ofArgb(binding.buttonColor!!, when {
+            background.isLight -> BLACK
+            else -> WHITE
+        }).apply {
+            duration = ANIMATION_DURATION
+            addUpdateListener { binding.buttonColor = animatedValue as Int }
             start()
         }
     }
