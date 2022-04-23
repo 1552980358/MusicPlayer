@@ -2,7 +2,6 @@ package projekt.cloud.piece.music.player.service
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.media.metrics.PlaybackStateEvent.STATE_ENDED
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -41,6 +40,7 @@ import androidx.media.session.MediaButtonReceiver.handleIntent
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.Player.STATE_ENDED
 import kotlinx.coroutines.runBlocking
 import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
 import projekt.cloud.piece.music.player.R
