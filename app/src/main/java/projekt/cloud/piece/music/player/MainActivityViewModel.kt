@@ -2,6 +2,8 @@ package projekt.cloud.piece.music.player
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ALL
+import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_NONE
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -49,6 +51,8 @@ class MainActivityViewModel: ViewModel() {
         const val LABEL_BITMAP_ART = "LABEL_BITMAP_ART"
         const val LABEL_COLOR_ITEM = "LABEL_COLOR_ITEM"
         const val LABEL_IS_PLAYING = "LABEL_IS_PLAYING"
+        const val LABEL_REPEAT_MODE = "LABEL_REPEAT_MODE"
+        const val LABEL_SHUFFLE_MODE = "LABEL_SHUFFLE_MODE"
         const val LABEL_POSITION = "LABEL_POSITION"
     }
     
@@ -144,6 +148,22 @@ class MainActivityViewModel: ViewModel() {
             if (field != value) {
                 field = value
                 onObserved(LABEL_IS_PLAYING, value)
+            }
+        }
+
+    var repeatMode = REPEAT_MODE_ALL
+        set(value) {
+            if (field != value) {
+                field = value
+                onObserved(LABEL_REPEAT_MODE, value)
+            }
+        }
+
+    var shuffleMode = SHUFFLE_MODE_NONE
+        set(value) {
+            if (field != value) {
+                field = value
+                onObserved(LABEL_SHUFFLE_MODE, value)
             }
         }
     
