@@ -91,7 +91,8 @@ class MainActivity : AppCompatActivity() {
                             viewModel.shuffleMode = shuffleMode
                         }
                     })
-                    
+                    viewModel.repeatMode = mediaControllerCompat.repeatMode
+                    viewModel.shuffleMode = mediaControllerCompat.shuffleMode
                     MediaControllerCompat.setMediaController(this@MainActivity, mediaControllerCompat)
                 }
             },
