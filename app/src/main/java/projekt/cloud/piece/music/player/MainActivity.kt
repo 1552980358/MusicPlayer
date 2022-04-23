@@ -82,6 +82,14 @@ class MainActivity : AppCompatActivity() {
                         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
                             metadata?.let { metadataChanged(it) }
                         }
+
+                        override fun onRepeatModeChanged(repeatMode: Int) {
+                            viewModel.repeatMode = repeatMode
+                        }
+
+                        override fun onShuffleModeChanged(shuffleMode: Int) {
+                            viewModel.shuffleMode = shuffleMode
+                        }
                     })
                     
                     MediaControllerCompat.setMediaController(this@MainActivity, mediaControllerCompat)
