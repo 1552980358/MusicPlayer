@@ -56,6 +56,8 @@ object LyricUtil {
         writeText(toString())
     }
 
+    val List<String>.toLyric get() = decodeLines
+
     private val Long.blanketedTimeStr get() = "[${timeStr}]"
 
     private val Long.timeStr get() = "${minuteStr}:${secondStr}.${millisecondStr}"
