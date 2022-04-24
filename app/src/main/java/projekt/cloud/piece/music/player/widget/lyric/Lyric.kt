@@ -29,6 +29,11 @@ class Lyric: Serializable {
 
     val lastIndex get() = _lyricItemList.lastIndex
 
+    val last get() = _lyricItemList.last()
+
+    fun forEach(action: (LyricItem) -> Unit) =
+        _lyricItemList.forEach(action)
+
     fun indexOf(position: Long): Int {
         if (isEmpty) {
             return -2
