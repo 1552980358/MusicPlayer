@@ -14,6 +14,9 @@ class LyricItem(val time: Long): Serializable {
         _lyricLineList.add(lyric)
     }
 
+    fun forEach(action: (String) -> Unit) =
+        _lyricLineList.forEach(action)
+
     override fun toString() = _lyricLineList.joinToString("\n")
 
 }
