@@ -16,4 +16,9 @@
         <attr name="progressStrokeWidth" format="dimension" />
     </declare-styleable>
     
+    <declare-styleable name="TwoStateImageView">
+        <attr name="positiveImage" format="reference" />
+        <attr name="negativeImage" format="reference" />
+    </declare-styleable>
+    
 </resources>
