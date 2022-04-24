@@ -80,6 +80,7 @@ class PlayFragment: BaseFragment() {
             materialToolbar.setNavigationOnClickListener {
                 navController.navigateUp()
             }
+            supportActionBar?.setDisplayShowTitleEnabled(false)
         }
         containerViewModel.register<ColorItem>(TAG, LABEL_COLOR_ITEM) { colorItem ->
             colorItem?.let {
