@@ -37,6 +37,7 @@ import java.io.File
 object LyricUtil {
 
     private const val LYRIC_DIR = "lyric"
+    private const val NEA_LINE_SIGN = '\n'
     private val Context.lyricDir get() = getExternalFilesDir(LYRIC_DIR)
     private fun Context.getLyricFile(audio: String) = File(lyricDir, audio)
 
@@ -51,7 +52,7 @@ object LyricUtil {
         var time: String
         lyric.forEach { lyricItem ->
             time = lyricItem.time.blanketedTimeStr
-            lyricItem.forEach { append(time.plus(it)) }
+            lyricItem.forEach { append(time.plus(it).plus(NEA_LINE_SIGN)) }
         }
         writeText(toString())
     }
@@ -60,7 +61,8 @@ object LyricUtil {
 
     private val Long.blanketedTimeStr get() = "[${timeStr}]"
 
-    private val Long.timeStr get() = "${minuteStr}:${secondStr}.${millisecondStr}"
+    private val Long.timeStr get() =
+        "${minuteStr.with2DigitLeadingZero}:${secondStr.with2DigitLeadingZero}.${millisecondStr.with3DigitLeadingZero}"
 
     private val Long.minuteStr get() = this / 60000
 
