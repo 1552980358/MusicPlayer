@@ -1,7 +1,6 @@
 package projekt.cloud.piece.music.player
 
 import android.content.ComponentName
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -19,6 +18,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import projekt.cloud.piece.music.player.base.BaseActivity
 import projekt.cloud.piece.music.player.database.Database.audioRoom
 import projekt.cloud.piece.music.player.databinding.ActivityMainBinding
 import projekt.cloud.piece.music.player.service.PlayService
@@ -26,7 +26,7 @@ import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
 
 /**
- * Class [MainActivity], inherit to [AppCompatActivity]
+ * Class [MainActivity], inherit to [BaseActivity]
  *
  * Variables:
  *   [binding]
@@ -36,7 +36,7 @@ import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
  *   [onCreate]
  *
  **/
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
     
     companion object {
         const val TAG = "MainActivity"
