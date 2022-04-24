@@ -103,4 +103,13 @@ object LyricUtil {
 
     private val String.lyricLine get() = substring(indexOf(']') + 1)
 
+    private val Long.with3DigitLeadingZero get() = when (this) {
+        in (100 .. 999) -> this.toString()
+        in (10 .. 99) -> "0$this"
+        in (0 .. 9) -> "00$this"
+        else -> "000"
+    }
+
+    private val Long.with2DigitLeadingZero get() = if (this > 9) this.toString() else "0$this"
+
 }
