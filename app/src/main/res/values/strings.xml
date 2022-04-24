@@ -9,5 +9,9 @@
     <string name="main_bottom_navigation_artist">Artist</string>
     <string name="main_bottom_navigation_album">Album</string>
     <string name="main_bottom_navigation_playlist">Playlist</string>
-
+    
+    <string name="play_lyric_menu_pick_content">Pick Lyric From Device…</string>
+    
+    <string name="key_lyric_text_size">key_lyric_text_size</string>
+    <string name="lyric_default_text_size">24</string>
 </resources>
