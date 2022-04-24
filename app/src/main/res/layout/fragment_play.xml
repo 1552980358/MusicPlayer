@@ -19,6 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/root"
+        android:fitsSystemWindows="true"
         android:transitionName="@string/transition_to_play_fragment"
         android:background="@{backgroundColor}">
         
