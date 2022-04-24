@@ -12,7 +12,7 @@ class TwoStateImageView(context: Context, attributeSet: AttributeSet?): AppCompa
     companion object {
 
         @JvmStatic
-        @BindingAdapter("isChecked")
+        @BindingAdapter("state")
         fun TwoStateImageView.updateState(newState: Boolean) {
             if (state != newState) {
                 state = newState
