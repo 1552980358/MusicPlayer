@@ -8,18 +8,32 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import projekt.cloud.piece.music.player.MainActivity
 import projekt.cloud.piece.music.player.MainActivityViewModel
+import projekt.cloud.piece.music.player.database.audio.item.AudioItem
+import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_AUDIO_LIST
 
 /**
  * Class [BaseFragment], inherit to [Fragment]
  *
  * Variables:
- *   [containerViewModel]
+ *  [containerViewModel]
+ *
+ * Getters:
+ *  [transportControls]
+ *  [canReturn]
  *
  * Methods:
- *   [onCreate]
+ *  [onCreate]
+ *  [onBackPressed]
+ *  [sendCustomAction]
+ *  [play]
+ *  [pause]
+ *  [playAudio]
  *
  **/
 open class BaseFragment: Fragment() {
+
+    private val transportControls get() =
+        requireActivity().mediaController.transportControls
 
     protected lateinit var navController: NavController
         private set
@@ -40,5 +54,12 @@ open class BaseFragment: Fragment() {
             .transportControls
             .sendCustomAction(action, bundleOf(*extras))
     }
+
+    protected fun play() = transportControls.play()
+
+    protected fun pause() = transportControls.pause()
+
+    protected fun playAudio(audioItem: AudioItem?, audioList: List<AudioItem>?) =
+        transportControls.playFromMediaId(audioItem?.id, bundleOf(EXTRA_AUDIO_LIST to audioList))
 
 }
