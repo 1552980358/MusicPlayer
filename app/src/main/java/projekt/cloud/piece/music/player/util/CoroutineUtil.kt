@@ -11,6 +11,8 @@ import kotlinx.coroutines.launch
  * Getters:
  *   [ui]
  *   [io]
+ *   [uiScope]
+ *   [ioScope]
  *
  * Methods:
  *   [ui]
@@ -19,21 +21,25 @@ import kotlinx.coroutines.launch
  **/
 object CoroutineUtil {
 
-    val ui = CoroutineScope(Main)
-    val io = CoroutineScope(IO)
+    val ui get() = Main
+    val io get() = IO
+
+    private val uiScope = CoroutineScope(Main)
+    private val ioScope = CoroutineScope(IO)
 
     @JvmStatic
     fun ui(block: suspend CoroutineScope.() -> Unit) =
-        ui.launch(block = block)
+        uiScope.launch(block = block)
 
     @JvmStatic
     fun io(block: suspend CoroutineScope.() -> Unit) =
-        io.launch(block = block)
+        ioScope.launch(block = block)
 
     @JvmStatic
     fun CoroutineScope.ui(block: suspend CoroutineScope.() -> Unit) =
         launch(Main, block = block)
 
+    @JvmStatic
     fun CoroutineScope.io(block: suspend CoroutineScope.() -> Unit) =
         launch(IO, block  = block)
 
