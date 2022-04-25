@@ -51,4 +51,8 @@ class RecyclerViewAdapter(recyclerView: RecyclerView) {
         recyclerView.adapter = adapter
     }
 
+    fun setOnClick(onClick: (String) -> Unit) {
+        this.onClick = onClick
+    }
+
 }
