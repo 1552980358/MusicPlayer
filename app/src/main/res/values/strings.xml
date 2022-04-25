@@ -14,4 +14,8 @@
     
     <string name="key_lyric_text_size">key_lyric_text_size</string>
     <string name="lyric_default_text_size">24</string>
+    
+    <string name="create_playlist_select_image">Select Image…</string>
+    <string name="create_playlist_title_hint">Playlist Title</string>
+    <string name="create_playlist_description_hint">Playlist Description</string>
 </resources>
