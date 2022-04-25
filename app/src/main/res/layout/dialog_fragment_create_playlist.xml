@@ -2,84 +2,95 @@
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <androidx.appcompat.widget.LinearLayoutCompat
+    
+    
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-        
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/Theme.CloudPiece.AppBar">
-            
-            <com.google.android.material.appbar.MaterialToolbar
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:id="@+id/material_toolbar"
-                android:background="?attr/colorPrimary"
-                app:navigationIcon="@drawable/ic_round_close_24"
-                app:popupTheme="@style/Theme.CloudPiece.Toolbar" />
-            
-        </com.google.android.material.appbar.AppBarLayout>
-        
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/relative_layout_select_image"
-            android:background="?attr/selectableItemBackground"
-            android:paddingVertical="@dimen/md_spec_item_spacing_vertical_16"
-            android:paddingHorizontal="@dimen/md_spec_item_spacing_horizontal_16">
-            
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="@dimen/md_spec_list_avatar_40"
-                android:layout_height="@dimen/md_spec_list_avatar_40"
-                android:id="@+id/app_compat_image_view"
-                android:layout_alignParentEnd="true" />
-            
-            <com.google.android.material.textview.MaterialTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/md_spec_item_spacing_horizontal_16"
-                android:layout_toStartOf="@id/app_compat_image_view"
-                android:text="@string/create_playlist_select_image"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
-            
-        </RelativeLayout>
-        
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/create_playlist_title_hint"
-            android:layout_marginHorizontal="@dimen/md_spec_item_spacing_horizontal_16"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-            
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/text_input_edit_text_title"
-                android:maxLines="1" />
-            
-        </com.google.android.material.textfield.TextInputLayout>
+        android:id="@+id/root">
     
-        <com.google.android.material.textfield.TextInputLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/create_playlist_description_hint"
-            android:layout_marginHorizontal="@dimen/md_spec_item_spacing_horizontal_16"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
         
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/text_input_edit_text_description"
-                android:lines="7"
-                android:maxLines="7"
-                android:gravity="top|start" />
-    
-        </com.google.android.material.textfield.TextInputLayout>
+                android:theme="@style/Theme.CloudPiece.AppBar">
+            
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:id="@+id/material_toolbar"
+                    android:background="?attr/colorPrimary"
+                    app:navigationIcon="@drawable/ic_round_close_24"
+                    app:menu="@menu/dialog_fragment_create_playlist"
+                    app:popupTheme="@style/Theme.CloudPiece.Toolbar" />
         
-    </androidx.appcompat.widget.LinearLayoutCompat>
+            </com.google.android.material.appbar.AppBarLayout>
+        
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/relative_layout_select_image"
+                android:background="?attr/selectableItemBackground"
+                android:paddingVertical="@dimen/md_spec_item_spacing_vertical_16"
+                android:paddingHorizontal="@dimen/md_spec_item_spacing_horizontal_16">
+            
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="@dimen/md_spec_list_avatar_40"
+                    android:layout_height="@dimen/md_spec_list_avatar_40"
+                    android:id="@+id/app_compat_image_view"
+                    android:layout_alignParentEnd="true" />
+            
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/md_spec_item_spacing_horizontal_16"
+                    android:layout_toStartOf="@id/app_compat_image_view"
+                    android:text="@string/create_playlist_select_image"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+        
+            </RelativeLayout>
+        
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/create_playlist_title_hint"
+                android:layout_marginHorizontal="@dimen/md_spec_item_spacing_horizontal_16"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/text_input_edit_text_title"
+                    android:maxLines="1" />
+        
+            </com.google.android.material.textfield.TextInputLayout>
+        
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/create_playlist_description_hint"
+                android:layout_marginHorizontal="@dimen/md_spec_item_spacing_horizontal_16"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/text_input_edit_text_description"
+                    android:lines="7"
+                    android:maxLines="7"
+                    android:gravity="top|start" />
+        
+            </com.google.android.material.textfield.TextInputLayout>
+    
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    
 
 </layout>
