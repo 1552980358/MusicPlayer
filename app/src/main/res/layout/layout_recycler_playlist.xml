@@ -37,7 +37,7 @@
             android:layout_below="@id/material_text_view_title"
             android:layout_alignParentBottom="true"
             android:layout_toEndOf="@id/app_compat_image_view_avatar"
-            android:text="@{playlistWithCount.count}"
+            android:text="@{playlistWithCount.count + ``}"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
     
     </RelativeLayout>
