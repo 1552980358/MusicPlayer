@@ -16,6 +16,7 @@ import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import projekt.cloud.piece.music.player.database.audio.item.ColorItem
 import projekt.cloud.piece.music.player.database.audio.item.PlaylistAudioItem
 import projekt.cloud.piece.music.player.database.audio.item.PlaylistItem
+import projekt.cloud.piece.music.player.database.audio.refs.PlaylistWithCountRef.PlaylistWithCountDao
 
 @Database(
     entities = [
@@ -58,6 +59,9 @@ abstract class AudioRoom: RoomDatabase() {
 
     protected abstract fun playlistAudioDao(): PlaylistAudioDao
     val playlistAudioDao get() = playlistAudioDao()
+
+    protected abstract fun playlistWithCountDao(): PlaylistWithCountDao
+    val playlistWithCountDao get() = playlistWithCountDao()
 
     val queryAudio get() = audioDao.queryAll().onEach {
         it.artistItem = artistDao.query(it.artist)
