@@ -125,17 +125,13 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
             startSelf { putExtra(ACTION_START_COMMAND, ACTION_START_COMMAND_PAUSE) }
         }
         
-        override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
-            extras?.let {
-                if (!it.containsKey(EXTRA_AUDIO_ITEM) && !it.containsKey(EXTRA_AUDIO_LIST)) {
-                    return
-                }
+        override fun onPlayFromMediaId(audio: String?, extras: Bundle?) {
+            audio ?: return
+            extras ?: return
+            if (extras.containsKey(EXTRA_AUDIO_LIST)) {
                 playAudioItem(
                     @Suppress("UNCHECKED_CAST")
-                    audioList.updateList(
-                        it.getSerializable(EXTRA_AUDIO_ITEM) as AudioItem,
-                        it.getSerializable(EXTRA_AUDIO_LIST) as List<AudioItem>
-                    )
+                    audioList.updateList(audio, extras.getSerializable(EXTRA_AUDIO_LIST) as List<AudioItem>)
                 )
             }
         }
