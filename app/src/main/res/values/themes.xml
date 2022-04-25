@@ -24,5 +24,10 @@
         <item name="cornerSizeBottomLeft">@dimen/fab_radius</item>
         <item name="cornerSizeBottomRight">@dimen/fab_radius</item>
     </style>
+    
+    <style name="Theme.CloudPiece.CreatePlaylistDialogFragment" parent="Theme.Material3.DayNight.BottomSheetDialog">
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <item name="android:navigationBarColor">?attr/colorPrimary</item>
+    </style>
 
 </resources>
