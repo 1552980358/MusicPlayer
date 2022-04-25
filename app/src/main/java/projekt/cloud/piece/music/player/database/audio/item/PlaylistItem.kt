@@ -6,7 +6,7 @@ import androidx.room.Ignore
 import projekt.cloud.piece.music.player.database.audio.item.base.BaseTitledItem
 import java.lang.System.currentTimeMillis
 
-@Entity(tableName = "playlist")
+@Entity(tableName = "playlist", inheritSuperIndices = true)
 class PlaylistItem(id: String,
                    title: String,
                    @ColumnInfo(name = "description") var description: String? = null): BaseTitledItem(id, title) {
