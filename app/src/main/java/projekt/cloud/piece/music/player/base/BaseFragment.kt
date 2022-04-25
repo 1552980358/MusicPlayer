@@ -8,6 +8,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import projekt.cloud.piece.music.player.MainActivity
 import projekt.cloud.piece.music.player.MainActivityViewModel
+import projekt.cloud.piece.music.player.database.Database.audioRoom
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_AUDIO_LIST
 
@@ -34,6 +35,8 @@ open class BaseFragment: Fragment() {
 
     private val transportControls get() =
         requireActivity().mediaController.transportControls
+
+    protected val audioRoom get() = requireContext().audioRoom
 
     protected lateinit var navController: NavController
         private set
