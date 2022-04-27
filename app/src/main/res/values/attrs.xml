@@ -21,4 +21,10 @@
         <attr name="negativeImage" format="reference" />
     </declare-styleable>
     
+    <declare-styleable name="CropImageView">
+        <attr name="lineThickness" format="dimension" />
+        <attr name="circleRadius" format="dimension" />
+        <attr name="minSize" format="dimension" />
+    </declare-styleable>
+    
 </resources>

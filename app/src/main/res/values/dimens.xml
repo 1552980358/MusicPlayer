@@ -16,4 +16,8 @@
     <dimen name="progress_bar_default_progress_stroke_width">0.5dp</dimen>
     
     <dimen name="lyric_view_default_text_size">24dp</dimen>
+    
+    <dimen name="crop_image_view_default_line_width">2dp</dimen>
+    <dimen name="crop_image_view_default_circle_radius">8dp</dimen>
+    <dimen name="crop_image_view_default_min_size">40dp</dimen>
 </resources>
