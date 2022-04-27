@@ -7,19 +7,19 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import projekt.cloud.piece.music.player.database.audio.refs.PlaylistWithCountRef.PlaylistWithCount
+import projekt.cloud.piece.music.player.database.audio.extension.PlaylistWithAudio
 import projekt.cloud.piece.music.player.databinding.LayoutRecyclerPlaylistBinding
 
 class RecyclerViewAdapter(recyclerView: RecyclerView) {
 
     private inner class RecyclerViewHolder(private val binding: LayoutRecyclerPlaylistBinding): ViewHolder(binding.root), OnClickListener {
-        fun onBind(playlistWithCount: PlaylistWithCount) {
-            binding.playlistWithCount = playlistWithCount
+        fun onBind(playlistWithCount: PlaylistWithAudio) {
+            binding.playlistWithAudio = playlistWithCount
             binding.root.setOnClickListener(this)
         }
 
         override fun onClick(v: View?) {
-            binding.playlistWithCount?.let { onClick?.invoke(it.playlistItem.id) }
+            binding.playlistWithAudio?.let { onClick?.invoke(it) }
         }
     }
 
@@ -38,20 +38,20 @@ class RecyclerViewAdapter(recyclerView: RecyclerView) {
 
     private val adapter = RecyclerViewAdapter()
 
-    var playlistList: List<PlaylistWithCount>? = null
+    var playlistList: ArrayList<PlaylistWithAudio>? = null
         set(value) {
             field = value
             @Suppress("NotifyDataSetChanged")
             adapter.notifyDataSetChanged()
         }
 
-    private var onClick: ((String) -> Unit)? = null
+    private var onClick: ((PlaylistWithAudio) -> Unit)? = null
 
     init {
         recyclerView.adapter = adapter
     }
 
-    fun setOnClick(onClick: (String) -> Unit) {
+    fun setOnClick(onClick: (PlaylistWithAudio) -> Unit) {
         this.onClick = onClick
     }
 
