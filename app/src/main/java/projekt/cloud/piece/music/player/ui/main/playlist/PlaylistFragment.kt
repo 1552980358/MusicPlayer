@@ -14,7 +14,7 @@ import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.database.audio.extension.PlaylistWithAudio
 import projekt.cloud.piece.music.player.database.audio.item.PlaylistItem
 import projekt.cloud.piece.music.player.ui.main.base.BaseMainFragment
-import projekt.cloud.piece.music.player.ui.main.dialog.CreatePlaylistDialogFragment
+import projekt.cloud.piece.music.player.ui.dialog.CreatePlaylistDialogFragment
 import projekt.cloud.piece.music.player.ui.main.playlist.adapter.RecyclerViewAdapter
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ui

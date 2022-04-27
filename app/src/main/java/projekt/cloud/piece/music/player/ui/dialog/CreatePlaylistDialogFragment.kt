@@ -1,4 +1,4 @@
-package projekt.cloud.piece.music.player.ui.main.dialog
+package projekt.cloud.piece.music.player.ui.dialog
 
 import android.os.Bundle
 import android.view.LayoutInflater
