@@ -10,13 +10,13 @@ import projekt.cloud.piece.music.player.database.audio.dao.AudioDao
 import projekt.cloud.piece.music.player.database.audio.dao.ColorDao
 import projekt.cloud.piece.music.player.database.audio.dao.PlaylistAudioDao
 import projekt.cloud.piece.music.player.database.audio.dao.PlaylistDao
+import projekt.cloud.piece.music.player.database.audio.extension.PlaylistWithAudio
 import projekt.cloud.piece.music.player.database.audio.item.AlbumItem
 import projekt.cloud.piece.music.player.database.audio.item.ArtistItem
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import projekt.cloud.piece.music.player.database.audio.item.ColorItem
 import projekt.cloud.piece.music.player.database.audio.item.PlaylistAudioItem
 import projekt.cloud.piece.music.player.database.audio.item.PlaylistItem
-import projekt.cloud.piece.music.player.database.audio.refs.PlaylistWithCountRef.PlaylistWithCountDao
 
 @Database(
     entities = [
@@ -60,9 +60,6 @@ abstract class AudioRoom: RoomDatabase() {
     protected abstract fun playlistAudioDao(): PlaylistAudioDao
     val playlistAudioDao get() = playlistAudioDao()
 
-    protected abstract fun playlistWithCountDao(): PlaylistWithCountDao
-    val playlistWithCountDao get() = playlistWithCountDao()
-
     val queryAudio get() = audioDao.queryAll().onEach {
         it.artistItem = artistDao.query(it.artist)
         it.albumItem = albumDao.query(it.album)
@@ -76,11 +73,10 @@ abstract class AudioRoom: RoomDatabase() {
     fun queryColor(audio: String, album: String) =
         colorDao.query(audio, album)
 
-    fun queryPlaylist() = playlistDao.query()
-
-    fun queryPlaylistAudio(playlist: String) = playlistAudioDao.query(playlist).onEach {
-        it.artistItem = artistDao.query(it.artist)
-        it.albumItem = albumDao.query(it.album)
+    val playlist get() = ArrayList<PlaylistWithAudio>().apply {
+        playlistDao.query().forEach { playlistItem ->
+            add(PlaylistWithAudio(playlistItem, playlistAudioDao.query(playlistItem.id)))
+        }
     }
 
 }
