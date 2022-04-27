@@ -5,8 +5,8 @@
     <data>
         
         <variable
-            name="playlistWithCount"
-            type="projekt.cloud.piece.music.player.database.audio.refs.PlaylistWithCountRef.PlaylistWithCount" />
+            name="playlistWithAudio"
+            type="projekt.cloud.piece.music.player.database.audio.extension.PlaylistWithAudio" />
         
     </data>
     
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/material_text_view_title"
             android:layout_toEndOf="@id/app_compat_image_view_avatar"
-            android:text="@{playlistWithCount.title}"
+            android:text="@{playlistWithAudio.title}"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
     
         <com.google.android.material.textview.MaterialTextView
@@ -37,7 +37,7 @@
             android:layout_below="@id/material_text_view_title"
             android:layout_alignParentBottom="true"
             android:layout_toEndOf="@id/app_compat_image_view_avatar"
-            android:text="@{playlistWithCount.count + ``}"
+            android:text="@{playlistWithAudio.sizeStr}"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
     
     </RelativeLayout>
