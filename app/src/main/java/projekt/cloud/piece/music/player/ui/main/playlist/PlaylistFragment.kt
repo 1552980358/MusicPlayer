@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
+import projekt.cloud.piece.music.player.database.audio.extension.PlaylistWithAudio
 import projekt.cloud.piece.music.player.database.audio.item.PlaylistItem
-import projekt.cloud.piece.music.player.database.audio.refs.PlaylistWithCountRef.PlaylistWithCount
 import projekt.cloud.piece.music.player.ui.main.base.BaseMainFragment
 import projekt.cloud.piece.music.player.ui.main.dialog.CreatePlaylistDialogFragment
 import projekt.cloud.piece.music.player.ui.main.playlist.adapter.RecyclerViewAdapter
@@ -38,7 +38,7 @@ class PlaylistFragment: BaseMainFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         ui {
             recyclerViewAdapter.playlistList = withContext(io) {
-                audioRoom.playlistWithCountDao.query()
+                audioRoom.playlist
             }
         }
     }
@@ -53,18 +53,7 @@ class PlaylistFragment: BaseMainFragment() {
                 .setOnCreate { title, description ->
                     val playlistItem = PlaylistItem(title, description)
                     io { audioRoom.playlistDao.insert(playlistItem) }
-                    recyclerViewAdapter.playlistList =
-                        (recyclerViewAdapter.playlistList?.toMutableList() ?: ArrayList()).apply {
-                            add(
-                                PlaylistWithCount(
-                                    playlistItem.id,
-                                    playlistItem.title,
-                                    playlistItem.pinyin,
-                                    playlistItem.description,
-                                    0
-                                )
-                            )
-                        }
+                    recyclerViewAdapter.playlistList?.add(PlaylistWithAudio(playlistItem))
                 }
                 .showNow(this)
         }
