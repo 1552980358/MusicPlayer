@@ -2,6 +2,7 @@
 <resources>
     
     <attr name="extFabTextColor" format="color" />
+    <attr name="circleRadius" format="dimension" />
     
     <declare-styleable name="TimeView">
         
@@ -10,7 +11,7 @@
     </declare-styleable>
     
     <declare-styleable name="ProgressBar">
-        <attr name="circleRadius" format="dimension" />
+        <attr name="circleRadius" />
         <attr name="circleStrokeWidth" format="dimension" />
         <attr name="remain_thick" format="dimension" />
         <attr name="progressStrokeWidth" format="dimension" />
@@ -23,7 +24,7 @@
     
     <declare-styleable name="CropImageView">
         <attr name="lineThickness" format="dimension" />
-        <attr name="circleRadius" format="dimension" />
+        <attr name="circleRadius" />
         <attr name="minSize" format="dimension" />
     </declare-styleable>
     
