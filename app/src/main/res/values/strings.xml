@@ -21,4 +21,7 @@
     <string name="create_playlist_title_hint">Playlist Title</string>
     <string name="create_playlist_description_hint">Playlist Description</string>
     <string name="create_playlist_menu_create">Create</string>
+    
+    <string name="crop_image_title">Crop Image…</string>
+    <string name="crop_image_menu_crop">Crop</string>
 </resources>
