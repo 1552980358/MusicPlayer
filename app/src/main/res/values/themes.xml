@@ -29,5 +29,11 @@
         <item name="android:statusBarColor">?attr/colorPrimary</item>
         <item name="android:navigationBarColor">?attr/colorPrimary</item>
     </style>
-
+    
+    <style name="Theme.CloudPiece.CropImageDialogFragment" parent="Theme.Material3.DayNight.DialogWhenLarge">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <item name="android:navigationBarColor">?attr/colorPrimary</item>
+        <item name="android:windowBackground">@color/black</item>
+    </style>
 </resources>
