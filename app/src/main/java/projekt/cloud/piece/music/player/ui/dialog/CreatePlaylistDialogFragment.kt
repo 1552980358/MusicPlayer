@@ -75,22 +75,6 @@ class CreatePlaylistDialogFragment: BaseBottomSheetDialogFragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.clear()
-        inflater.inflate(R.menu.dialog_fragment_create_playlist, menu)
-        menuItemSave = menu.findItem(0)
-        menuItemSave?.isEnabled = false
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_create -> {
-
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     override fun onCreateDialog(savedInstanceState: Bundle?) = super.onCreateDialog(savedInstanceState).apply {
         window?.setLayout(MATCH_PARENT, MATCH_PARENT)
     }
