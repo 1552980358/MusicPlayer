@@ -7,13 +7,31 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.database.audio.extension.PlaylistWithAudio
 import projekt.cloud.piece.music.player.databinding.LayoutRecyclerPlaylistBinding
+import projekt.cloud.piece.music.player.util.CoroutineUtil.io
+import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
+import projekt.cloud.piece.music.player.util.ImageUtil.FLAG_SMALL
+import projekt.cloud.piece.music.player.util.ImageUtil.readPlaylistArt
 
 class RecyclerViewAdapter(recyclerView: RecyclerView) {
 
     private inner class RecyclerViewHolder(private val binding: LayoutRecyclerPlaylistBinding): ViewHolder(binding.root), OnClickListener {
+
+        private var job: Job? = null
+
         fun onBind(playlistWithCount: PlaylistWithAudio) {
+            job?.cancel()
+            job = ui {
+                binding.appCompatImageViewAvatar.setImageBitmap(
+                    withContext(io) {
+                        binding.root.context.readPlaylistArt(playlistWithCount.playlistItem.id, FLAG_SMALL)
+                    }
+                )
+                job = null
+            }
             binding.playlistWithAudio = playlistWithCount
             binding.root.setOnClickListener(this)
         }
