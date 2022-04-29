@@ -12,23 +12,23 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
-import androidx.navigation.fragment.findNavController
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.transition.Hold
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_AUDIO_ITEM
 import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_BITMAP_ART
+import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_COLOR_ITEM
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.base.BasePagerViewModel
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
+import projekt.cloud.piece.music.player.database.audio.item.ColorItem
 import projekt.cloud.piece.music.player.databinding.FragmentMainBinding
 import projekt.cloud.piece.music.player.ui.main.album.AlbumFragment
 import projekt.cloud.piece.music.player.ui.main.artist.ArtistFragment
@@ -182,6 +182,12 @@ class MainFragment: BaseFragment() {
                     else -> icon = BitmapDrawable(resources, it)
                 }
             }
+
+            containerViewModel.colorItem?.let { colorItemUpdated(this, it) }
+
+            containerViewModel.register<ColorItem>(TAG, LABEL_COLOR_ITEM) { colorItem ->
+                colorItem?.let { colorItemUpdated(this, it) }
+            }
         }
     
         containerViewModel.register<AudioItem>(TAG, LABEL_AUDIO_ITEM) {
@@ -219,6 +225,11 @@ class MainFragment: BaseFragment() {
             delay(DELAY_EXT_FAB_UPDATED)
             ui { extFab.shrink() }
         }
+    }
+
+    private fun colorItemUpdated(extendedFloatingActionButton: ExtendedFloatingActionButton, colorItem: ColorItem) {
+        extendedFloatingActionButton.setBackgroundColor(colorItem.background)
+        extendedFloatingActionButton.setTextColor(colorItem.primary)
     }
 
 }
