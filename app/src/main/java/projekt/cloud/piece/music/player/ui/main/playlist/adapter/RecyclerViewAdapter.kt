@@ -41,8 +41,7 @@ class RecyclerViewAdapter(recyclerView: RecyclerView) {
     var playlistList: ArrayList<PlaylistWithAudio>? = null
         set(value) {
             field = value
-            @Suppress("NotifyDataSetChanged")
-            adapter.notifyDataSetChanged()
+            notifyUpdate()
         }
 
     private var onClick: ((PlaylistWithAudio) -> Unit)? = null
@@ -54,5 +53,9 @@ class RecyclerViewAdapter(recyclerView: RecyclerView) {
     fun setOnClick(onClick: (PlaylistWithAudio) -> Unit) {
         this.onClick = onClick
     }
+
+    @Suppress("NotifyDataSetChanged")
+    fun notifyUpdate() =
+        adapter.notifyDataSetChanged()
 
 }
