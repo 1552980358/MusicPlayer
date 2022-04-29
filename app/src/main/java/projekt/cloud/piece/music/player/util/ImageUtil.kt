@@ -19,8 +19,12 @@ import java.io.File
  *  [ART_OPEN_MODE]
  *  [ALBUM_ART_URI]
  *  [SMALL_ART_SIZE_DP]
+ *  [FLAG_LARGE]
+ *  [FLAG_SMALL]
  *  [DIR_ALBUM_ART_LARGE]
  *  [DIR_ALBUM_ART_SMALL]
+ *  [DIR_PLAYLIST_ART_LARGE]
+ *  [DIR_PLAYLIST_ART_SMALL]
  *
  * Getters:
  *  [artUri]
@@ -31,15 +35,10 @@ import java.io.File
  *  [saveArt]
  *  [readArt]
  *
- *  [getAlbumArtLargeFile]
- *  [saveAlbumArtLarge]
- *  [readAlbumArtLarge]
- *
- *  [getAlbumArtSmallFile]
- *  [saveAlbumArtSmall]
- *  [readAlbumArtSmall]
- *
  *  [saveAlbumArt]
+ *  [readAlbumArt]
+ *  [savePlaylistArt]
+ *  [readPlaylistArt]
  *
  **/
 object ImageUtil {
@@ -76,40 +75,15 @@ object ImageUtil {
     private fun Context.readArt(dir: String, id: String) =
         tryRun { File(getExternalFilesDir(dir), id).inputStream().use { BitmapFactory.decodeStream(it) } }
 
+    const val FLAG_LARGE = true
+    const val FLAG_SMALL = false
+
     private const val DIR_ALBUM_ART_LARGE = "album_large"
-    private fun Context.getAlbumArtLargeFile(album: String) = File(getExternalFilesDir(DIR_ALBUM_ART_LARGE), album)
-    private fun Context.saveAlbumArtLarge(album: String, bitmap: Bitmap) =
-        getAlbumArtLargeFile(album).outputStream().use {
-            bitmap.compress(JPEG, 100, it)
-        }
-    fun Context.readAlbumArtLarge(album: String) =
-        tryRun { getAlbumArtLargeFile(album).inputStream().use { BitmapFactory.decodeStream(it) } }
-
     private const val DIR_ALBUM_ART_SMALL = "album_small"
-    private fun Context.getAlbumArtSmallFile(album: String) = File(getExternalFilesDir(DIR_ALBUM_ART_SMALL), album)
-    private fun Context.saveAlbumArtSmall(album: String, bitmap: Bitmap) =
-        getAlbumArtSmallFile(album).outputStream().use {
-            bitmap.compress(JPEG, 100, it)
-        }
-    fun Context.readAlbumArtSmall(album: String) =
-        tryRun { getAlbumArtSmallFile(album).inputStream().use { BitmapFactory.decodeStream(it) } }
-
-    fun Context.saveAlbumArt(album: String, bitmap: Bitmap) {
-        saveAlbumArtLarge(album, bitmap)
-        saveAlbumArtSmall(
-            album,
-            Bitmap.createBitmap(
-                bitmap, 0, 0,
-                bitmap.width, bitmap.height,
-                Matrix().apply {
-                    (SMALL_ART_SIZE_DP.dp2PxF(this@saveAlbumArt) / bitmap.width).apply {
-                        setScale(this, this)
-                    }
-                },
-                false
-            )
-        )
-    }
+    fun Context.saveAlbumArt(album: String, bitmap: Bitmap) =
+        saveArt(DIR_ALBUM_ART_LARGE, DIR_ALBUM_ART_SMALL, album, bitmap)
+    fun Context.readAlbumArt(album: String, isLarge: Boolean) =
+        readArt(if (isLarge) DIR_ALBUM_ART_LARGE else DIR_ALBUM_ART_SMALL, album)
 
     private const val DIR_PLAYLIST_ART_LARGE = "playlist_large"
     private const val DIR_PLAYLIST_ART_SMALL = "playlist_small"
