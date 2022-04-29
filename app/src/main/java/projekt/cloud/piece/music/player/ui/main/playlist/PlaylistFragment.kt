@@ -10,8 +10,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.withContext
+import mkaflowski.mediastylepalette.MediaNotificationProcessor
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.database.audio.extension.PlaylistWithAudio
+import projekt.cloud.piece.music.player.database.audio.item.ColorItem
 import projekt.cloud.piece.music.player.database.audio.item.PlaylistItem
 import projekt.cloud.piece.music.player.ui.main.base.BaseMainFragment
 import projekt.cloud.piece.music.player.ui.dialog.CreatePlaylistDialogFragment
@@ -19,6 +21,7 @@ import projekt.cloud.piece.music.player.ui.main.playlist.adapter.RecyclerViewAda
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
 import projekt.cloud.piece.music.player.util.DialogFragmentUtil.showNow
+import projekt.cloud.piece.music.player.util.ImageUtil.savePlaylistArt
 
 class PlaylistFragment: BaseMainFragment() {
 
@@ -50,10 +53,23 @@ class PlaylistFragment: BaseMainFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_create -> CreatePlaylistDialogFragment()
-                .setOnCreate { title, description ->
+                .setOnCreate { title, description, bitmap ->
                     val playlistItem = PlaylistItem(title, description)
-                    io { audioRoom.playlistDao.insert(playlistItem) }
-                    recyclerViewAdapter.playlistList?.add(PlaylistWithAudio(playlistItem))
+                    io {
+                        audioRoom.playlistDao.insert(playlistItem)
+                        bitmap?.let {
+                            requireContext().savePlaylistArt(playlistItem.id, it)
+                            MediaNotificationProcessor(requireContext(), it).run {
+                                audioRoom.colorDao.insert(
+                                    ColorItem(backgroundColor, primaryTextColor, secondaryTextColor, playlist = playlistItem.id)
+                                )
+                            }
+                        }
+                        with(recyclerViewAdapter) {
+                            playlistList?.add(PlaylistWithAudio(playlistItem))
+                            ui { notifyUpdate() }
+                        }
+                    }
                 }
                 .showNow(this)
         }
