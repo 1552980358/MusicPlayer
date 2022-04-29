@@ -21,14 +21,20 @@ class ColorItem(@ColumnInfo(name = "background") @ColorInt var background: Int =
     
     @ColumnInfo(name = "album")
     var album: String? = null
+
+    @ColumnInfo(name = "playlist")
+    var playlist: String? = null
     
     @Ignore
-    constructor(background: Int, primary: Int, secondary: Int, audio: String? = null, album: String? = null): this(background, primary, secondary) {
+    constructor(background: Int, primary: Int, secondary: Int, audio: String? = null, album: String? = null, playlist: String? = null): this(background, primary, secondary) {
         audio?.let {
             this.audio = it
         }
         album?.let {
             this.album = it
+        }
+        playlist?.let {
+            this.playlist = it
         }
     }
     
