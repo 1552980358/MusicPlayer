@@ -64,7 +64,6 @@ import projekt.cloud.piece.music.player.service.play.Config.CONFIG_PLAY_REPEAT_O
 import projekt.cloud.piece.music.player.service.play.Config.CONFIG_PLAY_SHUFFLE
 import projekt.cloud.piece.music.player.service.play.Config.CONFIG_SERVICE_FOREGROUND
 import projekt.cloud.piece.music.player.service.play.Configs
-import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_AUDIO_ITEM
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_AUDIO_LIST
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_CONFIGS
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_REPEAT_MODE
@@ -73,7 +72,8 @@ import projekt.cloud.piece.music.player.service.play.ServiceNotification
 import projekt.cloud.piece.music.player.util.BroadcastReceiverImpl.Companion.broadcastReceiver
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
-import projekt.cloud.piece.music.player.util.ImageUtil.readAlbumArtLarge
+import projekt.cloud.piece.music.player.util.ImageUtil.FLAG_LARGE
+import projekt.cloud.piece.music.player.util.ImageUtil.readAlbumArt
 import projekt.cloud.piece.music.player.util.ServiceUtil.startSelf
 
 /**
@@ -350,7 +350,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
 
     private fun prepareAudio(audioItem: AudioItem) = runBlocking {
         io {
-            audioArt = readAlbumArtLarge(audioItem.album)
+            audioArt = readAlbumArt(audioItem.album, FLAG_LARGE)
         }
         exoPlayer.prepare()
     }
