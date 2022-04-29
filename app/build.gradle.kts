@@ -58,7 +58,7 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
     val lifecycleVersion = "2.4.1"
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
-    implementation("androidx.media:media:1.5.0")
+    implementation("androidx.media:media:1.6.0")
     implementation("androidx.preference:preference-ktx:1.2.0")
     val roomVersion = "2.4.2"
     implementation ("androidx.room:room-runtime:$roomVersion")
