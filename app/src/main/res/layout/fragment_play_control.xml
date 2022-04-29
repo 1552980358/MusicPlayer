@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/transition_image_view"
-            default_image="@{@drawable/ic_round_audiotrack_200}"
+            default_image="@{@drawable/ic_round_audiotrack_24}"
             bitmap="@{imageBitmap}" />
         
         <include
