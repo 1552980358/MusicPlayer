@@ -2,7 +2,7 @@
 buildscript {
     extra.apply {
         set("gradleVersion", "7.1.3")
-        set("kotlinVersion", "1.6.10")
+        set("kotlinVersion", "1.6.21")
         set("navVersion", "2.4.2")
     }
     dependencies {
