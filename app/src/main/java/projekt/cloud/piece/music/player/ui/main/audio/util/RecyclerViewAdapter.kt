@@ -13,7 +13,8 @@ import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import projekt.cloud.piece.music.player.databinding.LayoutRecyclerAudioBinding
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
-import projekt.cloud.piece.music.player.util.ImageUtil.readAlbumArtLarge
+import projekt.cloud.piece.music.player.util.ImageUtil.FLAG_SMALL
+import projekt.cloud.piece.music.player.util.ImageUtil.readAlbumArt
 
 /**
  * Class [RecyclerViewAdapter]
@@ -63,7 +64,7 @@ class RecyclerViewAdapter(recyclerView: RecyclerView) {
         fun bindView(audioItem: AudioItem) {
             job?.cancel()
             job = io {
-                val imageBitmap = binding.root.context.readAlbumArtLarge(audioItem.album)
+                val imageBitmap = binding.root.context.readAlbumArt(audioItem.album, FLAG_SMALL)
                 ui { binding.appCompatImageViewAvatar.setImageBitmap(imageBitmap) }
             }
             binding.audio = audioItem
