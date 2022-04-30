@@ -155,9 +155,9 @@ class ProgressBar(context: Context, attributeSet: AttributeSet?): View(context, 
                 ACTION_MOVE -> updateProgress(motionEvent)
                 ACTION_UP -> {
                     parent.requestDisallowInterceptTouchEvent(false)
-                    isControlled = false
-                    updateProgress(motionEvent)
                     isReleased = true
+                    updateProgress(motionEvent)
+                    isControlled = false
                 }
             }
             return@setOnTouchListener true
