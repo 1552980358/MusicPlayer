@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
+import android.view.View.MeasureSpec.EXACTLY
 import androidx.annotation.ColorInt
 import androidx.databinding.BindingAdapter
 import projekt.cloud.piece.music.player.R
@@ -63,8 +64,10 @@ class TimeView(context: Context, attributeSet: AttributeSet?): View(context, att
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        // Add 0.5dp to 4 sides
-        setMeasuredDimension(rect.width(), rect.height())
+        super.onMeasure(
+            MeasureSpec.makeMeasureSpec(rect.width(), EXACTLY),
+            MeasureSpec.makeMeasureSpec(rect.height(), EXACTLY)
+        )
     }
 
     override fun onDraw(canvas: Canvas?) {
