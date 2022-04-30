@@ -14,6 +14,7 @@
     
     <dimen name="md_spec_item_height_72">72dp</dimen>
     <dimen name="md_spec_item_spacing_horizontal_16">16dp</dimen>
+    <dimen name="md_spec_item_spacing_horizontal_8">8dp</dimen>
     <dimen name="md_spec_item_spacing_vertical_16">16dp</dimen>
     <dimen name="md_spec_item_spacing_vertical_8">8dp</dimen>
     <dimen name="md_spec_item_icon_size_24">24dp</dimen>
