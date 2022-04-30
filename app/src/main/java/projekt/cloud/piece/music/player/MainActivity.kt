@@ -108,6 +108,7 @@ class MainActivity : BaseActivity() {
     }
     
     private fun playbackStateChanged(state: PlaybackStateCompat) {
+        viewModel.position = state.position
         @Suppress("SwitchIntDef")
         when (state.state) {
             STATE_PLAYING -> {
