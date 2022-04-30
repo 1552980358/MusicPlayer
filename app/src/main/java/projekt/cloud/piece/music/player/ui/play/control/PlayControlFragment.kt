@@ -51,6 +51,8 @@ class PlayControlFragment: BaseFragment() {
     private val appCompatImageViewPrev get() = buttonPlayControl.appCompatImageViewPrev
     private val appCompatImageViewNext get() = buttonPlayControl.appCompatImageViewNext
     private val appCompatImageViewShuffle get() = buttonPlayControl.appCompatImageViewShuffle
+    private val positionPlayControl get() = binding.positionPlayControl
+    private val progressBar get() = positionPlayControl.progressBar
     
     private val floatingActionButton get() = binding.buttonsPlayControl.floatingActionButton
 
@@ -70,6 +72,7 @@ class PlayControlFragment: BaseFragment() {
                     else -> WHITE
                 }
             }
+            isControlling = false
             position = containerViewModel.position
             repeatMode = containerViewModel.repeatMode
             shuffleMode = containerViewModel.shuffleMode
@@ -114,6 +117,19 @@ class PlayControlFragment: BaseFragment() {
                     }
                 }
                 true
+            }
+        }
+
+        with(progressBar) {
+            setOnProgressChanged { position, isReleased ->
+                if (binding.isControlling != !isReleased) {
+                    binding.isControlling = !isReleased
+                }
+                binding.controlDuration = position
+                if (isReleased) {
+                    transportControls.seekTo(position)
+                    binding.position = position
+                }
             }
         }
         
