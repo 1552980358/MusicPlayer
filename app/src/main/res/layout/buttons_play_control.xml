@@ -22,6 +22,10 @@
             name="shuffleMode"
             type="Integer" />
         
+        <variable
+            name="rippleColorStateList"
+            type="android.content.res.ColorStateList" />
+        
     </data>
     
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -45,14 +49,16 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/app_compat_image_view_repeat"
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
+                    android:id="@+id/app_compat_image_button_repeat"
                     android:alpha="@{repeatMode == PlaybackStateCompat.REPEAT_MODE_NONE ? 0.5F : 1F}"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@{repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE ? @drawable/ic_baseline_repeat_one_24 : @drawable/ic_baseline_repeat_24}"
-                    android:tint="@{buttonColor != null ? buttonColor : @color/white}" />
+                    android:tint="@{buttonColor != null ? buttonColor : @color/white}"
+                    android:layout_centerInParent="true"
+                    rippleColorStateList="@{rippleColorStateList}" />
 
             </RelativeLayout>
 
@@ -70,23 +76,27 @@
                     android:backgroundTint="@color/white"
                     tools:ignore="ContentDescription" />
 
-                <androidx.appcompat.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/app_compat_image_view_prev"
+                    android:id="@+id/app_compat_image_button_prev"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:layout_centerVertical="true"
                     android:layout_toStartOf="@id/floating_action_button"
                     android:tint="@{buttonColor != null ? buttonColor : @color/white}"
-                    app:srcCompat="@drawable/ic_baseline_skip_prev_24" />
+                    app:srcCompat="@drawable/ic_baseline_skip_prev_24"
+                    rippleColorStateList="@{rippleColorStateList}" />
 
-                <androidx.appcompat.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/app_compat_image_view_next"
+                    android:id="@+id/app_compat_image_button_next"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@id/floating_action_button"
                     android:tint="@{buttonColor != null ? buttonColor : @color/white}"
-                    app:srcCompat="@drawable/ic_baseline_skip_next_24" />
+                    app:srcCompat="@drawable/ic_baseline_skip_next_24"
+                    rippleColorStateList="@{rippleColorStateList}" />
 
             </RelativeLayout>
 
@@ -95,14 +105,16 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <androidx.appcompat.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/app_compat_image_view_shuffle"
+                    android:id="@+id/app_compat_image_button_shuffle"
                     android:alpha="@{shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ? 1F : 0.5F}"
-                    android:layout_centerInParent="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:tint="@{buttonColor != null ? buttonColor : @color/white}"
-                    app:srcCompat="@drawable/ic_baseline_shuffle_24" />
+                    android:layout_centerInParent="true"
+                    app:srcCompat="@drawable/ic_baseline_shuffle_24"
+                    rippleColorStateList="@{rippleColorStateList}" />
 
             </RelativeLayout>
 
