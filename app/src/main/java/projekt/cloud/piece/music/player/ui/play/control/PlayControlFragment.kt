@@ -1,11 +1,11 @@
 package projekt.cloud.piece.music.player.ui.play.control
 
 import android.animation.ValueAnimator
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color.BLACK
 import android.graphics.Color.WHITE
 import android.graphics.drawable.AnimatedVectorDrawable
-import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
 import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ALL
 import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_NONE
@@ -13,10 +13,8 @@ import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ONE
 import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
 import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_NONE
 import android.view.LayoutInflater
-import android.view.MotionEvent.ACTION_CANCEL
-import android.view.MotionEvent.ACTION_DOWN
-import android.view.MotionEvent.ACTION_UP
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_AUDIO_ITEM
 import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_BITMAP_ART
@@ -37,7 +35,7 @@ import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_SHUFFLE_MODE
 import projekt.cloud.piece.music.player.util.ColorUtil.isLight
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
 
-class PlayControlFragment: BaseFragment() {
+class PlayControlFragment: BaseFragment(), OnClickListener {
 
     companion object {
         private const val TAG = "PlayControlFragment"
@@ -47,10 +45,10 @@ class PlayControlFragment: BaseFragment() {
     private val binding get() = _binding!!
     private val root get() = binding.root
     private val buttonPlayControl get() = binding.buttonsPlayControl
-    private val appCompatImageViewRepeat get() = buttonPlayControl.appCompatImageViewRepeat
-    private val appCompatImageViewPrev get() = buttonPlayControl.appCompatImageViewPrev
-    private val appCompatImageViewNext get() = buttonPlayControl.appCompatImageViewNext
-    private val appCompatImageViewShuffle get() = buttonPlayControl.appCompatImageViewShuffle
+    private val appCompatImageButtonRepeat get() = buttonPlayControl.appCompatImageButtonRepeat
+    private val appCompatImageButtonPrev get() = buttonPlayControl.appCompatImageButtonPrev
+    private val appCompatImageButtonNext get() = buttonPlayControl.appCompatImageButtonNext
+    private val appCompatImageButtonShuffle get() = buttonPlayControl.appCompatImageButtonShuffle
     private val positionPlayControl get() = binding.positionPlayControl
     private val progressBar get() = positionPlayControl.progressBar
     
@@ -71,13 +69,14 @@ class PlayControlFragment: BaseFragment() {
                     it.background.isLight -> BLACK
                     else -> WHITE
                 }
+                rippleColorStateList = ColorStateList.valueOf(it.primary)
             }
             isControlling = false
             position = containerViewModel.position
             repeatMode = containerViewModel.repeatMode
             shuffleMode = containerViewModel.shuffleMode
         }
-        return binding.root
+        return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,6 +89,7 @@ class PlayControlFragment: BaseFragment() {
         containerViewModel.register<ColorItem>(TAG, LABEL_COLOR_ITEM) { colorItem ->
             colorItem?.let {
                 updateColorsAnimated(it.background, it.primary, it.secondary)
+                binding.rippleColorStateList = ColorStateList.valueOf(it.primary)
             }
         }
         containerViewModel.register<Long>(TAG, LABEL_POSITION) {
@@ -101,25 +101,12 @@ class PlayControlFragment: BaseFragment() {
         containerViewModel.register<Int>(TAG, LABEL_SHUFFLE_MODE) {
             binding.shuffleMode = it
         }
-
-        @Suppress("ClickableViewAccessibility")
-        with(root) {
-            setOnTouchListener { _, event ->
-                when (event.action) {
-                    ACTION_DOWN -> {
-                        (background as RippleDrawable).setHotspot(event.x, event.y)
-                        isPressed = true
-                    }
-                    ACTION_CANCEL -> isPressed = false
-                    ACTION_UP -> {
-                        isPressed = false
-                        processTouchEvent(event.rawX, event.rawY)
-                    }
-                }
-                true
-            }
-        }
-
+        
+        appCompatImageButtonRepeat.setOnClickListener(this)
+        appCompatImageButtonPrev.setOnClickListener(this)
+        appCompatImageButtonNext.setOnClickListener(this)
+        appCompatImageButtonShuffle.setOnClickListener(this)
+        
         with(progressBar) {
             setOnProgressChanged { position, isReleased ->
                 if (binding.isControlling != !isReleased) {
@@ -173,71 +160,39 @@ class PlayControlFragment: BaseFragment() {
         super.onDestroyView()
         _binding = null
     }
-
-    private fun processTouchEvent(rawX: Float, rawY: Float) {
-        val rawPosition = IntArray(2)
-        when {
-            compareViewLocation(rawX, rawY, appCompatImageViewRepeat, rawPosition) -> {
-                sendCustomAction(
-                    ACTION_UPDATE_REPEAT_MODE,
-                    Pair(
-                        EXTRA_REPEAT_MODE,
-                        when (binding.repeatMode) {
-                            REPEAT_MODE_ALL -> REPEAT_MODE_ONE
-                            REPEAT_MODE_ONE -> REPEAT_MODE_NONE
-                            REPEAT_MODE_NONE -> REPEAT_MODE_ALL
-                            else -> REPEAT_MODE_ALL
-                        }
-                    )
+    
+    override fun onClick(v: View?) {
+        when (v) {
+            appCompatImageButtonRepeat -> sendCustomAction(
+                ACTION_UPDATE_REPEAT_MODE,
+                Pair(
+                    EXTRA_REPEAT_MODE,
+                    when (binding.repeatMode) {
+                        REPEAT_MODE_ALL -> REPEAT_MODE_ONE
+                        REPEAT_MODE_ONE -> REPEAT_MODE_NONE
+                        REPEAT_MODE_NONE -> REPEAT_MODE_ALL
+                        else -> REPEAT_MODE_ALL
+                    }
                 )
-            }
-
-            compareViewLocation(rawX, rawY, appCompatImageViewPrev, rawPosition) ->
-                transportControls.skipToPrevious()
-
-            compareViewLocation(rawX, rawY, appCompatImageViewNext, rawPosition) ->
-                transportControls.skipToNext()
-
-            compareViewLocation(rawX, rawY, appCompatImageViewShuffle, rawPosition) -> {
-                sendCustomAction(
-                    ACTION_UPDATE_SHUFFLE_MODE,
-                    Pair(
-                        EXTRA_SHUFFLE_MODE,
-                        when (binding.shuffleMode) {
-                            SHUFFLE_MODE_NONE -> SHUFFLE_MODE_ALL
-                            SHUFFLE_MODE_ALL -> SHUFFLE_MODE_NONE
-                            else -> SHUFFLE_MODE_NONE
-                        }
-                    )
+            )
+            
+            appCompatImageButtonPrev -> transportControls.skipToPrevious()
+            
+            appCompatImageButtonNext -> transportControls.skipToNext()
+            
+            appCompatImageButtonShuffle -> sendCustomAction(
+                ACTION_UPDATE_SHUFFLE_MODE,
+                Pair(
+                    EXTRA_SHUFFLE_MODE,
+                    when (binding.shuffleMode) {
+                        SHUFFLE_MODE_NONE -> SHUFFLE_MODE_ALL
+                        SHUFFLE_MODE_ALL -> SHUFFLE_MODE_NONE
+                        else -> SHUFFLE_MODE_NONE
+                    }
                 )
-            }
+            )
         }
     }
-
-    private fun compareViewLocation(touchX: Float, touchY: Float, view: View, position: IntArray): Boolean {
-        view.getLocationOnScreen(position)
-        return compareViewLocation(
-            touchX,
-            touchY,
-            position[0],
-            position[1],
-            view.width,
-            view.height
-        )
-    }
-
-    private fun compareViewLocation(touchX: Float,
-                                    touchY: Float,
-                                    viewX: Int,
-                                    viewY: Int,
-                                    viewWidth: Int,
-                                    viewHeight: Int) =
-        compareViewAxis(touchX, viewX.toFloat(), viewWidth)
-            && compareViewAxis(touchY, viewY.toFloat(), viewHeight)
-
-    private fun compareViewAxis(touchAxis: Float, viewAxis: Float, viewSize: Int) =
-        touchAxis in viewAxis .. viewAxis + viewSize
-
 
     private fun updateColorsAnimated(background: Int, primary: Int, secondary: Int) {
         ValueAnimator.ofArgb(binding.backgroundColor!!, background).apply {
