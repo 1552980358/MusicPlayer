@@ -53,11 +53,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/app_compat_image_button_repeat"
-                    android:alpha="@{repeatMode == PlaybackStateCompat.REPEAT_MODE_NONE ? 0.5F : 1F}"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@{repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE ? @drawable/ic_baseline_repeat_one_24 : @drawable/ic_baseline_repeat_24}"
                     android:tint="@{buttonColor != null ? buttonColor : @color/white}"
                     android:layout_centerInParent="true"
+                    animatedAlpha="@{repeatMode == PlaybackStateCompat.REPEAT_MODE_NONE ? 0.5F : 1F}"
                     rippleColorStateList="@{rippleColorStateList}" />
 
             </RelativeLayout>
@@ -109,11 +109,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/app_compat_image_button_shuffle"
-                    android:alpha="@{shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ? 1F : 0.5F}"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:tint="@{buttonColor != null ? buttonColor : @color/white}"
                     android:layout_centerInParent="true"
                     app:srcCompat="@drawable/ic_baseline_shuffle_24"
+                    animatedAlpha="@{shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ? 1F : 0.5F}"
                     rippleColorStateList="@{rippleColorStateList}" />
 
             </RelativeLayout>
