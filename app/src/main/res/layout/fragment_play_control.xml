@@ -51,6 +51,10 @@
             name="isControlling"
             type="Boolean" />
         
+        <variable
+            name="rippleColorStateList"
+            type="android.content.res.ColorStateList" />
+        
     </data>
     
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -90,7 +94,8 @@
             layout="@layout/buttons_play_control"
             app:repeatMode="@{repeatMode}"
             app:shuffleMode="@{shuffleMode}"
-            app:buttonColor="@{buttonColor}" />
+            app:buttonColor="@{buttonColor}"
+            app:rippleColorStateList="@{rippleColorStateList}" />
         
     </androidx.appcompat.widget.LinearLayoutCompat>
     
