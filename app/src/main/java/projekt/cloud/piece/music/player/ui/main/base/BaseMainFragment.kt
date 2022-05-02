@@ -3,14 +3,13 @@ package projekt.cloud.piece.music.player.ui.main.base
 import projekt.cloud.piece.music.player.base.BaseFragment
 
 open class BaseMainFragment: BaseFragment() {
-
-    private lateinit var recyclerViewScrollHandler: RecyclerViewScrollHandler
-    fun setRecyclerViewScrollHandler(recyclerViewScrollHandler: RecyclerViewScrollHandler) {
-        this.recyclerViewScrollHandler = recyclerViewScrollHandler
+    
+    protected open fun onScrolledToBottom() {
+        (parentFragment as? BaseMainFragment)?.onScrolledToBottom()
     }
     
-    protected fun onScrolledToBottom() = recyclerViewScrollHandler.onScrolledToBottom()
-    
-    protected fun onLeaveBottom() = recyclerViewScrollHandler.onLeaveBottom()
+    protected open fun onLeaveBottom() {
+        (parentFragment as? BaseMainFragment)?.onLeaveBottom()
+    }
 
 }
