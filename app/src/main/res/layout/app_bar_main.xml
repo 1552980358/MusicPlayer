@@ -44,7 +44,6 @@
         android:ellipsize="end"
         android:layout_margin="@dimen/fab_margin"
         android:maxLines="@integer/single_line"
-        android:textColor="?attr/extFabTextColor"
         android:transitionName="@string/transition_to_play_fragment"
         android:layout_gravity="bottom|end"
         app:iconTint="@null" />
