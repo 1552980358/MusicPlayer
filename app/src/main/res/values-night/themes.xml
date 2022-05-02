@@ -6,8 +6,6 @@
         <item name="android:navigationBarColor">?attr/colorPrimaryDark</item>
         
         <item name="extendedFloatingActionButtonStyle">@style/Theme.CloudPiece.ExtendedFloatingActionBar</item>
-        
-        <item name="extFabTextColor">@color/black</item>
     </style>
     
     <style name="Theme.CloudPiece.AppBar" parent="ThemeOverlay.AppCompat.Light" />
