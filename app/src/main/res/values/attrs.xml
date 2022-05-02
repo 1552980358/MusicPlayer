@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <attr name="extFabTextColor" format="color" />
     <attr name="circleRadius" format="dimension" />
     
     <declare-styleable name="TimeView">
