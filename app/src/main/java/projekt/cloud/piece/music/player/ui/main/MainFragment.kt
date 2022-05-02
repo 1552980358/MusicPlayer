@@ -195,13 +195,13 @@ class MainFragment: BaseMainFragment() {
         }
 
         when (ContextCompat.checkSelfPermission(requireContext(), permission.READ_EXTERNAL_STORAGE)) {
-            PERMISSION_GRANTED -> containerViewModel.launchApplication(requireActivity(), {})
+            PERMISSION_GRANTED -> containerViewModel.launchApplication(requireActivity())
             else -> {
                 containerViewModel.setOnPermissionResult {
                     if (it.filter { (_, value) -> !value }.isNotEmpty()) {
                         return@setOnPermissionResult
                     }
-                    containerViewModel.initialApplication(requireContext(), {})
+                    containerViewModel.initialApplication(requireContext())
                 }
                 containerViewModel.requestPermissions.launch(arrayOf(permission.READ_EXTERNAL_STORAGE))
             }
