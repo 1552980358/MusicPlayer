@@ -60,7 +60,7 @@ import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
  *   [onDestroyView]
  *
  **/
-class MainFragment: BaseFragment() {
+class MainFragment: BaseMainFragment() {
     
     companion object {
         private const val TAG = "MainFragment"
@@ -89,6 +89,8 @@ class MainFragment: BaseFragment() {
     private val viewPager2 get() = appBarMain.viewPager2
     private val bottomNavigationView get() = appBarMain.bottomNavigationView
     private val extFab get() = appBarMain.extendedFloatingActionButton
+    
+    private var recyclerViewScrollHandler: RecyclerViewScrollHandler? = null
     
     private var countJob: Job? = null
 
@@ -120,7 +122,7 @@ class MainFragment: BaseFragment() {
         bottomSheetBehavior.peekHeight = 0
         bottomSheetBehavior.state = STATE_EXPANDED
 
-        val recyclerViewScrollHandler = RecyclerViewScrollHandler(
+        recyclerViewScrollHandler = RecyclerViewScrollHandler(
             onLeaveBottom = {
                 bottomSheetBehavior.state = STATE_EXPANDED
                 extFab.show()
@@ -131,8 +133,6 @@ class MainFragment: BaseFragment() {
             }
         )
     
-        viewModel.forEach { it.setRecyclerViewScrollHandler(recyclerViewScrollHandler) }
-
         val bottomNavigationItems = listOf(R.id.nav_audio_track, R.id.nav_album, R.id.nav_artist, R.id.nav_playlist)
 
         with(viewPager2) {
@@ -143,13 +143,13 @@ class MainFragment: BaseFragment() {
                     bottomNavigationView.menu.getItem(position).apply {
                         isChecked = true
                     }
-                    recyclerViewScrollHandler.clearState()
+                    recyclerViewScrollHandler?.clearState()
                 }
             })
 
             bottomNavigationView.setOnItemSelectedListener {
                 currentItem = bottomNavigationItems.indexOfFirst { id -> id == it.itemId }
-                recyclerViewScrollHandler.clearState()
+                recyclerViewScrollHandler?.clearState()
                 true
             }
         }
@@ -213,6 +213,14 @@ class MainFragment: BaseFragment() {
         countJob?.cancel()
         super.onDestroyView()
         _binding = null
+    }
+    
+    override fun onScrolledToBottom() {
+        recyclerViewScrollHandler?.onScrolledToBottom()
+    }
+    
+    override fun onLeaveBottom() {
+        recyclerViewScrollHandler?.onLeaveBottom()
     }
     
     private fun updateAudioItem(audioItem: AudioItem) {
