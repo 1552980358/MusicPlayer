@@ -68,12 +68,13 @@
                 android:layout_weight="2">
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/floating_action_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/floating_action_button"
+                    android:backgroundTint="@color/white"
                     android:layout_centerInParent="true"
                     android:layout_marginHorizontal="@dimen/md_spec_item_spacing_horizontal_16"
-                    android:backgroundTint="@color/white"
+                    android:tint="@color/black"
                     tools:ignore="ContentDescription" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
