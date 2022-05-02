@@ -68,7 +68,7 @@ class MainActivityViewModel: ViewModel() {
     }
     
     private var job: Job? = null
-    fun initialApplication(context: Context, callback: (List<AudioItem>?) -> Unit) {
+    fun initialApplication(context: Context, callback: (List<AudioItem>?) -> Unit = {}) {
         job?.cancel()
         job = context.initialApplication {
             audioList = it
@@ -76,7 +76,7 @@ class MainActivityViewModel: ViewModel() {
             job = null
         }
     }
-    fun launchApplication(context: Context, callback: (List<AudioItem>?) -> Unit) {
+    fun launchApplication(context: Context, callback: (List<AudioItem>?) -> Unit = {}) {
         job?.cancel()
         job = context.launchApplication {
             audioList = it
