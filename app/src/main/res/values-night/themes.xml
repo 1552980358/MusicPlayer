@@ -1,11 +1,14 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     
     <!-- Base application theme. -->
     <style name="Theme.CloudPiece" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:statusBarColor">?attr/colorPrimaryDark</item>
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
         <item name="android:navigationBarColor">?attr/colorPrimaryDark</item>
         
         <item name="extendedFloatingActionButtonStyle">@style/Theme.CloudPiece.ExtendedFloatingActionBar</item>
+        
+        <item name="android:windowLightStatusBar" tools:targetApi="M">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="Q">true</item>
     </style>
     
     <style name="Theme.CloudPiece.AppBar" parent="ThemeOverlay.AppCompat.Light" />
