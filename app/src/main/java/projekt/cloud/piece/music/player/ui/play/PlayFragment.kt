@@ -6,6 +6,7 @@ import android.graphics.Color.WHITE
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OVER_SCROLL_NEVER
 import android.view.ViewGroup
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
@@ -75,6 +76,11 @@ class PlayFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.setUpViewPager2(this, viewPager2)
+        /**
+         * Solution token from
+         * [Remove ViewPager2 Overscroll animation](https://stackoverflow.com/a/56942231/11685230)
+         **/
+        viewPager2.getChildAt(0).overScrollMode = OVER_SCROLL_NEVER
         with(requireActivity() as AppCompatActivity) {
             setSupportActionBar(materialToolbar)
             materialToolbar.setNavigationOnClickListener {
