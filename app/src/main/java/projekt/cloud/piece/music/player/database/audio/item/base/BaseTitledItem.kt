@@ -2,7 +2,7 @@ package projekt.cloud.piece.music.player.database.audio.item.base
 
 import androidx.room.ColumnInfo
 import androidx.room.Ignore
-import projekt.cloud.piece.c2pinyin.pinyin
+import projekt.cloud.piece.c2.pinyin.C2Pinyin.pinyin
 import java.io.Serializable
 
 open class BaseTitledItem(id: String, @ColumnInfo(name = "title") val title: String): BaseItem(id), Serializable {
