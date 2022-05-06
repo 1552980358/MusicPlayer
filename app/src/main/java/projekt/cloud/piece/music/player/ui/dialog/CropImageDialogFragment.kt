@@ -13,6 +13,7 @@ import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseDialogFragment
 import projekt.cloud.piece.music.player.databinding.DialogFragmentCropImageBinding
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
+import projekt.cloud.piece.music.player.util.CoroutineUtil.ioContext
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
 
 class CropImageDialogFragment: BaseDialogFragment() {
@@ -49,15 +50,13 @@ class CropImageDialogFragment: BaseDialogFragment() {
             true
         }
         ui {
-            @Suppress("BlockingMethodInNonBlockingContext")
-            val bitmap = withContext(io) {
+            ioContext {
                 uri?.run {
-                    requireContext().contentResolver.openInputStream(this).use { BitmapFactory.decodeStream(it) }
+                    @Suppress("BlockingMethodInNonBlockingContext")
+                    requireContext().contentResolver.openInputStream(this)
+                        .use { BitmapFactory.decodeStream(it) }
                 }
-            }
-            bitmap?.let {
-                cropImageView.setBitmap(it)
-            }
+            }?.let { cropImageView.setBitmap(it) }
         }
     }
 
