@@ -34,7 +34,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/bottom_navigation_view"
         app:menu="@menu/bottom_navigation_main"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />
+        android:layout_gravity="bottom"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:layout_width="wrap_content"
@@ -46,6 +47,7 @@
         android:maxLines="@integer/single_line"
         android:transitionName="@string/transition_to_play_fragment"
         android:layout_gravity="bottom|end"
-        app:iconTint="@null" />
+        app:iconTint="@null"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
     
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
