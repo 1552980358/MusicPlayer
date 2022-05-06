@@ -12,6 +12,7 @@ import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.database.audio.extension.PlaylistWithAudio
 import projekt.cloud.piece.music.player.databinding.LayoutRecyclerPlaylistBinding
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
+import projekt.cloud.piece.music.player.util.CoroutineUtil.ioContext
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
 import projekt.cloud.piece.music.player.util.ImageUtil.FLAG_SMALL
 import projekt.cloud.piece.music.player.util.ImageUtil.readPlaylistArt
@@ -26,7 +27,7 @@ class RecyclerViewAdapter(recyclerView: RecyclerView) {
             job?.cancel()
             job = ui {
                 binding.appCompatImageViewAvatar.setImageBitmap(
-                    withContext(io) {
+                    ioContext {
                         binding.root.context.readPlaylistArt(playlistWithCount.playlistItem.id, FLAG_SMALL)
                     }
                 )
