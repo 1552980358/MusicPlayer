@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Object [CoroutineUtil]
@@ -42,5 +43,9 @@ object CoroutineUtil {
     @JvmStatic
     fun CoroutineScope.io(block: suspend CoroutineScope.() -> Unit) =
         launch(IO, block  = block)
+    
+    @JvmStatic
+    suspend fun <T> ioContext(block: suspend CoroutineScope.() -> T) =
+        withContext(io, block)
 
 }
