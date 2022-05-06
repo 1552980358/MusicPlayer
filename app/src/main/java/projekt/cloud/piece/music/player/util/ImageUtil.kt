@@ -77,7 +77,14 @@ object ImageUtil {
 
     const val FLAG_LARGE = true
     const val FLAG_SMALL = false
-
+    
+    private const val DIR_ARTIST_ART_LARGE = "artist_large"
+    private const val DIR_ARTIST_ART_SMALL = "artist_small"
+    fun Context.saveArtistArt(artist: String, bitmap: Bitmap) =
+        saveArt(DIR_ARTIST_ART_LARGE, DIR_ARTIST_ART_SMALL, artist, bitmap)
+    fun Context.readArtistArt(artist: String, isLarge: Boolean) =
+        readArt(if (isLarge) DIR_ARTIST_ART_LARGE else DIR_ARTIST_ART_SMALL, artist)
+    
     private const val DIR_ALBUM_ART_LARGE = "album_large"
     private const val DIR_ALBUM_ART_SMALL = "album_small"
     fun Context.saveAlbumArt(album: String, bitmap: Bitmap) =
