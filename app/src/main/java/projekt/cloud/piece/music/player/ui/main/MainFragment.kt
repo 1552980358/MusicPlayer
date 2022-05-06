@@ -10,13 +10,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
+import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.transition.Hold
 import kotlinx.coroutines.Job
@@ -34,7 +34,6 @@ import projekt.cloud.piece.music.player.ui.main.album.AlbumFragment
 import projekt.cloud.piece.music.player.ui.main.artist.ArtistFragment
 import projekt.cloud.piece.music.player.ui.main.audio.AudioFragment
 import projekt.cloud.piece.music.player.ui.main.base.BaseMainFragment
-import projekt.cloud.piece.music.player.ui.main.base.RecyclerViewScrollHandler
 import projekt.cloud.piece.music.player.ui.main.playlist.PlaylistFragment
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
@@ -60,7 +59,7 @@ import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
  *   [onDestroyView]
  *
  **/
-class MainFragment: BaseMainFragment() {
+class MainFragment: BaseFragment() {
     
     companion object {
         private const val TAG = "MainFragment"
@@ -90,7 +89,8 @@ class MainFragment: BaseMainFragment() {
     private val bottomNavigationView get() = appBarMain.bottomNavigationView
     private val extFab get() = appBarMain.extendedFloatingActionButton
     
-    private var recyclerViewScrollHandler: RecyclerViewScrollHandler? = null
+    private lateinit var bottomNavigationViewBehavior: HideBottomViewOnScrollBehavior<BottomNavigationView>
+    private lateinit var extFabBehavior: HideBottomViewOnScrollBehavior<ExtendedFloatingActionButton>
     
     private var countJob: Job? = null
 
@@ -115,24 +115,14 @@ class MainFragment: BaseMainFragment() {
                 syncState()
             }
         }
-        
-        val bottomSheetBehavior = BottomSheetBehavior.from(bottomNavigationView)
-        bottomSheetBehavior.isHideable = true
-        bottomSheetBehavior.isDraggable = false
-        bottomSheetBehavior.peekHeight = 0
-        bottomSheetBehavior.state = STATE_EXPANDED
-
-        recyclerViewScrollHandler = RecyclerViewScrollHandler(
-            onLeaveBottom = {
-                bottomSheetBehavior.state = STATE_EXPANDED
-                extFab.show()
-            },
-            onScrolledToBottom = {
-                bottomSheetBehavior.state = STATE_HIDDEN
-                extFab.hide()
-            }
-        )
     
+        @Suppress("UNCHECKED_CAST")
+        bottomNavigationViewBehavior = (bottomNavigationView.layoutParams as CoordinatorLayout.LayoutParams)
+            .behavior as HideBottomViewOnScrollBehavior<BottomNavigationView>
+        @Suppress("UNCHECKED_CAST")
+        extFabBehavior = (extFab.layoutParams as CoordinatorLayout.LayoutParams)
+            .behavior as HideBottomViewOnScrollBehavior<ExtendedFloatingActionButton>
+        
         val bottomNavigationItems = listOf(R.id.nav_audio_track, R.id.nav_album, R.id.nav_artist, R.id.nav_playlist)
 
         with(viewPager2) {
@@ -143,13 +133,21 @@ class MainFragment: BaseMainFragment() {
                     bottomNavigationView.menu.getItem(position).apply {
                         isChecked = true
                     }
-                    recyclerViewScrollHandler?.clearState()
+                    when {
+                        viewModel[position].isRecyclerViewBottom -> {
+                            extFabBehavior.slideDown(extFab)
+                            bottomNavigationViewBehavior.slideDown(bottomNavigationView)
+                        }
+                        else -> {
+                            extFabBehavior.slideUp(extFab)
+                            bottomNavigationViewBehavior.slideUp(bottomNavigationView)
+                        }
+                    }
                 }
             })
 
             bottomNavigationView.setOnItemSelectedListener {
                 currentItem = bottomNavigationItems.indexOfFirst { id -> id == it.itemId }
-                recyclerViewScrollHandler?.clearState()
                 true
             }
         }
@@ -213,14 +211,6 @@ class MainFragment: BaseMainFragment() {
         countJob?.cancel()
         super.onDestroyView()
         _binding = null
-    }
-    
-    override fun onScrolledToBottom() {
-        recyclerViewScrollHandler?.onScrolledToBottom()
-    }
-    
-    override fun onLeaveBottom() {
-        recyclerViewScrollHandler?.onLeaveBottom()
     }
     
     private fun updateAudioItem(audioItem: AudioItem) {
