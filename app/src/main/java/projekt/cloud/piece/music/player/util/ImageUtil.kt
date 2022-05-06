@@ -53,12 +53,14 @@ object ImageUtil {
     }
 
     private const val SMALL_ART_SIZE_DP = 40
+    private const val ART_SUFFIX_LARGE = "_large"
+    private const val ART_SUFFIX_SMALL = "_small"
 
-    private fun Context.saveArt(largeDir: String, smallDir: String, id: String, bitmap: Bitmap) {
-        File(getExternalFilesDir(largeDir), id).outputStream().use {
+    private fun Context.saveArt(type: String, id: String, bitmap: Bitmap) {
+        File(getExternalFilesDir(type + ART_SUFFIX_LARGE), id).outputStream().use {
             bitmap.compress(JPEG, 100, it)
         }
-        File(getExternalFilesDir(smallDir), id).outputStream().use {
+        File(getExternalFilesDir(type + ART_SUFFIX_SMALL), id).outputStream().use {
             Bitmap.createBitmap(
                 bitmap, 0, 0,
                 bitmap.width, bitmap.height,
@@ -72,31 +74,31 @@ object ImageUtil {
         }
     }
 
-    private fun Context.readArt(dir: String, id: String) =
-        tryRun { File(getExternalFilesDir(dir), id).inputStream().use { BitmapFactory.decodeStream(it) } }
+    private fun Context.readArt(type: String, isLarge: Boolean, id: String) = tryRun {
+        File(getExternalFilesDir(type + if (isLarge) ART_SUFFIX_LARGE else ART_SUFFIX_SMALL), id)
+            .inputStream()
+            .use { BitmapFactory.decodeStream(it) }
+    }
 
     const val FLAG_LARGE = true
     const val FLAG_SMALL = false
     
-    private const val DIR_ARTIST_ART_LARGE = "artist_large"
-    private const val DIR_ARTIST_ART_SMALL = "artist_small"
+    private const val ART_ARTIST = "artist"
     fun Context.saveArtistArt(artist: String, bitmap: Bitmap) =
-        saveArt(DIR_ARTIST_ART_LARGE, DIR_ARTIST_ART_SMALL, artist, bitmap)
+        saveArt(ART_ARTIST, artist, bitmap)
     fun Context.readArtistArt(artist: String, isLarge: Boolean) =
-        readArt(if (isLarge) DIR_ARTIST_ART_LARGE else DIR_ARTIST_ART_SMALL, artist)
+        readArt(ART_ARTIST, isLarge, artist)
     
-    private const val DIR_ALBUM_ART_LARGE = "album_large"
-    private const val DIR_ALBUM_ART_SMALL = "album_small"
+    private const val ART_ALBUM = "album"
     fun Context.saveAlbumArt(album: String, bitmap: Bitmap) =
-        saveArt(DIR_ALBUM_ART_LARGE, DIR_ALBUM_ART_SMALL, album, bitmap)
+        saveArt(ART_ALBUM, album, bitmap)
     fun Context.readAlbumArt(album: String, isLarge: Boolean) =
-        readArt(if (isLarge) DIR_ALBUM_ART_LARGE else DIR_ALBUM_ART_SMALL, album)
+        readArt(ART_ALBUM, isLarge, album)
 
-    private const val DIR_PLAYLIST_ART_LARGE = "playlist_large"
-    private const val DIR_PLAYLIST_ART_SMALL = "playlist_small"
+    private const val ART_PLAYLIST = "playlist"
     fun Context.savePlaylistArt(playlist: String, bitmap: Bitmap) =
-        saveArt(DIR_PLAYLIST_ART_LARGE, DIR_PLAYLIST_ART_SMALL, playlist, bitmap)
+        saveArt(ART_PLAYLIST, playlist, bitmap)
     fun Context.readPlaylistArt(playlist: String, isLarge: Boolean) =
-        readArt(if (isLarge) DIR_PLAYLIST_ART_LARGE else DIR_PLAYLIST_ART_SMALL, playlist)
+        readArt(ART_PLAYLIST, isLarge, playlist)
 
 }
