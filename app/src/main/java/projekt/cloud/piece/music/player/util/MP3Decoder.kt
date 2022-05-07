@@ -13,7 +13,7 @@ class MP3Decoder private constructor(byteArray: ByteArray) {
         
     }
     
-    private external fun decodeMp3(mp3ByteArray: ByteArray): Long
+    private external fun decodeMp3(pointer: Long, mp3ByteArray: ByteArray): Long
     private external fun getVersion(pointer: Long): Short
     private external fun getLayer(pointer: Long): Short
     private external fun getBitRate(pointer: Long): Int
