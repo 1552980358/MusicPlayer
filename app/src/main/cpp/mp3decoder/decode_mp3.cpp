@@ -2,6 +2,8 @@
 #include "include/decode_mp3.h"
 #include "include/mp3_header.h"
 
+bool extract_mp3_frame_sync_bits(const int8_t &, const int8_t &);
+
 short extract_mp3_version(const int8_t &);
 short extract_mp3_layer(const int8_t &);
 
@@ -10,6 +12,28 @@ short get_mp3_bit_rate_version_1(const short &, const int &);
 short get_mp3_bit_rate_version_2_3(const short &, const int &);
 
 int extract_mp3_sample_rate(const short &, const int8_t &);
+
+bool is_mp3_file(const int8_t *file_byte_array) {
+    if (!extract_mp3_frame_sync_bits(file_byte_array[0], file_byte_array[1])) {
+        return false;
+    }
+
+    short version;
+    if (!(version = extract_mp3_version(file_byte_array[1]))) {
+        return false;
+    }
+    short layer;
+    if (!(layer = extract_mp3_layer(file_byte_array[1]))) {
+        return false;
+    }
+
+    return extract_mp3_bit_rate(version, layer, file_byte_array[1]) &&
+        extract_mp3_sample_rate(version, file_byte_array[2]);
+}
+
+bool extract_mp3_frame_sync_bits(const int8_t &bit_pattern_0, const int8_t &bit_pattern_1) {
+    return (bit_pattern_0 & 0xFF) && (bit_pattern_1 & 0xE0);
+}
 
 long decode_mp3(const int8_t *mp3_byte_array) {
     auto mp3_version = extract_mp3_version(mp3_byte_array[1]);
