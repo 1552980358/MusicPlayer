@@ -12,6 +12,8 @@ private:
 public:
     mp3_header(short, short, int, int);
 
+    void update(short, short, int, int);
+
     short get_version() const;
 
     short get_layer() const;
