@@ -67,6 +67,6 @@ class AudioFragment: BaseMainFragment() {
     }
     
     override val isRecyclerViewBottom get() =
-        !recyclerView.canScrollVertically(1)
+        recyclerViewAdapter.audioList != null && !recyclerView.canScrollVertically(1)
 
 }
