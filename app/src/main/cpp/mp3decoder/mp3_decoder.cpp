@@ -59,4 +59,9 @@ Java_projekt_cloud_piece_music_player_util_MP3Decoder_getSampleRate(JNIEnv *env,
     return get_mp3_sample_rate(pointer); // NOLINT(cppcoreguidelines-narrowing-conversions)
 }
 
+JNIEXPORT jboolean JNICALL
+Java_projekt_cloud_piece_music_player_util_MP3Decoder_isMp3File(JNIEnv *env, jobject, jbyteArray mp3_byte_array) {
+    return is_mp3_file(env->GetByteArrayElements(mp3_byte_array, nullptr));
+}
+
 }
