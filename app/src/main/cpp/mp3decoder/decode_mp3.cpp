@@ -35,28 +35,18 @@ bool extract_mp3_frame_sync_bits(const int8_t &bit_pattern_0, const int8_t &bit_
     return (bit_pattern_0 & 0xFF) && (bit_pattern_1 & 0xE0);
 }
 
-long decode_mp3(const int8_t *mp3_byte_array) {
+long decode_mp3(const long &ptr, const int8_t *mp3_byte_array) {
     auto mp3_version = extract_mp3_version(mp3_byte_array[1]);
-    if (!mp3_version) {
-        return 0;
-    }
-
     auto mp3_layer = extract_mp3_layer(mp3_byte_array[1]);
-    if (!mp3_layer) {
-        return 0;
-    }
-
     auto mp3_bit_rate = extract_mp3_bit_rate(mp3_version, mp3_layer, mp3_byte_array[2]);
-    if (!mp3_bit_rate) {
-        return 0;
-    }
-
     auto mp3_sample_rate = extract_mp3_sample_rate(mp3_version, mp3_byte_array[2]);
-    if (!mp3_sample_rate) {
-        return 0;
+
+    if (!ptr) {
+        return (long) new mp3_header(mp3_version, mp3_layer, mp3_bit_rate, mp3_sample_rate);
     }
 
-    return (long) new mp3_header(mp3_version, mp3_layer, mp3_bit_rate, mp3_sample_rate);
+    get_mp3_header_ptr(ptr)->update(mp3_version, mp3_layer, mp3_bit_rate, mp3_sample_rate);
+    return ptr;
 }
 
 /**

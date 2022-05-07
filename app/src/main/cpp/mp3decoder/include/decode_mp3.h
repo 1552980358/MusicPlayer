@@ -16,6 +16,6 @@
 
 bool is_mp3_file(const int8_t *);
 
-long decode_mp3(const int8_t *mp3_byte_array);
+long decode_mp3(const long &, const int8_t *);
 
 #endif //CLOUDPIECE_DECODE_MP3_H
