@@ -27,8 +27,10 @@
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@id/app_compat_image_view"
+        android:maxLines="1"
         android:text="@{artistItem.title}"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
         
