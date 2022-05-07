@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
+import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.database.audio.item.ArtistItem
 import projekt.cloud.piece.music.player.databinding.LayoutRecyclerArtistBinding
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
@@ -26,11 +27,10 @@ class RecyclerViewAdapter(recyclerView: RecyclerView) {
             binding.artistItem = artistItem
             binding.root.setOnClickListener(this)
             job = ui {
-                binding.appCompatImageView.setImageBitmap(
-                    ioContext {
-                        binding.root.context.readArtistArt(artistItem.id, FLAG_SMALL)
-                    }
-                )
+                when (val bitmap = ioContext { binding.root.context.readArtistArt(artistItem.id, FLAG_SMALL) }) {
+                    null -> binding.appCompatImageView.setImageResource(R.drawable.ic_round_artist_circle_24)
+                    else -> binding.appCompatImageView.setImageBitmap(bitmap)
+                }
             }
         }
         
