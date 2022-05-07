@@ -36,7 +36,7 @@ extern "C" {
 
 JNIEXPORT jlong JNICALL
 Java_projekt_cloud_piece_music_player_util_MP3Decoder_decodeMp3(JNIEnv *env, jobject, jlong ptr, jbyteArray mp3_byte_array) {
-    return decode_mp3(ptr, env->GetByteArrayElements(mp3_byte_array, nullptr));
+    return decode_mp3(ptr, env->GetByteArrayElements(mp3_byte_array, nullptr)); // NOLINT(cppcoreguidelines-narrowing-conversions)
 }
 
 JNIEXPORT jshort JNICALL
