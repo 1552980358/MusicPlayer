@@ -15,6 +15,11 @@ android {
         targetSdk = 31
         versionCode = 1
         versionName = "1.0"
+        externalNativeBuild {
+            cmake {
+                cppFlags += ""
+            }
+        }
     }
 
     buildTypes {
@@ -44,6 +49,12 @@ android {
         generateStubs = true
     }
     lint.abortOnError = false
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.18.1"
+        }
+    }
 }
 
 dependencies {
