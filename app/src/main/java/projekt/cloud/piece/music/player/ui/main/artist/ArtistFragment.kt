@@ -37,6 +37,6 @@ class ArtistFragment: BaseMainFragment() {
     }
     
     override val isRecyclerViewBottom get() =
-        recyclerViewAdapter.artistList != null && !recyclerView.canScrollVertically(1)
+        recyclerViewAdapter.artistList != null && _recyclerView?.canScrollVertically(1) == false
 
 }
