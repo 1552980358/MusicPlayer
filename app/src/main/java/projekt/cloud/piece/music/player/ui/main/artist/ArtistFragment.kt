@@ -35,5 +35,8 @@ class ArtistFragment: BaseMainFragment() {
             }
         }
     }
+    
+    override val isRecyclerViewBottom get() =
+        !recyclerView.canScrollVertically(1)
 
 }
