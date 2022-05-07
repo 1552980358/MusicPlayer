@@ -1,15 +1,14 @@
 package projekt.cloud.piece.music.player.util
 
-class MP3Decoder private constructor(byteArray: ByteArray) {
+class MP3Decoder private constructor() {
     
     companion object {
         init {
             System.loadLibrary("mp3decoder")
         }
         
-        fun decode(byteArray: ByteArray) = MP3Decoder(byteArray).run {
-            if (pointer != 0L) this else null
-        }
+        @JvmStatic
+        val mp3Decoder by lazy { MP3Decoder() }
         
     }
     
@@ -20,7 +19,17 @@ class MP3Decoder private constructor(byteArray: ByteArray) {
     private external fun getBitRate(pointer: Long): Int
     private external fun getSampleRate(pointer: Long): Int
     
-    private var pointer = decodeMp3(byteArray)
+    private var pointer = 0L
+    
+    var isMp3File = false
+    
+    fun decode(byteArray: ByteArray): Boolean {
+        isMp3File = isMp3File(byteArray)
+        if (isMp3File) {
+            pointer = decodeMp3(pointer, byteArray)
+        }
+        return isMp3File;
+    }
     
     val version get() = getVersion(pointer)
     
