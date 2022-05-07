@@ -24,4 +24,6 @@ public:
 
 };
 
+mp3_header *get_mp3_header_ptr(long);
+
 #endif //CLOUDPIECE_MP3_HEADER_H

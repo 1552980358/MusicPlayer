@@ -26,3 +26,7 @@ int mp3_header::get_bit_rate() const {
 int mp3_header::get_sample_rate() const {
     return _sample_rate;
 }
+
+mp3_header *get_mp3_header_ptr(long address)  {
+    return (mp3_header *) address;
+}
