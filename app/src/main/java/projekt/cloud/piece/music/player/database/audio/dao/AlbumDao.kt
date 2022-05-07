@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import projekt.cloud.piece.music.player.database.audio.item.AlbumItem
-import projekt.cloud.piece.music.player.database.audio.item.ArtistItem
 
 @Dao
 interface AlbumDao {
