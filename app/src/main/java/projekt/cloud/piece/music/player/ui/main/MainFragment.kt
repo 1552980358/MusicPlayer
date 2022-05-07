@@ -75,7 +75,7 @@ class MainFragment: BaseFragment() {
      **/
     class MainFragmentViewModel: BasePagerViewModel<BaseMainFragment>() {
         override fun setFragments() =
-            arrayOf(AudioFragment(), ArtistFragment(), AlbumFragment(), PlaylistFragment())
+            arrayOf(AudioFragment(), AlbumFragment(), ArtistFragment(), PlaylistFragment())
     }
 
     private lateinit var viewModel: MainFragmentViewModel
