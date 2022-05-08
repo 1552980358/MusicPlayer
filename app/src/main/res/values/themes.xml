@@ -4,8 +4,6 @@
     <style name="Theme.CloudPiece" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:statusBarColor">?attr/colorPrimary</item>
         <item name="android:navigationBarColor">?attr/colorPrimaryDark</item>
-
-        <item name="extendedFloatingActionButtonStyle">@style/Theme.CloudPiece.ExtendedFloatingActionBar</item>
     </style>
     
     <style name="Theme.CloudPiece.AppBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
