@@ -74,7 +74,7 @@
                     android:backgroundTint="@color/white"
                     android:layout_centerInParent="true"
                     android:layout_marginHorizontal="@dimen/md_spec_item_spacing_horizontal_16"
-                    android:tint="@color/black"
+                    app:tint="@color/black"
                     tools:ignore="ContentDescription" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
