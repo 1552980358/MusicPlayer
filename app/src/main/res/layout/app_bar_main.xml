@@ -48,6 +48,7 @@
         android:transitionName="@string/transition_to_play_fragment"
         android:layout_gravity="bottom|end"
         app:iconTint="@null"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+        style="@style/Theme.CloudPiece.ExtendedFloatingActionBar" />
     
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
