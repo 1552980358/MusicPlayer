@@ -16,12 +16,25 @@ abstract class BaseItemSelectDialogFragment: BaseAlertDialogFragment() {
     private var _binding: DialogFragmentBaseItemSelectBinding? = null
     private val binding get() = _binding!!
     private val root get() = binding.root
-    private val textInputLayout get() = binding.textInputLayout
+    private val textInputLayoutMenu get() = binding.textInputLayoutMenu
     private val autoCompleteTextView get() = binding.autoCompleteTextView
+    private val textInputLayoutInput get() = binding.textInputLayoutInput
+    private val textInputEditText get() = binding.textInputEditText
+    
+    protected var isTextInputEnabled = false
+        set(value) {
+            field = value
+            textInputLayoutInput.isEnabled = value
+        }
     
     override val contentView: View get() {
         _binding = DialogFragmentBaseItemSelectBinding.inflate(layoutInflater)
-        with(textInputLayout) {
+        with(textInputLayoutMenu) {
+            hint = this@BaseItemSelectDialogFragment.hint
+            prefix?.let { prefixText = it }
+            suffix?.let { suffixText = it }
+        }
+        with(textInputLayoutInput) {
             hint = this@BaseItemSelectDialogFragment.hint
             prefix?.let { prefixText = it }
             suffix?.let { suffixText = it }
@@ -29,11 +42,18 @@ abstract class BaseItemSelectDialogFragment: BaseAlertDialogFragment() {
         autoCompleteTextView.setAdapter(
             ArrayAdapter(requireContext(), R.layout.layout_base_item_select, items)
         )
+        autoCompleteTextView.setText(currentValue ?: defaultValue)
+        textInputEditText.setText(currentValue ?: defaultValue)
         return root
     }
     
     override val onPositiveClick: () -> Unit get() = {
-        positiveClick.invoke(autoCompleteTextView.text?.toString())
+        positiveClick.invoke(
+            when {
+                isTextInputEnabled -> textInputEditText.text ?: defaultValue
+                else -> autoCompleteTextView.text
+            }?.toString()
+        )
     }
     
     override val onNegativeClick: (() -> Unit)? get() = when (val negativeClick = negativeClick) {
