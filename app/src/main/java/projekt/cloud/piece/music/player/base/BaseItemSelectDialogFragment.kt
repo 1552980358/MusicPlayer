@@ -15,11 +15,11 @@ abstract class BaseItemSelectDialogFragment: BaseAlertDialogFragment() {
     
     private var _binding: DialogFragmentBaseItemSelectBinding? = null
     private val binding get() = _binding!!
-    private val root get() = binding.root
-    private val textInputLayoutMenu get() = binding.textInputLayoutMenu
+    protected val root get() = binding.root
+    protected val textInputLayoutMenu get() = binding.textInputLayoutMenu
     private val autoCompleteTextView get() = binding.autoCompleteTextView
     private val textInputLayoutInput get() = binding.textInputLayoutInput
-    private val textInputEditText get() = binding.textInputEditText
+    protected val textInputEditText get() = binding.textInputEditText
     
     protected var isTextInputEnabled = false
         set(value) {
