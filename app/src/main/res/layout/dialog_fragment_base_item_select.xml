@@ -6,13 +6,13 @@
     android:layout_height="wrap_content"
     android:paddingHorizontal="@dimen/md_spec_item_spacing_horizontal_16"
     android:paddingVertical="@dimen/md_spec_item_spacing_vertical_16"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="projekt.cloud.piece.music.player.base.BaseItemSelectDialogFragment">
     
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/text_input_layout_menu"
-        android:layout_marginBottom="@dimen/md_spec_item_spacing_vertical_16"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
         
         <AutoCompleteTextView
@@ -28,6 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/text_input_layout_input"
+        android:layout_marginTop="@dimen/md_spec_item_spacing_vertical_16"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         
         <com.google.android.material.textfield.TextInputEditText
