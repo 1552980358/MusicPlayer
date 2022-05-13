@@ -19,13 +19,6 @@ abstract class BaseAlertDialogFragment: BaseDialogFragment() {
     protected abstract val neutralText: String?
     protected abstract val onNeutralClick: (() -> Unit)?
     
-    protected var defaultValue: String? = null
-    protected abstract val currentValue: String?
-    
-    protected abstract val hint: String
-    protected var prefix: String? = null
-    protected var suffix: String? = null
-    
     protected lateinit var alertDialog: AlertDialog
     
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
