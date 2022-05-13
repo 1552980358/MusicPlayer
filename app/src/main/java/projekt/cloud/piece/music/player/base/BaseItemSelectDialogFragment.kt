@@ -21,6 +21,13 @@ abstract class BaseItemSelectDialogFragment: BaseAlertDialogFragment() {
     private val textInputLayoutInput get() = binding.textInputLayoutInput
     protected val textInputEditText get() = binding.textInputEditText
     
+    protected var defaultValue: String? = null
+    protected abstract val currentValue: String?
+    
+    protected abstract val hint: String
+    protected var prefix: String? = null
+    protected var suffix: String? = null
+    
     protected var isTextInputEnabled = false
         set(value) {
             field = value
