@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/md_spec_item_spacing_horizontal_16"
+    android:paddingVertical="@dimen/md_spec_item_spacing_vertical_16">
+    
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_input_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_input_edit_text"
+            android:maxLines="1" />
+         
+    </com.google.android.material.textfield.TextInputLayout>
+
+</RelativeLayout>
