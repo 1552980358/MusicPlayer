@@ -1,5 +1,6 @@
 package projekt.cloud.piece.music.player.base
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
@@ -25,16 +26,20 @@ abstract class BaseAlertDialogFragment: BaseDialogFragment() {
     protected var prefix: String? = null
     protected var suffix: String? = null
     
-    override fun onCreateDialog(savedInstanceState: Bundle?) = AlertDialog.Builder(requireContext())
-        .setTitle(dialogTitle)
-        .setView(contentView)
-        .apply {
-            setPositiveButton(positiveText) { _, _ -> onPositiveClick.invoke() }
-            setNegativeButton(negativeText) { _, _ -> onNegativeClick?.invoke() }
-            neutralText?.let { neutralText ->
-                setNeutralButton(neutralText) { _, _ -> onNeutralClick?.invoke() }
-            }
-        }
-        .create()
+    protected lateinit var alertDialog: AlertDialog
+    
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        alertDialog = AlertDialog.Builder(requireContext())
+            .setTitle(dialogTitle)
+            .setView(contentView)
+            .apply {
+                setPositiveButton(positiveText) { _, _ -> onPositiveClick.invoke() }
+                setNegativeButton(negativeText) { _, _ -> onNegativeClick?.invoke() }
+                neutralText?.let { neutralText ->
+                    setNeutralButton(neutralText) { _, _ -> onNeutralClick?.invoke() }
+                }
+            }.create()
+        return alertDialog
+    }
     
 }
