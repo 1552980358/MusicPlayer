@@ -24,4 +24,14 @@
     
     <string name="crop_image_title">Crop Image…</string>
     <string name="crop_image_menu_crop">Crop</string>
+    
+    <string name="sleep_timer_title">Sleep Timer</string>
+    <string name="sleep_timer_hint">Count Down Time</string>
+    <string name="sleep_timer_suffix">min</string>
+    <string name="sleep_timer_start">Start</string>
+    <string name="sleep_timer_cancel">@android:string/cancel</string>
+    <string name="sleep_timer_stop">Stop</string>
+    <string name="sleep_timer_default">30</string>
+    <string name="sleep_timer_custom">Custom</string>
+    
 </resources>
