@@ -26,6 +26,10 @@
             name="rippleColorStateList"
             type="android.content.res.ColorStateList" />
         
+        <variable
+            name="isSleepTimerEnabled"
+            type="Boolean" />
+        
     </data>
     
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -36,7 +40,26 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="@dimen/linear_layout_weighted"
-            android:layout_weight="2" />
+            android:layout_weight="2">
+            
+            <RelativeLayout
+                android:layout_width="@dimen/linear_layout_weighted"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/app_compat_image_button_sleep"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_round_alarm_24"
+                    android:tint="@{buttonColor != null ? buttonColor : @color/white}"
+                    android:layout_centerInParent="true"
+                    animatedAlpha="@{isSleepTimerEnabled ? 1F : 0.5F}" />
+                
+            </RelativeLayout>
+            
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"

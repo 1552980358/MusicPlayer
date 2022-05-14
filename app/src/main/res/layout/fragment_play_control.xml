@@ -55,6 +55,10 @@
             name="rippleColorStateList"
             type="android.content.res.ColorStateList" />
         
+        <variable
+            name="isSleepTimerEnabled"
+            type="Boolean" />
+        
     </data>
     
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -95,7 +99,8 @@
             app:repeatMode="@{repeatMode}"
             app:shuffleMode="@{shuffleMode}"
             app:buttonColor="@{buttonColor}"
-            app:rippleColorStateList="@{rippleColorStateList}" />
+            app:rippleColorStateList="@{rippleColorStateList}"
+            app:isSleepTimerEnabled="@{isSleepTimerEnabled}" />
         
     </androidx.appcompat.widget.LinearLayoutCompat>
     

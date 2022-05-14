@@ -16,6 +16,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_AUDIO_ITEM
 import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_BITMAP_ART
 import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_COLOR_ITEM
@@ -32,8 +35,13 @@ import projekt.cloud.piece.music.player.service.play.Actions.ACTION_UPDATE_REPEA
 import projekt.cloud.piece.music.player.service.play.Actions.ACTION_UPDATE_SHUFFLE_MODE
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_REPEAT_MODE
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_SHUFFLE_MODE
+import projekt.cloud.piece.music.player.ui.play.dialog.SleepTimerDialogFragment
+import projekt.cloud.piece.music.player.ui.play.dialog.SleepTimerDialogFragment.Companion.EXTRA_VALUE
 import projekt.cloud.piece.music.player.util.ColorUtil.isLight
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
+import projekt.cloud.piece.music.player.util.CoroutineUtil.io
+import projekt.cloud.piece.music.player.util.DialogFragmentUtil.showNow
+import projekt.cloud.piece.music.player.util.TimeUtil.minToMills
 
 class PlayControlFragment: BaseFragment(), OnClickListener {
 
@@ -49,12 +57,16 @@ class PlayControlFragment: BaseFragment(), OnClickListener {
     private val appCompatImageButtonPrev get() = buttonPlayControl.appCompatImageButtonPrev
     private val appCompatImageButtonNext get() = buttonPlayControl.appCompatImageButtonNext
     private val appCompatImageButtonShuffle get() = buttonPlayControl.appCompatImageButtonShuffle
+    private val appCompatImageButtonSleep get() = buttonPlayControl.appCompatImageButtonSleep
     private val positionPlayControl get() = binding.positionPlayControl
     private val progressBar get() = positionPlayControl.progressBar
     
     private val floatingActionButton get() = binding.buttonsPlayControl.floatingActionButton
 
     private val transportControls get() = requireActivity().mediaController.transportControls
+    
+    private var sleepTimerJob: Job? = null
+    private var sleepCountDownMillis: String? = null
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPlayControlBinding.inflate(layoutInflater, container, false)
@@ -75,6 +87,7 @@ class PlayControlFragment: BaseFragment(), OnClickListener {
             position = containerViewModel.position
             repeatMode = containerViewModel.repeatMode
             shuffleMode = containerViewModel.shuffleMode
+            isSleepTimerEnabled = false
         }
         return root
     }
@@ -106,6 +119,7 @@ class PlayControlFragment: BaseFragment(), OnClickListener {
         appCompatImageButtonPrev.setOnClickListener(this)
         appCompatImageButtonNext.setOnClickListener(this)
         appCompatImageButtonShuffle.setOnClickListener(this)
+        appCompatImageButtonSleep.setOnClickListener(this)
         
         with(progressBar) {
             setOnProgressChanged { position, isReleased ->
@@ -191,6 +205,24 @@ class PlayControlFragment: BaseFragment(), OnClickListener {
                     }
                 )
             )
+            
+            appCompatImageButtonSleep -> {
+                SleepTimerDialogFragment()
+                    .apply { arguments = bundleOf(EXTRA_VALUE to sleepCountDownMillis) }
+                    .setOnStart {
+                        sleepTimerJob?.cancel()
+                        sleepCountDownMillis = it
+                        sleepTimerJob = sleepTimerJob(it)
+                        updateSleepTimerState(true)
+                    }
+                    .setOnClose {
+                        sleepCountDownMillis = null
+                        sleepTimerJob?.cancel()
+                        sleepTimerJob = null
+                        updateSleepTimerState(false)
+                    }
+                    .showNow(requireActivity())
+            }
         }
     }
 
@@ -217,6 +249,20 @@ class PlayControlFragment: BaseFragment(), OnClickListener {
             duration = ANIMATION_DURATION
             addUpdateListener { binding.buttonColor = animatedValue as Int }
             start()
+        }
+    }
+    
+    private fun sleepTimerJob(millis: String) = io {
+        delay(millis.toLong().minToMills)
+        sleepCountDownMillis = null
+        transportControls.pause()
+        sleepTimerJob = null
+        updateSleepTimerState(false)
+    }
+    
+    private fun updateSleepTimerState(newState: Boolean) {
+        if (binding.isSleepTimerEnabled != newState) {
+            binding.isSleepTimerEnabled = newState
         }
     }
 
