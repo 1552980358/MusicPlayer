@@ -45,6 +45,7 @@ abstract class BaseItemSelectDialogFragment: BaseAlertDialogFragment() {
             hint = this@BaseItemSelectDialogFragment.hint
             prefix?.let { prefixText = it }
             suffix?.let { suffixText = it }
+            isEnabled = false
         }
         autoCompleteTextView.setAdapter(
             ArrayAdapter(requireContext(), R.layout.layout_base_item_select, items)
