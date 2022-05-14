@@ -47,10 +47,10 @@ abstract class BaseItemSelectDialogFragment: BaseAlertDialogFragment() {
             suffix?.let { suffixText = it }
             isEnabled = false
         }
+        autoCompleteTextView.setText(currentValue ?: defaultValue)
         autoCompleteTextView.setAdapter(
             ArrayAdapter(requireContext(), R.layout.layout_base_item_select, items)
         )
-        autoCompleteTextView.setText(currentValue ?: defaultValue)
         textInputEditText.setText(currentValue ?: defaultValue)
         return root
     }
