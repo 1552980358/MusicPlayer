@@ -7,7 +7,7 @@ import projekt.cloud.piece.music.player.databinding.DialogFragmentBaseItemSelect
 
 abstract class BaseItemSelectDialogFragment: BaseAlertDialogFragment() {
 
-    protected abstract val items: List<String>
+    protected abstract val items: Array<String>
     
     protected abstract val positiveClick: (String?) -> Unit
     protected abstract val negativeClick: ((String?) -> Unit)?
