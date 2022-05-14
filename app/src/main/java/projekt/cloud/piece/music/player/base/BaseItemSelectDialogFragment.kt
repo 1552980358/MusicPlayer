@@ -17,7 +17,7 @@ abstract class BaseItemSelectDialogFragment: BaseAlertDialogFragment() {
     private val binding get() = _binding!!
     protected val root get() = binding.root
     protected val textInputLayoutMenu get() = binding.textInputLayoutMenu
-    private val autoCompleteTextView get() = binding.autoCompleteTextView
+    protected val autoCompleteTextView get() = binding.autoCompleteTextView
     private val textInputLayoutInput get() = binding.textInputLayoutInput
     protected val textInputEditText get() = binding.textInputEditText
     
