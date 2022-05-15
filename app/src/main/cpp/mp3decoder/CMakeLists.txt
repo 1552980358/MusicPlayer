@@ -3,5 +3,6 @@ add_library(
         SHARED
         mp3_decoder.cpp
         decode_mp3.cpp
-        mp3_header.cpp
+        mp3_metadata.cpp
+        mp3_label.cpp
 )

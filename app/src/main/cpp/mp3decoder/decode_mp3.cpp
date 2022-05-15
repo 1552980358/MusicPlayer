@@ -1,168 +1,177 @@
 #include <jni.h>
 #include "include/decode_mp3.h"
-#include "include/mp3_header.h"
+#include <iostream>
 
-bool extract_mp3_frame_sync_bits(const int8_t &, const int8_t &);
+bool has_id3_tag(const int8_t &byte0, const int8_t &byte1, const int8_t &byte2);
 
-short extract_mp3_version(const int8_t &);
-short extract_mp3_layer(const int8_t &);
+int id3_version(const int8_t *);
+int id3_revision(const int8_t *);
+int id3_flag(const int8_t *);
 
-short extract_mp3_bit_rate(const short &, const short &, const int8_t &);
-short get_mp3_bit_rate_version_1(const short &, const int &);
-short get_mp3_bit_rate_version_2_3(const short &, const int &);
+int label_frame_size(const int8_t *);
+mp3_label *extract_label_frame(int &, int &, const int8_t *, mp3_label *);
+void audio_frame_sync(int &);
+int8_t audio_frame_version(const int &, const int8_t *);
+int8_t audio_frame_layer(int &, const int8_t *);
+int audio_frame_bitrate(int &, const int8_t *, const uint8_t &, const uint8_t &);
+int audio_frame_sample_rate(const uint8_t &, const int8_t *, const uint8_t &);
 
-int extract_mp3_sample_rate(const short &, const int8_t &);
-
-bool is_mp3_file(const int8_t *file_byte_array) {
-    if (!extract_mp3_frame_sync_bits(file_byte_array[0], file_byte_array[1])) {
+bool is_mp3_file(const int8_t *file_byte_array, const int &size) {
+    if (size < 10) {
         return false;
     }
-
-    short version;
-    if (!(version = extract_mp3_version(file_byte_array[1]))) {
-        return false;
-    }
-    short layer;
-    if (!(layer = extract_mp3_layer(file_byte_array[1]))) {
-        return false;
-    }
-
-    return extract_mp3_bit_rate(version, layer, file_byte_array[1]) &&
-        extract_mp3_sample_rate(version, file_byte_array[2]);
+    return has_id3_tag(file_byte_array[0], file_byte_array[1], file_byte_array[2]);
 }
 
-bool extract_mp3_frame_sync_bits(const int8_t &bit_pattern_0, const int8_t &bit_pattern_1) {
-    return (bit_pattern_0 & 0xFF) && (bit_pattern_1 & 0xE0);
-}
+long decode_mp3(const long &ptr, const int8_t *mp3_byte_array, const int &size) {
+    auto version = id3_version(mp3_byte_array);
+    auto revision = id3_revision(mp3_byte_array);
+    auto flag = id3_flag(mp3_byte_array);
 
-long decode_mp3(const long &ptr, const int8_t *mp3_byte_array) {
-    auto mp3_version = extract_mp3_version(mp3_byte_array[1]);
-    auto mp3_layer = extract_mp3_layer(mp3_byte_array[1]);
-    auto mp3_bit_rate = extract_mp3_bit_rate(mp3_version, mp3_layer, mp3_byte_array[2]);
-    auto mp3_sample_rate = extract_mp3_sample_rate(mp3_version, mp3_byte_array[2]);
+    int frame_size = label_frame_size(mp3_byte_array);
+    int frame_offset_index = 10;
 
+    mp3_label *mp3_label_ptr = nullptr;
+    while (frame_size) {
+        mp3_label_ptr = extract_label_frame(frame_offset_index, frame_size, mp3_byte_array,mp3_label_ptr);
+    }
+
+    audio_frame_sync(frame_offset_index);
+
+    auto frame_version = audio_frame_version(frame_offset_index, mp3_byte_array);
+    auto frame_layer = audio_frame_layer(frame_offset_index, mp3_byte_array);
+    auto frame_bitrate = audio_frame_bitrate(frame_offset_index, mp3_byte_array, frame_version, frame_layer);
+    auto frame_sample_rate = audio_frame_sample_rate(frame_offset_index, mp3_byte_array, frame_version);
+
+    auto *mp3_metadata_ptr = (mp3_metadata *) ptr;
     if (!ptr) {
-        return (long) new mp3_header(mp3_version, mp3_layer, mp3_bit_rate, mp3_sample_rate);
+        mp3_metadata_ptr = new mp3_metadata();
     }
-
-    get_mp3_header_ptr(ptr)->update(mp3_version, mp3_layer, mp3_bit_rate, mp3_sample_rate);
+    mp3_metadata_ptr->update(mp3_label_ptr, frame_bitrate, frame_sample_rate, true);
     return ptr;
 }
 
-/**
- * extract_mp3_version
- * AAABBCCD -> BB
- * @param byte
- * @return version of mp3
- *    0 - Unknown
- *    1 - MPEG Version 1 (ISO/IEC 11172-3)
- *    2 - MPEG Version 2 (ISO/IEC 13818-3)
- *    3 - MPEG Version 2.5 (unofficial extension of MPEG 2)
- *
- */
-short extract_mp3_version(const int8_t &byte) {
-    auto bits = (byte >> 3)   // AAABBCCD -> AAABB
-                & 0b11;         // AAABB -> BB
+bool has_id3_tag(const int8_t &byte0, const int8_t &byte1, const int8_t &byte2) {
+    return (byte0 == 'I') && (byte1 == 'D') && (byte2 == '3');
+}
 
-    /**
-     * 00 - MPEG Version 2.5 (unofficial extension of MPEG 2)
-     * 01 - reserved
-     * 10 - MPEG Version 2 (ISO/IEC 13818-3)
-     * 11 - MPEG Version 1 (ISO/IEC 11172-3)
-     */
-    switch (bits) {
-        case 0b11:
-            return VERSION_1;
-        case 0b10:
-            return VERSION_2;
-        case 0b00:
-            return VERSION_2_5;
+int id3_version(const int8_t *mp3_byte_array) {
+    return mp3_byte_array[3];
+}
+
+int id3_revision(const int8_t *mp3_byte_array) {
+    return mp3_byte_array[4];
+}
+
+int id3_flag(const int8_t *mp3_byte_array) {
+    return mp3_byte_array[5];
+}
+
+int label_frame_size(const int8_t *mp3_byte_array) {
+    return (mp3_byte_array[6] & 0x7F << 21) | (mp3_byte_array[7] & 0x7F << 14) | (mp3_byte_array[8] & 0x7F << 7) | (mp3_byte_array[9] & 0x7F);
+}
+
+mp3_label *extract_label_frame(int &offset, int &read_frame_size, const int8_t *mp3_byte_array, mp3_label *mp3_label_ptr) {
+    char label[4];
+    label[0] = mp3_byte_array[offset++];
+    label[1] = mp3_byte_array[offset++];
+    label[2] = mp3_byte_array[offset++];
+    label[3] = mp3_byte_array[offset++];
+
+    int frame_size = ((mp3_byte_array[offset++] & 0xFF) << 24);
+    frame_size |= ((mp3_byte_array[offset++] & 0xFF) << 16);
+    frame_size |= ((mp3_byte_array[offset++] & 0xFF) << 8);
+    frame_size |= (mp3_byte_array[offset++] & 0xFF);
+
+    auto flag = (int16_t) (mp3_byte_array[offset++] << 8);
+    flag |= mp3_byte_array[offset++]; // NOLINT(cppcoreguidelines-narrowing-conversions)
+
+    auto data = (int8_t *) malloc(frame_size);
+    for (int i = 0; i < frame_size; ++i) {
+        data[i] = mp3_byte_array[offset++];
+    }
+
+    return new mp3_label((char *) &label, data, frame_size, flag, mp3_label_ptr);
+}
+
+void audio_frame_sync(int &offset) {
+    offset += 2;
+}
+
+int8_t audio_frame_version(const int &offset, const int8_t *mp3_byte_array) {
+    switch ((mp3_byte_array[offset] >> 3) & 0x03) {
+        case 0x0:
+            return MPEG_2_5;
+        case 0x2:
+            return MPEG_2;
+        case 0x3:
+            return MPEG_1;
+        case 0x1:
         default:
-            return VERSION_UNKNOWN;
+            return MPEG_UNKNOWN;
     }
 }
 
-/**
- * get_mp3_layer
- * AAABBCCD -> CC
- * @return
- *         0 - Unknown
- *         1 - Layer I
- *         2 - Layer II
- *         3 - Layer III
- */
-short extract_mp3_layer(const int8_t &byte) {
-    auto bits = (byte >> 1)   // AAABBCCD -> AAABBCC
-                & 0b11;         // AAABBCC -> CC
-    /**
-     * 00 - reserved
-     * 01 - Layer III
-     * 10 - Layer II
-     * 11 - Layer I
-     **/
-    switch (bits) {
-        case 0b11:
-            return LAYER_I;
-        case 0b10:
-            return LAYER_II;
-        case 0b01:
+int8_t audio_frame_layer(int &offset, const int8_t *mp3_byte_array) {
+    switch ((mp3_byte_array[offset++] >> 1) & 0x03) {
+        case 0x1:
             return LAYER_III;
+        case 2:
+            return LAYER_II;
+        case 3:
+            return LAYER_I;
+        case 0:
         default:
             return LAYER_UNKNOWN;
     }
 }
 
-/**
- * get_mp3_bit_rate
- * EEEEFFGH -> EEEE
- * @param version
- * @param layer
- * @param byte
- * @return bit rate
- */
-short extract_mp3_bit_rate(const short &version, const short &layer, const int8_t &byte) {
-    auto bits = (byte >> 4) & 0b1111;  // EEEEFFGH -> EEEE
-    if (bits == 0b1111) {
-        return 0;
-    }
-    return version == VERSION_1 ? get_mp3_bit_rate_version_1(layer, bits) : get_mp3_bit_rate_version_2_3(layer, bits);
-}
+const int bitrate_mpeg1_layer1[] = {-1, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, 0 };
+const int bitrate_mpeg1_layer2[] = {-1, 32, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 0 };
+const int bitrate_mpeg1_layer3[] = {-1, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 0 };
+const int bitrate_mpeg2_layer1[] = {-1, 32, 48, 56, 64, 80, 96, 112, 128, 144, 160, 176, 192, 224, 256, 0 };
+const int bitrate_mpeg2_layer2_3[] = {-1, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 0 };
 
-short get_mp3_bit_rate_version_1(const short &layer, const int &value) {
-    switch (layer) {
-        case LAYER_I:
-            return ((short[]) { -1, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 0 })[value];
-        case LAYER_II:
-            return ((short[]) { -1, 32, 48, 56, 64, 80, 96, 112, 160, 192, 224, 256, 320, 384, 0 })[value];
-        default:
-            return ((short[]) { -1, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 0 })[value];
-    }
-}
-
-short get_mp3_bit_rate_version_2_3(const short &layer, const int &value) {
-    if (layer == 1) {
-        return ((short[]) { -1, 32, 48, 56, 64, 80, 96, 112, 128, 144, 160, 176, 192, 224, 256, 0 })[value];
-    }
-    return ((short[]) { -1, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 0 })[value];
-}
-
-/**
- * extract_mp3_sample_rate
- * EEEEFFGH -> FF
- * @param version
- * @param byte
- * @return sample rate
- */
-int extract_mp3_sample_rate(const short &version, const int8_t &byte) {
-    auto bits = (byte >> 2)     // EEEEFFGH -> EEEEFF
-            & 0b11;             // EEEEFF -> FF
-
+int audio_frame_bitrate(int &offset, const int8_t *mp3_byte_array, const uint8_t &version, const uint8_t &layer) {
+    auto bit_pattern = (mp3_byte_array[offset] >> 4) & 0xF;
     switch (version) {
-        case VERSION_1:
-            return ((int[]) { 44100, 48000, 32000, 0 })[bits];
-        case VERSION_2:
-            return ((int[]) { 22050 , 24000, 16000, 0 })[bits];
+        case MPEG_2:
+        case MPEG_2_5:
+            switch (layer) {
+                case LAYER_II:
+                case LAYER_III:
+                    return bitrate_mpeg2_layer2_3[bit_pattern];
+                case LAYER_I:
+                default:
+                    return bitrate_mpeg2_layer1[bit_pattern];
+            }
+        case MPEG_1:
         default:
-            return ((int[]) { 11025 , 12000, 8000, 0 })[bits];
+            switch (layer) {
+                case LAYER_II:
+                    return bitrate_mpeg1_layer2[bit_pattern];
+                case LAYER_III:
+                    return bitrate_mpeg1_layer3[bit_pattern];
+                case LAYER_I:
+                default:
+                    return bitrate_mpeg1_layer1[bit_pattern];
+            }
+    }
+}
+
+const int sample_rate_mpeg1[] = { 44100, 48000, 32000 };
+const int sample_rate_mpeg2[] = { 22050, 24000, 16000 };
+const int sample_rate_mpeg2_5[] = { 11025, 12000, 8000 };
+
+int audio_frame_sample_rate(const uint8_t &offset, const int8_t *mp3_byte_array, const uint8_t &version) {
+    auto bit_pattern = (mp3_byte_array[offset] >> 2) & 0x3;
+    switch (version) {
+        case MPEG_2:
+            return sample_rate_mpeg2[bit_pattern];
+        case MPEG_2_5:
+            return sample_rate_mpeg2_5[bit_pattern];
+        case MPEG_1:
+        default:
+            return sample_rate_mpeg1[bit_pattern];
     }
 }

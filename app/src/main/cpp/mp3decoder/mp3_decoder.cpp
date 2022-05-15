@@ -1,6 +1,5 @@
 #include <jni.h>
 #include "include/decode_mp3.h"
-#include "include/mp3_header_ptr_convert.h"
 
 /**
  * https://www.codeproject.com/Articles/8295/MPEG-Audio-Frame-Header
@@ -35,33 +34,23 @@
 extern "C" {
 
 JNIEXPORT jlong JNICALL
-Java_projekt_cloud_piece_music_player_util_MP3Decoder_decodeMp3(JNIEnv *env, jobject, jlong ptr, jbyteArray mp3_byte_array) {
-    return decode_mp3(ptr, env->GetByteArrayElements(mp3_byte_array, nullptr)); // NOLINT(cppcoreguidelines-narrowing-conversions)
-}
-
-JNIEXPORT jshort JNICALL
-Java_projekt_cloud_piece_music_player_util_MP3Decoder_getVersion(JNIEnv *env, jobject,jlong pointer) {
-    return get_mp3_version(pointer); // NOLINT(cppcoreguidelines-narrowing-conversions)
-}
-
-JNIEXPORT jshort JNICALL
-Java_projekt_cloud_piece_music_player_util_MP3Decoder_getLayer(JNIEnv *env, jobject,jlong pointer) {
-    return get_mp3_layer(pointer);  // NOLINT(cppcoreguidelines-narrowing-conversions)
-}
-
-JNIEXPORT jint JNICALL
-Java_projekt_cloud_piece_music_player_util_MP3Decoder_getBitRate(JNIEnv *env, jobject,jlong pointer) {
-    return get_mp3_bit_rate(pointer); // NOLINT(cppcoreguidelines-narrowing-conversions)
-}
-
-JNIEXPORT jint JNICALL
-Java_projekt_cloud_piece_music_player_util_MP3Decoder_getSampleRate(JNIEnv *env, jobject,jlong pointer) {
-    return get_mp3_sample_rate(pointer); // NOLINT(cppcoreguidelines-narrowing-conversions)
+Java_projekt_cloud_piece_music_player_util_MP3Decoder_decodeMp3(JNIEnv *env, jobject, jlong ptr, jbyteArray file_byte_array) {
+    return decode_mp3(ptr, env->GetByteArrayElements(file_byte_array, nullptr), env->GetArrayLength(file_byte_array)); // NOLINT(cppcoreguidelines-narrowing-conversions)
 }
 
 JNIEXPORT jboolean JNICALL
-Java_projekt_cloud_piece_music_player_util_MP3Decoder_isMp3File(JNIEnv *env, jobject, jbyteArray mp3_byte_array) {
-    return is_mp3_file(env->GetByteArrayElements(mp3_byte_array, nullptr));
+Java_projekt_cloud_piece_music_player_util_MP3Decoder_isMp3File(JNIEnv *env, jobject, jbyteArray file_byte_array) {
+    return is_mp3_file(env->GetByteArrayElements(file_byte_array, nullptr), env->GetArrayLength(file_byte_array));
+}
+
+JNIEXPORT jint JNICALL
+Java_projekt_cloud_piece_music_player_util_MP3Decoder_getBitrate(JNIEnv *env, jobject, jlong pointer) {
+    return get_mp3_metadata_ptr((long) pointer)->get_bit_rate();
+}
+
+JNIEXPORT jint JNICALL
+Java_projekt_cloud_piece_music_player_util_MP3Decoder_getSampleRate(JNIEnv *, jobject , jlong pointer) {
+    return get_mp3_metadata_ptr((long) pointer)->get_sample_rate();
 }
 
 }

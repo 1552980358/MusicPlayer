@@ -14,9 +14,7 @@ class MP3Decoder private constructor() {
     
     private external fun isMp3File(mp3ByteArray: ByteArray): Boolean
     private external fun decodeMp3(pointer: Long, mp3ByteArray: ByteArray): Long
-    private external fun getVersion(pointer: Long): Short
-    private external fun getLayer(pointer: Long): Short
-    private external fun getBitRate(pointer: Long): Int
+    private external fun getBitrate(pointer: Long): Int
     private external fun getSampleRate(pointer: Long): Int
     
     private var pointer = 0L
@@ -31,11 +29,7 @@ class MP3Decoder private constructor() {
         return isMp3File;
     }
     
-    val version get() = getVersion(pointer)
-    
-    val layer get() = getLayer(pointer)
-    
-    val bitRate get() = getBitRate(pointer)
+    val bitrate get() = getBitrate(pointer)
     
     val sampleRate get() = getSampleRate(pointer)
     
