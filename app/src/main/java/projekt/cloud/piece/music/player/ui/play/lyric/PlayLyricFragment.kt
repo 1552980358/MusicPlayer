@@ -16,10 +16,10 @@ import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_CO
 import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_POSITION
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseActivity
-import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import projekt.cloud.piece.music.player.database.audio.item.ColorItem
 import projekt.cloud.piece.music.player.databinding.FragmentPlayLyricBinding
+import projekt.cloud.piece.music.player.ui.play.base.BasePlayFragment
 import projekt.cloud.piece.music.player.util.ColorUtil.isLight
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
@@ -27,7 +27,7 @@ import projekt.cloud.piece.music.player.util.LyricUtil.readLyric
 import projekt.cloud.piece.music.player.util.LyricUtil.storeLyric
 import projekt.cloud.piece.music.player.util.LyricUtil.toLyric
 
-class PlayLyricFragment: BaseFragment() {
+class PlayLyricFragment: BasePlayFragment() {
 
     companion object {
         private const val TAG = "PlayLyricFragment"
