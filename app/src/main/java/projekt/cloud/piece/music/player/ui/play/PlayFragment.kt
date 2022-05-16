@@ -17,8 +17,10 @@ import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.base.BasePagerViewModel
 import projekt.cloud.piece.music.player.database.audio.item.ColorItem
 import projekt.cloud.piece.music.player.databinding.FragmentPlayBinding
+import projekt.cloud.piece.music.player.ui.play.base.BasePlayFragment
 import projekt.cloud.piece.music.player.ui.play.control.PlayControlFragment
 import projekt.cloud.piece.music.player.ui.play.lyric.PlayLyricFragment
+import projekt.cloud.piece.music.player.ui.play.util.SleepTimer
 import projekt.cloud.piece.music.player.util.ColorUtil.isLight
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
 
@@ -38,13 +40,13 @@ import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
  *   [onDestroyView]
  *
  **/
-class PlayFragment: BaseFragment() {
+class PlayFragment: BasePlayFragment() {
 
     companion object {
         private const val TAG = "PlayFragment"
     }
 
-    class PlayFragmentViewModel: BasePagerViewModel<BaseFragment>() {
+    class PlayFragmentViewModel: BasePagerViewModel<BasePlayFragment>() {
         override fun setFragments() =
             arrayOf(PlayControlFragment(), PlayLyricFragment())
     }
@@ -56,6 +58,7 @@ class PlayFragment: BaseFragment() {
     private val root get() = binding.root
     private val viewPager2 get() = binding.viewPager2
     private val materialToolbar get() = binding.materialToolbar
+    private lateinit var sleepTimer: SleepTimer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +66,7 @@ class PlayFragment: BaseFragment() {
             duration = ANIMATION_DURATION
         }
         viewModel = ViewModelProvider(this)[PlayFragmentViewModel::class.java]
+        sleepTimer = SleepTimer { onSleepTimerStop() }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -109,7 +113,25 @@ class PlayFragment: BaseFragment() {
         super.onDestroyView()
         _binding = null
     }
-
+    
+    override fun onSleepTimerStop() {
+        viewModel.forEach {
+            if (it.isResumed) {
+                it.onSleepTimerStop()
+            }
+        }
+    }
+    
+    override val isSleepTimerEnabled: Boolean
+        get() = sleepTimer.isStarted
+    
+    override val sleepTimerMillis: String?
+        get() = sleepTimer.millis
+    
+    override fun startSleepTimer(millis: String) = sleepTimer.start(millis)
+    
+    override fun stopSleepTimer() = sleepTimer.stop()
+    
     private val Int.closeButtonColor get() =
         if (isLight) BLACK else WHITE
 
