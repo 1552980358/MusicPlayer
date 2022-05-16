@@ -17,8 +17,6 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_AUDIO_ITEM
 import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_BITMAP_ART
 import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_COLOR_ITEM
@@ -27,7 +25,6 @@ import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_PO
 import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_REPEAT_MODE
 import projekt.cloud.piece.music.player.MainActivityViewModel.Companion.LABEL_SHUFFLE_MODE
 import projekt.cloud.piece.music.player.R
-import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import projekt.cloud.piece.music.player.database.audio.item.ColorItem
 import projekt.cloud.piece.music.player.databinding.FragmentPlayControlBinding
@@ -35,15 +32,14 @@ import projekt.cloud.piece.music.player.service.play.Actions.ACTION_UPDATE_REPEA
 import projekt.cloud.piece.music.player.service.play.Actions.ACTION_UPDATE_SHUFFLE_MODE
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_REPEAT_MODE
 import projekt.cloud.piece.music.player.service.play.Extras.EXTRA_SHUFFLE_MODE
+import projekt.cloud.piece.music.player.ui.play.base.BasePlayFragment
 import projekt.cloud.piece.music.player.ui.play.dialog.SleepTimerDialogFragment
 import projekt.cloud.piece.music.player.ui.play.dialog.SleepTimerDialogFragment.Companion.EXTRA_VALUE
 import projekt.cloud.piece.music.player.util.ColorUtil.isLight
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
-import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.DialogFragmentUtil.showNow
-import projekt.cloud.piece.music.player.util.TimeUtil.minToMills
 
-class PlayControlFragment: BaseFragment(), OnClickListener {
+class PlayControlFragment: BasePlayFragment(), OnClickListener {
 
     companion object {
         private const val TAG = "PlayControlFragment"
@@ -64,9 +60,6 @@ class PlayControlFragment: BaseFragment(), OnClickListener {
     private val floatingActionButton get() = binding.buttonsPlayControl.floatingActionButton
 
     private val transportControls get() = requireActivity().mediaController.transportControls
-    
-    private var sleepTimerJob: Job? = null
-    private var sleepCountDownMillis: String? = null
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPlayControlBinding.inflate(layoutInflater, container, false)
@@ -208,17 +201,13 @@ class PlayControlFragment: BaseFragment(), OnClickListener {
             
             appCompatImageButtonSleep -> {
                 SleepTimerDialogFragment()
-                    .apply { arguments = bundleOf(EXTRA_VALUE to sleepCountDownMillis) }
+                    .apply { arguments = bundleOf(EXTRA_VALUE to sleepTimerMillis) }
                     .setOnStart {
-                        sleepTimerJob?.cancel()
-                        sleepCountDownMillis = it
-                        sleepTimerJob = sleepTimerJob(it)
+                        startSleepTimer(it)
                         updateSleepTimerState(true)
                     }
                     .setOnClose {
-                        sleepCountDownMillis = null
-                        sleepTimerJob?.cancel()
-                        sleepTimerJob = null
+                        stopSleepTimer()
                         updateSleepTimerState(false)
                     }
                     .showNow(requireActivity())
@@ -252,11 +241,7 @@ class PlayControlFragment: BaseFragment(), OnClickListener {
         }
     }
     
-    private fun sleepTimerJob(millis: String) = io {
-        delay(millis.toLong().minToMills)
-        sleepCountDownMillis = null
-        transportControls.pause()
-        sleepTimerJob = null
+    override fun onSleepTimerStop() {
         updateSleepTimerState(false)
     }
     
