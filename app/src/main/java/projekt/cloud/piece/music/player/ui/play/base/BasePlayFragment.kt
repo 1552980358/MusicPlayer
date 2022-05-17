@@ -20,4 +20,11 @@ open class BasePlayFragment: BaseFragment() {
     
     open fun onSleepTimerStop() = Unit
     
+    protected open val isKeepScreenOnEnabled: Boolean
+        get() = (parentFragment as? BasePlayFragment)?.isKeepScreenOnEnabled == true
+    
+    protected open fun setKeepScreenOnState(state: Boolean) {
+        (parentFragment as? BasePlayFragment)?.setKeepScreenOnState(state)
+    }
+    
 }
