@@ -6,6 +6,7 @@ import android.graphics.Color.WHITE
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.KEEP_SCREEN_ON
 import android.view.View.OVER_SCROLL_NEVER
 import android.view.ViewGroup
 import androidx.annotation.ColorInt
@@ -59,6 +60,7 @@ class PlayFragment: BasePlayFragment() {
     private val viewPager2 get() = binding.viewPager2
     private val materialToolbar get() = binding.materialToolbar
     private lateinit var sleepTimer: SleepTimer
+    private var isKeepScreenOn = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,6 +111,7 @@ class PlayFragment: BasePlayFragment() {
         viewModel[viewPager2.currentItem].canReturn
 
     override fun onDestroyView() {
+        requireActivity().window.clearFlags(KEEP_SCREEN_ON)
         containerViewModel.unregisterAll(TAG)
         super.onDestroyView()
         _binding = null
@@ -127,6 +130,19 @@ class PlayFragment: BasePlayFragment() {
     
     override val sleepTimerMillis: String?
         get() = sleepTimer.millis
+    
+    override val isKeepScreenOnEnabled: Boolean
+        get() = super.isKeepScreenOnEnabled
+    
+    override fun setKeepScreenOnState(state: Boolean) {
+        if (isKeepScreenOn != state) {
+            isKeepScreenOn = state
+            when {
+                state -> requireActivity().window.addFlags(KEEP_SCREEN_ON)
+                else -> requireActivity().window.clearFlags(KEEP_SCREEN_ON)
+            }
+        }
+    }
     
     override fun startSleepTimer(millis: String) = sleepTimer.start(millis)
     
