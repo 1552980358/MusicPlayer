@@ -59,6 +59,10 @@
             name="isSleepTimerEnabled"
             type="Boolean" />
         
+        <variable
+            name="isKeepScreenOnEnabled"
+            type="Boolean" />
+        
     </data>
     
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -100,7 +104,8 @@
             app:shuffleMode="@{shuffleMode}"
             app:buttonColor="@{buttonColor}"
             app:rippleColorStateList="@{rippleColorStateList}"
-            app:isSleepTimerEnabled="@{isSleepTimerEnabled}" />
+            app:isSleepTimerEnabled="@{isSleepTimerEnabled}"
+            app:isKeepScreenOnEnabled="@{isKeepScreenOnEnabled}" />
         
     </androidx.appcompat.widget.LinearLayoutCompat>
     
