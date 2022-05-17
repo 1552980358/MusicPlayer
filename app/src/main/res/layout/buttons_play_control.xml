@@ -30,6 +30,10 @@
             name="isSleepTimerEnabled"
             type="Boolean" />
         
+        <variable
+            name="isKeepScreenOnEnabled"
+            type="Boolean" />
+        
     </data>
     
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -56,6 +60,23 @@
                     android:tint="@{buttonColor != null ? buttonColor : @color/white}"
                     android:layout_centerInParent="true"
                     animatedAlpha="@{isSleepTimerEnabled ? 1F : 0.5F}" />
+                
+            </RelativeLayout>
+            
+            <RelativeLayout
+                android:layout_width="@dimen/linear_layout_weighted"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/app_compat_image_button_keep_screen_on"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_round_smartphone_24"
+                    android:tint="@{buttonColor != null ? buttonColor : @color/white}"
+                    animatedAlpha="@{isKeepScreenOnEnabled ? 1F : 0.5F}"
+                    android:layout_centerInParent="true" />
                 
             </RelativeLayout>
             
