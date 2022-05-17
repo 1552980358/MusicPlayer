@@ -54,6 +54,7 @@ class PlayControlFragment: BasePlayFragment(), OnClickListener {
     private val appCompatImageButtonNext get() = buttonPlayControl.appCompatImageButtonNext
     private val appCompatImageButtonShuffle get() = buttonPlayControl.appCompatImageButtonShuffle
     private val appCompatImageButtonSleep get() = buttonPlayControl.appCompatImageButtonSleep
+    private val appCompatImageButtonKeepScreenOn get() = buttonPlayControl.appCompatImageButtonKeepScreenOn
     private val positionPlayControl get() = binding.positionPlayControl
     private val progressBar get() = positionPlayControl.progressBar
     
@@ -81,6 +82,7 @@ class PlayControlFragment: BasePlayFragment(), OnClickListener {
             repeatMode = containerViewModel.repeatMode
             shuffleMode = containerViewModel.shuffleMode
             isSleepTimerEnabled = false
+            isKeepScreenOnEnabled = false
         }
         return root
     }
@@ -113,6 +115,7 @@ class PlayControlFragment: BasePlayFragment(), OnClickListener {
         appCompatImageButtonNext.setOnClickListener(this)
         appCompatImageButtonShuffle.setOnClickListener(this)
         appCompatImageButtonSleep.setOnClickListener(this)
+        appCompatImageButtonKeepScreenOn.setOnClickListener(this)
         
         with(progressBar) {
             setOnProgressChanged { position, isReleased ->
@@ -211,6 +214,13 @@ class PlayControlFragment: BasePlayFragment(), OnClickListener {
                         updateSleepTimerState(false)
                     }
                     .showNow(requireActivity())
+            }
+            
+            appCompatImageButtonKeepScreenOn -> {
+                setKeepScreenOnState(!isKeepScreenOnEnabled)
+                if (binding.isKeepScreenOnEnabled != isKeepScreenOnEnabled) {
+                    binding.isKeepScreenOnEnabled = isKeepScreenOnEnabled
+                }
             }
         }
     }
