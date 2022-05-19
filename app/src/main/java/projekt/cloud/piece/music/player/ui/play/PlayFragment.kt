@@ -98,7 +98,7 @@ class PlayFragment: BasePlayFragment() {
                 updateBackgroundColor(binding.backgroundColor!!, it.background)
                 ValueAnimator.ofArgb(binding.exitButtonColor!!, it.background.closeButtonColor).apply {
                     duration = ANIMATION_DURATION
-                    addUpdateListener { binding.exitButtonColor = it.animatedValue as Int }
+                    addUpdateListener { binding.exitButtonColor = animatedValue as Int }
                     start()
                 }
             }
