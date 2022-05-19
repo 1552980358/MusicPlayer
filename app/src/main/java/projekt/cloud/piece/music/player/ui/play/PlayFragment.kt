@@ -60,7 +60,6 @@ class PlayFragment: BasePlayFragment() {
     private val viewPager2 get() = binding.viewPager2
     private val materialToolbar get() = binding.materialToolbar
     private lateinit var sleepTimer: SleepTimer
-    private var isKeepScreenOn = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -132,15 +131,11 @@ class PlayFragment: BasePlayFragment() {
         get() = sleepTimer.millis
     
     override val isKeepScreenOnEnabled: Boolean
-        get() = super.isKeepScreenOnEnabled
+        get() = root.keepScreenOn
     
     override fun setKeepScreenOnState(state: Boolean) {
-        if (isKeepScreenOn != state) {
-            isKeepScreenOn = state
-            when {
-                state -> requireActivity().window.addFlags(KEEP_SCREEN_ON)
-                else -> requireActivity().window.clearFlags(KEEP_SCREEN_ON)
-            }
+        if (root.keepScreenOn != state) {
+            root.keepScreenOn = state
         }
     }
     
