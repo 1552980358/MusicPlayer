@@ -10,14 +10,14 @@
         android:title="@string/main_bottom_navigation_audio_track" />
     
     <item
-        android:id="@+id/nav_artist"
-        android:icon="@drawable/ic_round_artist_24"
-        android:title="@string/main_bottom_navigation_artist" />
-    
-    <item
         android:id="@+id/nav_album"
         android:icon="@drawable/ic_round_album_24"
         android:title="@string/main_bottom_navigation_album" />
+    
+    <item
+        android:id="@+id/nav_artist"
+        android:icon="@drawable/ic_round_artist_24"
+        android:title="@string/main_bottom_navigation_artist" />
     
     <item
         android:id="@+id/nav_playlist"
