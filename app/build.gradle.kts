@@ -55,6 +55,9 @@ android {
             version = "3.18.1"
         }
     }
+    packagingOptions {
+        resources.excludes.add("META-INF/*")
+    }
 }
 
 dependencies {
