@@ -34,4 +34,5 @@
     <string name="sleep_timer_default">30</string>
     <string name="sleep_timer_custom">Custom</string>
     
+    <string name="web_service_notification_title">Web Service</string>
 </resources>
