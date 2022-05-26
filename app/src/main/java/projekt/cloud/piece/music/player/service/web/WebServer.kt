@@ -27,7 +27,7 @@ import projekt.cloud.piece.music.player.service.web.WebAssets.webAssetsJSDir
 class WebServer(private val context: Context) {
     
     companion object {
-        private const val SERVER_PORT = 80
+        const val SERVER_PORT = 80
     }
     
     var isLaunched = false
