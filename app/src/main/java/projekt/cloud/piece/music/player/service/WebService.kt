@@ -3,6 +3,7 @@ package projekt.cloud.piece.music.player.service
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import projekt.cloud.piece.music.player.service.web.Extra.ACTION_START_COMMAND
 import projekt.cloud.piece.music.player.service.web.Extra.ACTION_START_SERVER
 import projekt.cloud.piece.music.player.service.web.Extra.ACTION_STOP_SERVER
 import projekt.cloud.piece.music.player.service.web.NetworkHelper
@@ -24,7 +25,7 @@ class WebService: Service() {
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when (intent?.action) {
+        when (intent?.getStringExtra(ACTION_START_COMMAND)) {
             ACTION_START_SERVER -> {
                 webServer.isLaunched = true
                 notificationHelper.startForeground(this, "${networkHelper.ipAddress}:$SERVER_PORT")
