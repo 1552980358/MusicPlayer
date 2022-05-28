@@ -10,5 +10,13 @@ object ServerRouting {
     const val STATIC_PATH_IMG = "img"
     const val STATIC_PATH_JS = "js"
     const val STATIC_FILE_ALL = "."
+    
+    private const val ROUTE_PARAM_ID = "id"
+    
+    const val ROUTE_PLAYER = "/player"
+    const val ROUTE_PLAYER_PLAYLIST = "/playlist"
+    const val ROUTE_PLAYER_PLAYLIST_PARAM_ALL = "/all"
+    const val ROUTE_PLAYER_PLAYLIST_ID = "/{$ROUTE_PARAM_ID}"
+    const val ROUTE_PLAYER_PLAYLIST_PARAM_ID = ROUTE_PARAM_ID
 
 }
