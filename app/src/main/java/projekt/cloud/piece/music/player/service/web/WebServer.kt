@@ -167,6 +167,21 @@ class WebServer(private val context: Context) {
                 }
             }
         }
+        
+        // audio
+        route(ROUTE_PLAYER_AUDIO) {
+            // {id}
+            route(ROUTE_PLAYER_AUDIO_ID) {
+                get {
+                    val id = call.parameters[ROUTE_PLAYER_AUDIO_ID_PARAM_ID]
+                        ?: return@get call.response.status(HttpStatusCode.NotFound)
+                    @Suppress("BlockingMethodInNonBlockingContext")
+                    this@WebServer.context.contentResolver.openInputStream(id.parseUri)?.use { it.readBytes() }?.let {
+                        call.respondBytes(it, ContentType.Audio.Any, HttpStatusCode.OK)
+                    }
+                }
+            }
+        }
     }
     
 }
