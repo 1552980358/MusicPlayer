@@ -78,5 +78,10 @@ abstract class AudioRoom: RoomDatabase() {
             add(PlaylistWithAudio(playlistItem, playlistAudioDao.query(playlistItem.id)))
         }
     }
+    
+    fun queryPlaylistAudio(playlist: String) = playlistAudioDao.query(playlist).onEach {
+        it.albumItem = albumDao.query(it.album)
+        it.artistItem = artistDao.query(it.artist)
+    }
 
 }
