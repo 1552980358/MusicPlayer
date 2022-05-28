@@ -18,5 +18,8 @@ object ServerRouting {
     const val ROUTE_PLAYER_PLAYLIST_PARAM_ALL = "/all"
     const val ROUTE_PLAYER_PLAYLIST_ID = "/{$ROUTE_PARAM_ID}"
     const val ROUTE_PLAYER_PLAYLIST_PARAM_ID = ROUTE_PARAM_ID
+    const val ROUTE_PLAYER_AUDIO = "/audio"
+    const val ROUTE_PLAYER_AUDIO_ID = "/{id}"
+    const val ROUTE_PLAYER_AUDIO_ID_PARAM_ID = ROUTE_PARAM_ID
 
 }
