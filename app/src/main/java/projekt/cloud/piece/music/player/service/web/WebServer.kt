@@ -1,6 +1,8 @@
 package projekt.cloud.piece.music.player.service.web
 
 import android.content.Context
+import com.google.gson.JsonObject
+import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.application.install
@@ -14,12 +16,13 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.request.uri
 import io.ktor.server.response.respond
+import io.ktor.server.response.respondBytes
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
-import org.json.JSONObject
 import projekt.cloud.piece.music.player.database.AudioRoom
+import projekt.cloud.piece.music.player.service.play.AudioUtil.parseUri
 import projekt.cloud.piece.music.player.service.web.RespondUtil.AUDIO_RESPOND_LIST
 import projekt.cloud.piece.music.player.service.web.RespondUtil.AUDIO_RESPOND_URI
 import projekt.cloud.piece.music.player.service.web.RespondUtil.PLAYLIST_RESPOND_LIST
@@ -28,6 +31,9 @@ import projekt.cloud.piece.music.player.service.web.RespondUtil.RESPOND_STATUS
 import projekt.cloud.piece.music.player.service.web.RespondUtil.audioJsonArray
 import projekt.cloud.piece.music.player.service.web.RespondUtil.playlistJsonArray
 import projekt.cloud.piece.music.player.service.web.ServerRouting.ROUTE_PLAYER
+import projekt.cloud.piece.music.player.service.web.ServerRouting.ROUTE_PLAYER_AUDIO
+import projekt.cloud.piece.music.player.service.web.ServerRouting.ROUTE_PLAYER_AUDIO_ID
+import projekt.cloud.piece.music.player.service.web.ServerRouting.ROUTE_PLAYER_AUDIO_ID_PARAM_ID
 import projekt.cloud.piece.music.player.service.web.ServerRouting.ROUTE_PLAYER_PLAYLIST
 import projekt.cloud.piece.music.player.service.web.ServerRouting.ROUTE_PLAYER_PLAYLIST_ID
 import projekt.cloud.piece.music.player.service.web.ServerRouting.ROUTE_PLAYER_PLAYLIST_PARAM_ALL
@@ -111,28 +117,29 @@ class WebServer(private val context: Context) {
      * │   └── /{id}: Respond audio metadata list of playlist {id}
      *
      **/
-    private fun Routing.implementPlayer() = route(ROUTE_PLAYER) {
-        // player
+    private fun Routing.implementPlayer() = route(ROUTE_PLAYER) {   // player
+        // playlist
         route(ROUTE_PLAYER_PLAYLIST) {
             get {
                 call.respond(
                     HttpStatusCode.OK,
-                    JSONObject().also {
-                        it.put(RESPOND_STATUS, HttpStatusCode.OK)
-                        it.put(PLAYLIST_RESPOND_URI, call.request.uri)
-                        it.put(PLAYLIST_RESPOND_LIST, audioRoom.playlistDao.query().playlistJsonArray)
+                    JsonObject().also {
+                        it.addProperty(RESPOND_STATUS, HttpStatusCode.OK.toString())
+                        it.addProperty(PLAYLIST_RESPOND_URI, call.request.uri)
+                        it.add(PLAYLIST_RESPOND_LIST, audioRoom.playlistDao.query().playlistJsonArray)
                     }.toString()
                 )
             }
     
+            // all
             route(ROUTE_PLAYER_PLAYLIST_PARAM_ALL) {
                 get {
                     call.respond(
                         HttpStatusCode.OK,
-                        JSONObject().also {
-                            it.put(RESPOND_STATUS, HttpStatusCode.OK)
-                            it.put(AUDIO_RESPOND_URI, call.request.uri)
-                            it.put(AUDIO_RESPOND_LIST, audioRoom.queryAudio.audioJsonArray)
+                        JsonObject().also {
+                            it.addProperty(RESPOND_STATUS, HttpStatusCode.OK.toString())
+                            it.addProperty(AUDIO_RESPOND_URI, call.request.uri)
+                            it.add(AUDIO_RESPOND_LIST, audioRoom.queryAudio.audioJsonArray)
                         }.toString()
                     )
                 }
@@ -144,16 +151,17 @@ class WebServer(private val context: Context) {
                     val playlist = call.parameters[ROUTE_PLAYER_PLAYLIST_PARAM_ID]
                         ?: return@get call.respond(
                             HttpStatusCode.NotFound,
-                            JSONObject().also {
-                                it.put(RESPOND_STATUS, HttpStatusCode.NotFound)
-                                it.put(AUDIO_RESPOND_URI, call.request.uri)
+                            JsonObject().also {
+                                it.addProperty(RESPOND_STATUS, HttpStatusCode.NotFound.toString())
+                                it.addProperty(AUDIO_RESPOND_URI, call.request.uri)
                             }
                         )
                     call.respond(
                         HttpStatusCode.OK,
-                        JSONObject().also {
-                            it.put(AUDIO_RESPOND_URI, call.request.uri)
-                            it.put(AUDIO_RESPOND_LIST, audioRoom.queryPlaylistAudio(playlist).audioJsonArray)
+                        JsonObject().also {
+                            it.addProperty(RESPOND_STATUS, HttpStatusCode.OK.toString())
+                            it.addProperty(AUDIO_RESPOND_URI, call.request.uri)
+                            it.add(AUDIO_RESPOND_LIST, audioRoom.queryPlaylistAudio(playlist).audioJsonArray)
                         }.toString()
                     )
                 }
