@@ -88,7 +88,12 @@ dependencies {
     val exoPlayerVersion = "2.16.1"
     implementation("com.google.android.exoplayer:exoplayer-core:$exoPlayerVersion")
     implementation("com.google.android.exoplayer:exoplayer-hls:$exoPlayerVersion")
-
+    
+    /**
+     * Replacing methods provided by org.json, fixing '\/' output 
+     **/
+    implementation("com.google.code.gson:gson:2.9.0")
+    
     implementation("com.github.1552980358:C2Pinyin:2.3.0")
     
     implementation("com.github.mkaflowski:Media-Style-Palette:1.3")
