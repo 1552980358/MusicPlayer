@@ -1,7 +1,7 @@
 package projekt.cloud.piece.music.player.service.web
 
-import org.json.JSONArray
-import org.json.JSONObject
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import projekt.cloud.piece.music.player.database.audio.item.PlaylistItem
 
@@ -16,15 +16,15 @@ object RespondUtil {
     const val PLAYLIST_RESPOND_URI = "uri"
     const val PLAYLIST_RESPOND_LIST = "list"
     
-    private val PlaylistItem.jsonObject get() = JSONObject().also {
-        it.put(PLAYLIST_ID, id)
-        it.put(PLAYLIST_TITLE, title)
-        it.put(PLAYLIST_DESCRIPTION, description)
+    private val PlaylistItem.jsonObject get() = JsonObject().also {
+        it.addProperty(PLAYLIST_ID, id)
+        it.addProperty(PLAYLIST_TITLE, title)
+        it.addProperty(PLAYLIST_DESCRIPTION, description)
     }
     
     @JvmStatic
-    val List<PlaylistItem>.playlistJsonArray get() = JSONArray().also { jsonArray ->
-        forEach { jsonArray.put(it.jsonObject) }
+    val List<PlaylistItem>.playlistJsonArray get() = JsonArray().also { jsonArray ->
+        forEach { jsonArray.add(it.jsonObject) }
     }
     
     const val AUDIO_RESPOND_URI = "uri"
@@ -38,19 +38,19 @@ object RespondUtil {
     private const val AUDIO_DURATION = "duration"
     
     @JvmStatic
-    val AudioItem.jsonObject get() = JSONObject().also {
-        it.put(AUDIO_ID, id)
-        it.put(AUDIO_TITLE, title)
-        it.put(AUDIO_ARTIST, artist)
-        it.put(AUDIO_ARTIST_NAME, artistName)
-        it.put(AUDIO_ALBUM, album)
-        it.put(AUDIO_ALBUM_TITLE, albumTitle)
-        it.put(AUDIO_DURATION, duration)
+    val AudioItem.jsonObject get() = JsonObject().also {
+        it.addProperty(AUDIO_ID, id)
+        it.addProperty(AUDIO_TITLE, title)
+        it.addProperty(AUDIO_ARTIST, artist)
+        it.addProperty(AUDIO_ARTIST_NAME, artistName)
+        it.addProperty(AUDIO_ALBUM, album)
+        it.addProperty(AUDIO_ALBUM_TITLE, albumTitle)
+        it.addProperty(AUDIO_DURATION, duration)
     }
     
     @JvmStatic
-    val List<AudioItem>.audioJsonArray get() = JSONArray().also { jsonArray ->
-        forEach { jsonArray.put(it.jsonObject) }
+    val List<AudioItem>.audioJsonArray get() = JsonArray().also { jsonArray ->
+        forEach { jsonArray.add(it.jsonObject) }
     }
     
 }
