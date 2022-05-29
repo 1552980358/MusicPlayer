@@ -3,7 +3,10 @@ package projekt.cloud.piece.music.player.service.web
 import android.content.Context
 import com.google.gson.JsonObject
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.Application
 import io.ktor.server.application.call
 import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
@@ -17,8 +20,11 @@ import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.request.uri
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondBytes
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.Route
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.get
+import io.ktor.server.routing.options
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import projekt.cloud.piece.music.player.database.AudioRoom
@@ -130,33 +136,38 @@ class WebServer(private val context: Context) {
     private fun Routing.implementPlayer() = route(ROUTE_PLAYER) {   // player
         // playlist
         route(ROUTE_PLAYER_PLAYLIST) {
+            implementOptions()
             get {
-                call.respond(
-                    HttpStatusCode.OK,
+                call.respondText(
                     JsonObject().also {
                         it.addProperty(RESPOND_STATUS, HttpStatusCode.OK.toString())
                         it.addProperty(PLAYLIST_RESPOND_URI, call.request.uri)
                         it.add(PLAYLIST_RESPOND_LIST, audioRoom.playlistDao.query().playlistJsonArray)
-                    }.toString()
+                    }.toString(),
+                    ContentType.Application.Json,
+                    HttpStatusCode.OK
                 )
             }
     
             // all
             route(ROUTE_PLAYER_PLAYLIST_PARAM_ALL) {
+                implementOptions()
                 get {
-                    call.respond(
-                        HttpStatusCode.OK,
+                    call.respondText(
                         JsonObject().also {
                             it.addProperty(RESPOND_STATUS, HttpStatusCode.OK.toString())
                             it.addProperty(AUDIO_RESPOND_URI, call.request.uri)
                             it.add(AUDIO_RESPOND_LIST, audioRoom.queryAudio.audioJsonArray)
-                        }.toString()
+                        }.toString(),
+                        ContentType.Application.Json,
+                        HttpStatusCode.OK
                     )
                 }
             }
             
             // {id}
             route(ROUTE_PLAYER_PLAYLIST_ID) {
+                implementOptions()
                 get {
                     val playlist = call.parameters[ROUTE_PLAYER_PLAYLIST_PARAM_ID]
                         ?: return@get call.respond(
@@ -166,13 +177,14 @@ class WebServer(private val context: Context) {
                                 it.addProperty(AUDIO_RESPOND_URI, call.request.uri)
                             }
                         )
-                    call.respond(
-                        HttpStatusCode.OK,
+                    call.respondText(
                         JsonObject().also {
                             it.addProperty(RESPOND_STATUS, HttpStatusCode.OK.toString())
                             it.addProperty(AUDIO_RESPOND_URI, call.request.uri)
                             it.add(AUDIO_RESPOND_LIST, audioRoom.queryPlaylistAudio(playlist).audioJsonArray)
-                        }.toString()
+                        }.toString(),
+                        ContentType.Application.Json,
+                        HttpStatusCode.OK
                     )
                 }
             }
@@ -182,6 +194,7 @@ class WebServer(private val context: Context) {
         route(ROUTE_PLAYER_AUDIO) {
             // {id}
             route(ROUTE_PLAYER_AUDIO_ID) {
+                implementOptions()
                 get {
                     val id = call.parameters[ROUTE_PLAYER_AUDIO_ID_PARAM_ID]
                         ?: return@get call.response.status(HttpStatusCode.NotFound)
@@ -192,6 +205,16 @@ class WebServer(private val context: Context) {
                 }
             }
         }
+    }
+    
+    private fun Route.implementOptions() = options {
+        call.respondText(
+            JsonObject().also {
+                it.addProperty(RESPOND_STATUS, HttpStatusCode.OK.toString())
+            }.toString(),
+            ContentType.Application.Json,
+            HttpStatusCode.OK
+        )
     }
     
 }
