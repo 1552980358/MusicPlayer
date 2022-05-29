@@ -71,11 +71,21 @@ class WebServer(private val context: Context) {
     private val audioRoom = AudioRoom.get(context)
     
     private val server = embeddedServer(Netty, SERVER_PORT) {
-        install(CORS)
+        installCORS()
         routing {
             implementStaticWebsite()
             implementPlayer()
         }
+    }
+    
+    private fun Application.installCORS() = install(CORS) {
+        allowMethod(HttpMethod.Get)
+        allowMethod(HttpMethod.Post)
+        allowMethod(HttpMethod.Options)
+        allowHeader(HttpHeaders.AccessControlAllowOrigin)
+        allowCredentials = true
+        allowNonSimpleContentTypes = true
+        anyHost()
     }
     
     /**
