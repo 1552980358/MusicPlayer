@@ -131,7 +131,8 @@ class WebServer(private val context: Context) {
      * │   ├── /: Respond list of playlist
      * │   ├── /all: Respond all audio found in database
      * │   └── /{id}: Respond audio metadata list of playlist {id}
-     *
+     * └── /audio
+     *     └── /{id}: Respond audio byte array data
      **/
     private fun Routing.implementPlayer() = route(ROUTE_PLAYER) {   // player
         // playlist
