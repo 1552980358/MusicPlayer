@@ -12,6 +12,7 @@ object WebAssets {
     private const val DIR_WEB_ASSETS_CSS = STATIC_PATH_CSS
     private const val DIR_WEB_ASSETS_IMG = STATIC_PATH_IMG
     private const val DIR_WEB_ASSETS_JS = STATIC_PATH_JS
+    private const val FILE_WEB_VERSION_FILE = "version"
     
     @JvmStatic
     val Context.webAssetsDir get() = getExternalFilesDir(DIR_WEB_ASSETS)
@@ -24,5 +25,8 @@ object WebAssets {
     
     @JvmStatic
     val Context.webAssetsJSDir get() = File(webAssetsDir, DIR_WEB_ASSETS_JS)
+    
+    @JvmStatic
+    val Context.webAssetsVersionFile get() = File(webAssetsDir, FILE_WEB_VERSION_FILE)
     
 }
