@@ -40,4 +40,11 @@ object PreferenceUtil {
         }
     }
     
+    @JvmStatic
+    fun Context.boolPrefs(@StringRes resId: Int, defaultValue: Boolean = false, preference: (Boolean) -> Unit) = io {
+        PreferenceManager.getDefaultSharedPreferences(this@boolPrefs).getBoolean(getString(resId), defaultValue).let {
+            ui { preference.invoke(it) }
+        }
+    }
+    
 }
