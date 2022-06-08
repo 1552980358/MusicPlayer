@@ -35,7 +35,7 @@ object PreferenceUtil {
     
     @JvmStatic
     fun Context.strPrefs(@StringRes resId: Int, defaultValue: String? = null, preference: (String?) -> Unit) = io {
-        PreferenceManager.getDefaultSharedPreferences(this@strPrefs).getString(getString(resId), defaultValue)?.let {
+        PreferenceManager.getDefaultSharedPreferences(this@strPrefs).getString(getString(resId), defaultValue).let {
             ui { preference.invoke(it) }
         }
     }
