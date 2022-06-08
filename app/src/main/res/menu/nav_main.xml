@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showsIn="@layout/fragment_main">
+    
+    <item
+        android:id="@+id/menu_web_server"
+        android:title="@string/nav_main_web_server"
+        android:icon="@drawable/ic_round_wifi_tethering_24" />
+  
+</menu>
