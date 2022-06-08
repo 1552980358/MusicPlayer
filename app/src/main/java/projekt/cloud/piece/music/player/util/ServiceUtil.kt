@@ -16,4 +16,8 @@ object ServiceUtil {
         else -> startService(intent)
     }
     
+    @JvmStatic
+    inline fun <reified S: Service> Context.serviceIntent(intent: Intent.() -> Unit) =
+        Intent(this, S::class.java).apply(intent)
+    
 }
