@@ -32,4 +32,10 @@
         <item name="android:navigationBarColor">?attr/colorPrimary</item>
         <item name="android:windowBackground">@color/black</item>
     </style>
+    
+    <style name="Theme.CloudPiece.WebServerDialogFragment" parent="Theme.Material3.DayNight.BottomSheetDialog">
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <item name="android:navigationBarColor">?attr/colorPrimary</item>
+    </style>
+    
 </resources>
