@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -18,6 +19,7 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import com.google.android.material.transition.Hold
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -30,6 +32,7 @@ import projekt.cloud.piece.music.player.base.BasePagerViewModel
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import projekt.cloud.piece.music.player.database.audio.item.ColorItem
 import projekt.cloud.piece.music.player.databinding.FragmentMainBinding
+import projekt.cloud.piece.music.player.ui.dialog.WebServerDialogFragment
 import projekt.cloud.piece.music.player.ui.main.album.AlbumFragment
 import projekt.cloud.piece.music.player.ui.main.artist.ArtistFragment
 import projekt.cloud.piece.music.player.ui.main.audio.AudioFragment
@@ -37,6 +40,7 @@ import projekt.cloud.piece.music.player.ui.main.base.BaseMainFragment
 import projekt.cloud.piece.music.player.ui.main.playlist.PlaylistFragment
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
+import projekt.cloud.piece.music.player.util.DialogFragmentUtil.showNow
 
 /**
  * Class [MainFragment], inherit to [BaseFragment]
@@ -59,7 +63,7 @@ import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
  *   [onDestroyView]
  *
  **/
-class MainFragment: BaseFragment() {
+class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
     
     companion object {
         private const val TAG = "MainFragment"
@@ -88,6 +92,7 @@ class MainFragment: BaseFragment() {
     private val viewPager2 get() = appBarMain.viewPager2
     private val bottomNavigationView get() = appBarMain.bottomNavigationView
     private val extFab get() = appBarMain.extendedFloatingActionButton
+    private val navigationView get() = binding.navigationView
     
     private lateinit var bottomNavigationViewBehavior: HideBottomViewOnScrollBehavior<BottomNavigationView>
     private lateinit var extFabBehavior: HideBottomViewOnScrollBehavior<ExtendedFloatingActionButton>
@@ -115,6 +120,7 @@ class MainFragment: BaseFragment() {
                 syncState()
             }
         }
+        navigationView.setNavigationItemSelectedListener(this)
     
         @Suppress("UNCHECKED_CAST")
         bottomNavigationViewBehavior = (bottomNavigationView.layoutParams as CoordinatorLayout.LayoutParams)
@@ -211,6 +217,15 @@ class MainFragment: BaseFragment() {
         countJob?.cancel()
         super.onDestroyView()
         _binding = null
+    }
+    
+    
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_web_server -> WebServerDialogFragment()
+                .showNow(this)
+        }
+        return true
     }
     
     private fun updateAudioItem(audioItem: AudioItem) {
