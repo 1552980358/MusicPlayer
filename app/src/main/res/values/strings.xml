@@ -35,4 +35,22 @@
     <string name="sleep_timer_custom">Custom</string>
     
     <string name="web_service_notification_title">Web Service</string>
+    <string name="key_web_server_switch">key_web_server_switch</string>
+    <string name="web_server_switch_title">Switch</string>
+    <string name="web_server_info_title">Network Info</string>
+    <string name="web_server_info_ip">IP Address</string>
+    <string name="key_web_server_info_ip">key_web_server_info_ip</string>
+    <string name="web_server_info_port">Port</string>
+    <string name="key_web_server_info_port">key_web_server_info_port</string>
+    <string name="web_server_info_link">Link</string>
+    <string name="key_web_server_info_link">key_web_server_info_link</string>
+    <string name="web_server_package_title">Web Package</string>
+    <string name="web_server_package_version">Version</string>
+    <string name="web_server_package_version_not_installed">Not Installed</string>
+    <string name="key_web_server_package_version">key_web_server_package_version</string>
+    <string name="web_server_package_decompress">Decompress</string>
+    <string name="key_web_server_package_decompress">key_web_server_package_decompress</string>
+    
+    <string name="nav_main_web_server">Web Server</string>
+
 </resources>
