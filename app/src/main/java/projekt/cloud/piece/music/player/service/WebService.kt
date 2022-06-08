@@ -30,15 +30,17 @@ class WebService: Service() {
                 webServer.isLaunched = true
                 notificationHelper.startForeground(this, "${networkHelper.ipAddress}:$SERVER_PORT")
             }
-            ACTION_STOP_SERVER -> {
-                webServer.isLaunched = false
-                stopForeground(true)
-            }
+            ACTION_STOP_SERVER -> stopSelf()
         }
         
         return super.onStartCommand(intent, flags, startId)
     }
     
     override fun onBind(intent: Intent?): IBinder? = null
+    
+    override fun onDestroy() {
+        stopForeground(true)
+        webServer.isLaunched = false
+    }
     
 }
