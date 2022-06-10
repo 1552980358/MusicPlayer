@@ -4,7 +4,7 @@ import android.app.Application
 import projekt.cloud.piece.music.player.service.WebService
 import projekt.cloud.piece.music.player.service.web.Extra.ACTION_START_COMMAND
 import projekt.cloud.piece.music.player.service.web.Extra.ACTION_START_SERVER
-import projekt.cloud.piece.music.player.util.PreferenceUtil.boolPrefs
+import projekt.cloud.piece.music.player.util.SharedPreferencesUtil.boolPrefs
 import projekt.cloud.piece.music.player.util.ServiceUtil.serviceIntent
 
 class Application: Application() {

@@ -33,18 +33,4 @@ object PreferenceUtil {
     fun PreferenceFragmentCompat.switchPreference(@StringRes resId: Int, switchPreference: SwitchPreferenceCompat.() -> Unit) =
         switchPreference(resId)?.apply(switchPreference)
     
-    @JvmStatic
-    fun Context.strPrefs(@StringRes resId: Int, defaultValue: String? = null, preference: (String?) -> Unit) = io {
-        PreferenceManager.getDefaultSharedPreferences(this@strPrefs).getString(getString(resId), defaultValue).let {
-            ui { preference.invoke(it) }
-        }
-    }
-    
-    @JvmStatic
-    fun Context.boolPrefs(@StringRes resId: Int, defaultValue: Boolean = false, preference: (Boolean) -> Unit) = io {
-        PreferenceManager.getDefaultSharedPreferences(this@boolPrefs).getBoolean(getString(resId), defaultValue).let {
-            ui { preference.invoke(it) }
-        }
-    }
-    
 }
