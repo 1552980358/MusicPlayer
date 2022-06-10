@@ -18,12 +18,23 @@ import java.net.Inet4Address
 import java.net.Inet6Address
 import java.net.NetworkInterface
 
-class NetworkHelper(context: Context) {
+class NetworkHelper private constructor(context: Context) {
     
     companion object {
         private const val REGEX_IP_STR = "^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)(\\.(?!\$)|\$)){4}\$"
         private val REGEX_IP get() = REGEX_IP_STR.toRegex()
         private const val LOCALHOST_IP = "127.0.0.1"
+        
+        private var instance: NetworkHelper? = null
+        
+        @JvmStatic
+        fun create(context: Context): NetworkHelper {
+            if (instance == null) {
+                instance = NetworkHelper(context)
+            }
+            return instance!!
+        }
+        
     }
 
     private val connectivityManager =

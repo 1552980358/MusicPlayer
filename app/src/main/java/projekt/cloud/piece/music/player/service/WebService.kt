@@ -21,7 +21,7 @@ class WebService: Service() {
         super.onCreate()
         webServer = WebServer(this)
         notificationHelper = NotificationHelper(this)
-        networkHelper = NetworkHelper(this)
+        networkHelper = NetworkHelper.create(this)
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
