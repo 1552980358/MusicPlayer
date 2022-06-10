@@ -1,4 +1,4 @@
-package projekt.cloud.piece.music.player.service.web
+package projekt.cloud.piece.music.player.util
 
 import android.content.Context
 import android.content.Context.CONNECTIVITY_SERVICE

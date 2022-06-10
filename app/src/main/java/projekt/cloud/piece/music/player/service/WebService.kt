@@ -6,7 +6,7 @@ import android.os.IBinder
 import projekt.cloud.piece.music.player.service.web.Extra.ACTION_START_COMMAND
 import projekt.cloud.piece.music.player.service.web.Extra.ACTION_START_SERVER
 import projekt.cloud.piece.music.player.service.web.Extra.ACTION_STOP_SERVER
-import projekt.cloud.piece.music.player.service.web.NetworkHelper
+import projekt.cloud.piece.music.player.util.NetworkHelper
 import projekt.cloud.piece.music.player.service.web.NotificationHelper
 import projekt.cloud.piece.music.player.service.web.WebServer
 import projekt.cloud.piece.music.player.service.web.WebServer.Companion.SERVER_PORT
