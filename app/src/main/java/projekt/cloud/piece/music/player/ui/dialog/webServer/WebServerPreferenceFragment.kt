@@ -21,8 +21,8 @@ class WebServerPreferenceFragment: BasePreferenceFragment() {
     private lateinit var networkHelper: NetworkHelper
     
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         networkHelper = NetworkHelper.create(requireContext())
+        super.onCreate(savedInstanceState)
     }
     
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
