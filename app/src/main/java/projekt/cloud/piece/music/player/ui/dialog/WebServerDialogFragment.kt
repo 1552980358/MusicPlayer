@@ -41,9 +41,8 @@ class WebServerDialogFragment: BaseBottomSheetDialogFragment() {
             state = BottomSheetBehavior.STATE_EXPANDED
         }
         with(materialToolbar) {
-            setOnMenuItemClickListener {
+            setNavigationOnClickListener {
                 dismissAllowingStateLoss()
-                true
             }
         }
     }
