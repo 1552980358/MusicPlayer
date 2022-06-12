@@ -38,7 +38,7 @@ class WebServerPreferenceFragment: BasePreferenceFragment() {
     
         preference(R.string.key_web_server_info_ip)?.summary = networkHelper.ipAddress
         
-        preference(R.string.web_server_info_port)?.summary = SERVER_PORT.toString()
+        preference(R.string.key_web_server_info_port)?.summary = SERVER_PORT.toString()
     
         switchPreference(R.string.key_web_server_switch) {
             setLink(requireContext().boolPrefs(R.string.key_web_server_switch, false))
@@ -59,9 +59,9 @@ class WebServerPreferenceFragment: BasePreferenceFragment() {
     }
     
     private fun setLink(enabled: Boolean) {
-        preference(R.string.web_server_info_link)?.summary = when {
-            enabled -> null
-            else -> "${preference(R.string.key_web_server_info_ip)?.summary}:${preference(R.string.web_server_info_port)?.summary}"
+        preference(R.string.key_web_server_info_link)?.summary = when {
+            !enabled -> null
+            else -> "${preference(R.string.key_web_server_info_ip)?.summary}:$SERVER_PORT"
         }
     }
     
