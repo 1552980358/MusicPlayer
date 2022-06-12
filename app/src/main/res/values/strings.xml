@@ -50,6 +50,7 @@
     <string name="key_web_server_package_version">key_web_server_package_version</string>
     <string name="web_server_package_decompress">Decompress</string>
     <string name="key_web_server_package_decompress">key_web_server_package_decompress</string>
+    <string name="web_server_info_link_copied">Copied to clipboard</string>
     
     <string name="nav_main_web_server">Web Server</string>
 
