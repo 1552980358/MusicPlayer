@@ -21,6 +21,20 @@ import projekt.cloud.piece.music.player.util.PreferenceUtil.switchPreference
 import projekt.cloud.piece.music.player.util.SharedPreferencesUtil.boolPrefs
 import projekt.cloud.piece.music.player.util.SnackBarUtil.showSnack
 
+/**
+ * [WebServerPreferenceFragment]
+ * inherit to [BasePreferenceFragment]
+ *
+ * Variables:
+ * [networkHelper]
+ * [clipboardManager]
+ *
+ * Methods:
+ * [onCreate]
+ * [onCreatePreferences]
+ * [setLink]
+ *
+ **/
 class WebServerPreferenceFragment: BasePreferenceFragment() {
     
     companion object {

@@ -29,16 +29,29 @@ import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
  * Class [PlayFragment], inherit to [BaseFragment]
  *
  * Getters:
- *   [binding]
- *   [root]
+ * [binding]
+ * [root]
+ * [viewPager2]
+ * [materialToolbar]
  *
  * Variables:
- *   [_binding]
- *
+ * [_binding]
+ * [sleepTimer]
+ * [closeButtonColor]
+ *   
  * Methods:
- *   [onCreate]
- *   [onCreateView]
- *   [onDestroyView]
+ * [onCreate]
+ * [onCreateView]
+ * [onViewCreated]
+ * [onBackPressed]
+ * [onDestroyView]
+ * [onSleepTimerStop]
+ * [isSleepTimerEnabled]
+ * [sleepTimerMillis]
+ * [isKeepScreenOnEnabled]
+ * [setKeepScreenOnState]
+ * [stopSleepTimer]
+ * [updateBackgroundColor]
  *
  **/
 class PlayFragment: BasePlayFragment() {

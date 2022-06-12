@@ -17,6 +17,9 @@ import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
 import projekt.cloud.piece.music.player.util.ImageUtil.FLAG_SMALL
 import projekt.cloud.piece.music.player.util.ImageUtil.readPlaylistArt
 
+/**
+ * [RecyclerViewAdapter]
+ **/
 class RecyclerViewAdapter(recyclerView: RecyclerView) {
 
     private inner class RecyclerViewHolder(private val binding: LayoutRecyclerPlaylistBinding): ViewHolder(binding.root), OnClickListener {
@@ -41,7 +44,15 @@ class RecyclerViewAdapter(recyclerView: RecyclerView) {
             binding.playlistWithAudio?.let { onClick?.invoke(it) }
         }
     }
-
+    
+    /**
+     * [RecyclerViewAdapter]
+     * inherit to [RecyclerView.Adapter]
+     *
+     * Methods:
+     * [onCreateViewHolder]
+     * [onBindViewHolder]
+     **/
     private inner class RecyclerViewAdapter: Adapter<RecyclerViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = RecyclerViewHolder(
             LayoutRecyclerPlaylistBinding.inflate(LayoutInflater.from(parent.context), parent, false)

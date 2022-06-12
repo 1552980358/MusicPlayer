@@ -39,6 +39,36 @@ import projekt.cloud.piece.music.player.util.ColorUtil.isLight
 import projekt.cloud.piece.music.player.util.Constant.ANIMATION_DURATION
 import projekt.cloud.piece.music.player.util.DialogFragmentUtil.showNow
 
+/**
+ * [PlayControlFragment]
+ * inherit to [BasePlayFragment]
+ * implement to [OnClickListener]
+ *
+ * Variables:
+ * [binding]
+ *
+ * Getters:
+ * [root]
+ * [buttonPlayControl]
+ * [appCompatImageButtonRepeat]
+ * [appCompatImageButtonPrev]
+ * [appCompatImageButtonNext]
+ * [appCompatImageButtonShuffle]
+ * [appCompatImageButtonSleep]
+ * [positionPlayControl]
+ * [progressBar]
+ * [floatingActionButton]
+ * [transportControls]
+ *
+ * Methods:
+ * [onCreateView]
+ * [onViewCreated]
+ * [onDestroyView]
+ * [onClick]
+ * [updateColorsAnimated]
+ * [onSleepTimerStop]
+ * [updateSleepTimerState]
+ **/
 class PlayControlFragment: BasePlayFragment(), OnClickListener {
 
     companion object {

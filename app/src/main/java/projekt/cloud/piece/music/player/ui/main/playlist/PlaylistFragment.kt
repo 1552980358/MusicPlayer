@@ -23,6 +23,21 @@ import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
 import projekt.cloud.piece.music.player.util.DialogFragmentUtil.showNow
 import projekt.cloud.piece.music.player.util.ImageUtil.savePlaylistArt
 
+/**
+ * [PlaylistFragment]
+ * inherit ot [BaseMainFragment]
+ *
+ * Variables:
+ * [recyclerView]
+ * [recyclerViewAdapter]
+ *
+ * Methods:
+ * [onCreateView]
+ * [onViewCreated]
+ * [onCreateOptionsMenu]
+ * [onOptionsItemSelected]
+ *
+ **/
 class PlaylistFragment: BaseMainFragment() {
 
     private var _recyclerView: RecyclerView? = null

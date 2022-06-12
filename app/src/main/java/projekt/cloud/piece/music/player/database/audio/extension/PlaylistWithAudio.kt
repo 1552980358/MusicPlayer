@@ -3,6 +3,21 @@ package projekt.cloud.piece.music.player.database.audio.extension
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import projekt.cloud.piece.music.player.database.audio.item.PlaylistItem
 
+/**
+ * [PlaylistWithAudio]
+ *
+ * Variables:
+ * [playlistItem]
+ * [audioList]
+ *
+ * Getters:
+ * [title]
+ * [size]
+ * [sizeStr]
+ * [plusAssign]
+ * [minusAssign]
+ *
+ **/
 data class PlaylistWithAudio(val playlistItem: PlaylistItem, val audioList: ArrayList<AudioItem> = ArrayList()) {
 
     constructor(playlistItem: PlaylistItem, audioList: List<AudioItem>): this(

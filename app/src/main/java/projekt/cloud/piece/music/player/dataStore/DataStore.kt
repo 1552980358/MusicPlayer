@@ -16,6 +16,13 @@ import projekt.cloud.piece.music.player.service.play.SharedPreferences.KEY_CONFI
 import projekt.cloud.piece.music.player.service.play.SharedPreferences.KEY_CONFIG_PLAY_SHUFFLE
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 
+/**
+ * [DataStore]
+ *
+ * Methods:
+ * [settingsStore]
+ * [writeConfig]
+ **/
 object DataStore {
 
     private const val SETTINGS_STORE = "settings"

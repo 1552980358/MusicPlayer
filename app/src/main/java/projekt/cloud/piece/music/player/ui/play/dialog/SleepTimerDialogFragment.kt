@@ -8,6 +8,34 @@ import androidx.core.widget.doOnTextChanged
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseItemSelectDialogFragment
 
+/**
+ * [SleepTimerDialogFragment]
+ * inherit to [BaseItemSelectDialogFragment]
+ *
+ * Variables:
+ * [onStart]
+ * [onStop]
+ *
+ * Methods:
+ * [items]
+ * [positiveClick]
+ * [negativeClick]
+ * [neutralClick]
+ * [currentValue]
+ * [hint]
+ * [dialogTitle]
+ * [positiveText]
+ * [negativeText]
+ * [neutralText]
+ * [neutralButton]
+ * [positiveButton]
+ *
+ * [onCreate]
+ * [onCreateDialog]
+ * [onStart]
+ * [setOnStart]
+ * [setOnClose]
+ **/
 class SleepTimerDialogFragment: BaseItemSelectDialogFragment() {
     
     companion object {

@@ -55,12 +55,20 @@ import projekt.cloud.piece.music.player.util.DialogFragmentUtil.showNow
  *   [appBarMain]
  *   [materialToolbar]
  *   [viewPager2]
+ *   [bottomNavigationView]
  *   [extFab]
+ *   [navigationView]
+ *   [bottomNavigationViewBehavior]
+ *   [extFabBehavior]
+ *   [countJob]
  *
  * Methods:
  *   [onCreateView]
  *   [onViewCreated]
  *   [onDestroyView]
+ *   [onNavigationItemSelected]
+ *   [updateAudioItem]
+ *   [colorItemUpdated]
  *
  **/
 class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {

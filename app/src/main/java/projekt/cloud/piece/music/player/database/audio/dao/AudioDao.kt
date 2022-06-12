@@ -7,6 +7,16 @@ import androidx.room.Query
 import androidx.room.Update
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 
+/**
+ * [AudioDao]
+ *
+ * Methods:
+ * [queryAll]
+ * [query]
+ * [insert]
+ * [update]
+ * [delete]
+ **/
 @Dao
 interface AudioDao {
 

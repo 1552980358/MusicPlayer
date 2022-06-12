@@ -7,6 +7,18 @@ import androidx.room.Query
 import androidx.room.Update
 import projekt.cloud.piece.music.player.database.audio.item.AlbumItem
 
+/**
+ * [AlbumDao]
+ *
+ * Methods:
+ * [queryAll]
+ * [query]
+ * [insert]
+ * [update]
+ * [update]
+ * [update]
+ * [delete]
+ **/
 @Dao
 interface AlbumDao {
 

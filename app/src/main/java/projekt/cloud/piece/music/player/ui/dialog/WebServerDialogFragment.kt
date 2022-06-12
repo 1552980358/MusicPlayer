@@ -13,6 +13,22 @@ import projekt.cloud.piece.music.player.base.BaseBottomSheetDialogFragment
 import projekt.cloud.piece.music.player.databinding.DialogFragmentWebServerBinding
 import projekt.cloud.piece.music.player.util.ActivityUtil.heightPixels
 
+/**
+ * [WebServerDialogFragment]
+ * inherit to [BaseBottomSheetDialogFragment]
+ *
+ * Variables
+ * [binding]
+ *
+ * Methods:
+ * [root]
+ * [materialToolbar]
+ *
+ * [onCreate]
+ * [onCreateView]
+ * [onViewCreated]
+ * [onCreateDialog]
+ **/
 class WebServerDialogFragment: BaseBottomSheetDialogFragment() {
     
     private var _binding: DialogFragmentWebServerBinding? = null

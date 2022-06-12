@@ -16,8 +16,32 @@ import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
 import projekt.cloud.piece.music.player.util.ImageUtil.FLAG_SMALL
 import projekt.cloud.piece.music.player.util.ImageUtil.readAlbumArt
 
+/**
+ * [RecyclerViewAdapter]
+ *
+ * Variables:
+ * [albumList]
+ * [adapter]
+ * [onClick]
+ *
+ * Methods:
+ * [setOnClick]
+ *
+ **/
 class RecyclerViewAdapter(recyclerView: RecyclerView) {
     
+    /**
+     * [RecyclerViewHolder]
+     * inherit to [ViewHolder]
+     * implement to [OnClickListener]
+     *
+     * Variable:
+     * [job]
+     *
+     * Methods:
+     * [onBind]
+     * [onClick]
+     **/
     private inner class RecyclerViewHolder(private val binding: LayoutRecyclerAlbumBinding): ViewHolder(binding.root), OnClickListener {
         private var job: Job? = null
         fun onBind(albumItem: AlbumItem) {
@@ -38,6 +62,15 @@ class RecyclerViewAdapter(recyclerView: RecyclerView) {
         }
     }
     
+    /**
+     * [RecyclerViewAdapter]
+     * inherit to [RecyclerView.Adapter]
+     *
+     * Methods:
+     * [onCreateViewHolder]
+     * [onBindViewHolder]
+     * [getItemCount]
+     **/
     private inner class RecyclerViewAdapter: Adapter<RecyclerViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = RecyclerViewHolder(
             LayoutRecyclerAlbumBinding.inflate(LayoutInflater.from(parent.context), parent, false)

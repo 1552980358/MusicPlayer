@@ -18,6 +18,30 @@ import projekt.cloud.piece.music.player.databinding.DialogFragmentCreatePlaylist
 import projekt.cloud.piece.music.player.util.ActivityUtil.heightPixels
 import projekt.cloud.piece.music.player.util.DialogFragmentUtil.showNow
 
+/**
+ * [CreatePlaylistDialogFragment]
+ * inherit to [BaseBottomSheetDialogFragment]
+ *
+ * Variable:
+ * [binding]
+ * [menuItemSave]
+ * [bitmap]
+ * [onCreate]
+ *
+ * Methods:
+ * [root]
+ * [materialToolbar]
+ * [textInputEditTextTitle]
+ * [textInputEditTextDescription]
+ * [relativeLayoutSelectImage]
+ * [appCompatImageView]
+ * [onCreate]
+ * [onCreateView]
+ * [onViewCreated]
+ * [onCreateDialog]
+ * [setOnCreate]
+ *
+ **/
 class CreatePlaylistDialogFragment: BaseBottomSheetDialogFragment() {
 
     companion object {

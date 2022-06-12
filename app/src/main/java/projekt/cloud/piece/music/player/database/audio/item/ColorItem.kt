@@ -10,6 +10,19 @@ import java.io.Serializable
 import projekt.cloud.piece.music.player.database.audio.item.base.BaseItem
 import java.lang.System.currentTimeMillis
 
+/**
+ * [ColorItem]
+ * inherit to [BaseItem]
+ * implement to [Serializable]
+ *
+ * Variables:
+ * [background]
+ * [primary]
+ * [secondary]
+ * [audio]
+ * [album]
+ * [playlist]
+ **/
 @Entity(tableName = "color", inheritSuperIndices = true)
 class ColorItem(@ColumnInfo(name = "background") @ColorInt var background: Int = Color.parseColor("#6750A4"),
                 @ColumnInfo(name = "primary") @ColorInt var primary: Int = WHITE,

@@ -11,6 +11,21 @@ import projekt.cloud.piece.music.player.service.web.NotificationHelper
 import projekt.cloud.piece.music.player.service.web.WebServer
 import projekt.cloud.piece.music.player.service.web.WebServer.Companion.SERVER_PORT
 
+/**
+ * [WebService]
+ * inherit to [Service]
+ *
+ * Variables:
+ * [webServer]
+ * [notificationHelper]
+ * [networkHelper]
+ *
+ * Methods:
+ * [onCreate]
+ * [onStartCommand]
+ * [onBind]
+ * [onDestroy]
+ **/
 class WebService: Service() {
     
     private lateinit var webServer: WebServer

@@ -2,6 +2,19 @@ package projekt.cloud.piece.music.player.ui.play.base
 
 import projekt.cloud.piece.music.player.base.BaseFragment
 
+/**
+ * [BasePlayFragment]
+ * inherit to [BaseFragment]
+ *
+ * Methods:
+ * [isSleepTimerEnabled]
+ * [sleepTimerMillis]
+ * [startSleepTimer]
+ * [stopSleepTimer]
+ * [onSleepTimerStop]
+ * [isKeepScreenOnEnabled]
+ * [setKeepScreenOnState]
+ **/
 open class BasePlayFragment: BaseFragment() {
     
     protected open val isSleepTimerEnabled: Boolean

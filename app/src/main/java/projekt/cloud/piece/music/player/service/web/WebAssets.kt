@@ -6,6 +6,16 @@ import projekt.cloud.piece.music.player.service.web.ServerRouting.STATIC_PATH_CS
 import projekt.cloud.piece.music.player.service.web.ServerRouting.STATIC_PATH_IMG
 import projekt.cloud.piece.music.player.service.web.ServerRouting.STATIC_PATH_JS
 
+/**
+ * [WebAssets]
+ *
+ * Methods:
+ * [webAssetsDir]
+ * [webAssetsCssDir]
+ * [webAssetsImgDir]
+ * [webAssetsJSDir]
+ * [webAssetsVersionFile]
+ **/
 object WebAssets {
     
     private const val DIR_WEB_ASSETS = "web"

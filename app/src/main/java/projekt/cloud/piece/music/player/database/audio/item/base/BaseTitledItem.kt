@@ -5,6 +5,17 @@ import androidx.room.Ignore
 import projekt.cloud.piece.c2.pinyin.C2Pinyin.pinyin
 import java.io.Serializable
 
+/**
+ * [BaseTitledItem]
+ * inherit to [BaseItem]
+ * implement to [Serializable]
+ *
+ * Variables:
+ * [title]
+ * [pinyin]
+ * [nickname]
+ * [nicknamePinyin]
+ **/
 open class BaseTitledItem(id: String, @ColumnInfo(name = "title") val title: String): BaseItem(id), Serializable {
 
     @Ignore

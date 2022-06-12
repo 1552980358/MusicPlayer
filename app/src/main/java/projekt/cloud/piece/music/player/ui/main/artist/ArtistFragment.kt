@@ -12,6 +12,19 @@ import projekt.cloud.piece.music.player.ui.main.base.BaseMainFragment
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
 
+/**
+ * [ArtistFragment]
+ * inherit to [BaseMainFragment]
+ *
+ * Variables:
+ * [recyclerView]
+ * [recyclerViewAdapter]
+ *
+ * Methods:
+ * [onCreateView]
+ * [onViewCreated]
+ * [isRecyclerViewBottom]
+ **/
 class ArtistFragment: BaseMainFragment() {
     
     private var _recyclerView: RecyclerView? = null

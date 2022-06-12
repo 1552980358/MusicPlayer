@@ -16,6 +16,28 @@ import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ioContext
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
 
+/**
+ * [CropImageDialogFragment]
+ * inherit to [BaseDialogFragment]
+ *
+ * Variables:
+ * [binding]
+ * [uri]
+ * [onCrop]
+ *
+ * Methods:
+ * [root]
+ * [materialToolbar]
+ * [cropImageView]
+ *
+ * [onCreate]
+ * [onCreateView]
+ * [onViewCreated]
+ * [onCreateDialog]
+ * [setUri]
+ * [setOnCrop]
+ *
+ **/
 class CropImageDialogFragment: BaseDialogFragment() {
 
     private var _binding: DialogFragmentCropImageBinding? = null

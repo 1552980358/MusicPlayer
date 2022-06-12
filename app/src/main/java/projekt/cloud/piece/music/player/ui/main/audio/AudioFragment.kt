@@ -18,17 +18,18 @@ import projekt.cloud.piece.music.player.ui.main.base.BaseMainFragment
  * Class [AudioFragment], inherit to [BaseFragment]
  *
  * Variables:
- *   [_recyclerView]
- *   @type @Nullable [RecyclerView]
- *   [recyclerView]
- *   @type [RecyclerView]
+ * [_recyclerView]
+ * @type @Nullable [RecyclerView]
+ * [recyclerView]
+ * @type [RecyclerView]
  *
- *   [recyclerViewAdapter]
- *   @type [RecyclerViewAdapter]
+ * [recyclerViewAdapter]
+ * @type [RecyclerViewAdapter]
  *
  * Methods:
- *   [onCreateView]
- *   [onViewCreated]
+ * [onCreateView]
+ * [onViewCreated]
+ * [isRecyclerViewBottom]
  *
  **/
 class AudioFragment: BaseMainFragment() {

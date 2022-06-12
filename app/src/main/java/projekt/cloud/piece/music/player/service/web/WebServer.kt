@@ -56,6 +56,20 @@ import projekt.cloud.piece.music.player.service.web.WebAssets.webAssetsDir
 import projekt.cloud.piece.music.player.service.web.WebAssets.webAssetsImgDir
 import projekt.cloud.piece.music.player.service.web.WebAssets.webAssetsJSDir
 
+/**
+ * [WebServer]
+ *
+ * Variables:
+ * [isLaunched]
+ * [audioRoom]
+ * [server]
+ *
+ * Methods:
+ * [installCORS]
+ * [implementStaticWebsite]
+ * [implementPlayer]
+ * [implementOptions]
+ **/
 class WebServer(private val context: Context) {
     
     companion object {

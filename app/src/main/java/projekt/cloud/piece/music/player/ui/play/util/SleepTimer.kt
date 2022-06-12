@@ -5,6 +5,20 @@ import kotlinx.coroutines.delay
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.TimeUtil.minToMills
 
+/**
+ * [SleepTimer]
+ * Variables:
+ * [onTimerStop]
+ * [job]
+ * [millis]
+ *
+ * Methods:
+ * [isStarted]
+ * [start]
+ * [stop]
+ * [doJob]
+ *
+ **/
 class SleepTimer(private val onTimerStop: () -> Unit) {
 
     private var job: Job? = null

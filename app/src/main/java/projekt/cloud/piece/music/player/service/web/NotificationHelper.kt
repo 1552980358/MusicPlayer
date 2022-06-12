@@ -12,6 +12,13 @@ import androidx.core.app.NotificationManagerCompat
 import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
 import projekt.cloud.piece.music.player.R
 
+/**
+ * [NotificationHelper]
+ *
+ * Methods:
+ * [startForeground]
+ * [createNotification]
+ **/
 class NotificationHelper(context: Context) {
     
     companion object {

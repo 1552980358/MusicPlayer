@@ -18,6 +18,21 @@ import projekt.cloud.piece.music.player.database.audio.item.ColorItem
 import projekt.cloud.piece.music.player.database.audio.item.PlaylistAudioItem
 import projekt.cloud.piece.music.player.database.audio.item.PlaylistItem
 
+/**
+ * [AudioRoom]
+ * inherit to [RoomDatabase]
+ *
+ * Methods:
+ * [audioDao]
+ * [artistDao]
+ * [albumDao]
+ * [playlistDao]
+ * [playlistAudioDao]
+ * [queryAudio]
+ * [queryColor]
+ * [playlist]
+ * [queryPlaylistAudio]
+ **/
 @Database(
     entities = [
         AudioItem::class,

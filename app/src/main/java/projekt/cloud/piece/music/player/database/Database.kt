@@ -2,6 +2,13 @@ package projekt.cloud.piece.music.player.database
 
 import android.content.Context
 
+/**
+ * [Database]
+ *
+ * Variable:
+ * [audioRoom]
+ *
+ **/
 object Database {
 
     private var audioRoomInstance: AudioRoom? = null

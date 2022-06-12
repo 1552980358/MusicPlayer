@@ -2,6 +2,23 @@ package projekt.cloud.piece.music.player.service.play
 
 import java.io.Serializable
 
+/**
+ * [Configs]
+ * implement to [Serializable]
+ *
+ * Variables:
+ * [configs]
+ *
+ * Methods:
+ * [isTrue]
+ * [isFalse]
+ * [and]
+ * [nAnd]
+ * [set]
+ * [get]
+ * [update]
+ * [shl]
+ **/
 class Configs: Serializable {
     
     var configs = 0

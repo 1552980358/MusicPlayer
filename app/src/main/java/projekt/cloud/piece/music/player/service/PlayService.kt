@@ -78,7 +78,33 @@ import projekt.cloud.piece.music.player.util.ServiceUtil.startSelf
 
 /**
  * Class [PlayService]
- *  inherits to [MediaBrowserServiceCompat]
+ * inherit to [MediaBrowserServiceCompat]
+ * implement to [Player.Listener]
+ *
+ * Variables:
+ * [mediaSessionCompat]
+ * [mediaSessionCallback]
+ * [broadcastReceiver]
+ * [mediaMetadataCompat]
+ * [playbackStateCompat]
+ * [exoPlayer]
+ * [audioList]
+ * [configs]
+ * [serviceNotification]
+ * [defaultAudioArt]
+ * [audioArt]
+ *
+ * Getters:
+ * [transportControls]
+ *
+ * Methods:
+ * [onCreate]
+ * [onStartCommand]
+ * [onGetRoot]
+ * [onLoadChildren]
+ * [onPlaybackStateChanged]
+ * [playAudioItem]
+ * [prepareAudio]
  *
  **/
 class PlayService: MediaBrowserServiceCompat(), Player.Listener {

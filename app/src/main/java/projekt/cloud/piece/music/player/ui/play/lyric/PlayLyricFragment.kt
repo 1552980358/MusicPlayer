@@ -27,6 +27,23 @@ import projekt.cloud.piece.music.player.util.LyricUtil.readLyric
 import projekt.cloud.piece.music.player.util.LyricUtil.storeLyric
 import projekt.cloud.piece.music.player.util.LyricUtil.toLyric
 
+/**
+ * [PlayLyricFragment]
+ * inherit to [BasePlayFragment]
+ *
+ * Variables:
+ * [binding]
+ * [menuColor]
+ * [menu]
+ *
+ * Methods:
+ * [onCreateView]
+ * [onViewCreated]
+ * [onCreateOptionsMenu]
+ * [onOptionsItemSelected]
+ * [onDestroyView]
+ * [pickLyricFile]
+ */
 class PlayLyricFragment: BasePlayFragment() {
 
     companion object {

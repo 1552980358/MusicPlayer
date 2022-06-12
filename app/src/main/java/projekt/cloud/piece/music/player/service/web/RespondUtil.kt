@@ -5,6 +5,15 @@ import com.google.gson.JsonObject
 import projekt.cloud.piece.music.player.database.audio.item.AudioItem
 import projekt.cloud.piece.music.player.database.audio.item.PlaylistItem
 
+/**
+ * [RespondUtil]
+ *
+ * Methods:
+ * [jsonObject]
+ * [playlistJsonArray]
+ * [jsonObject]
+ * [audioJsonArray]
+ **/
 object RespondUtil {
     
     const val RESPOND_STATUS = "status"

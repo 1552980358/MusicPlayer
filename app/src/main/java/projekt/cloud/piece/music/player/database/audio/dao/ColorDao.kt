@@ -8,6 +8,19 @@ import androidx.room.Query
 import androidx.room.Update
 import projekt.cloud.piece.music.player.database.audio.item.ColorItem
 
+/**
+ * [ColorDao]
+ *
+ * Methods:
+ * [hasItem]
+ * [queryDefault]
+ * [queryAudio]
+ * [queryAlbum]
+ * [insert]
+ * [update]
+ * [delete]
+ * [query]
+ **/
 @Dao
 interface ColorDao {
 

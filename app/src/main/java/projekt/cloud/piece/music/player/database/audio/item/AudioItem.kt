@@ -8,6 +8,14 @@ import androidx.room.Ignore
 import projekt.cloud.piece.music.player.database.audio.item.base.BaseTitledItem
 import java.io.Serializable
 
+/**
+ * [AudioItem]
+ * inherit to [BaseTitledItem]
+ * implement to [Serializable]
+ *
+ * Variables:
+ *
+ **/
 @Entity(
     tableName = "audio",
     foreignKeys = [

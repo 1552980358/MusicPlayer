@@ -6,6 +6,15 @@ import projekt.cloud.piece.music.player.database.audio.item.base.BaseItem
 import java.io.Serializable
 import java.lang.System.currentTimeMillis
 
+/**
+ * [PlaylistAudioItem]
+ * inherit to [BaseItem]
+ * implement to [Serializable]
+ *
+ * Variaboles:
+ * [audio]
+ * [playlist]
+ **/
 @Entity(tableName = "playlist-audio")
 class PlaylistAudioItem(@ColumnInfo(name = "audio") val audio: String,
                         @ColumnInfo(name = "playlist") val playlist: String): BaseItem(currentTimeMillis()), Serializable
