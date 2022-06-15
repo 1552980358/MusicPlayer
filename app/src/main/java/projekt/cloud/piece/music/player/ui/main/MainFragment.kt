@@ -168,13 +168,15 @@ class MainFragment: BaseFragment(), OnNavigationItemSelectedListener {
 
         with(extFab) {
             setOnClickListener {
-                if (exitTransition == null || exitTransition !is Hold) {
-                    exitTransition = Hold()
+                if (containerViewModel.audioItem != null) {
+                    if (exitTransition == null || exitTransition !is Hold) {
+                        exitTransition = Hold()
+                    }
+                    navController.navigate(
+                        MainFragmentDirections.actionMainFragmentToPlayFragment(),
+                        FragmentNavigatorExtras(extFab to extFab.transitionName)
+                    )
                 }
-                navController.navigate(
-                    MainFragmentDirections.actionMainFragmentToPlayFragment(),
-                    FragmentNavigatorExtras(extFab to extFab.transitionName)
-                )
             }
             
             setAnimateShowBeforeLayout(true)
