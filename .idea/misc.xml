@@ -3,22 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/drawable/ic_baseline_smartphone_24.xml" value="0.2795" />
-        <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/drawable/ic_round_audiotrack_24.xml" value="0.235" />
-        <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/layout/activity_main.xml" value="0.3515625" />
-        <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/layout/app_bar_main.xml" value="0.17806484295845998" />
-        <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/layout/buttons_play_control.xml" value="0.2269021739130435" />
-        <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/layout/dialog_fragment_create_playlist.xml" value="0.22509057971014493" />
-        <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/layout/dialog_fragment_crop_image.xml" value="0.36614583333333334" />
-        <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/layout/dialog_fragment_web_server.xml" value="0.2269021739130435" />
-        <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/layout/fragment_main.xml" value="0.36633663366336633" />
-        <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/layout/fragment_play_control.xml" value="0.5466562986003111" />
-        <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/layout/layout_recycler_playlist.xml" value="0.26197916666666665" />
-        <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/layout/position_play_control.xml" value="0.5035175879396985" />
-        <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/menu/dialog_fragment_crop_image.xml" value="0.36614583333333334" />
-        <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/menu/fragment_play_lyric.xml" value="0.36614583333333334" />
-        <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/menu/fragment_playlist.xml" value="0.36614583333333334" />
-        <entry key="..\:/Cloud-Piece/MusicPlayer/app/src/main/res/xml/xml_web_server.xml" value="0.23867753623188406" />
+        <entry key="..\:/Projects/Cloud-Piece/MusicPlayer/app/src/main/res/layout/activity_main.xml" value="0.17527173913043478" />
+        <entry key="..\:/Projects/Cloud-Piece/MusicPlayer/app/src/main/res/layout/content_main.xml" value="0.10536980749746708" />
+        <entry key="..\:/Projects/Cloud-Piece/MusicPlayer/app/src/main/res/menu/menu_main.xml" value="0.21666666666666667" />
       </map>
     </option>
   </component>

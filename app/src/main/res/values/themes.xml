@@ -1,41 +1,9 @@
 <resources>
-
     <!-- Base application theme. -->
-    <style name="Theme.CloudPiece" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:statusBarColor">?attr/colorPrimary</item>
-        <item name="android:navigationBarColor">?attr/colorPrimaryDark</item>
+    <style name="Base.Theme.MusicPlayer" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
-    
-    <style name="Theme.CloudPiece.AppBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="Theme.CloudPiece.Toolbar" parent="ThemeOverlay.AppCompat.Light" />
-    
-    <style name="Theme.CloudPiece.ExtendedFloatingActionBar" parent="Widget.Material3.ExtendedFloatingActionButton.Icon.Primary">
-        <item name="shapeAppearanceOverlay">@style/ExtendedFloatingActionButtonStyle</item>
-    </style>
-    
-    <style name="ExtendedFloatingActionButtonStyle" parent="ShapeAppearance.Material3.SmallComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopLeft">@dimen/fab_radius</item>
-        <item name="cornerSizeTopRight">@dimen/fab_radius</item>
-        <item name="cornerSizeBottomLeft">@dimen/fab_radius</item>
-        <item name="cornerSizeBottomRight">@dimen/fab_radius</item>
-    </style>
-    
-    <style name="Theme.CloudPiece.CreatePlaylistDialogFragment" parent="Theme.Material3.DayNight.BottomSheetDialog">
-        <item name="android:statusBarColor">?attr/colorPrimary</item>
-        <item name="android:navigationBarColor">?attr/colorPrimary</item>
-    </style>
-    
-    <style name="Theme.CloudPiece.CropImageDialogFragment" parent="Theme.Material3.DayNight.DialogWhenLarge">
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:statusBarColor">?attr/colorPrimary</item>
-        <item name="android:navigationBarColor">?attr/colorPrimary</item>
-        <item name="android:windowBackground">@color/black</item>
-    </style>
-    
-    <style name="Theme.CloudPiece.WebServerDialogFragment" parent="Theme.Material3.DayNight.BottomSheetDialog">
-        <item name="android:statusBarColor">?attr/colorPrimary</item>
-        <item name="android:navigationBarColor">?attr/colorPrimary</item>
-    </style>
-    
+
+    <style name="Theme.MusicPlayer" parent="Base.Theme.MusicPlayer" />
 </resources>
