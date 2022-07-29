@@ -1,3 +1,8 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    
+    <dimen name="md_spec_spacing_horizontal_8">8dp</dimen>
+    <dimen name="md_spec_spacing_horizontal_16">16dp</dimen>
+    <dimen name="md_spec_spacing_vertical_8">8dp</dimen>
+    <dimen name="md_spec_spacing_vertical_16">16dp</dimen>
 </resources>
