@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.fragment.app.findFragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -18,10 +17,8 @@ class MainActivity: AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     
     private val root get() = binding.root
-    private val materialToolbar get() = binding.materialToolbar
-    
-    private val contentMain get() = binding.contentMain
-    private val fragmentContainerView get() = contentMain.fragmentContainerView
+
+    private val fragmentContainerView get() = binding.fragmentContainerView
     
     private lateinit var navController: NavController
     
@@ -32,13 +29,8 @@ class MainActivity: AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(root)
         
-        setSupportActionBar(materialToolbar)
-        
-        navController = fragmentContainerView.findFragment<NavHostFragment>()
-            .navController
-        
+        navController = fragmentContainerView.getFragment<NavHostFragment>().navController
         appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
     }
     
     override fun onSupportNavigateUp() =
