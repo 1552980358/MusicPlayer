@@ -49,6 +49,10 @@ android {
     }
     
     lint.abortOnError = false
+    
+    packagingOptions {
+        resources.excludes += "DebugProbesKt.bin"
+    }
 }
 
 dependencies {
@@ -70,6 +74,8 @@ dependencies {
     implementation("com.google.android.exoplayer:exoplayer-core:$exoPlayerVersion")
     implementation("com.google.android.exoplayer:exoplayer-hls:$exoPlayerVersion")
     implementation("com.google.android.material:material:1.7.0-alpha03")
+    
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     
     implementation("com.github.1552980358:C2Pinyin:2.3.0")
     
