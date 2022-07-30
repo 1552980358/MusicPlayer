@@ -5,15 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI.setupWithNavController
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
@@ -48,8 +45,10 @@ class MainFragment: Fragment() {
         with(requireActivity() as AppCompatActivity) {
             setSupportActionBar(materialToolbar)
         }
-        val appBarConfiguration = AppBarConfiguration(setOf(R.id.home_fragment, R.id.artist_fragment), drawerLayout)
-        materialToolbar.setupWithNavController(navController, appBarConfiguration)
+        materialToolbar.setupWithNavController(
+            navController,
+            AppBarConfiguration(setOf(R.id.home_fragment, R.id.artist_fragment), drawerLayout)
+        )
         navigationView.setupWithNavController(navController)
     }
 
