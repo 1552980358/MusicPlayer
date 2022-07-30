@@ -4,11 +4,11 @@ import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.Q
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,7 +20,7 @@ import androidx.viewpager2.widget.ViewPager2
 import projekt.cloud.piece.music.player.databinding.ActivityLaunchBinding
 import projekt.cloud.piece.music.player.databinding.LayoutLaunchBinding
 
-class LaunchActivity: AppCompatActivity() {
+class LaunchActivity: AppCompatActivity(), View.OnClickListener {
     
     private val textList = listOf(
         Pair(R.string.launch_title_read, R.string.launch_content_read),
@@ -31,10 +31,7 @@ class LaunchActivity: AppCompatActivity() {
         fun bindData(pair: Pair<Int, Int>) {
             binding.materialTextViewTitle.setText(pair.first)
             binding.materialTextViewContent.setText(pair.second)
-            when (viewPager2.currentItem) {
-                0 -> requestReadPermission()
-                else -> requestWritePermission()
-            }
+            binding.materialButton.setOnClickListener(this@LaunchActivity)
         }
     }
     
@@ -88,6 +85,13 @@ class LaunchActivity: AppCompatActivity() {
                 setupViewPager2(0)
                 requestReadPermission()
             }
+        }
+    }
+    
+    override fun onClick(v: View?) {
+        when (viewPager2.currentItem) {
+            0 -> requestReadPermission()
+            else -> requestWritePermission()
         }
     }
     
