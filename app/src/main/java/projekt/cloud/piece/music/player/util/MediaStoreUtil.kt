@@ -2,6 +2,8 @@ package projekt.cloud.piece.music.player.util
 
 import android.content.ContentResolver
 import android.content.Context
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.provider.MediaStore
 import projekt.cloud.piece.music.player.item.Album
 import projekt.cloud.piece.music.player.item.Artist
@@ -41,5 +43,14 @@ object MediaStoreUtil {
             }
         }?.close()
     }
+    
+    private fun Context.requestAlbumArt(album: Album) = contentResolver.requestAlbumArt(album.uri)
+    
+    private const val COVER_ART_OPEN_MODE = "r"
+    private fun ContentResolver.requestAlbumArt(uri: Uri) = try {
+        openFileDescriptor(uri, COVER_ART_OPEN_MODE)?.use {
+            BitmapFactory.decodeFileDescriptor(it.fileDescriptor)
+        }
+    } catch (e: Exception) { null }
 
 }
