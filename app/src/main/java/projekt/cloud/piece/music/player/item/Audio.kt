@@ -13,7 +13,7 @@ class Audio(id: String,
             title: String,
             @ColumnInfo(name = "artist") var artist: String,
             @ColumnInfo(name = "album") var album: String,
-            @ColumnInfo(name = "duration") var duration: String,
+            @ColumnInfo(name = "duration") var duration: Long,
             @ColumnInfo(name = "size") var size: Long,
             @ColumnInfo(name = "path") var path: String): BaseTitledItem(id, title), Serializable {
     
