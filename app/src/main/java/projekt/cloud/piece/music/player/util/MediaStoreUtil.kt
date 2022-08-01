@@ -44,7 +44,7 @@ object MediaStoreUtil {
         }?.close()
     }
     
-    private fun Context.requestAlbumArt(album: Album) = contentResolver.requestAlbumArt(album.uri)
+    fun Context.requestAlbumArt(album: Album) = contentResolver.requestAlbumArt(album.uri)
     
     private const val COVER_ART_OPEN_MODE = "r"
     private fun ContentResolver.requestAlbumArt(uri: Uri) = try {
