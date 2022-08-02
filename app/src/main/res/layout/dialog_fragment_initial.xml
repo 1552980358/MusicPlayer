@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/md_spec_spacing_horizontal_16"
+    android:paddingVertical="@dimen/md_spec_spacing_vertical_16">
+    
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/material_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/md_spec_spacing_horizontal_16"
+        android:text="@string/initial_content_querying_media_store"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

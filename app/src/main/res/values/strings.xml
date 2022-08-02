@@ -6,4 +6,10 @@
     <string name="launch_title_write">Step 2: WRITE_EXTERNAL_STORAGE</string>
     <string name="launch_content_write">For writing of configurations</string>
     <string name="launch_content_request">Request Permission…</string>
+    
+    <string name="initial_title">Initializing…</string>
+    <string name="initial_content_querying_media_store">Querying media store…</string>
+    <string name="initial_content_loading_image">Loading image…</string>
+    <string name="initial_content_storing_data">Storing data…</string>
+    
 </resources>
