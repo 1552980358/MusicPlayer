@@ -15,13 +15,18 @@ android {
         targetSdk = 32
         versionCode = 1
         versionName = "1.0"
+        externalNativeBuild {
+            cmake {
+                cppFlags += ""
+            }
+        }
     }
     
     buildTypes {
         @Suppress("UNUSED_VARIABLE")
         val release by getting {
             isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),"proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         @Suppress("UNUSED_VARIABLE")
         val debug by getting {
@@ -52,6 +57,12 @@ android {
     
     packagingOptions {
         resources.excludes += "DebugProbesKt.bin"
+    }
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.18.1"
+        }
     }
 }
 
