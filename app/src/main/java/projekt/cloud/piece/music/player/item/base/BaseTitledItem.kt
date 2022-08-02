@@ -4,16 +4,8 @@ import androidx.room.ColumnInfo
 import projekt.cloud.piece.c2.pinyin.C2Pinyin.pinyin
 
 abstract class BaseTitledItem(id: String,
-                     title: String,
-                     pinyin: String = title.pinyin): BaseItem(id) {
-    
-    @ColumnInfo(name = "title")
-    var title: String = title
-        private set
-    
-    @ColumnInfo(name = "pinyin")
-    var pinyin: String = pinyin
-        private set
+                              @ColumnInfo(name = "title") var title: String,
+                              @ColumnInfo(name = "pinyin") var pinyin: String = title.pinyin): BaseItem(id) {
     
     fun updateTitle(newTitle: String) {
         title = newTitle
