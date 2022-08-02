@@ -5,10 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.fragment.app.findFragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import projekt.cloud.piece.music.player.databinding.ActivityMainBinding
+import projekt.cloud.piece.music.player.room.AudioDatabase
 
 class MainActivity: AppCompatActivity() {
     
@@ -25,6 +25,8 @@ class MainActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
+        
+        AudioDatabase.initial(this)
         
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(root)
