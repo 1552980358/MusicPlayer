@@ -10,6 +10,7 @@ import projekt.cloud.piece.music.player.item.Audio
 import projekt.cloud.piece.music.player.item.dao.AlbumDao
 import projekt.cloud.piece.music.player.item.dao.ArtistDao
 import projekt.cloud.piece.music.player.item.dao.AudioDao
+import projekt.cloud.piece.music.player.item.dao.AudioMetadataDao
 
 @Database(entities = [ Audio::class, Artist::class, Album::class ], version = 1)
 abstract class AudioDatabase: RoomDatabase() {
@@ -40,5 +41,9 @@ abstract class AudioDatabase: RoomDatabase() {
     abstract fun albumDao(): AlbumDao
     val albumDao: AlbumDao
         get() = albumDao()
+    
+    abstract fun audioMetadataDao(): AudioMetadataDao
+    val audioMetadataDao: AudioMetadataDao
+        get() = audioMetadataDao()
     
 }
