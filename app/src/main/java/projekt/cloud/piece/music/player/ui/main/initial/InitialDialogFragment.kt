@@ -84,6 +84,10 @@ class InitialDialogFragment: DialogFragment() {
         }
     }
     
+    fun setCallback(callback: () -> Unit) = apply {
+        this.callback = callback
+    }
+    
     @Suppress("ApplySharedPref")
     private fun setInitialized() =
         PreferenceManager.getDefaultSharedPreferences(requireContext())
