@@ -15,7 +15,7 @@ object BitmapUtil {
     fun Bitmap.resize(width: Int) = resize(width, width)
     
     fun Bitmap.resize(width: Int, height: Int) = Bitmap.createBitmap(
-        this, 0, 0, getWidth(), getWidth(), Matrix().apply { setScale(width / widthF, height / heightF) }, false
+        this, 0, 0, getWidth(), getHeight(), Matrix().apply { setScale(width / widthF, height / heightF) }, false
     )
     
     val Bitmap.png: ByteArray
