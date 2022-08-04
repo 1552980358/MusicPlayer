@@ -15,11 +15,13 @@ import projekt.cloud.piece.music.player.item.Album
 import projekt.cloud.piece.music.player.item.Artist
 import projekt.cloud.piece.music.player.item.Audio
 import projekt.cloud.piece.music.player.room.AudioDatabase.Companion.audioDatabase
-import projekt.cloud.piece.music.player.ui.main.MainFragment
+import projekt.cloud.piece.music.player.util.ArtUtil.SMALL_IMAGE_PIXEL_SIZE
 import projekt.cloud.piece.music.player.util.ArtUtil.SUFFIX_LARGE
+import projekt.cloud.piece.music.player.util.ArtUtil.SUFFIX_SMALL
 import projekt.cloud.piece.music.player.util.ArtUtil.TYPE_ALBUM
-import projekt.cloud.piece.music.player.util.ArtUtil.storeArt
+import projekt.cloud.piece.music.player.util.ArtUtil.pathOf
 import projekt.cloud.piece.music.player.util.BitmapUtil.png
+import projekt.cloud.piece.music.player.util.BitmapUtil.resize
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
 import projekt.cloud.piece.music.player.util.FileUtil.writeByteArray
@@ -47,6 +49,8 @@ class InitialDialogFragment: DialogFragment() {
     
     private var job: Job? = null
     
+    private var callback: (() -> Unit)? = null
+    
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = DialogFragmentInitialBinding.inflate(layoutInflater)
         return AlertDialog.Builder(requireContext())
@@ -65,7 +69,8 @@ class InitialDialogFragment: DialogFragment() {
             ui { materialTextView.setText(R.string.initial_content_loading_image) }
             albumList.forEach { album ->
                 requireContext().requestAlbumArt(album)?.let { albumArt ->
-                    writeByteArray(requireContext().storeArt(TYPE_ALBUM, album.id, SUFFIX_LARGE), albumArt.png)
+                    writeByteArray(requireContext().pathOf(TYPE_ALBUM, album.id, SUFFIX_LARGE), albumArt.png)
+                    writeByteArray(requireContext().pathOf(TYPE_ALBUM, album.id, SUFFIX_SMALL), albumArt.resize(SMALL_IMAGE_PIXEL_SIZE).png)
                 }
             }
             ui { materialTextView.setText(R.string.initial_content_storing_data) }
