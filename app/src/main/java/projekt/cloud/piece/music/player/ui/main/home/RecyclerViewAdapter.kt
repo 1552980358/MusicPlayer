@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Job
+import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.databinding.LayoutRecyclerHomeBinding
 import projekt.cloud.piece.music.player.item.AudioMetadata
 import projekt.cloud.piece.music.player.util.ArtUtil.SUFFIX_SMALL
@@ -25,10 +26,11 @@ class RecyclerViewAdapter(recyclerView: RecyclerView) {
             job?.cancel()
             job = io {
                 val artFile = layoutRecyclerHomeBinding.root.context.fileOf(TYPE_ALBUM, audioMetadata.album.id, SUFFIX_SMALL)
-                if (artFile.exists()) {
-                    artFile.inputStream().use {  BitmapFactory.decodeStream(it) }.let { bitmap ->
+                when {
+                    artFile.exists() -> artFile.inputStream().use {  BitmapFactory.decodeStream(it) }.let { bitmap ->
                         ui { layoutRecyclerHomeBinding.appCompatImageView.setImageBitmap(bitmap) }
                     }
+                    else -> ui { layoutRecyclerHomeBinding.appCompatImageView.setImageResource(R.drawable.ic_round_music_note_24) }
                 }
                 job = null
             }
