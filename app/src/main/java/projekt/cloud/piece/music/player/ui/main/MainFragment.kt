@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -16,6 +17,10 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.databinding.FragmentMainBinding
+import projekt.cloud.piece.music.player.ui.main.initial.InitialDialogFragment
+import projekt.cloud.piece.music.player.ui.main.initial.InitialDialogFragment.Companion.isInitialized
+import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
+import projekt.cloud.piece.music.player.util.DialogFragmentUtil.showNow
 
 class MainFragment: Fragment() {
 
@@ -34,6 +39,8 @@ class MainFragment: Fragment() {
         get() = binding.navigationView
 
     private lateinit var navController: NavController
+    
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
@@ -50,6 +57,18 @@ class MainFragment: Fragment() {
             AppBarConfiguration(setOf(R.id.home_fragment, R.id.artist_fragment), drawerLayout)
         )
         navigationView.setupWithNavController(navController)
+    
+        when {
+            isInitialized(requireContext()) -> viewModel.setInitialized(true)
+            else -> initialize()
+        }
+    }
+    
+    private fun initialize() = ui {
+        InitialDialogFragment()
+            .setCallback {
+                viewModel.setInitialized(true)
+            }.showNow(parentFragmentManager)
     }
 
 }
