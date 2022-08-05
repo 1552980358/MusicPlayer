@@ -40,12 +40,9 @@ class HomeFragment: BaseMainFragment() {
         return root
     }
     
-    private fun getInsetBottom(windowInsets: WindowInsets): Int {
-        if (SDK_INT > Q) {
-            windowInsets.getInsets(systemBars()).bottom
-        }
-        @Suppress("DEPRECATION")
-        return windowInsets.systemWindowInsetBottom
+    private fun getInsetBottom(windowInsets: WindowInsets) = when {
+        SDK_INT > Q -> windowInsets.getInsets(systemBars()).bottom
+        else -> @Suppress("DEPRECATION") windowInsets.systemWindowInsetBottom
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
