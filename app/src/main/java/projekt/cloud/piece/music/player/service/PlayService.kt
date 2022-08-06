@@ -1,8 +1,18 @@
 package projekt.cloud.piece.music.player.service
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
+import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_PAUSE
@@ -14,12 +24,33 @@ import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_NEXT
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_STOP
+import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.media.MediaBrowserServiceCompat
+import androidx.media.session.MediaButtonReceiver
 import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
-import projekt.cloud.piece.music.player.BuildConfig
+import kotlinx.coroutines.runBlocking
 import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
+import projekt.cloud.piece.music.player.R
+import projekt.cloud.piece.music.player.item.AudioMetadata
+import projekt.cloud.piece.music.player.service.play.NotificationHelper
+import projekt.cloud.piece.music.player.service.play.PlayingQueue
+import projekt.cloud.piece.music.player.service.play.ServiceConstants.ACTION_START_COMMAND
+import projekt.cloud.piece.music.player.service.play.ServiceConstants.ACTION_START_COMMAND_PAUSE
+import projekt.cloud.piece.music.player.service.play.ServiceConstants.ACTION_START_COMMAND_PLAY
+import projekt.cloud.piece.music.player.service.play.ServiceConstants.EXTRA_AUDIO_METADATA_LIST
+import projekt.cloud.piece.music.player.util.ArtUtil.SUFFIX_LARGE
+import projekt.cloud.piece.music.player.util.ArtUtil.TYPE_ALBUM
+import projekt.cloud.piece.music.player.util.ArtUtil.fileOf
+import projekt.cloud.piece.music.player.util.CoroutineUtil.io
+import projekt.cloud.piece.music.player.util.ServiceUtil.startSelf
+import projekt.cloud.piece.music.player.util.TryUtil.Try
 
 class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     
@@ -42,6 +73,16 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
         .setActions(PLAYBACK_STATE_ACTIONS)
         .build()
     private lateinit var mediaSessionCompat: MediaSessionCompat
+    private val transportControls: MediaControllerCompat.TransportControls
+        get() = mediaSessionCompat.controller.transportControls
+    
+    private var isForeground = false
+    
+    private lateinit var notificationHelper: NotificationHelper
+    private lateinit var playingQueue: PlayingQueue
+    
+    private var audioArt: Bitmap? = null
+    private lateinit var defaultArt: Bitmap
     
     override fun onCreate() {
         super.onCreate()
@@ -49,11 +90,40 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
         mediaSessionCompat = MediaSessionCompat(this, TAG).apply {
             setCallback(object: MediaSessionCompat.Callback() {
                 override fun onPlay() {
+                    if (playbackStateCompat.state != STATE_BUFFERING || playbackStateCompat.state != STATE_PAUSED || !exoPlayer.isPlaying) {
+                        return
+                    }
+                    exoPlayer.play()
+                    
+                    playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                        .setState(STATE_PLAYING, exoPlayer.currentPosition, DEFAULT_PLAYBACK_SPEED)
+                        .build()
+                    mediaSessionCompat.setPlaybackState(playbackStateCompat)
+                    
+                    startSelf { putExtra(ACTION_START_COMMAND, ACTION_START_COMMAND_PLAY) }
                 }
                 override fun onPause() {
+                    if (playbackStateCompat.state != STATE_PLAYING || exoPlayer.isPlaying) {
+                        return
+                    }
+                    exoPlayer.pause()
+    
+                    playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                        .setState(STATE_PLAYING, exoPlayer.currentPosition, DEFAULT_PLAYBACK_SPEED)
+                        .build()
+                    mediaSessionCompat.setPlaybackState(playbackStateCompat)
+    
+                    startSelf { putExtra(ACTION_START_COMMAND, ACTION_START_COMMAND_PAUSE) }
                 }
-                override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
-                }
+                override fun onPlayFromMediaId(mediaId: String, extras: Bundle) = playAudioMetadata(
+                    @Suppress("UNCHECKED_CAST")
+                    playingQueue.setAudioMetadataList(
+                        mediaId,
+                        extras.getSerializable(EXTRA_AUDIO_METADATA_LIST) as ArrayList<AudioMetadata>,
+                        false
+                    )
+                )
+                
                 override fun onSkipToPrevious() {
                 }
                 override fun onSkipToNext() {
@@ -62,7 +132,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
                 }
                 override fun onSeekTo(pos: Long) {
                 }
-                override fun onCustomAction(action: String?, extras: Bundle?) {
+                override fun onCustomAction(action: String, extras: Bundle) {
                 }
             })
             setPlaybackState(playbackStateCompat)
@@ -77,9 +147,32 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
             addListener(this@PlayService)
             volume = VOLUME_FULL
         }
+    
+        notificationHelper = NotificationHelper(this)
+        playingQueue = PlayingQueue()
+    
+        defaultArt = ContextCompat.getDrawable(this, R.drawable.ic_round_music_note_24)!!.toBitmap()
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        when (intent?.getStringExtra(ACTION_START_COMMAND)) {
+            ACTION_START_COMMAND_PLAY -> {
+                val audioArt = audioArt ?: defaultArt
+                when {
+                    isForeground -> {
+                        notificationHelper.startForeground(this, playingQueue.current, audioArt)
+                        isForeground = true
+                    }
+                    else -> notificationHelper.updateNotification(this, playingQueue.current, audioArt)
+                }
+            }
+            ACTION_START_COMMAND_PAUSE -> {
+                notificationHelper.startForeground(this, playingQueue.current, audioArt ?: defaultArt)
+                stopForeground(false)
+                isForeground = false
+            }
+            else -> MediaButtonReceiver.handleIntent(mediaSessionCompat, intent)
+        }
         return super.onStartCommand(intent, flags, startId)
     }
     
@@ -90,6 +183,40 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     }
     
     override fun onPlaybackStateChanged(playbackState: Int) {
+    }
+    
+    private fun playAudioMetadata(audioMetadata: AudioMetadata) {
+        audioArt = null
+        runBlocking {
+            io {
+                Try {
+                    audioArt = fileOf(TYPE_ALBUM, audioMetadata.id, SUFFIX_LARGE).inputStream().use {
+                        BitmapFactory.decodeStream(it)
+                    }
+                }
+            }
+    
+            playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                .setState(STATE_BUFFERING, 0, DEFAULT_PLAYBACK_SPEED)
+                .build()
+            mediaSessionCompat.setPlaybackState(playbackStateCompat)
+            
+            exoPlayer.setMediaItem(MediaItem.fromUri(audioMetadata.uri))
+            exoPlayer.prepare()
+        }
+        
+        mediaSessionCompat.setMetadata(
+            MediaMetadataCompat.Builder()
+                .putString(METADATA_KEY_TITLE, audioMetadata.title)
+                .putString(METADATA_KEY_ARTIST, audioMetadata.artistName)
+                .putString(METADATA_KEY_ALBUM, audioMetadata.albumTitle)
+                .putString(METADATA_KEY_MEDIA_ID, audioMetadata.id)
+                .putLong(METADATA_KEY_DURATION, audioMetadata.duration)
+                .putBitmap(METADATA_KEY_ALBUM_ART, audioArt ?: defaultArt)
+                .build()
+        )
+    
+        transportControls.play()
     }
     
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?) = when (clientPackageName) {
