@@ -15,9 +15,9 @@ import projekt.cloud.piece.music.player.util.ArtUtil.fileOf
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
 
-class RecyclerViewAdapter(recyclerView: RecyclerView) {
+class RecyclerViewAdapter(recyclerView: RecyclerView, private val onClick: (AudioMetadata, ArrayList<AudioMetadata>) -> Unit) {
     
-    private class RecyclerViewHolder(private val layoutRecyclerHomeBinding: LayoutRecyclerHomeBinding)
+    private inner class RecyclerViewHolder(private val layoutRecyclerHomeBinding: LayoutRecyclerHomeBinding)
         : RecyclerView.ViewHolder(layoutRecyclerHomeBinding.root), View.OnClickListener {
         
         private var job: Job? = null
@@ -39,6 +39,7 @@ class RecyclerViewAdapter(recyclerView: RecyclerView) {
         }
     
         override fun onClick(v: View?) {
+            onClick.invoke(layoutRecyclerHomeBinding.audioMetadata!!, audioMetadataList!!.toMutableList() as ArrayList)
         }
         
     }

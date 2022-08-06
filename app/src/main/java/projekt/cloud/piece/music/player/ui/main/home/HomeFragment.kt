@@ -1,8 +1,6 @@
 package projekt.cloud.piece.music.player.ui.main.home
 
 import android.annotation.SuppressLint
-import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.Q
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -35,7 +33,9 @@ class HomeFragment: BaseMainFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        recyclerViewAdapter = RecyclerViewAdapter(recyclerView)
+        recyclerViewAdapter = RecyclerViewAdapter(recyclerView) { audioMetadata, audioMetadataList ->
+            playAudio(audioMetadata.id, audioMetadataList)
+        }
         
         when (viewModel.isInitialized.value) {
             true -> io {
