@@ -40,6 +40,12 @@ class NotificationHelper(context: Context) {
         }
     }
     
+    fun startForeground(service: MediaBrowserServiceCompat, audioMetadata: AudioMetadata,largeBitmap: Bitmap) =
+        service.startForeground(NOTIFICATION_ID, createNotification(service, audioMetadata, largeBitmap))
+    
+    fun updateNotification(service: MediaBrowserServiceCompat, audioMetadata: AudioMetadata,largeBitmap: Bitmap) =
+        service.startForeground(NOTIFICATION_ID, createNotification(service, audioMetadata, largeBitmap))
+    
     fun createNotification(service: MediaBrowserServiceCompat, audioMetadata: AudioMetadata, largeBitmap: Bitmap) =
         NotificationCompat.Builder(service, CHANNEL_ID)
             .setPriority(PRIORITY_MAX)
