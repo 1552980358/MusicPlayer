@@ -50,7 +50,6 @@ import projekt.cloud.piece.music.player.util.ArtUtil.TYPE_ALBUM
 import projekt.cloud.piece.music.player.util.ArtUtil.fileOf
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.ServiceUtil.startSelf
-import projekt.cloud.piece.music.player.util.TryUtil.Try
 
 class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     
@@ -90,7 +89,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
         mediaSessionCompat = MediaSessionCompat(this, TAG).apply {
             setCallback(object: MediaSessionCompat.Callback() {
                 override fun onPlay() {
-                    if (playbackStateCompat.state != STATE_BUFFERING || playbackStateCompat.state != STATE_PAUSED || !exoPlayer.isPlaying) {
+                    if ((playbackStateCompat.state != STATE_BUFFERING && playbackStateCompat.state != STATE_PAUSED) || exoPlayer.isPlaying) {
                         return
                     }
                     exoPlayer.play()
