@@ -7,10 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowInsets
-import android.view.WindowInsets.Type.systemBars
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import projekt.cloud.piece.music.player.databinding.FragmentHomeBinding
 import projekt.cloud.piece.music.player.room.AudioDatabase.Companion.audioDatabase
@@ -33,19 +29,12 @@ class HomeFragment: BaseMainFragment() {
     @SuppressLint("NewApi")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        root.setOnApplyWindowInsetsListener { _, insets ->
-            recyclerView.updateLayoutParams<CoordinatorLayout.LayoutParams> { setMargins(0, 0, 0, getInsetBottom(insets)) }
-            insets
-        }
         return root
     }
     
-    private fun getInsetBottom(windowInsets: WindowInsets) = when {
-        SDK_INT > Q -> windowInsets.getInsets(systemBars()).bottom
-        else -> @Suppress("DEPRECATION") windowInsets.systemWindowInsetBottom
-    }
-    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        
         recyclerViewAdapter = RecyclerViewAdapter(recyclerView)
         
         when (viewModel.isInitialized.value) {
