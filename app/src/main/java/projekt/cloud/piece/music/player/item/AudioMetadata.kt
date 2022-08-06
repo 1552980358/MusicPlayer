@@ -1,5 +1,6 @@
 package projekt.cloud.piece.music.player.item
 
+import android.net.Uri
 import androidx.room.Embedded
 import androidx.room.Relation
 import java.io.Serializable
@@ -12,6 +13,9 @@ class AudioMetadata(
     val id: String
         get() = audio.id
     
+    val uri: Uri
+        get() = audio.uri
+    
     val title: String
         get() = audio.title
     
@@ -23,5 +27,8 @@ class AudioMetadata(
     
     val albumTitle: String
         get() = album.title
+    
+    val duration: Long
+        get() = audio.duration
     
 }
