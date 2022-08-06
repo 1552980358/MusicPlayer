@@ -1,12 +1,12 @@
 package projekt.cloud.piece.music.player.ui.main.base
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.ui.main.MainFragment
 import projekt.cloud.piece.music.player.ui.main.MainViewModel
 
-open class BaseMainFragment: Fragment() {
+open class BaseMainFragment: BaseFragment() {
     
     protected lateinit var viewModel: MainViewModel
     

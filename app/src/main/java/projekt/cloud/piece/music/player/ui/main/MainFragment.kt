@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
@@ -16,13 +15,14 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
 import projekt.cloud.piece.music.player.R
+import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.databinding.FragmentMainBinding
 import projekt.cloud.piece.music.player.ui.main.initial.InitialDialogFragment
 import projekt.cloud.piece.music.player.ui.main.initial.InitialDialogFragment.Companion.isInitialized
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
 import projekt.cloud.piece.music.player.util.DialogFragmentUtil.showNow
 
-class MainFragment: Fragment() {
+class MainFragment: BaseFragment() {
 
     private var _binding: FragmentMainBinding? = null
     private val binding: FragmentMainBinding
