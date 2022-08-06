@@ -18,7 +18,7 @@ class AudioMetadata(
     val pinyin: String
         get() = audio.pinyin
     
-    val artistTitle: String
+    val artistName: String
         get() = artist.title
     
     val albumTitle: String
