@@ -5,11 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.fragment.app.Fragment
-import androidx.navigation.NavController
 import projekt.cloud.piece.music.player.databinding.FragmentArtistBinding
+import projekt.cloud.piece.music.player.ui.main.base.BaseMainFragment
 
-class ArtistFragment: Fragment() {
+class ArtistFragment: BaseMainFragment() {
     
     private var _binding: FragmentArtistBinding? = null
     private val binding: FragmentArtistBinding
