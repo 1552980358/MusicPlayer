@@ -22,7 +22,7 @@ class NotificationHelper(context: Context) {
         .createWithNotificationChannel()
     
     private fun NotificationManagerCompat.createWithNotificationChannel() = apply {
-        if (SDK_INT > O) {
+        if (SDK_INT >= O) {
             createNotificationChannel(
                 NotificationChannel(CHANNEL_ID, CHANNEL_NAME, IMPORTANCE_HIGH).apply {
                     enableVibration(false)
