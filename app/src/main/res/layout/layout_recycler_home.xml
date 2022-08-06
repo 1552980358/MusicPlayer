@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@{audioMetadata.artistTitle + ` - ` + audioMetadata.albumTitle}"
+                android:text="@{audioMetadata.artistName + ` - ` + audioMetadata.albumTitle}"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
             
         </androidx.appcompat.widget.LinearLayoutCompat>
