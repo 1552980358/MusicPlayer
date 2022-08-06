@@ -1,6 +1,11 @@
 package projekt.cloud.piece.music.player.ui.main.base
 
+import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowInsets
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.ViewModelProvider
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.ui.main.MainFragment
@@ -17,6 +22,18 @@ open class BaseMainFragment: BaseFragment() {
             requireParentFragment()                         // NavHostFragment
                 .requireParentFragment() as MainFragment    // MainFragment
         )[MainViewModel::class.java]
+    }
+    
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        view.setOnApplyWindowInsetsListener { _, insets ->
+            view.updateLayoutParams<ViewGroup.MarginLayoutParams> { setMargins(0, 0, 0, getInsetBottom(insets)) }
+            insets
+        }
+    }
+    
+    private fun getInsetBottom(windowInsets: WindowInsets) = when {
+        Build.VERSION.SDK_INT > Build.VERSION_CODES.Q -> windowInsets.getInsets(WindowInsets.Type.systemBars()).bottom
+        else -> @Suppress("DEPRECATION") windowInsets.systemWindowInsetBottom
     }
     
 }
