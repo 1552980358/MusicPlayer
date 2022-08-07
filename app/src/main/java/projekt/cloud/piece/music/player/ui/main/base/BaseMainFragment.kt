@@ -15,13 +15,14 @@ open class BaseMainFragment: BaseFragment() {
     
     protected lateinit var viewModel: MainViewModel
     
+    private val mainFragment: MainFragment
+        // Token from https://stackoverflow.com/a/63200538/11685230
+        get() = requireParentFragment()                 // NavHostFragment
+            .requireParentFragment() as MainFragment    // MainFragment
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(
-            // Token from https://stackoverflow.com/a/63200538/11685230
-            requireParentFragment()                         // NavHostFragment
-                .requireParentFragment() as MainFragment    // MainFragment
-        )[MainViewModel::class.java]
+        viewModel = ViewModelProvider(mainFragment)[MainViewModel::class.java]
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
