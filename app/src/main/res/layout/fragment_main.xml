@@ -1,47 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".MainActivity"
-    tools:openDrawer="start">
+    xmlns:tools="http://schemas.android.com/tools">
     
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <data>
+        <variable
+            name="viewModel"
+            type="projekt.cloud.piece.music.player.MainActivityViewModel" />
+    </data>
+    
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
-    
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        tools:context=".ui.main.MainFragment"
+        tools:openDrawer="start">
         
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/material_toolbar"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_width="match_parent" />
-    
-        </com.google.android.material.appbar.AppBarLayout>
-    
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragment_container_view"
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:name="androidx.navigation.fragment.NavHostFragment"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-            app:navGraph="@navigation/nav_graph_fragment_main" />
-        
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            android:fitsSystemWindows="true">
+            
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true">
+                
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/material_toolbar"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_width="match_parent" />
+            
+            </com.google.android.material.appbar.AppBarLayout>
+            
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragment_container_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+                app:navGraph="@navigation/nav_graph_fragment_main" />
+            
+            <RelativeLayout
+                android:id="@+id/relative_layout_bottom_play_bar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/md_spec_height_72"
+                android:background="@color/white"
+                android:layout_gravity="bottom"
+                android:translationY="@dimen/md_spec_height_72"
+                app:layout_behavior="projekt.cloud.piece.music.player.ui.main.BottomPlayBarBehavior">
+                
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/relative_layout_bottom_play_bar_container"
+                    android:background="?attr/selectableItemBackground"
+                    android:paddingHorizontal="@dimen/md_spec_spacing_horizontal_16"
+                    android:paddingVertical="@dimen/md_spec_spacing_vertical_16">
     
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigation_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:menu="@menu/nav_drawer_main" />
-
-</androidx.drawerlayout.widget.DrawerLayout>
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/app_compat_image_view"
+                        android:layout_width="@dimen/md_spec_size_40"
+                        android:layout_height="@dimen/md_spec_size_40"
+                        android:layout_marginEnd="@dimen/md_spec_spacing_horizontal_16"
+                        android:src="@{viewModel.artBitmapLiveData}" />
+    
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/material_text_view_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:layout_toEndOf="@id/app_compat_image_view"
+                        android:maxLines="1"
+                        android:text="@{viewModel.titleLiveData}"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+    
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:layout_below="@id/material_text_view_title"
+                        android:layout_toEndOf="@id/app_compat_image_view"
+                        android:maxLines="1"
+                        android:text="@{viewModel.artistLiveData + ` - ` + viewModel.albumLiveData}"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                    
+                </RelativeLayout>
+                    
+            </RelativeLayout>
+        
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/navigation_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"
+            app:menu="@menu/nav_drawer_main" />
+    
+    </androidx.drawerlayout.widget.DrawerLayout>
+    
+</layout>
