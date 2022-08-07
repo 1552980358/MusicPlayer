@@ -4,8 +4,14 @@ import android.content.ComponentName
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.navigation.ui.AppBarConfiguration
@@ -37,6 +43,8 @@ class MainActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
+    
+        val viewModel: MainActivityViewModel by viewModels()
         
         AudioDatabase.initial(this)
         
@@ -57,7 +65,12 @@ class MainActivity: AppCompatActivity() {
                     mediaControllerCompat.registerCallback(object : MediaControllerCompat.Callback() {
                         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
                         }
-                        override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
+                        override fun onMetadataChanged(mediaMetadataCompat: MediaMetadataCompat) {
+                            viewModel.setTitle(mediaMetadataCompat.getString(METADATA_KEY_TITLE))
+                            viewModel.setArtist(mediaMetadataCompat.getString(METADATA_KEY_ARTIST))
+                            viewModel.setAlbum(mediaMetadataCompat.getString(METADATA_KEY_ALBUM))
+                            viewModel.setArtBitmap(mediaMetadataCompat.getBitmap(METADATA_KEY_ALBUM_ART))
+                            viewModel.setDuration(mediaMetadataCompat.getLong(METADATA_KEY_DURATION))
                         }
                     })
                     
