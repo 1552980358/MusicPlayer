@@ -150,7 +150,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
         notificationHelper = NotificationHelper(this)
         playingQueue = PlayingQueue()
     
-        defaultArt = ContextCompat.getDrawable(this, R.drawable.ic_round_music_note_24)!!.toBitmap()
+        defaultArt = ContextCompat.getDrawable(this, R.drawable.ic_round_music_note_200)!!.toBitmap()
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
