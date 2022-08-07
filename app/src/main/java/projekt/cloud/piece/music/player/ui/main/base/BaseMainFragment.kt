@@ -37,4 +37,8 @@ open class BaseMainFragment: BaseFragment() {
         else -> @Suppress("DEPRECATION") windowInsets.systemWindowInsetBottom
     }
     
+    protected fun setBottomPlayBarEnable() {
+        mainFragment.setBottomPlayBarEnable()
+    }
+    
 }

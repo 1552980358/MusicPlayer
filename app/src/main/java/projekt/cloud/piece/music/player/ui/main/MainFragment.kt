@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -14,6 +17,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
+import projekt.cloud.piece.music.player.MainActivityViewModel
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.databinding.FragmentMainBinding
@@ -37,13 +41,20 @@ class MainFragment: BaseFragment() {
         get() = binding.fragmentContainerView
     private val navigationView: NavigationView
         get() = binding.navigationView
+    private val relativeLayoutBottomPlayBar: RelativeLayout
+        get() = binding.relativeLayoutBottomPlayBar
+    private val relativeLayoutBottomPlayBarContainer: RelativeLayout
+        get() = binding.relativeLayoutBottomPlayBarContainer
 
     private lateinit var navController: NavController
     
     private val viewModel: MainViewModel by viewModels()
+    private val activityViewModel: MainActivityViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
+        binding.viewModel = activityViewModel
+        binding.lifecycleOwner = this
         return root
     }
 
@@ -58,6 +69,8 @@ class MainFragment: BaseFragment() {
         )
         navigationView.setupWithNavController(navController)
     
+        relativeLayoutBottomPlayBarContainer.setOnClickListener {  }
+        
         when {
             isInitialized(requireContext()) -> viewModel.setInitialized(true)
             else -> initialize()
@@ -69,6 +82,13 @@ class MainFragment: BaseFragment() {
             .setCallback {
                 viewModel.setInitialized(true)
             }.showNow(parentFragmentManager)
+    }
+    
+    fun setBottomPlayBarEnable() {
+        @Suppress("UNCHECKED_CAST")
+        ((relativeLayoutBottomPlayBar.layoutParams as? CoordinatorLayout.LayoutParams)
+            ?.behavior as? BottomPlayBarBehavior<RelativeLayout>)
+            ?.setEnableAllowMoving(relativeLayoutBottomPlayBar)
     }
 
 }
