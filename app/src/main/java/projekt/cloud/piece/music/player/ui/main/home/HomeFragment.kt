@@ -35,6 +35,7 @@ class HomeFragment: BaseMainFragment() {
         
         recyclerViewAdapter = RecyclerViewAdapter(recyclerView) { audioMetadata, audioMetadataList ->
             playAudio(audioMetadata.id, audioMetadataList)
+            setBottomPlayBarEnable()
         }
         
         when (viewModel.isInitialized.value) {
