@@ -188,7 +188,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
         audioArt = null
         runBlocking {
             io {
-                fileOf(TYPE_ALBUM, audioMetadata.id, SUFFIX_LARGE).also { file ->
+                fileOf(TYPE_ALBUM, audioMetadata.album.id, SUFFIX_LARGE).also { file ->
                     if (file.exists()) {
                         audioArt = file.inputStream().use { BitmapFactory.decodeStream(it) }
                     }
