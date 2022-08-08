@@ -77,14 +77,13 @@
                         android:text="@{viewModel.titleLiveData}"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
     
-                    <com.google.android.material.textview.MaterialTextView
+                    <projekt.cloud.piece.music.player.widget.MetadataTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:ellipsize="end"
+                        album="@{viewModel.albumLiveData}"
+                        artist="@{viewModel.artistLiveData}"
                         android:layout_below="@id/material_text_view_title"
                         android:layout_toEndOf="@id/app_compat_image_view"
-                        android:maxLines="1"
-                        android:text="@{viewModel.artistLiveData + ` - ` + viewModel.albumLiveData}"
                         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
                     
                 </RelativeLayout>
