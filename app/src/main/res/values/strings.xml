@@ -12,4 +12,6 @@
     <string name="initial_content_loading_image">Loading image…</string>
     <string name="initial_content_storing_data">Storing data…</string>
     
+    <string name="main_to_play_shared_container">main_to_play_shared_container</string>
+    
 </resources>
