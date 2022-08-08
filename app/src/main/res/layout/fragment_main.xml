@@ -46,10 +46,10 @@
             <RelativeLayout
                 android:id="@+id/relative_layout_bottom_play_bar"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/md_spec_height_72"
+                android:layout_height="@dimen/md_spec_height_56"
                 android:background="?android:colorBackground"
                 android:layout_gravity="bottom"
-                android:translationY="@dimen/md_spec_height_72"
+                android:translationY="@dimen/md_spec_height_56"
                 app:layout_behavior="projekt.cloud.piece.music.player.ui.main.BottomPlayBarBehavior">
                 
                 <RelativeLayout
@@ -58,7 +58,7 @@
                     android:id="@+id/relative_layout_bottom_play_bar_container"
                     android:background="?attr/selectableItemBackground"
                     android:paddingHorizontal="@dimen/md_spec_spacing_horizontal_16"
-                    android:paddingVertical="@dimen/md_spec_spacing_vertical_16">
+                    android:paddingVertical="@dimen/md_spec_spacing_vertical_8">
     
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/app_compat_image_view"
