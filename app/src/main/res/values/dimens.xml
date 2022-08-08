@@ -6,5 +6,6 @@
     <dimen name="md_spec_spacing_vertical_8">8dp</dimen>
     <dimen name="md_spec_spacing_vertical_16">16dp</dimen>
     <dimen name="md_spec_height_72">72dp</dimen>
+    <dimen name="md_spec_height_56">56dp</dimen>
     <dimen name="md_spec_size_40">40dp</dimen>
 </resources>
