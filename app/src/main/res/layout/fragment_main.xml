@@ -49,6 +49,7 @@
                 android:layout_height="@dimen/md_spec_height_56"
                 android:background="?android:colorBackground"
                 android:layout_gravity="bottom"
+                android:transitionName="@string/main_to_play_shared_container"
                 android:translationY="@dimen/md_spec_height_56"
                 app:layout_behavior="projekt.cloud.piece.music.player.ui.main.BottomPlayBarBehavior">
                 
