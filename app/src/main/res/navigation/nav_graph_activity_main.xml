@@ -10,6 +10,16 @@
         android:id="@+id/main_fragment"
         android:name="projekt.cloud.piece.music.player.ui.main.MainFragment"
         android:label="MainFragment"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_main_fragment_to_play_fragment"
+            app:destination="@id/play_fragment" />
+    </fragment>
+    
+    <fragment
+        android:id="@+id/play_fragment"
+        android:name="projekt.cloud.piece.music.player.ui.play.PlayFragment"
+        android:label="PlayFragment"
+        tools:layout="@layout/fragment_play" />
     
 </navigation>
