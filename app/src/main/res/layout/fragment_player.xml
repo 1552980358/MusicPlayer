@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <data>
+        <variable
+            name="viewModel"
+            type="projekt.cloud.piece.music.player.MainActivityViewModel" />
+    </data>
+    
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+    
+        <projekt.cloud.piece.music.player.widget.TransitionImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            bitmap="@{viewModel.artBitmapLiveData}" />
+    
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingVertical="@dimen/md_spec_spacing_vertical_16"
+            android:paddingHorizontal="@dimen/md_spec_spacing_horizontal_16"
+            android:layout_weight="1">
+        
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="@{viewModel.titleLiveData}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+        
+            <projekt.cloud.piece.music.player.widget.MetadataTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                artist="@{viewModel.artistLiveData}"
+                album="@{viewModel.albumLiveData}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+    
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        
+    </androidx.appcompat.widget.LinearLayoutCompat>
+    
+</layout>
