@@ -43,6 +43,9 @@ class PlayingQueue {
         return audioMetadataList[_currentIndex]
     }
     
+    val isLast: Boolean
+        get() = _currentIndex == audioMetadataList.lastIndex
+    
     fun setShuffle(isShuffle: Boolean): ArrayList<AudioMetadata> {
         val current = current
         when {
