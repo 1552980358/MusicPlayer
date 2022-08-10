@@ -32,4 +32,11 @@ class MainActivityViewModel: ViewModel() {
     val durationLiveData: LiveData<Long>
         get() = _duration
     
+    private val _playbackState = MutableLiveData<Int>()
+    fun setPlaybackState(playbackState: Int) {
+        _playbackState.value = playbackState
+    }
+    val playbackState: LiveData<Int>
+        get() = _playbackState
+    
 }
