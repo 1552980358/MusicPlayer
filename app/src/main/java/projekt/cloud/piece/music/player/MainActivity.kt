@@ -63,9 +63,11 @@ class MainActivity: AppCompatActivity() {
                     
                     val mediaControllerCompat = MediaControllerCompat(this@MainActivity, mediaBrowserCompat.sessionToken)
                     mediaControllerCompat.registerCallback(object : MediaControllerCompat.Callback() {
+                        
                         override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
                             viewModel.setPlaybackState(state.state)
                         }
+                        
                         override fun onMetadataChanged(mediaMetadataCompat: MediaMetadataCompat) {
                             viewModel.setTitle(mediaMetadataCompat.getString(METADATA_KEY_TITLE))
                             viewModel.setArtist(mediaMetadataCompat.getString(METADATA_KEY_ARTIST))
@@ -73,6 +75,18 @@ class MainActivity: AppCompatActivity() {
                             viewModel.setArtBitmap(mediaMetadataCompat.getBitmap(METADATA_KEY_ALBUM_ART))
                             viewModel.setDuration(mediaMetadataCompat.getLong(METADATA_KEY_DURATION))
                         }
+    
+                        override fun onRepeatModeChanged(repeatMode: Int) {
+                            viewModel.setRepeatMode(repeatMode)
+                        }
+    
+                        override fun onShuffleModeChanged(shuffleMode: Int) {
+                            viewModel.setShuffleMode(shuffleMode)
+                        }
+    
+                        override fun onExtrasChanged(extras: Bundle?) {
+                        }
+                        
                     })
                     
                     MediaControllerCompat.setMediaController(this@MainActivity, mediaControllerCompat)
