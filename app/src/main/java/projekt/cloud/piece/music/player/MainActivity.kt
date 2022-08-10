@@ -89,6 +89,10 @@ class MainActivity: AppCompatActivity() {
                         
                     })
                     
+                    // Update repeat and shuffle mode
+                    viewModel.setRepeatMode(mediaControllerCompat.repeatMode)
+                    viewModel.setShuffleMode(mediaControllerCompat.shuffleMode)
+                    
                     MediaControllerCompat.setMediaController(this@MainActivity, mediaControllerCompat)
                 }
                 override fun onConnectionFailed() {
