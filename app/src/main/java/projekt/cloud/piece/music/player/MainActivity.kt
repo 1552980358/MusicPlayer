@@ -63,7 +63,8 @@ class MainActivity: AppCompatActivity() {
                     
                     val mediaControllerCompat = MediaControllerCompat(this@MainActivity, mediaBrowserCompat.sessionToken)
                     mediaControllerCompat.registerCallback(object : MediaControllerCompat.Callback() {
-                        override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
+                        override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
+                            viewModel.setPlaybackState(state.state)
                         }
                         override fun onMetadataChanged(mediaMetadataCompat: MediaMetadataCompat) {
                             viewModel.setTitle(mediaMetadataCompat.getString(METADATA_KEY_TITLE))
