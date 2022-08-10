@@ -42,6 +42,7 @@ import androidx.media.session.MediaButtonReceiver
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.Player.STATE_ENDED
 import kotlinx.coroutines.runBlocking
 import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
 import projekt.cloud.piece.music.player.R
@@ -228,6 +229,22 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     }
     
     override fun onPlaybackStateChanged(playbackState: Int) {
+        if (playbackState == STATE_ENDED) {
+            when (repeatMode) {
+                REPEAT_MODE_ALL -> playAudioMetadata(playingQueue.next)
+                REPEAT_MODE_ONE -> playAudioMetadata(playingQueue.current)
+                else -> {
+                    if (!playingQueue.isLast) {
+                        return playAudioMetadata(playingQueue.next)
+                    }
+                    playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                        .setState(STATE_PAUSED, 0, DEFAULT_PLAYBACK_SPEED)
+                        .build()
+                    mediaSessionCompat.setPlaybackState(playbackStateCompat)
+                    startSelf { putExtra(ACTION_START_COMMAND, ACTION_START_COMMAND_PAUSE) }
+                }
+            }
+        }
     }
     
     private fun playAudioMetadata(audioMetadata: AudioMetadata) {
