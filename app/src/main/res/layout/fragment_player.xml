@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <data>
         <variable
@@ -20,27 +23,90 @@
     
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingVertical="@dimen/md_spec_spacing_vertical_16"
-            android:paddingHorizontal="@dimen/md_spec_spacing_horizontal_16"
-            android:layout_weight="1">
-        
-            <com.google.android.material.textview.MaterialTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:text="@{viewModel.titleLiveData}"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
-        
-            <projekt.cloud.piece.music.player.widget.MetadataTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                artist="@{viewModel.artistLiveData}"
-                album="@{viewModel.albumLiveData}"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
     
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                android:paddingVertical="@dimen/md_spec_spacing_vertical_16"
+                android:paddingHorizontal="@dimen/md_spec_spacing_horizontal_16"
+                android:layout_weight="1">
+        
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:text="@{viewModel.titleLiveData}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+        
+                <projekt.cloud.piece.music.player.widget.MetadataTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    artist="@{viewModel.artistLiveData}"
+                    album="@{viewModel.albumLiveData}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+    
+            </androidx.appcompat.widget.LinearLayoutCompat>
+    
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+                </RelativeLayout>
+    
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2.5">
+                    
+                    <projekt.cloud.piece.music.player.widget.PlaybackStateButton
+                        android:id="@+id/playback_state_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/md_spec_spacing_horizontal_16"
+                        android:layout_centerInParent="true"
+                        app:backgroundTint="@color/white"
+                        app:tint="@color/black"
+                        tools:ignore="ContentDescription"
+                        playbackState="@{viewModel.playbackState}" />
+    
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/app_compat_image_button_prev"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:layout_toStartOf="@id/playback_state_button"
+                        android:layout_centerVertical="true"
+                        app:srcCompat="@drawable/ic_baseline_skip_previous_24" />
+    
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/app_compat_image_button_next"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:layout_toEndOf="@id/playback_state_button"
+                        android:layout_centerVertical="true"
+                        app:srcCompat="@drawable/ic_baseline_skip_next_24" />
+                    
+                </RelativeLayout>
+    
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+                </RelativeLayout>
+                
+            </androidx.appcompat.widget.LinearLayoutCompat>
+            
         </androidx.appcompat.widget.LinearLayoutCompat>
         
     </androidx.appcompat.widget.LinearLayoutCompat>
