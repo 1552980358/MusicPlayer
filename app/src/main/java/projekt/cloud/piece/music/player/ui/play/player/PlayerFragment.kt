@@ -11,7 +11,9 @@ import androidx.fragment.app.activityViewModels
 import projekt.cloud.piece.music.player.MainActivityViewModel
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.databinding.FragmentPlayerBinding
+import projekt.cloud.piece.music.player.service.play.ServiceConstants.CUSTOM_ACTION_SHUFFLE_MODE
 import projekt.cloud.piece.music.player.widget.PlaybackStateButton
+import projekt.cloud.piece.music.player.widget.ShuffleButton
 
 class PlayerFragment: BaseFragment(), View.OnClickListener {
     
@@ -26,6 +28,8 @@ class PlayerFragment: BaseFragment(), View.OnClickListener {
         get() = binding.appCompatImageButtonPrev
     private val appCompatImageButtonNext: AppCompatImageButton
         get() = binding.appCompatImageButtonNext
+    private val shuffleButton: ShuffleButton
+        get() = binding.shuffleButton
     
     private val activityViewModel: MainActivityViewModel by activityViewModels()
     
@@ -40,6 +44,7 @@ class PlayerFragment: BaseFragment(), View.OnClickListener {
         playbackStateButton.setOnClickListener(this)
         appCompatImageButtonPrev.setOnClickListener(this)
         appCompatImageButtonNext.setOnClickListener(this)
+        shuffleButton.setOnClickListener(this)
     }
     
     override fun onClick(v: View?) {
@@ -50,6 +55,7 @@ class PlayerFragment: BaseFragment(), View.OnClickListener {
             }
             appCompatImageButtonPrev -> skipToPrevious()
             appCompatImageButtonNext -> skipToNext()
+            shuffleButton -> sendCustomAction(CUSTOM_ACTION_SHUFFLE_MODE)
         }
     }
 

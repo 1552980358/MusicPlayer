@@ -103,6 +103,15 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1">
+                    
+                    <projekt.cloud.piece.music.player.widget.ShuffleButton
+                        android:id="@+id/shuffle_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:layout_centerInParent="true"
+                        shuffleMode="@{viewModel.shuffleMode}" />
+                    
                 </RelativeLayout>
                 
             </androidx.appcompat.widget.LinearLayoutCompat>
