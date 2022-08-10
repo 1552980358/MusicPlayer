@@ -103,13 +103,13 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
                     startSelf { putExtra(ACTION_START_COMMAND, ACTION_START_COMMAND_PLAY) }
                 }
                 override fun onPause() {
-                    if (playbackStateCompat.state != STATE_PLAYING || exoPlayer.isPlaying) {
+                    if (playbackStateCompat.state != STATE_PLAYING || !exoPlayer.isPlaying) {
                         return
                     }
                     exoPlayer.pause()
     
                     playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
-                        .setState(STATE_PLAYING, exoPlayer.currentPosition, DEFAULT_PLAYBACK_SPEED)
+                        .setState(STATE_PAUSED, exoPlayer.currentPosition, DEFAULT_PLAYBACK_SPEED)
                         .build()
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
     
