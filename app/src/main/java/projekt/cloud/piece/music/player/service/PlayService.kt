@@ -179,6 +179,8 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
                 
             })
             setPlaybackState(playbackStateCompat)
+            setRepeatMode(repeatMode)
+            setShuffleMode(shuffleMode)
             isActive = true
             
             this@PlayService.sessionToken = sessionToken
