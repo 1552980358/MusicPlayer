@@ -9,6 +9,10 @@ object ServiceConstants {
     const val ACTION_START_COMMAND_PLAY = "${APPLICATION_ID}.PlayService.play"
     const val ACTION_START_COMMAND_PAUSE = "${APPLICATION_ID}.PlayService.pause"
     
+    /** Custom Action **/
+    const val CUSTOM_ACTION_REPEAT_MODE = "${APPLICATION_ID}.PlayService.repeat"
+    const val CUSTOM_ACTION_SHUFFLE_MODE = "${APPLICATION_ID}.PlayService.shuffle"
+    
     /** Extra Keys **/
     const val EXTRA_AUDIO_METADATA_LIST = "audio_metadata_list"
     
