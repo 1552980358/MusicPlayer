@@ -79,6 +79,8 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     private var playbackStateCompat = PlaybackStateCompat.Builder()
         .setState(STATE_NONE, 0, DEFAULT_PLAYBACK_SPEED)
         .setActions(PLAYBACK_STATE_ACTIONS)
+        .addCustomAction(CUSTOM_ACTION_REPEAT_MODE, CUSTOM_ACTION_REPEAT_MODE, R.drawable.ic_launcher_foreground)
+        .addCustomAction(CUSTOM_ACTION_SHUFFLE_MODE, CUSTOM_ACTION_SHUFFLE_MODE, R.drawable.ic_launcher_foreground)
         .build()
     private lateinit var mediaSessionCompat: MediaSessionCompat
     private val transportControls: MediaControllerCompat.TransportControls
