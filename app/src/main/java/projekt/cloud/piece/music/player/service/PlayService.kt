@@ -25,12 +25,18 @@ import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_NEXT
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_STOP
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ALL
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_NONE
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ONE
+import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
+import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_NONE
 import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.os.bundleOf
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import com.google.android.exoplayer2.ExoPlayer
@@ -45,6 +51,8 @@ import projekt.cloud.piece.music.player.service.play.PlayingQueue
 import projekt.cloud.piece.music.player.service.play.ServiceConstants.ACTION_START_COMMAND
 import projekt.cloud.piece.music.player.service.play.ServiceConstants.ACTION_START_COMMAND_PAUSE
 import projekt.cloud.piece.music.player.service.play.ServiceConstants.ACTION_START_COMMAND_PLAY
+import projekt.cloud.piece.music.player.service.play.ServiceConstants.CUSTOM_ACTION_REPEAT_MODE
+import projekt.cloud.piece.music.player.service.play.ServiceConstants.CUSTOM_ACTION_SHUFFLE_MODE
 import projekt.cloud.piece.music.player.service.play.ServiceConstants.EXTRA_AUDIO_METADATA_LIST
 import projekt.cloud.piece.music.player.util.ArtUtil.SUFFIX_LARGE
 import projekt.cloud.piece.music.player.util.ArtUtil.TYPE_ALBUM
@@ -75,6 +83,12 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     private lateinit var mediaSessionCompat: MediaSessionCompat
     private val transportControls: MediaControllerCompat.TransportControls
         get() = mediaSessionCompat.controller.transportControls
+    
+    @PlaybackStateCompat.RepeatMode
+    private var repeatMode = REPEAT_MODE_ALL
+    
+    @PlaybackStateCompat.ShuffleMode
+    private var shuffleMode = SHUFFLE_MODE_ALL
     
     private var isForeground = false
     
@@ -132,8 +146,35 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
                 }
                 override fun onSeekTo(pos: Long) {
                 }
+                
                 override fun onCustomAction(action: String, extras: Bundle) {
+                    when (action) {
+                        
+                        CUSTOM_ACTION_REPEAT_MODE -> {
+                            repeatMode = when (repeatMode) {
+                                REPEAT_MODE_ALL -> REPEAT_MODE_ONE
+                                REPEAT_MODE_ONE -> REPEAT_MODE_NONE
+                                REPEAT_MODE_NONE -> REPEAT_MODE_ALL
+                                else -> REPEAT_MODE_ALL
+                            }
+                            mediaSessionCompat.setRepeatMode(repeatMode)
+                        }
+                        
+                        CUSTOM_ACTION_SHUFFLE_MODE -> {
+                            shuffleMode = when (shuffleMode) {
+                                SHUFFLE_MODE_ALL -> SHUFFLE_MODE_NONE
+                                SHUFFLE_MODE_NONE -> SHUFFLE_MODE_ALL
+                                else -> SHUFFLE_MODE_ALL
+                            }
+                            mediaSessionCompat.setShuffleMode(shuffleMode)
+                            mediaSessionCompat.setExtras(
+                                bundleOf(EXTRA_AUDIO_METADATA_LIST to playingQueue.setShuffle(shuffleMode == SHUFFLE_MODE_ALL))
+                            )
+                        }
+                        
+                    }
                 }
+                
             })
             setPlaybackState(playbackStateCompat)
             isActive = true
