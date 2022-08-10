@@ -1,6 +1,7 @@
 package projekt.cloud.piece.music.player
 
 import android.graphics.Bitmap
+import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -38,5 +39,19 @@ class MainActivityViewModel: ViewModel() {
     }
     val playbackState: LiveData<Int>
         get() = _playbackState
+    
+    private val _repeatMode = MutableLiveData<Int>()
+    fun setRepeatMode(@PlaybackStateCompat.RepeatMode repeatMode: Int) {
+        _repeatMode.value = repeatMode
+    }
+    val repeatMode: LiveData<Int>
+        get() = _repeatMode
+    
+    private val _shuffleMode = MutableLiveData<Int>()
+    fun setShuffleMode(@PlaybackStateCompat.ShuffleMode shuffleMode: Int) {
+        _shuffleMode.value = shuffleMode
+    }
+    val shuffleMode: LiveData<Int>
+        get() = _shuffleMode
     
 }
