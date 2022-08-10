@@ -43,4 +43,14 @@ class PlayingQueue {
         return audioMetadataList[_currentIndex]
     }
     
+    fun setShuffle(isShuffle: Boolean): ArrayList<AudioMetadata> {
+        val current = current
+        when {
+            isShuffle -> audioMetadataList.shuffle()
+            else -> audioMetadataList.sortBy { it.title }
+        }
+        _currentIndex = audioMetadataList.indexOfFirst { it.id == current.id }
+        return audioMetadataList
+    }
+    
 }
