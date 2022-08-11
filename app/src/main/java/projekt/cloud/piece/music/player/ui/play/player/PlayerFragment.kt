@@ -11,8 +11,10 @@ import androidx.fragment.app.activityViewModels
 import projekt.cloud.piece.music.player.MainActivityViewModel
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.databinding.FragmentPlayerBinding
+import projekt.cloud.piece.music.player.service.play.ServiceConstants.CUSTOM_ACTION_REPEAT_MODE
 import projekt.cloud.piece.music.player.service.play.ServiceConstants.CUSTOM_ACTION_SHUFFLE_MODE
 import projekt.cloud.piece.music.player.widget.PlaybackStateButton
+import projekt.cloud.piece.music.player.widget.RepeatButton
 import projekt.cloud.piece.music.player.widget.ShuffleButton
 
 class PlayerFragment: BaseFragment(), View.OnClickListener {
@@ -22,6 +24,8 @@ class PlayerFragment: BaseFragment(), View.OnClickListener {
         get() = _binding!!
     private val root get() = binding.root
     
+    private val repeatButton: RepeatButton
+        get() = binding.repeatButton
     private val playbackStateButton: PlaybackStateButton
         get() = binding.playbackStateButton
     private val appCompatImageButtonPrev: AppCompatImageButton
@@ -41,6 +45,7 @@ class PlayerFragment: BaseFragment(), View.OnClickListener {
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        repeatButton.setOnClickListener(this)
         playbackStateButton.setOnClickListener(this)
         appCompatImageButtonPrev.setOnClickListener(this)
         appCompatImageButtonNext.setOnClickListener(this)
@@ -49,6 +54,7 @@ class PlayerFragment: BaseFragment(), View.OnClickListener {
     
     override fun onClick(v: View?) {
         when (v) {
+            repeatButton -> sendCustomAction(CUSTOM_ACTION_REPEAT_MODE)
             playbackStateButton -> when (playbackStateButton.switchPlaybackState()) {
                 STATE_PLAYING -> play()
                 STATE_PAUSED -> pause()
