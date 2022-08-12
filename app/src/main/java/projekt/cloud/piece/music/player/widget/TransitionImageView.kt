@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View.MeasureSpec.EXACTLY
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -11,7 +12,6 @@ import android.view.ViewPropertyAnimator
 import android.widget.ImageView.ScaleType.FIT_XY
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.BindingAdapter
-import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
 import kotlin.math.min
 
 class TransitionImageView(context: Context, attributeSet: AttributeSet? = null): ViewGroup(context, attributeSet) {
@@ -38,6 +38,11 @@ class TransitionImageView(context: Context, attributeSet: AttributeSet? = null):
     init {
         appCompatImageView.scaleType = FIT_XY
         addView(appCompatImageView, LayoutParams(MATCH_PARENT, MATCH_PARENT))
+        val typedValue = TypedValue()
+        context.theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
+        if (typedValue.type >= TypedValue.TYPE_FIRST_COLOR_INT && typedValue.type <= TypedValue.TYPE_LAST_COLOR_INT) {
+            appCompatImageView.setBackgroundColor(typedValue.data)
+        }
     }
     
     private val isCovered: Boolean
