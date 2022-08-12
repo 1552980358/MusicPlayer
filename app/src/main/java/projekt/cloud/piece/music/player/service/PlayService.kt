@@ -98,8 +98,8 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     private lateinit var notificationHelper: NotificationHelper
     private lateinit var playingQueue: PlayingQueue
     
-    private var audioArt: Bitmap? = null
-    private lateinit var defaultArt: Bitmap
+    private var hasBitmapImage = false
+    private lateinit var audioArt: Bitmap
     
     override fun onCreate() {
         super.onCreate()
@@ -206,14 +206,11 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     
         notificationHelper = NotificationHelper(this)
         playingQueue = PlayingQueue()
-    
-        defaultArt = ContextCompat.getDrawable(this, R.drawable.ic_round_music_note_200)!!.toBitmap()
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.getStringExtra(ACTION_START_COMMAND)) {
             ACTION_START_COMMAND_PLAY -> {
-                val audioArt = audioArt ?: defaultArt
                 when {
                     isForeground -> {
                         notificationHelper.startForeground(this, playingQueue.current, audioArt)
@@ -223,7 +220,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
                 }
             }
             ACTION_START_COMMAND_PAUSE -> {
-                notificationHelper.startForeground(this, playingQueue.current, audioArt ?: defaultArt)
+                notificationHelper.startForeground(this, playingQueue.current, audioArt)
                 stopForeground(false)
                 isForeground = false
             }
@@ -258,16 +255,22 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     }
     
     private fun playAudioMetadata(audioMetadata: AudioMetadata) {
-        audioArt = null
         runBlocking {
             io {
+                var bitmap: Bitmap? = null
+                hasBitmapImage = false
                 fileOf(TYPE_ALBUM, audioMetadata.album.id, SUFFIX_LARGE).also { file ->
                     if (file.exists()) {
-                        audioArt = file.inputStream().use { BitmapFactory.decodeStream(it) }
+                        bitmap = file.inputStream().use { BitmapFactory.decodeStream(it) }
+                        hasBitmapImage = true
                     }
                 }
+                this@PlayService.audioArt = when (val audioArt = bitmap) {
+                    null -> ContextCompat.getDrawable(this@PlayService, R.drawable.ic_round_music_note_200)!!.toBitmap()
+                    else -> audioArt
+                }
             }
-    
+            
             playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
                 .setState(STATE_BUFFERING, 0, DEFAULT_PLAYBACK_SPEED)
                 .build()
@@ -284,8 +287,8 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
                 .putString(METADATA_KEY_ALBUM, audioMetadata.albumTitle)
                 .putString(METADATA_KEY_MEDIA_ID, audioMetadata.id)
                 .putLong(METADATA_KEY_DURATION, audioMetadata.duration)
-                .putString(METADATA_KEY_ALBUM_ART_URI, audioMetadata.album.uri.toString().takeIf { audioArt != null })
-                .putBitmap(METADATA_KEY_ALBUM_ART, audioArt ?: defaultArt)
+                .putString(METADATA_KEY_ALBUM_ART_URI, audioMetadata.album.id.takeIf { hasBitmapImage })
+                .putBitmap(METADATA_KEY_ALBUM_ART, audioArt)
                 .build()
         )
     
