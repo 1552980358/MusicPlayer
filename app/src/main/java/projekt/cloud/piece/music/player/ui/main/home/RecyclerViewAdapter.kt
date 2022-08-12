@@ -30,7 +30,7 @@ class RecyclerViewAdapter(recyclerView: RecyclerView, private val onClick: (Audi
                     artFile.exists() -> artFile.inputStream().use {  BitmapFactory.decodeStream(it) }.let { bitmap ->
                         ui { layoutRecyclerHomeBinding.appCompatImageView.setImageBitmap(bitmap) }
                     }
-                    else -> ui { layoutRecyclerHomeBinding.appCompatImageView.setImageResource(R.drawable.ic_round_music_note_24) }
+                    else -> ui { layoutRecyclerHomeBinding.appCompatImageView.setImageResource(R.drawable.ic_round_music_note_frame_24) }
                 }
                 job = null
             }
