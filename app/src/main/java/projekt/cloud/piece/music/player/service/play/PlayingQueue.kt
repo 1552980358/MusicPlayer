@@ -43,6 +43,9 @@ class PlayingQueue {
         return audioMetadataList[_currentIndex]
     }
     
+    val isFirst: Boolean
+        get() = _currentIndex == 0
+    
     val isLast: Boolean
         get() = _currentIndex == audioMetadataList.lastIndex
     
