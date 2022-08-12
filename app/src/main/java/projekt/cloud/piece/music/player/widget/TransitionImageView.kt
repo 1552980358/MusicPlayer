@@ -61,7 +61,7 @@ class TransitionImageView(context: Context, attributeSet: AttributeSet? = null):
         if (appCompatImageView.drawable == null) {
             return appCompatImageView.setImageBitmap(bitmap)
         }
-        ui { animator?.cancel() }
+        animator?.cancel()
         when {
             isCovered -> animateImageViewCovered(bitmap)
             else -> animateImageViewNotCovered(bitmap)
@@ -83,7 +83,7 @@ class TransitionImageView(context: Context, attributeSet: AttributeSet? = null):
             .setDuration(DEFAULT_DURATION)
             .alpha(alpha)
             .withEndAction { animator = null }
-        ui { animator?.start() }
+        animator?.start()
     }
     
 }
