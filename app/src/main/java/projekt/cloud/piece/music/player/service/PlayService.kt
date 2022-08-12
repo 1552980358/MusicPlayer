@@ -142,9 +142,19 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
                 )
                 
                 override fun onSkipToPrevious() {
+                    if (repeatMode == REPEAT_MODE_NONE && playingQueue.isFirst) {
+                        return playAudioMetadata(playingQueue.current)
+                    }
+                    playAudioMetadata(playingQueue.prev)
                 }
+                
                 override fun onSkipToNext() {
+                    if (repeatMode == REPEAT_MODE_NONE && playingQueue.isLast) {
+                        return playAudioMetadata(playingQueue.current)
+                    }
+                    playAudioMetadata(playingQueue.next)
                 }
+                
                 override fun onSkipToQueueItem(id: Long) {
                 }
                 override fun onSeekTo(pos: Long) {
