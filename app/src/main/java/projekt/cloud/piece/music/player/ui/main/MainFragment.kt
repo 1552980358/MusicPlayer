@@ -90,6 +90,11 @@ class MainFragment: BaseFragment() {
                 FragmentNavigatorExtras(relativeLayoutBottomPlayBar to relativeLayoutBottomPlayBar.transitionName)
             )
         }
+    
+        if (viewModel.isInitialized.value == true) {
+            relativeLayoutBottomPlayBar.translationY = 0F
+            setBottomPlayBarEnable(false)
+        }
         
         when {
             isInitialized(requireContext()) -> viewModel.setInitialized(true)
@@ -99,9 +104,8 @@ class MainFragment: BaseFragment() {
     
     private fun initialize() = ui {
         InitialDialogFragment()
-            .setCallback {
-                viewModel.setInitialized(true)
-            }.showNow(parentFragmentManager)
+            .setCallback { viewModel.setInitialized(true) }
+            .showNow(parentFragmentManager)
     }
     
     fun setBottomPlayBarEnable(requireSlideUp: Boolean) {
