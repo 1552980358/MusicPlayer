@@ -13,13 +13,15 @@ class BottomPlayBarBehavior<V: View>: HideBottomViewOnScrollBehavior<V> {
     
     private var isAllowMoving = false
     
-    fun setEnableAllowMoving(child: V) {
+    fun setEnableAllowMoving(child: V, requireSlideUp: Boolean) {
         if (!isAllowMoving) {
             isAllowMoving = true
-            // Reset state
-            slideDown(child, false)
-            // Show it
-            slideUp(child)
+            if (requireSlideUp) {
+                // Reset state
+                slideDown(child, false)
+                // Show it
+                slideUp(child)
+            }
         }
     }
     

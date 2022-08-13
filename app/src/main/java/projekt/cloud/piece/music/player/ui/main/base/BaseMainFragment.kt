@@ -38,7 +38,7 @@ open class BaseMainFragment: BaseFragment() {
     }
     
     protected fun setBottomPlayBarEnable() {
-        mainFragment.setBottomPlayBarEnable()
+        mainFragment.setBottomPlayBarEnable(true)
     }
     
 }

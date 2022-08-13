@@ -48,6 +48,11 @@ class MainFragment: BaseFragment() {
         get() = binding.relativeLayoutBottomPlayBar
     private val relativeLayoutBottomPlayBarContainer: RelativeLayout
         get() = binding.relativeLayoutBottomPlayBarContainer
+    
+    private val bottomPlayBarBehavior: BottomPlayBarBehavior<RelativeLayout>?
+        @Suppress("UNCHECKED_CAST")
+        get() = (relativeLayoutBottomPlayBar.layoutParams as? CoordinatorLayout.LayoutParams)
+            ?.behavior as? BottomPlayBarBehavior<RelativeLayout>
 
     private lateinit var childNavController: NavController
     private lateinit var navController: NavController
@@ -99,11 +104,8 @@ class MainFragment: BaseFragment() {
             }.showNow(parentFragmentManager)
     }
     
-    fun setBottomPlayBarEnable() {
-        @Suppress("UNCHECKED_CAST")
-        ((relativeLayoutBottomPlayBar.layoutParams as? CoordinatorLayout.LayoutParams)
-            ?.behavior as? BottomPlayBarBehavior<RelativeLayout>)
-            ?.setEnableAllowMoving(relativeLayoutBottomPlayBar)
+    fun setBottomPlayBarEnable(requireSlideUp: Boolean) {
+        bottomPlayBarBehavior?.setEnableAllowMoving(relativeLayoutBottomPlayBar, requireSlideUp)
     }
 
 }
