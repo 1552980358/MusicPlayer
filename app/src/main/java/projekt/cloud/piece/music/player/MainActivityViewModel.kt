@@ -2,9 +2,14 @@ package projekt.cloud.piece.music.player
 
 import android.graphics.Bitmap
 import android.support.v4.media.session.PlaybackStateCompat
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivityViewModel: ViewModel() {
 
@@ -53,5 +58,30 @@ class MainActivityViewModel: ViewModel() {
     }
     val shuffleMode: LiveData<Int>
         get() = _shuffleMode
+    
+    private val _position = MutableLiveData<Long>(0)
+    private var positionCountUpJob: Job? = null
+    fun setPosition(position: Long) {
+        _position.value = position
+        if (playbackState.value == STATE_PLAYING) {
+            positionCountUpJob?.cancel()
+            positionCountUpJob = startPositionCountUp(position)
+        }
+    }
+    val position: LiveData<Long>
+        get() = _position
+    
+    private fun startPositionCountUp(position: Long) = viewModelScope.launch {
+        val remain = position % 1000L
+        if (remain  != 0L) {
+            delay(remain)
+        }
+        var current = position + remain
+        while (playbackState.value == STATE_PLAYING) {
+            _position.postValue(current)
+            delay(1000L)
+            current += 1000L
+        }
+    }
     
 }
