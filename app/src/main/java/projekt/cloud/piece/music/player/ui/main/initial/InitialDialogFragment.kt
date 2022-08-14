@@ -80,7 +80,10 @@ class InitialDialogFragment: DialogFragment() {
                 audioDao().insert(*audioList.toTypedArray())
             }
             setInitialized()
-            ui { dismissNow() }
+            ui {
+                callback?.invoke()
+                dismissNow()
+            }
         }
     }
     
