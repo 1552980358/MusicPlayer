@@ -66,6 +66,7 @@ class MainActivity: AppCompatActivity() {
                         
                         override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
                             viewModel.setPlaybackState(state.state)
+                            viewModel.setPosition(state.position)
                         }
                         
                         override fun onMetadataChanged(mediaMetadataCompat: MediaMetadataCompat) {
