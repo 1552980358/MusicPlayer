@@ -27,16 +27,17 @@ class PlaybackStateButton(context: Context, attributeSet: AttributeSet? = null):
     @Volatile
     private var playbackState: Int? = null
         set(value) {
-            val prev = field
-            field = value
-            updatePlaybackState(prev, field!!)
+            if (value != STATE_BUFFERING) {
+                val prev = field
+                field = value
+                updatePlaybackState(prev, field!!)
+            }
         }
     
     private fun updatePlaybackState(prev: Int?, current: Int) {
         when {
             
-            (prev == STATE_PAUSED && current == STATE_PLAYING)
-                || (prev == STATE_BUFFERING && current == STATE_PLAYING) ->
+            (prev == STATE_PAUSED && current == STATE_PLAYING) ->
                 setImageResource(R.drawable.anim_baseline_play_24)
             
             (prev == STATE_PLAYING && current == STATE_PAUSED) ->
