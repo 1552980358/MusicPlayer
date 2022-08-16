@@ -71,7 +71,6 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
     private var duration = 1L
         set(value) {
             field = value
-            invalidate()
             graduallyMoveProgress(currentProgressPos, getWidthPosition(width.toFloat(), height.toFloat()))
         }
     
@@ -128,6 +127,11 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
         // Draw duration
         canvas.drawPath(durationPath, durationPaint)
         
+        // Check pos
+        if (currentProgressPos == 0F && progress > 0 && animator == null) {
+            currentProgressPos = getWidthPosition(width.toFloat(), height)
+        }
+    
         // Draw path
         progressPath.reset()
         progressPath.addRoundRect(PAINT_START_POINT_X_Y, PAINT_START_POINT_X_Y, currentProgressPos + height, height, corners, Path.Direction.CW)
@@ -141,6 +145,10 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
     
     private fun graduallyMoveProgress(from: Float, to: Float) {
         animator?.end()
+        if (from == to) {
+            animator = null
+            return invalidate()
+        }
         animator = ValueAnimator.ofFloat(from, to)
             .setDuration(ANIMATOR_DURATION)
             .apply {
