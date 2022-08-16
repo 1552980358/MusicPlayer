@@ -25,31 +25,52 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-    
-            <androidx.appcompat.widget.LinearLayoutCompat
+            
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:orientation="vertical"
+                android:layout_weight="1"
                 android:paddingVertical="@dimen/md_spec_spacing_vertical_16"
-                android:paddingHorizontal="@dimen/md_spec_spacing_horizontal_16"
-                android:layout_weight="1">
-        
+                android:paddingHorizontal="@dimen/md_spec_spacing_horizontal_16">
+    
                 <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/material_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:text="@{viewModel.titleLiveData}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
-        
+    
                 <projekt.cloud.piece.music.player.widget.MetadataTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/material_text_view"
                     artist="@{viewModel.artistLiveData}"
                     album="@{viewModel.albumLiveData}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+                
+                <projekt.cloud.piece.music.player.widget.TimeView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    time="@{viewModel.position}" />
     
-            </androidx.appcompat.widget.LinearLayoutCompat>
+                <projekt.cloud.piece.music.player.widget.TimeView
+                    android:id="@+id/time_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    time="@{viewModel.durationLiveData}" />
+                
+                <projekt.cloud.piece.music.player.widget.ProgressSeekbar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/time_view"
+                    android:layout_marginBottom="@dimen/md_spec_spacing_vertical_8" />
+                
+            </RelativeLayout>
     
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
