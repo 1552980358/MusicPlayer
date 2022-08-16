@@ -20,9 +20,9 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
         
         @JvmStatic
         @BindingAdapter("progress")
-        fun ProgressSeekbar.setProgress(position: Long?) {
-            if (position != null && position >= 0) {
-                this.position = position
+        fun ProgressSeekbar.setProgress(progress: Long?) {
+            if (progress != null && progress >= 0) {
+                this.progress = progress
             }
         }
     
@@ -55,7 +55,7 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
         style = Paint.Style.STROKE
     }
     
-    private var position = 0L
+    private var progress = 0L
         set(value) {
             field = value
             invalidate()
@@ -131,6 +131,6 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
     }
     
     private fun getWidthPosition(width: Float, height: Float) =
-        (width - height) * position / duration
+        (width - height) * progress / duration
     
 }
