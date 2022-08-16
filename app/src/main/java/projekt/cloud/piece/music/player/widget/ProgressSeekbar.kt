@@ -74,6 +74,10 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
         }
     
     private var touchProgress = 0L
+        set(value) {
+            field = value
+            listener?.invoke(value, isReleased)
+        }
     
     private var duration = 1L
         set(value) {
@@ -89,6 +93,8 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
     
     private var isTouchMode = false
     private var isReleased = false
+    
+    private var listener: ((Long, Boolean) -> Unit)? = null
     
     init {
         context.obtainStyledAttributes(attributeSet, R.styleable.ProgressSeekbar).use {
@@ -216,6 +222,10 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
                 doOnEnd { animator = null }
             }
         animator?.start()
+    }
+    
+    fun setProgressControlledListener(listener: (Long, Boolean) -> Unit) {
+        this.listener = listener
     }
     
 }
