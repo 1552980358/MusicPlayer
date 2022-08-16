@@ -157,7 +157,13 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
                 
                 override fun onSkipToQueueItem(id: Long) {
                 }
+                
                 override fun onSeekTo(pos: Long) {
+                    exoPlayer.seekTo(pos)
+                    playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                        .setState(playbackStateCompat.state, pos, DEFAULT_PLAYBACK_SPEED)
+                        .build()
+                    mediaSessionCompat.setPlaybackState(playbackStateCompat)
                 }
                 
                 override fun onCustomAction(action: String, extras: Bundle) {
