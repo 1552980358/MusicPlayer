@@ -19,7 +19,7 @@
         <projekt.cloud.piece.music.player.widget.TransitionImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            bitmap="@{viewModel.artBitmapLiveData}" />
+            bitmap="@{viewModel.artBitmap}" />
     
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
@@ -39,15 +39,15 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:text="@{viewModel.titleLiveData}"
+                    android:text="@{viewModel.title}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
     
                 <projekt.cloud.piece.music.player.widget.MetadataTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/material_text_view"
-                    artist="@{viewModel.artistLiveData}"
-                    album="@{viewModel.albumLiveData}"
+                    artist="@{viewModel.artist}"
+                    album="@{viewModel.album}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
                 
                 <projekt.cloud.piece.music.player.widget.TimeView
@@ -62,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentEnd="true"
-                    time="@{viewModel.durationLiveData}" />
+                    time="@{viewModel.duration}" />
                 
                 <projekt.cloud.piece.music.player.widget.ProgressSeekbar
                     android:layout_width="match_parent"

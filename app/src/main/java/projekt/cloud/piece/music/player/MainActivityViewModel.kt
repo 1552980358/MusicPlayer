@@ -15,27 +15,27 @@ class MainActivityViewModel: ViewModel() {
 
     private var _title = MutableLiveData<String>()
     fun setTitle(title: String) = _title.postValue(title)
-    val titleLiveData: LiveData<String>
+    val title: LiveData<String>
         get() = _title
     
     private var _artist = MutableLiveData<String>()
     fun setArtist(artist: String) = _artist.postValue(artist)
-    val artistLiveData: LiveData<String>
+    val artist: LiveData<String>
         get() = _artist
     
     private var _album = MutableLiveData<String>()
     fun setAlbum(album: String) = _album.postValue(album)
-    val albumLiveData: LiveData<String>
+    val album: LiveData<String>
         get() = _album
     
     private val _artBitmap = MutableLiveData<Bitmap>()
     fun setArtBitmap(bitmap: Bitmap) = _artBitmap.postValue(bitmap)
-    val artBitmapLiveData: LiveData<Bitmap?>
+    val artBitmap: LiveData<Bitmap?>
         get() = _artBitmap
     
     private val _duration = MutableLiveData<Long>()
     fun setDuration(duration: Long) = _duration.postValue(duration)
-    val durationLiveData: LiveData<Long>
+    val duration: LiveData<Long>
         get() = _duration
     
     private val _playbackState = MutableLiveData<Int>()
