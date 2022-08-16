@@ -8,4 +8,8 @@
     <dimen name="md_spec_height_72">72dp</dimen>
     <dimen name="md_spec_height_56">56dp</dimen>
     <dimen name="md_spec_size_40">40dp</dimen>
+    
+    <dimen name="progress_seekbar_height">16dp</dimen>
+    <dimen name="progress_seekbar_circle_radius">5dp</dimen>
+    <dimen name="progress_seekbar_circle_width">1.5dp</dimen>
 </resources>
