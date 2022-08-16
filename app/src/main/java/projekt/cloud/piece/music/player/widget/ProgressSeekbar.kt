@@ -1,5 +1,6 @@
 package projekt.cloud.piece.music.player.widget
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color.BLACK
@@ -9,6 +10,7 @@ import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
 import android.view.View.MeasureSpec.EXACTLY
+import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import kotlin.math.min
@@ -58,16 +60,20 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
     private var progress = 0L
         set(value) {
             field = value
-            invalidate()
+            graduallyMoveProgress(currentProgressPos, getWidthPosition(width.toFloat(), height.toFloat()))
         }
     
     private var duration = 1L
         set(value) {
             field = value
             invalidate()
+            graduallyMoveProgress(currentProgressPos, getWidthPosition(width.toFloat(), height.toFloat()))
         }
     
     private var circleRadius = 0F
+    
+    private var animator: ValueAnimator? = null
+    private var currentProgressPos = 0F
     
     init {
         context.obtainStyledAttributes(attributeSet, R.styleable.ProgressSeekbar).use {
@@ -111,26 +117,35 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
     override fun onDraw(canvas: Canvas?) {
         canvas ?: return
         
-        val width = width.toFloat()
         val height = height.toFloat()
-        
         val halfHeight = height / 2
         
         // Draw duration
         canvas.drawPath(durationPath, durationPaint)
         
-        // Progress pos
-        val progressPos = getWidthPosition(width, height)
-        
         // Draw path
         progressPath.reset()
-        progressPath.addRoundRect(0F, 0F, progressPos + height, height, corners, Path.Direction.CW)
+        progressPath.addRoundRect(0F, 0F, currentProgressPos + height, height, corners, Path.Direction.CW)
         canvas.drawPath(progressPath, progressPaint)
         
-        canvas.drawCircle(progressPos + halfHeight, halfHeight, circleRadius, circlePaint)
+        canvas.drawCircle(currentProgressPos + halfHeight, halfHeight, circleRadius, circlePaint)
     }
     
     private fun getWidthPosition(width: Float, height: Float) =
         (width - height) * progress / duration
+    
+    private fun graduallyMoveProgress(from: Float, to: Float) {
+        animator?.end()
+        animator = ValueAnimator.ofFloat(from, to)
+            .setDuration(200L)
+            .apply {
+                addUpdateListener {
+                    currentProgressPos = it.animatedValue as Float
+                    invalidate()
+                }
+                doOnEnd { animator = null }
+            }
+        animator?.start()
+    }
     
 }
