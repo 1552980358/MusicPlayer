@@ -9,4 +9,9 @@
         <attr name="circleWidth" format="dimension" />
     </declare-styleable>
     
+    <declare-styleable name="TimeView">
+        <attr name="android:textColor"/>
+        <attr name="android:textSize" />
+    </declare-styleable>
+    
 </resources>
