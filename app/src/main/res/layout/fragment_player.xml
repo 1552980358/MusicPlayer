@@ -68,7 +68,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_above="@id/time_view"
-                    android:layout_marginBottom="@dimen/md_spec_spacing_vertical_8" />
+                    android:layout_marginBottom="@dimen/md_spec_spacing_vertical_8"
+                    progress="@{viewModel.position}"
+                    duration="@{viewModel.duration}" />
                 
             </RelativeLayout>
     
