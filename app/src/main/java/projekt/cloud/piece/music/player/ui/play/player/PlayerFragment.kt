@@ -14,6 +14,7 @@ import projekt.cloud.piece.music.player.databinding.FragmentPlayerBinding
 import projekt.cloud.piece.music.player.service.play.ServiceConstants.CUSTOM_ACTION_REPEAT_MODE
 import projekt.cloud.piece.music.player.service.play.ServiceConstants.CUSTOM_ACTION_SHUFFLE_MODE
 import projekt.cloud.piece.music.player.widget.PlaybackStateButton
+import projekt.cloud.piece.music.player.widget.ProgressSeekbar
 import projekt.cloud.piece.music.player.widget.RepeatButton
 import projekt.cloud.piece.music.player.widget.ShuffleButton
 
@@ -24,6 +25,8 @@ class PlayerFragment: BaseFragment(), View.OnClickListener {
         get() = _binding!!
     private val root get() = binding.root
     
+    private val progressSeekbar: ProgressSeekbar
+        get() = binding.progressSeekbar
     private val repeatButton: RepeatButton
         get() = binding.repeatButton
     private val playbackStateButton: PlaybackStateButton
@@ -45,6 +48,16 @@ class PlayerFragment: BaseFragment(), View.OnClickListener {
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        progressSeekbar.setProgressControlledListener { position, isReleased ->
+            if (isReleased) {
+                binding.isTouched = false
+                return@setProgressControlledListener seekTo(position)
+            }
+            if (binding.isTouched != true) {
+                binding.isTouched = true
+            }
+            binding.touchedPosition = position
+        }
         repeatButton.setOnClickListener(this)
         playbackStateButton.setOnClickListener(this)
         appCompatImageButtonPrev.setOnClickListener(this)

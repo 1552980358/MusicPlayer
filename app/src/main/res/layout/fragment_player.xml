@@ -5,9 +5,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <data>
+        
         <variable
             name="viewModel"
             type="projekt.cloud.piece.music.player.MainActivityViewModel" />
+        
+        <variable
+            name="isTouched"
+            type="Boolean" />
+        
+        <variable
+            name="touchedPosition"
+            type="Long" />
+        
     </data>
     
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -65,6 +75,7 @@
                     time="@{viewModel.duration}" />
                 
                 <projekt.cloud.piece.music.player.widget.ProgressSeekbar
+                    android:id="@+id/progress_seekbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_above="@id/time_view"
