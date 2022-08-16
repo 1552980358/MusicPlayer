@@ -19,6 +19,8 @@ open class BaseFragment: Fragment() {
     
     protected fun skipToNext() = transportControls.skipToNext()
     
+    protected fun seekTo(position: Long) = transportControls.seekTo(position)
+    
     protected fun playAudio(audioId: String, audioMetadataList: ArrayList<AudioMetadata>) =
         transportControls.playFromMediaId(audioId, bundleOf(EXTRA_AUDIO_METADATA_LIST to audioMetadataList))
     
