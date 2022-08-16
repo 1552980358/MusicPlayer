@@ -8,6 +8,10 @@ import android.graphics.Color.WHITE
 import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
+import android.view.KeyEvent.ACTION_DOWN
+import android.view.MotionEvent
+import android.view.MotionEvent.ACTION_MOVE
+import android.view.MotionEvent.ACTION_UP
 import android.view.View
 import android.view.View.MeasureSpec.EXACTLY
 import androidx.core.animation.doOnEnd
@@ -16,7 +20,7 @@ import androidx.databinding.BindingAdapter
 import kotlin.math.min
 import projekt.cloud.piece.music.player.R
 
-class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): View(context, attributeSet) {
+class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): View(context, attributeSet), View.OnTouchListener {
     
     companion object {
         
@@ -40,7 +44,8 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
         
         private const val PAINT_START_POINT_X_Y = 0F
         
-        private const val ANIMATOR_DURATION = 200L
+        private const val ANIMATOR_DURATION_GRADUALLY = 200L
+        private const val ANIMATOR_DURATION_RAPIDLY = 100L
     }
     
     private val corners = FloatArray(CORNERS_SIZE)
@@ -68,6 +73,8 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
             graduallyMoveProgress(currentProgressPos, getWidthPosition(width.toFloat(), height.toFloat()))
         }
     
+    private var touchProgress = 0L
+    
     private var duration = 1L
         set(value) {
             field = value
@@ -78,6 +85,10 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
     
     private var animator: ValueAnimator? = null
     private var currentProgressPos = 0F
+    private var touchedProgressPos = 0F
+    
+    private var isTouchMode = false
+    private var isReleased = false
     
     init {
         context.obtainStyledAttributes(attributeSet, R.styleable.ProgressSeekbar).use {
@@ -99,6 +110,8 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
                 ContextCompat.getColor(context, R.color.progress_bar_duration_color)
             )
         }
+        
+        setOnTouchListener(this)
     }
     
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -128,34 +141,78 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
         canvas.drawPath(durationPath, durationPaint)
         
         // Check pos
-        if (currentProgressPos == 0F && progress > 0 && animator == null) {
-            currentProgressPos = getWidthPosition(width.toFloat(), height)
+        val progressPos = when {
+            isTouchMode -> touchedProgressPos
+            currentProgressPos == 0F && progress > 0 && animator == null -> getWidthPosition(width.toFloat(), height)
+            else -> currentProgressPos
         }
     
         // Draw path
         progressPath.reset()
-        progressPath.addRoundRect(PAINT_START_POINT_X_Y, PAINT_START_POINT_X_Y, currentProgressPos + height, height, corners, Path.Direction.CW)
+        progressPath.addRoundRect(PAINT_START_POINT_X_Y, PAINT_START_POINT_X_Y, progressPos + height, height, corners, Path.Direction.CW)
         canvas.drawPath(progressPath, progressPaint)
         
-        canvas.drawCircle(currentProgressPos + halfHeight, halfHeight, circleRadius, circlePaint)
+        canvas.drawCircle(progressPos + halfHeight, halfHeight, circleRadius, circlePaint)
+    }
+    
+    override fun onTouch(v: View, event: MotionEvent): Boolean {
+        val height = height.toFloat()
+        val halfHeight = height / 2F
+        when (event.action) {
+            ACTION_DOWN -> {
+                isTouchMode = true
+                isReleased = false
+                val target = event.getTouchedProgressPos(height, halfHeight)
+                rapidlyMoveProgress(currentProgressPos, target)
+                touchProgress = (target / (width - height) * duration).toLong()
+            }
+            ACTION_MOVE -> {
+                touchedProgressPos = event.getTouchedProgressPos(height, halfHeight)
+                invalidate()
+                touchProgress = (touchedProgressPos / (width - height) * duration).toLong()
+            }
+            ACTION_UP -> {
+                isReleased = true
+                touchedProgressPos = event.getTouchedProgressPos(height, halfHeight)
+                invalidate()
+                touchProgress = (touchedProgressPos / (width - height) * duration).toLong()
+                isTouchMode = false
+            }
+        }
+        return true
     }
     
     private fun getWidthPosition(width: Float, height: Float) =
         (width - height) * progress / duration
     
-    private fun graduallyMoveProgress(from: Float, to: Float) {
+    private fun MotionEvent.getTouchedProgressPos(height: Float, halfHeight: Float) = when {
+        x < halfHeight -> 0F
+        x > width - halfHeight -> width - height
+        else -> x - halfHeight
+    }
+    
+    private fun graduallyMoveProgress(from: Float, to: Float) =
+        moveProgress(from, to, ANIMATOR_DURATION_GRADUALLY) {
+            currentProgressPos = it.animatedValue as Float
+            invalidate()
+        }
+    
+    private fun rapidlyMoveProgress(from: Float, to: Float) =
+        moveProgress(from, to, ANIMATOR_DURATION_RAPIDLY) {
+            touchedProgressPos = it.animatedValue as Float
+            invalidate()
+        }
+    
+    private fun moveProgress(from: Float, to: Float, duration: Long, listener: ValueAnimator.AnimatorUpdateListener) {
         animator?.end()
         if (from == to) {
             animator = null
             return invalidate()
         }
         animator = ValueAnimator.ofFloat(from, to)
-            .setDuration(ANIMATOR_DURATION)
+            .setDuration(duration)
             .apply {
-                addUpdateListener {
-                    currentProgressPos = it.animatedValue as Float
-                    invalidate()
-                }
+                addUpdateListener(listener)
                 doOnEnd { animator = null }
             }
         animator?.start()
