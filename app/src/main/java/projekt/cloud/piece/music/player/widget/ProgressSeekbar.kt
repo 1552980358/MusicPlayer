@@ -36,9 +36,14 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
             }
         }
         
+        private const val CORNERS_SIZE = 8
+        
+        private const val PAINT_START_POINT_X_Y = 0F
+        
+        private const val ANIMATOR_DURATION = 200L
     }
     
-    private val corners = FloatArray(8)
+    private val corners = FloatArray(CORNERS_SIZE)
     
     private val durationPaint = Paint().apply {
         isAntiAlias = true
@@ -103,7 +108,7 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
             MeasureSpec.getSize(heightMeasureSpec)
         )
         (height / 2F).let { halfHeight ->
-            repeat(8) {
+            repeat(CORNERS_SIZE) {
                 corners[it] = halfHeight
             }
         }
@@ -111,7 +116,7 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
         super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(height, EXACTLY))
         
         durationPath.reset()
-        durationPath.addRoundRect(0F, 0F, measuredWidth.toFloat(), measuredHeight.toFloat(), corners, Path.Direction.CW)
+        durationPath.addRoundRect(PAINT_START_POINT_X_Y, PAINT_START_POINT_X_Y, measuredWidth.toFloat(), measuredHeight.toFloat(), corners, Path.Direction.CW)
     }
     
     override fun onDraw(canvas: Canvas?) {
@@ -125,7 +130,7 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
         
         // Draw path
         progressPath.reset()
-        progressPath.addRoundRect(0F, 0F, currentProgressPos + height, height, corners, Path.Direction.CW)
+        progressPath.addRoundRect(PAINT_START_POINT_X_Y, PAINT_START_POINT_X_Y, currentProgressPos + height, height, corners, Path.Direction.CW)
         canvas.drawPath(progressPath, progressPaint)
         
         canvas.drawCircle(currentProgressPos + halfHeight, halfHeight, circleRadius, circlePaint)
@@ -137,7 +142,7 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
     private fun graduallyMoveProgress(from: Float, to: Float) {
         animator?.end()
         animator = ValueAnimator.ofFloat(from, to)
-            .setDuration(200L)
+            .setDuration(ANIMATOR_DURATION)
             .apply {
                 addUpdateListener {
                     currentProgressPos = it.animatedValue as Float
