@@ -180,6 +180,7 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
             ACTION_UP -> {
                 isReleased = true
                 touchedProgressPos = event.getTouchedProgressPos(height, halfHeight)
+                currentProgressPos = touchedProgressPos
                 invalidate()
                 touchProgress = (touchedProgressPos / (width - height) * duration).toLong()
                 isTouchMode = false
