@@ -157,7 +157,7 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
         val height = height.toFloat()
         val halfHeight = height / 2
         
-        if (isTouchMode || isSecondaryResetting) {
+        if ((isTouchMode || isSecondaryResetting) && secondaryPos > primaryPos) {
             secondaryPath.reset()
             secondaryPath.addRoundRect(PAINT_START_POINT.x, PAINT_START_POINT.y, secondaryPos + height, height, corners, Path.Direction.CW)
             canvas.drawPath(secondaryPath, secondaryPaint)
@@ -197,8 +197,8 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
                 isReleased = true
                 // Update touched progress
                 touchProgress = (touchPos * duration / (width - height)).toLong()
+                progress = touchProgress
                 if (secondaryPos > primaryPos) {
-                    primaryAnimator?.end()
                     moveSecondaryPaint(
                         secondaryPos,
                         primaryPos,
