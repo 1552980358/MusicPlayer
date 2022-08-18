@@ -216,13 +216,13 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
     private fun updateProgress() {
         val width = width.toFloat()
         val height = height.toFloat()
-        if (isTouchMode) {
+        when {
             // Just move secondary
-            secondaryPos = getProgressX(progress, duration, width, height)
-            return
+            isTouchMode -> secondaryPos = getProgressX(progress, duration, width, height)
+            // Move primary
+            else -> primaryPos = getProgressX(progress, duration, width, height)
         }
-        // Move primary
-        primaryPos = getProgressX(progress, duration, width, height)
+        invalidate()
     }
     
     private fun updateProgressAnimated() {
