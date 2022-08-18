@@ -190,6 +190,7 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
             }
             ACTION_MOVE -> {
                 primaryPos = touchPos
+                touchProgress = (touchPos * duration / (width - height)).toLong()
                 invalidate()
             }
             ACTION_UP -> {
