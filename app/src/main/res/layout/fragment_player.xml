@@ -64,7 +64,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    time="@{viewModel.position}" />
+                    time="@{viewModel.position}"
+                    animatedAlpha="@{isTouched ? 0.5F : 1F}" />
     
                 <projekt.cloud.piece.music.player.widget.TimeView
                     android:id="@+id/time_view"
@@ -79,9 +80,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_above="@id/time_view"
-                    android:layout_marginBottom="@dimen/md_spec_spacing_vertical_8"
+                    android:layout_marginVertical="@dimen/md_spec_spacing_vertical_8"
                     progress="@{viewModel.position}"
                     duration="@{viewModel.duration}" />
+    
+                <projekt.cloud.piece.music.player.widget.TimeView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/progress_seekbar"
+                    time="@{touchedPosition}"
+                    animatedAlpha="@{isTouched ? 1F : 0F}" />
                 
             </RelativeLayout>
     
