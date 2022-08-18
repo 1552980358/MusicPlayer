@@ -56,10 +56,7 @@ class PlaybackStateButton(context: Context, attributeSet: AttributeSet? = null):
                         setImageResource(R.drawable.ic_baseline_play_arrow_24)
         
                 }
-                val drawable = drawable
-                if (drawable is AnimatedVectorDrawable) {
-                    drawable.start()
-                }
+                (drawable as? AnimatedVectorDrawable)?.start()
             }
         }
     }
