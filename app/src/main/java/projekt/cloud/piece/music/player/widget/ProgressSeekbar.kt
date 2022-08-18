@@ -197,13 +197,16 @@ class ProgressSeekbar(context: Context, attributeSet: AttributeSet? = null): Vie
                 isReleased = true
                 // Update touched progress
                 touchProgress = (touchPos * duration / (width - height)).toLong()
-                moveSecondaryPaint(
-                    secondaryPos,
-                    primaryPos,
-                    ANIMATOR_DURATION_RAPIDLY ,
-                    onStart = { isSecondaryResetting = true },
-                    onEnd = { isSecondaryResetting = false }
-                )
+                if (secondaryPos > primaryPos) {
+                    primaryAnimator?.end()
+                    moveSecondaryPaint(
+                        secondaryPos,
+                        primaryPos,
+                        ANIMATOR_DURATION_RAPIDLY,
+                        onStart = { isSecondaryResetting = true },
+                        onEnd = { isSecondaryResetting = false }
+                    )
+                }
                 isTouchMode = false
             }
         }
