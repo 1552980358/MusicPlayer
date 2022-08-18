@@ -2,7 +2,8 @@
 <resources>
     
     <declare-styleable name="ProgressSeekbar">
-        <attr name="progressColor" format="color" />
+        <attr name="primaryColor" format="color" />
+        <attr name="secondaryColor" format="color" />
         <attr name="durationColor" format="color" />
         <attr name="circleColor" format="color" />
         <attr name="circleRadius" format="dimension" />
