@@ -24,6 +24,8 @@ class PlaybackStateButton(context: Context, attributeSet: AttributeSet? = null):
         
     }
     
+    private var isBuffering = false
+    
     @Volatile
     private var playbackState: Int? = null
         set(value) {
@@ -36,29 +38,35 @@ class PlaybackStateButton(context: Context, attributeSet: AttributeSet? = null):
     
     private fun updatePlaybackState(prev: Int?, current: Int) {
         when {
-            
-            (prev == STATE_PAUSED && current == STATE_PLAYING) ->
-                setImageResource(R.drawable.anim_baseline_play_24)
-            
-            (prev == STATE_PLAYING && current == STATE_PAUSED) ->
-                setImageResource(R.drawable.anim_baseline_pause_24)
-            
-            current == STATE_PLAYING ->
-                setImageResource(R.drawable.ic_baseline_pause_24)
-            
-            current == STATE_PAUSED ->
-                setImageResource(R.drawable.ic_baseline_play_arrow_24)
-            
-        }
-        val drawable = drawable
-        if (drawable is AnimatedVectorDrawable) {
-            drawable.start()
+            current == STATE_BUFFERING -> isBuffering = true
+            else -> {
+                isBuffering = false
+                when {
+        
+                    (prev == STATE_PAUSED && current == STATE_PLAYING) ->
+                        setImageResource(R.drawable.anim_baseline_play_24)
+        
+                    (prev == STATE_PLAYING && current == STATE_PAUSED) ->
+                        setImageResource(R.drawable.anim_baseline_pause_24)
+        
+                    current == STATE_PLAYING ->
+                        setImageResource(R.drawable.ic_baseline_pause_24)
+        
+                    current == STATE_PAUSED ->
+                        setImageResource(R.drawable.ic_baseline_play_arrow_24)
+        
+                }
+                val drawable = drawable
+                if (drawable is AnimatedVectorDrawable) {
+                    drawable.start()
+                }
+            }
         }
     }
     
-    fun switchPlaybackState(): Int = when (playbackState) {
-        STATE_PAUSED -> STATE_PLAYING
-        else -> STATE_PAUSED
+    fun switchPlaybackState(): Int = when {
+        playbackState == STATE_PLAYING || isBuffering  -> STATE_PAUSED
+        else -> STATE_PLAYING
     }
     
 }
