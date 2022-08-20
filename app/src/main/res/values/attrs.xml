@@ -11,8 +11,9 @@
     </declare-styleable>
     
     <declare-styleable name="TimeView">
-        <attr name="android:textColor"/>
+        <attr name="android:textColor" />
         <attr name="android:textSize" />
+        <attr name="requireAnimation" format="boolean" />
     </declare-styleable>
     
 </resources>
