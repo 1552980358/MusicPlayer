@@ -17,7 +17,7 @@
         <variable
             name="touchedPosition"
             type="Long" />
-        
+    
     </data>
     
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -25,151 +25,151 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-    
+        
         <projekt.cloud.piece.music.player.widget.TransitionImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             bitmap="@{viewModel.artBitmap}" />
-    
+        
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingVertical="@dimen/md_spec_spacing_vertical_16"
+            android:paddingHorizontal="@dimen/md_spec_spacing_horizontal_16"
             android:orientation="vertical">
+            
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="@{viewModel.title}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+            
+            <projekt.cloud.piece.music.player.widget.MetadataTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                artist="@{viewModel.artist}"
+                album="@{viewModel.album}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
             
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:paddingVertical="@dimen/md_spec_spacing_vertical_16"
-                android:paddingHorizontal="@dimen/md_spec_spacing_horizontal_16">
-    
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/material_text_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    android:text="@{viewModel.title}"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
-    
-                <projekt.cloud.piece.music.player.widget.MetadataTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/material_text_view"
-                    artist="@{viewModel.artist}"
-                    album="@{viewModel.album}"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                android:gravity="bottom">
                 
                 <projekt.cloud.piece.music.player.widget.TimeView
+                    android:id="@+id/time_view_touching"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    time="@{viewModel.position}"
-                    animatedAlpha="@{isTouched ? 0.5F : 1F}" />
-    
-                <projekt.cloud.piece.music.player.widget.TimeView
-                    android:id="@+id/time_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentEnd="true"
-                    time="@{viewModel.duration}" />
+                    app:requireAnimation="false"
+                    time="@{touchedPosition}"
+                    animatedAlpha="@{isTouched ? 1F : 0F}" />
                 
                 <projekt.cloud.piece.music.player.widget.ProgressSeekbar
                     android:id="@+id/progress_seekbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@id/time_view"
+                    android:layout_below="@id/time_view_touching"
                     android:layout_marginVertical="@dimen/md_spec_spacing_vertical_8"
                     progress="@{viewModel.position}"
                     duration="@{viewModel.duration}" />
-    
+                
+                <projekt.cloud.piece.music.player.widget.TimeView
+                    android:id="@+id/time_view_position"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/progress_seekbar"
+                    time="@{viewModel.position}"
+                    animatedAlpha="@{isTouched ? 0.5F : 1F}" />
+                
                 <projekt.cloud.piece.music.player.widget.TimeView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_above="@id/progress_seekbar"
-                    app:requireAnimation="false"
-                    time="@{touchedPosition}"
-                    animatedAlpha="@{isTouched ? 1F : 0F}" />
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/progress_seekbar"
+                    time="@{viewModel.duration}" />
                 
-            </RelativeLayout>
-    
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/time_view_position"
+                    android:orientation="horizontal">
+                    
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        
+                        <projekt.cloud.piece.music.player.widget.RepeatButton
+                            android:id="@+id/repeat_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            repeatMode="@{viewModel.repeatMode}" />
+                    
+                    </RelativeLayout>
+                    
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2.5">
+                        
+                        <projekt.cloud.piece.music.player.widget.PlaybackStateButton
+                            android:id="@+id/playback_state_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/md_spec_spacing_vertical_16"
+                            android:layout_marginHorizontal="@dimen/md_spec_spacing_horizontal_16"
+                            android:layout_centerInParent="true"
+                            app:backgroundTint="@color/white"
+                            app:tint="@color/black"
+                            tools:ignore="ContentDescription"
+                            playbackState="@{viewModel.playbackState}" />
+                        
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:id="@+id/app_compat_image_button_prev"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:layout_toStartOf="@id/playback_state_button"
+                            android:layout_centerVertical="true"
+                            app:srcCompat="@drawable/ic_baseline_skip_previous_24" />
+                        
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:id="@+id/app_compat_image_button_next"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:layout_toEndOf="@id/playback_state_button"
+                            android:layout_centerVertical="true"
+                            app:srcCompat="@drawable/ic_baseline_skip_next_24" />
+                    
+                    </RelativeLayout>
+                    
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        
+                        <projekt.cloud.piece.music.player.widget.ShuffleButton
+                            android:id="@+id/shuffle_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:layout_centerInParent="true"
+                            shuffleMode="@{viewModel.shuffleMode}" />
+                    
+                    </RelativeLayout>
                 
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-                    
-                    <projekt.cloud.piece.music.player.widget.RepeatButton
-                        android:id="@+id/repeat_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        repeatMode="@{viewModel.repeatMode}" />
-                    
-                </RelativeLayout>
-    
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2.5">
-                    
-                    <projekt.cloud.piece.music.player.widget.PlaybackStateButton
-                        android:id="@+id/playback_state_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="@dimen/md_spec_spacing_horizontal_16"
-                        android:layout_centerInParent="true"
-                        app:backgroundTint="@color/white"
-                        app:tint="@color/black"
-                        tools:ignore="ContentDescription"
-                        playbackState="@{viewModel.playbackState}" />
-    
-                    <androidx.appcompat.widget.AppCompatImageButton
-                        android:id="@+id/app_compat_image_button_prev"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:layout_toStartOf="@id/playback_state_button"
-                        android:layout_centerVertical="true"
-                        app:srcCompat="@drawable/ic_baseline_skip_previous_24" />
-    
-                    <androidx.appcompat.widget.AppCompatImageButton
-                        android:id="@+id/app_compat_image_button_next"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:layout_toEndOf="@id/playback_state_button"
-                        android:layout_centerVertical="true"
-                        app:srcCompat="@drawable/ic_baseline_skip_next_24" />
-                    
-                </RelativeLayout>
-    
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-                    
-                    <projekt.cloud.piece.music.player.widget.ShuffleButton
-                        android:id="@+id/shuffle_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:layout_centerInParent="true"
-                        shuffleMode="@{viewModel.shuffleMode}" />
-                    
-                </RelativeLayout>
-                
-            </androidx.appcompat.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
             
-        </androidx.appcompat.widget.LinearLayoutCompat>
+            </RelativeLayout>
         
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
     
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
 </layout>
