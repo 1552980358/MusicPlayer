@@ -88,6 +88,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_above="@id/progress_seekbar"
+                    app:requireAnimation="false"
                     time="@{touchedPosition}"
                     animatedAlpha="@{isTouched ? 1F : 0F}" />
                 
