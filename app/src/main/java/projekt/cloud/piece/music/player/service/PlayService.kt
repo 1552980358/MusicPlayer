@@ -132,14 +132,17 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     
                     startSelf { putExtra(ACTION_START_COMMAND, ACTION_START_COMMAND_PAUSE) }
                 }
-                override fun onPlayFromMediaId(mediaId: String, extras: Bundle) = playAudioMetadata(
-                    @Suppress("UNCHECKED_CAST")
-                    playingQueue.setAudioMetadataList(
-                        mediaId,
-                        extras.getSerializable(EXTRA_AUDIO_METADATA_LIST) as ArrayList<AudioMetadata>,
-                        false
+                override fun onPlayFromMediaId(mediaId: String, extras: Bundle) {
+                    playAudioMetadata(
+                        @Suppress("UNCHECKED_CAST")
+                        playingQueue.setAudioMetadataList(
+                            mediaId,
+                            extras.getSerializable(EXTRA_AUDIO_METADATA_LIST) as ArrayList<AudioMetadata>,
+                            false
+                        )
                     )
-                )
+                    mediaSessionCompat.setExtras(extras)
+                }
                 
                 override fun onSkipToPrevious() {
                     if (repeatMode == REPEAT_MODE_NONE && playingQueue.isFirst) {
