@@ -8,6 +8,7 @@ import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM_ART
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -77,6 +78,9 @@ class MainActivity: AppCompatActivity() {
                             viewModel.setAlbum(mediaMetadataCompat.getString(METADATA_KEY_ALBUM))
                             viewModel.setArtBitmap(mediaMetadataCompat.getBitmap(METADATA_KEY_ALBUM_ART))
                             viewModel.setDuration(mediaMetadataCompat.getLong(METADATA_KEY_DURATION))
+                            viewModel.playingQueue.value
+                                ?.indexOfFirst { it.id == mediaMetadataCompat.getString(METADATA_KEY_MEDIA_ID) }
+                                ?.let { viewModel.setPlayingPosition(it) }
                         }
     
                         override fun onRepeatModeChanged(repeatMode: Int) {
