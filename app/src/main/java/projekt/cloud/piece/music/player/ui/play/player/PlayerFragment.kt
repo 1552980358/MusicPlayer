@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.RecyclerView
 import projekt.cloud.piece.music.player.MainActivityViewModel
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.databinding.FragmentPlayerBinding
@@ -37,8 +38,11 @@ class PlayerFragment: BaseFragment(), View.OnClickListener {
         get() = binding.appCompatImageButtonNext
     private val shuffleButton: ShuffleButton
         get() = binding.shuffleButton
+    private val recyclerView: RecyclerView
+        get() = binding.recyclerView
     
     private val activityViewModel: MainActivityViewModel by activityViewModels()
+    private lateinit var playingQueueAdapter: PlayingQueueAdapter
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPlayerBinding.inflate(inflater)
@@ -63,6 +67,11 @@ class PlayerFragment: BaseFragment(), View.OnClickListener {
         appCompatImageButtonPrev.setOnClickListener(this)
         appCompatImageButtonNext.setOnClickListener(this)
         shuffleButton.setOnClickListener(this)
+        
+        playingQueueAdapter = PlayingQueueAdapter(recyclerView)
+        activityViewModel.playingQueue.observe(viewLifecycleOwner) {
+            playingQueueAdapter.updateAudioMetadataList(it)
+        }
     }
     
     override fun onClick(v: View?) {
@@ -76,6 +85,11 @@ class PlayerFragment: BaseFragment(), View.OnClickListener {
             appCompatImageButtonNext -> skipToNext()
             shuffleButton -> sendCustomAction(CUSTOM_ACTION_SHUFFLE_MODE)
         }
+    }
+    
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

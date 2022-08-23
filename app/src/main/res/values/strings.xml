@@ -14,4 +14,6 @@
     
     <string name="main_to_play_shared_container">main_to_play_shared_container</string>
     
+    <string name="fragment_player_drawer_title">Playing Queue…</string>
+    
 </resources>

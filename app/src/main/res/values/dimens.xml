@@ -14,4 +14,6 @@
     <dimen name="progress_seekbar_circle_width">1.5dp</dimen>
     
     <dimen name="time_view_text_size">16sp</dimen>
+    
+    <dimen name="fragment_player_drawer_width">300dp</dimen>
 </resources>
