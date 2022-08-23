@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import projekt.cloud.piece.music.player.item.AudioMetadata
 
 class MainActivityViewModel: ViewModel() {
 
@@ -83,5 +84,12 @@ class MainActivityViewModel: ViewModel() {
             current += 1000L
         }
     }
+    
+    private val _playingQueue = MutableLiveData<List<AudioMetadata>>()
+    fun setPlayingQueue(audioMetadataList: List<AudioMetadata>) {
+        _playingQueue.value = audioMetadataList
+    }
+    val playingQueue: LiveData<List<AudioMetadata>>
+        get() = _playingQueue
     
 }
