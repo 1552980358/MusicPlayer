@@ -16,4 +16,6 @@
     <dimen name="time_view_text_size">16sp</dimen>
     
     <dimen name="fragment_player_drawer_width">300dp</dimen>
+    
+    <dimen name="layout_recycler_player_indicator">2dp</dimen>
 </resources>

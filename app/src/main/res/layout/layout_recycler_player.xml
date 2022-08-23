@@ -3,35 +3,51 @@
     
     <data>
         
+        <import type="android.view.View" />
+        
         <variable
             name="audioMetadata"
             type="projekt.cloud.piece.music.player.item.AudioMetadata" />
         
+        <variable
+            name="isPlaying"
+            type="Boolean" />
+        
     </data>
     
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <RelativeLayout
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="@dimen/md_spec_height_56"
-        android:orientation="vertical"
-        android:paddingHorizontal="@dimen/md_spec_spacing_horizontal_16"
-        android:paddingVertical="@dimen/md_spec_spacing_vertical_8">
+        android:background="?attr/selectableItemBackground">
         
+        <View
+            android:layout_width="@dimen/layout_recycler_player_indicator"
+            android:layout_height="match_parent"
+            android:background="?android:attr/textColorPrimary"
+            android:visibility="@{isPlaying ? View.VISIBLE : View.INVISIBLE}" />
+    
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/material_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/md_spec_spacing_horizontal_16"
+            android:layout_marginTop="@dimen/md_spec_spacing_vertical_8"
             android:maxLines="1"
             android:ellipsize="end"
             android:text="@{audioMetadata.title}"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
-        
+    
         <projekt.cloud.piece.music.player.widget.MetadataTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/material_text_view"
+            android:layout_marginHorizontal="@dimen/md_spec_spacing_horizontal_16"
+            android:layout_marginBottom="@dimen/md_spec_spacing_vertical_8"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             artist="@{audioMetadata.artistName}"
             album="@{audioMetadata.albumTitle}" />
-    
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        
+    </RelativeLayout>
     
 </layout>

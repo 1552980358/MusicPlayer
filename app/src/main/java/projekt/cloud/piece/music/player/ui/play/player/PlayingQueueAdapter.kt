@@ -12,8 +12,10 @@ class PlayingQueueAdapter(recyclerView: RecyclerView) {
     private class RecyclerViewHolder(private val binding: LayoutRecyclerPlayerBinding):
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
         
-        fun bindViewHolder(audioMetadata: AudioMetadata) {
+        fun bindViewHolder(audioMetadata: AudioMetadata, isPlaying: Boolean) {
             binding.audioMetadata = audioMetadata
+            binding.isPlaying = isPlaying
+            binding.root.setOnClickListener(this)
         }
     
         override fun onClick(v: View?) {
@@ -28,7 +30,7 @@ class PlayingQueueAdapter(recyclerView: RecyclerView) {
         )
     
         override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
-            audioMetadataList?.get(position)?.let { holder.bindViewHolder(it) }
+            audioMetadataList?.get(position)?.let { holder.bindViewHolder(it, position == playingPosition) }
         }
     
         override fun getItemCount() = audioMetadataList?.size ?: 0
@@ -39,6 +41,8 @@ class PlayingQueueAdapter(recyclerView: RecyclerView) {
     
     private var adapter = RecyclerViewAdapter()
     
+    private var playingPosition = 0
+    
     init {
         recyclerView.adapter = adapter
     }
@@ -46,6 +50,13 @@ class PlayingQueueAdapter(recyclerView: RecyclerView) {
     fun updateAudioMetadataList(audioMetadataList: List<AudioMetadata>) {
         this.audioMetadataList = audioMetadataList
         notifyUpdateDataSet()
+    }
+    
+    fun updatePlayingPosition(position: Int) {
+        val last = playingPosition
+        playingPosition = position
+        adapter.notifyItemChanged(last)
+        adapter.notifyItemChanged(playingPosition)
     }
     
     @Suppress("NotifyDataSetChanged")
