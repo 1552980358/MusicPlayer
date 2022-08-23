@@ -72,6 +72,10 @@ class PlayerFragment: BaseFragment(), View.OnClickListener {
         activityViewModel.playingQueue.observe(viewLifecycleOwner) {
             playingQueueAdapter.updateAudioMetadataList(it)
         }
+        activityViewModel.playingPosition.observe(viewLifecycleOwner) {
+            playingQueueAdapter.updatePlayingPosition(it)
+            recyclerView.smoothScrollToPosition(it)
+        }
     }
     
     override fun onClick(v: View?) {
