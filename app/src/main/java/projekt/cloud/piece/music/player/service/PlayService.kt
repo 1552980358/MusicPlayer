@@ -291,6 +291,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
         
         mediaSessionCompat.setMetadata(
             MediaMetadataCompat.Builder()
+                .putString(METADATA_KEY_MEDIA_ID, audioMetadata.id)
                 .putString(METADATA_KEY_TITLE, audioMetadata.title)
                 .putString(METADATA_KEY_ARTIST, audioMetadata.artistName)
                 .putString(METADATA_KEY_ALBUM, audioMetadata.albumTitle)
