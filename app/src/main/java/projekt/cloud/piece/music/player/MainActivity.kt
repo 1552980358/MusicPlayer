@@ -19,8 +19,10 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import projekt.cloud.piece.music.player.databinding.ActivityMainBinding
+import projekt.cloud.piece.music.player.item.AudioMetadata
 import projekt.cloud.piece.music.player.room.AudioDatabase
 import projekt.cloud.piece.music.player.service.PlayService
+import projekt.cloud.piece.music.player.service.play.ServiceConstants
 
 class MainActivity: AppCompatActivity() {
     
@@ -84,8 +86,11 @@ class MainActivity: AppCompatActivity() {
                         override fun onShuffleModeChanged(shuffleMode: Int) {
                             viewModel.setShuffleMode(shuffleMode)
                         }
-    
-                        override fun onExtrasChanged(extras: Bundle?) {
+                        
+                        override fun onExtrasChanged(extras: Bundle) {
+                            @Suppress("UNCHECKED_CAST")
+                            (extras.getSerializable(ServiceConstants.EXTRA_AUDIO_METADATA_LIST) as? ArrayList<AudioMetadata>)
+                                ?.let { viewModel.setPlayingQueue(it) }
                         }
                         
                     })
