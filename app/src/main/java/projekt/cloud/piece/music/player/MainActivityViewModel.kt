@@ -85,6 +85,13 @@ class MainActivityViewModel: ViewModel() {
         }
     }
     
+    private val _playingPosition = MutableLiveData<Int>()
+    fun setPlayingPosition(position: Int) {
+        _playingPosition.value = position
+    }
+    val playingPosition: LiveData<Int>
+        get() = _playingPosition
+    
     private val _playingQueue = MutableLiveData<List<AudioMetadata>>()
     fun setPlayingQueue(audioMetadataList: List<AudioMetadata>) {
         _playingQueue.value = audioMetadataList
