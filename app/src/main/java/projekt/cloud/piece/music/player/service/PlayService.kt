@@ -138,7 +138,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
                         playingQueue.setAudioMetadataList(
                             mediaId,
                             extras.getSerializable(EXTRA_AUDIO_METADATA_LIST) as ArrayList<AudioMetadata>,
-                            false
+                            shuffleMode == SHUFFLE_MODE_ALL
                         )
                     )
                     mediaSessionCompat.setExtras(extras)
