@@ -24,6 +24,8 @@ open class BaseFragment: Fragment() {
     protected fun playAudio(audioId: String, audioMetadataList: ArrayList<AudioMetadata>) =
         transportControls.playFromMediaId(audioId, bundleOf(EXTRA_AUDIO_METADATA_LIST to audioMetadataList))
     
+    protected fun playAudio(audioId: String) = transportControls.playFromMediaId(audioId, null)
+    
     protected fun sendCustomAction(action: String, vararg pair: Pair<String, Any?>) =
         transportControls.sendCustomAction(action, bundleOf(*pair))
     
