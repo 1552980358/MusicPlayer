@@ -9,13 +9,18 @@ class PlayingQueue {
     
     private var _currentIndex = 0
     
-    fun setAudioMetadataList(audioId: String, audioMetadataList: ArrayList<AudioMetadata>, shuffle: Boolean): AudioMetadata {
-        if (shuffle) {
-            audioMetadataList.shuffle()
+    fun setAudioMetadataList(audioId: String, audioMetadataList: ArrayList<AudioMetadata>?, shuffle: Boolean): AudioMetadata {
+        when (val list = audioMetadataList) {
+            null -> _currentIndex = this.audioMetadataList.indexOfFirst { it.id == audioId }
+            else -> {
+                if (shuffle) {
+                    list.shuffle()
+                }
+                _audioMetadataList = list
+                _currentIndex = list.indexOfFirst { it.audio.id == audioId }
+            }
         }
-        _audioMetadataList = audioMetadataList
-        _currentIndex = audioMetadataList.indexOfFirst { it.audio.id == audioId }
-        return audioMetadataList[_currentIndex]
+        return current
     }
     
     val current: AudioMetadata
