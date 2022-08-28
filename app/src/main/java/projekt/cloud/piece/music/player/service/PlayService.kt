@@ -137,7 +137,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
                         @Suppress("UNCHECKED_CAST")
                         playingQueue.setAudioMetadataList(
                             mediaId,
-                            extras.getSerializable(EXTRA_AUDIO_METADATA_LIST) as ArrayList<AudioMetadata>,
+                            extras.getSerializable(EXTRA_AUDIO_METADATA_LIST) as? ArrayList<AudioMetadata>,
                             shuffleMode == SHUFFLE_MODE_ALL
                         )
                     )
