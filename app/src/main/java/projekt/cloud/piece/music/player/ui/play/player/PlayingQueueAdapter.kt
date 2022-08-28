@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import projekt.cloud.piece.music.player.databinding.LayoutRecyclerPlayerBinding
 import projekt.cloud.piece.music.player.item.AudioMetadata
 
-class PlayingQueueAdapter(recyclerView: RecyclerView) {
+class PlayingQueueAdapter(recyclerView: RecyclerView, private val clickListener: (AudioMetadata) -> Unit) {
 
-    private class RecyclerViewHolder(private val binding: LayoutRecyclerPlayerBinding):
+    private inner class RecyclerViewHolder(private val binding: LayoutRecyclerPlayerBinding):
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
         
         fun bindViewHolder(audioMetadata: AudioMetadata, isPlaying: Boolean) {
@@ -19,6 +19,7 @@ class PlayingQueueAdapter(recyclerView: RecyclerView) {
         }
     
         override fun onClick(v: View?) {
+            binding.audioMetadata?.let { clickListener.invoke(it) }
         }
         
     }

@@ -68,7 +68,7 @@ class PlayerFragment: BaseFragment(), View.OnClickListener {
         appCompatImageButtonNext.setOnClickListener(this)
         shuffleButton.setOnClickListener(this)
         
-        playingQueueAdapter = PlayingQueueAdapter(recyclerView)
+        playingQueueAdapter = PlayingQueueAdapter(recyclerView) { playAudio(it.id) }
         activityViewModel.playingQueue.observe(viewLifecycleOwner) {
             playingQueueAdapter.updateAudioMetadataList(it)
         }
