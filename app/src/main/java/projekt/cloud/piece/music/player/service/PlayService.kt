@@ -43,7 +43,11 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Player.STATE_ENDED
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.BuildConfig.APPLICATION_ID
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.item.AudioMetadata
@@ -59,6 +63,7 @@ import projekt.cloud.piece.music.player.util.ArtUtil.SUFFIX_LARGE
 import projekt.cloud.piece.music.player.util.ArtUtil.TYPE_ALBUM
 import projekt.cloud.piece.music.player.util.ArtUtil.fileOf
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
+import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
 import projekt.cloud.piece.music.player.util.ServiceUtil.startSelf
 
 class PlayService: MediaBrowserServiceCompat(), Player.Listener {
@@ -74,6 +79,8 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
                 ACTION_PLAY_FROM_MEDIA_ID or ACTION_SKIP_TO_NEXT or ACTION_SKIP_TO_PREVIOUS or ACTION_SKIP_TO_QUEUE_ITEM
         
         const val VOLUME_FULL = 1.0f
+        
+        private const val PLAYBACK_STATE_UPDATE_INTERVAL = 200L
     }
     
     private lateinit var exoPlayer: ExoPlayer
@@ -83,6 +90,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
         .addCustomAction(CUSTOM_ACTION_REPEAT_MODE, CUSTOM_ACTION_REPEAT_MODE, R.drawable.ic_launcher_foreground)
         .addCustomAction(CUSTOM_ACTION_SHUFFLE_MODE, CUSTOM_ACTION_SHUFFLE_MODE, R.drawable.ic_launcher_foreground)
         .build()
+    private var playbackStateJob: Job? = null
     private lateinit var mediaSessionCompat: MediaSessionCompat
     private val transportControls: MediaControllerCompat.TransportControls
         get() = mediaSessionCompat.controller.transportControls
@@ -116,13 +124,15 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
                         .setState(STATE_PLAYING, exoPlayer.currentPosition, DEFAULT_PLAYBACK_SPEED)
                         .build()
                     mediaSessionCompat.setPlaybackState(playbackStateCompat)
-                    
+                    startPlaybackCountUp()
+
                     startSelf { putExtra(ACTION_START_COMMAND, ACTION_START_COMMAND_PLAY) }
                 }
                 override fun onPause() {
                     if (playbackStateCompat.state != STATE_PLAYING || !exoPlayer.isPlaying) {
                         return
                     }
+                    playbackStateJob?.cancel()
                     exoPlayer.pause()
     
                     playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
@@ -239,6 +249,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     }
     
     override fun onDestroy() {
+        playbackStateJob?.cancel()
         exoPlayer.stop()
         exoPlayer.release()
         super.onDestroy()
@@ -312,6 +323,23 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         result.sendResult(null)
+    }
+    
+    private fun startPlaybackCountUp() {
+        playbackStateJob?.cancel()
+        playbackStateJob = playbackCountUp()
+    }
+    
+    private fun playbackCountUp() = io {
+        while (isActive && withContext(ui) { exoPlayer.isPlaying }) {
+            ui {
+                playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+                    .setState(playbackStateCompat.state, exoPlayer.currentPosition, DEFAULT_PLAYBACK_SPEED)
+                    .build()
+                mediaSessionCompat.setPlaybackState(playbackStateCompat)
+            }
+            delay(PLAYBACK_STATE_UPDATE_INTERVAL)
+        }
     }
     
 }
