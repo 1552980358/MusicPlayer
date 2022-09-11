@@ -39,6 +39,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
+import com.google.android.exoplayer2.BasePlayer
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -331,7 +332,16 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
     }
     
     private fun playbackCountUp() = io {
-        while (isActive && withContext(ui) { exoPlayer.isPlaying }) {
+        /**
+         * [ExoPlayer.isPlaying] will check some more states other than [ExoPlayer.getPlayWhenReady] refers to [BasePlayer.isPlaying],
+         *   which will cause returning `false` even [ExoPlayer.play] had already called before.
+         *   This action maybe checking the codec is working, device speaker actually playing, or other reasons
+         *
+         * However, refers to source code, [ExoPlayer.play] equals to [ExoPlayer.setPlayWhenReady] with value `true`,
+         *   i.e., [ExoPlayer.getPlayWhenReady] returning `true`, while [ExoPlayer.play] mean started playing
+         **/
+        //
+        while (isActive && withContext(ui) { exoPlayer.playWhenReady }) {
             ui {
                 playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
                     .setState(playbackStateCompat.state, exoPlayer.currentPosition, DEFAULT_PLAYBACK_SPEED)
