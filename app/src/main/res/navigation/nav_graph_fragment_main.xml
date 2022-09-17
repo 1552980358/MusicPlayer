@@ -2,15 +2,20 @@
 <navigation
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph_fragment_main"
     app:startDestination="@id/home_fragment">
     
     <fragment
         android:id="@+id/home_fragment"
-        android:name="projekt.cloud.piece.music.player.ui.main.home.HomeFragment" />
+        android:name="projekt.cloud.piece.music.player.ui.main.home.HomeFragment"
+        android:label="@string/fragment_home"
+        tools:layout="@layout/fragment_home" />
     
     <fragment
         android:id="@+id/artist_fragment"
-        android:name="projekt.cloud.piece.music.player.ui.main.artist.ArtistFragment" />
+        android:name="projekt.cloud.piece.music.player.ui.main.artist.ArtistFragment"
+        android:label="@string/fragment_artist"
+        tools:layout="@layout/fragment_artist" />
     
 </navigation>

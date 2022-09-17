@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">MusicPlayer</string>
     
+    <string name="fragment_home">Home</string>
+    <string name="fragment_artist">Artist</string>
+    
     <string name="launch_title_read">Permission: READ_EXTERNAL_STORAGE</string>
     <string name="launch_content_read">For reading of audio files and configurations</string>
     <string name="launch_title_write">Step 2: WRITE_EXTERNAL_STORAGE</string>

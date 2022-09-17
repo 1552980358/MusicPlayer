@@ -8,11 +8,11 @@
         <item
             android:id="@+id/home_fragment"
             android:icon="@drawable/ic_round_home_24"
-            android:title="home" />
+            android:title="@string/fragment_home" />
         <item
             android:id="@+id/artist_fragment"
             android:icon="@drawable/ic_round_artist_24"
-            android:title="artist"/>
+            android:title="@string/fragment_artist" />
         
     </group>
 
