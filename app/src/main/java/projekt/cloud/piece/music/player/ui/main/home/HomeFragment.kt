@@ -1,6 +1,5 @@
 package projekt.cloud.piece.music.player.ui.main.home
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +23,6 @@ class HomeFragment: BaseMainFragment() {
     
     private lateinit var recyclerViewAdapter: RecyclerViewAdapter
     
-    @SuppressLint("NewApi")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return root
