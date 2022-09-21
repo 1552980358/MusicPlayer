@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.core.view.GravityCompat.END
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import projekt.cloud.piece.music.player.MainActivityViewModel
@@ -89,6 +90,14 @@ class PlayerFragment: BaseFragment(), View.OnClickListener {
             appCompatImageButtonNext -> skipToNext()
             shuffleButton -> sendCustomAction(CUSTOM_ACTION_SHUFFLE_MODE)
         }
+    }
+    
+    override fun onBackPressed(): Boolean {
+        if (root.isDrawerOpen(END)) {
+            root.closeDrawer(END)
+            return false
+        }
+        return true
     }
     
     override fun onDestroyView() {
