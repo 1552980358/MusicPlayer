@@ -89,7 +89,7 @@ dependencies {
     
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     
-    implementation("com.github.1552980358:C2Pinyin:2.3.0")
+    implementation("com.github.1552980358:C2Pinyin:2.3.3")
     
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
