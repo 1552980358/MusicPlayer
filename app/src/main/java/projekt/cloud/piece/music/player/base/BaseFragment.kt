@@ -29,4 +29,7 @@ open class BaseFragment: Fragment() {
     protected fun sendCustomAction(action: String, vararg pair: Pair<String, Any?>) =
         transportControls.sendCustomAction(action, bundleOf(*pair))
     
+    /** super.onBackPressed() is not required **/
+    open fun onBackPressed() = false
+    
 }
