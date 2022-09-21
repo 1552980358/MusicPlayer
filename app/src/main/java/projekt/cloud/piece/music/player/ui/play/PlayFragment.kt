@@ -4,20 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.FragmentContainerView
+import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.transition.platform.MaterialContainerTransform
-import projekt.cloud.piece.music.player.MainActivityViewModel
 import projekt.cloud.piece.music.player.base.BaseFragment
+import projekt.cloud.piece.music.player.base.BaseHostFragment
 import projekt.cloud.piece.music.player.databinding.FragmentPlayBinding
 
-class PlayFragment: BaseFragment() {
+class PlayFragment: BaseHostFragment() {
     
     private var _binding: FragmentPlayBinding? = null
     private val binding: FragmentPlayBinding
         get() = _binding!!
     private val root get() = binding.root
-    
-    private val activityViewModel: MainActivityViewModel by activityViewModels()
+    private val fragmentContainerView: FragmentContainerView
+        get() = binding.fragmentContainerView
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +30,10 @@ class PlayFragment: BaseFragment() {
         return root
     }
     
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    }
+    override fun onBackPressed() = (fragmentContainerView.getFragment<NavHostFragment>()
+        .childFragmentManager
+        .fragments
+        .first() as? BaseFragment)
+        ?.onBackPressed() != false
     
 }
