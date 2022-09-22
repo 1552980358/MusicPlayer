@@ -63,6 +63,7 @@ import projekt.cloud.piece.music.player.service.play.ServiceConstants.EXTRA_AUDI
 import projekt.cloud.piece.music.player.util.ArtUtil.SUFFIX_LARGE
 import projekt.cloud.piece.music.player.util.ArtUtil.TYPE_ALBUM
 import projekt.cloud.piece.music.player.util.ArtUtil.fileOf
+import projekt.cloud.piece.music.player.util.BundleUtil.serializableOf
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
 import projekt.cloud.piece.music.player.util.ServiceUtil.startSelf
@@ -145,10 +146,9 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
                 }
                 override fun onPlayFromMediaId(mediaId: String, extras: Bundle) {
                     playAudioMetadata(
-                        @Suppress("UNCHECKED_CAST")
                         playingQueue.setAudioMetadataList(
                             mediaId,
-                            extras.getSerializable(EXTRA_AUDIO_METADATA_LIST) as? ArrayList<AudioMetadata>,
+                            extras.serializableOf(EXTRA_AUDIO_METADATA_LIST),
                             shuffleMode == SHUFFLE_MODE_ALL
                         )
                     )

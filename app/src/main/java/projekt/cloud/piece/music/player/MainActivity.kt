@@ -24,6 +24,7 @@ import projekt.cloud.piece.music.player.item.AudioMetadata
 import projekt.cloud.piece.music.player.room.AudioDatabase
 import projekt.cloud.piece.music.player.service.PlayService
 import projekt.cloud.piece.music.player.service.play.ServiceConstants
+import projekt.cloud.piece.music.player.util.BundleUtil.serializableOf
 
 class MainActivity: AppCompatActivity() {
     
@@ -92,9 +93,8 @@ class MainActivity: AppCompatActivity() {
                         }
                         
                         override fun onExtrasChanged(extras: Bundle) {
-                            @Suppress("UNCHECKED_CAST")
-                            (extras.getSerializable(ServiceConstants.EXTRA_AUDIO_METADATA_LIST) as? ArrayList<AudioMetadata>)
-                                ?.let { viewModel.setPlayingQueue(it) }
+                            (extras.serializableOf<ArrayList<AudioMetadata>>(ServiceConstants.EXTRA_AUDIO_METADATA_LIST))
+                                .let { viewModel.setPlayingQueue(it) }
                         }
                         
                     })
