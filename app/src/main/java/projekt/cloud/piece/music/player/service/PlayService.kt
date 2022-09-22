@@ -66,6 +66,7 @@ import projekt.cloud.piece.music.player.util.ArtUtil.fileOf
 import projekt.cloud.piece.music.player.util.BundleUtil.serializableOf
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
+import projekt.cloud.piece.music.player.util.ServiceUtil.setStopForeground
 import projekt.cloud.piece.music.player.util.ServiceUtil.startSelf
 
 class PlayService: MediaBrowserServiceCompat(), Player.Listener {
@@ -241,7 +242,7 @@ class PlayService: MediaBrowserServiceCompat(), Player.Listener {
             }
             ACTION_START_COMMAND_PAUSE -> {
                 notificationHelper.startForeground(this, playingQueue.current, audioArt)
-                stopForeground(false)
+                setStopForeground(false)
                 isForeground = false
             }
             else -> MediaButtonReceiver.handleIntent(mediaSessionCompat, intent)
