@@ -3,6 +3,7 @@
     
     <string name="fragment_home">Home</string>
     <string name="fragment_artist">Artist</string>
+    <string name="fragment_album">Album</string>
     
     <string name="launch_title_read">Permission: READ_EXTERNAL_STORAGE</string>
     <string name="launch_content_read">For reading of audio files and configurations</string>
