@@ -10,7 +10,7 @@
         android:id="@+id/home_fragment"
         android:name="projekt.cloud.piece.music.player.ui.main.home.HomeFragment"
         android:label="@string/fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_base_main" />
     
     <fragment
         android:id="@+id/artist_fragment"
