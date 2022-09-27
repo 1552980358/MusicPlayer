@@ -6,6 +6,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Job
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.databinding.LayoutRecyclerArtistBinding
 import projekt.cloud.piece.music.player.item.Artist
@@ -20,18 +21,23 @@ class RecyclerViewAdapter(recyclerView: RecyclerView, private val onClick: (Arti
     private inner class RecyclerViewHolder(private val binding: LayoutRecyclerArtistBinding)
         : RecyclerView.ViewHolder(binding.root), OnClickListener {
         
+        @Volatile
+        private var job: Job? = null
+        
         fun bind(artist: Artist) {
-            binding.artist = artist
-            binding.root.setOnClickListener(this)
-            io {
+            job?.cancel()
+            job = io {
                 val artistFile = binding.root.context.fileOf(TYPE_ARTIST, artist.id, SUFFIX_SMALL)
                 when {
-                    artistFile.exists() -> artistFile.inputStream().use {  BitmapFactory.decodeStream(it) }.let { bitmap ->
+                    artistFile.exists() -> artistFile.inputStream().use { BitmapFactory.decodeStream(it) }.let { bitmap ->
                         ui { binding.appCompatImageView.setImageBitmap(bitmap) }
                     }
                     else -> ui { binding.appCompatImageView.setImageResource(R.drawable.ic_round_artist_24) }
                 }
+                job = null
             }
+            binding.artist = artist
+            binding.root.setOnClickListener(this)
         }
     
         override fun onClick(v: View?) {
