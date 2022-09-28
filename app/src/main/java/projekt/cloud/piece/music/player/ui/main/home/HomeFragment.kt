@@ -3,11 +3,11 @@ package projekt.cloud.piece.music.player.ui.main.home
 import android.os.Bundle
 import android.view.View
 import projekt.cloud.piece.music.player.room.AudioDatabase.Companion.audioDatabase
-import projekt.cloud.piece.music.player.ui.main.base.BaseMainFragment
+import projekt.cloud.piece.music.player.ui.main.base.BaseMainRecyclerFragment
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
 import projekt.cloud.piece.music.player.util.CoroutineUtil.ui
 
-class HomeFragment: BaseMainFragment() {
+class HomeFragment: BaseMainRecyclerFragment() {
     
     private lateinit var recyclerViewAdapter: RecyclerViewAdapter
     
