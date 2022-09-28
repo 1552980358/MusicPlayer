@@ -20,4 +20,6 @@
     
     <string name="fragment_player_drawer_title">Playing Queue…</string>
     
+    <string name="item_to_list_shared_container">item_to_list_shared_container</string>
+    
 </resources>

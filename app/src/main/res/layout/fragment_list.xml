@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/app_compat_image_view"
+            android:layout_width="@dimen/md_spec_size_40"
+            android:layout_height="@dimen/md_spec_size_40"
+            android:layout_marginHorizontal="@dimen/md_spec_spacing_horizontal_8"
+            android:layout_marginVertical="@dimen/md_spec_spacing_vertical_8" />
+        
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/material_text_view"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/md_spec_spacing_horizontal_8"
+            android:layout_toEndOf="@id/app_compat_image_view" />
+        
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/app_compat_image_view" />
+        
+    </RelativeLayout>
+    
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>
