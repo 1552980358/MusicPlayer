@@ -1,4 +1,4 @@
-name: BuildProject
+name: Porject Build
 on:
   push:
     branches:
