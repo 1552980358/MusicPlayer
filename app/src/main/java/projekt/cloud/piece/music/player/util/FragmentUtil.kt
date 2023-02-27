@@ -7,7 +7,7 @@ object FragmentUtil {
     fun <T> Fragment.viewLifecycleProperty(): LifecycleProperty<T> =
         ViewLifecycleProperty(this)
 
-    class ViewLifecycleProperty<T>(fragment: Fragment): LifecycleProperty<T>() {
+    open class ViewLifecycleProperty<T>(fragment: Fragment): LifecycleProperty<T>() {
 
         init {
             fragment.viewLifecycleOwnerLiveData.observe(fragment) { viewLifecycleOwner ->
