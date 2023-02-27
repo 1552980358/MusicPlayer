@@ -8,7 +8,7 @@ import kotlin.reflect.KProperty
 abstract class LifecycleProperty<T>: ReadWriteProperty<LifecycleOwner, T>, DefaultLifecycleObserver {
 
     private var _field: T? = null
-    private val field: T
+    protected val field: T
         get() = _field!!
 
     override fun setValue(thisRef: LifecycleOwner, property: KProperty<*>, value: T) {
