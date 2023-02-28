@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">CloudPiece - MusicPlayer</string>
+
+    <string name="permission_title">Permission</string>
+    <string name="permission_storage_title">Read External Storage</string>
+    <string name="permission_storage_body">Access audio file located at external storage\n(Android 12.1 SDK32 or below)</string>
+    <string name="permission_media_title">Read Audio Media</string>
+    <string name="permission_media_body">Access audio file with OS provided querying\n(Android 13 SDK33 or above)</string>
+
+    <string name="permission_button_grant">Grant Permission</string>
+    <string name="permission_button_settings">Go to Settings</string>
+
 </resources>

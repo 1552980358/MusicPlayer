@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/constraint_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="@dimen/constraint_fill"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/linear_layout_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/material_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="@string/permission_title" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/linear_layout_content"
+        android:layout_width="@dimen/constraint_fill"
+        android:layout_height="@dimen/constraint_fill"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/md_spec_spacing_hor_16"
+            android:paddingEnd="@dimen/md_spec_spacing_hor_24"
+            android:paddingVertical="@dimen/md_spec_spacing_ver_8">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/app_compat_image_view_storage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_round_folder_open_24" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="@dimen/constraint_fill"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="@dimen/md_spec_spacing_hor_16"
+                app:layout_constraintStart_toEndOf="@id/app_compat_image_view_storage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/permission_storage_title"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/permission_storage_body"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/md_spec_spacing_hor_16"
+            android:paddingEnd="@dimen/md_spec_spacing_hor_24"
+            android:paddingVertical="@dimen/md_spec_spacing_ver_8">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/app_compat_image_view_media"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_round_folder_open_24" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="@dimen/constraint_fill"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="@dimen/md_spec_spacing_hor_16"
+                app:layout_constraintStart_toEndOf="@id/app_compat_image_view_media"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/permission_media_title"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/permission_media_body"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/material_button_grant"
+        android:layout_width="@dimen/constraint_fill"
+        android:layout_height="wrap_content"
+        android:text="@string/permission_button_grant"
+        android:layout_marginHorizontal="@dimen/md_spec_spacing_hor_16"
+        android:layout_marginBottom="@dimen/md_spec_spacing_ver_8"
+        app:iconGravity="textStart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/material_button_settings"
+        android:layout_width="@dimen/constraint_fill"
+        android:layout_height="wrap_content"
+        android:text="@string/permission_button_settings"
+        android:layout_marginHorizontal="@dimen/md_spec_spacing_hor_16"
+        android:layout_marginBottom="@dimen/md_spec_spacing_ver_8"
+        app:iconGravity="textStart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/material_button_grant"
+        style="?materialIconButtonFilledTonalStyle" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
