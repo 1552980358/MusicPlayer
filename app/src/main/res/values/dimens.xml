@@ -1,2 +1,11 @@
 <resources>
+    <dimen name="constraint_fill">0dp</dimen>
+
+    <dimen name="md_spec_spacing_hor_8">8dp</dimen>
+    <dimen name="md_spec_spacing_hor_16">16dp</dimen>
+    <dimen name="md_spec_spacing_hor_24">24dp</dimen>
+    <dimen name="md_spec_spacing_ver_4">4dp</dimen>
+    <dimen name="md_spec_spacing_ver_8">8dp</dimen>
+    <dimen name="md_spec_spacing_ver_12">12dp</dimen>
+
 </resources>
