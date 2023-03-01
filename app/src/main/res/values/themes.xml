@@ -8,6 +8,8 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="Q">?attr/isLightTheme</item>
+
+        <item name="materialCardViewStyle">?attr/materialCardViewFilledStyle</item>
     </style>
 
     <style name="Theme.CloudPieceMusicPlayer" parent="Base.Theme.CloudPieceMusicPlayer" />
