@@ -17,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.core.view.updatePadding
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicatorSpec
@@ -116,6 +117,9 @@ class PermissionFragment: BaseFragment<FragmentPermissionBinding>(), View.OnClic
 
     private fun completePermissionGrant() {
         Log.e(TAG, "completePermissionGrant()")
+        findNavController().navigate(
+            PermissionFragmentDirections.toQueryMedia()
+        )
     }
 
     override fun onClick(v: View?) {

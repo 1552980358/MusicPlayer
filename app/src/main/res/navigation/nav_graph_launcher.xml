@@ -9,6 +9,17 @@
     <fragment
         android:id="@+id/permission"
         android:name="projekt.cloud.piece.music.player.ui.fragment.permission.PermissionFragment"
-        tools:layout="@layout/fragment_permission" />
+        tools:layout="@layout/fragment_permission">
+
+        <action
+            android:id="@+id/to_query_media"
+            app:destination="@id/query_media" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/query_media"
+        android:name="projekt.cloud.piece.music.player.ui.fragment.queryMedia.QueryMediaFragment"
+        tools:layout="@layout/fragment_query_media" />
 
 </navigation>
