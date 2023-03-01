@@ -1,4 +1,5 @@
 <resources>
+    <dimen name="linear_fill">0dp</dimen>
     <dimen name="constraint_fill">0dp</dimen>
 
     <dimen name="md_spec_spacing_hor_8">8dp</dimen>
@@ -7,5 +8,8 @@
     <dimen name="md_spec_spacing_ver_4">4dp</dimen>
     <dimen name="md_spec_spacing_ver_8">8dp</dimen>
     <dimen name="md_spec_spacing_ver_12">12dp</dimen>
+
+    <dimen name="query_media_image_size">36dp</dimen>
+    <dimen name="query_media_image_container_height">96dp</dimen>
 
 </resources>

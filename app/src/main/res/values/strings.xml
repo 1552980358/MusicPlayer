@@ -10,4 +10,10 @@
     <string name="permission_button_grant">Grant Permission</string>
     <string name="permission_button_settings">Go to Settings</string>
 
+    <string name="query_media_title">Query Media</string>
+    <string name="query_media_query_title">Query MediaStore</string>
+    <string name="query_media_query_body_wait">Please wait…</string>
+    <string name="query_media_query_body_complete">Total %d audio found.</string>
+    <string name="query_media_button_finish">Finish</string>
+
 </resources>
