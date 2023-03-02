@@ -3,8 +3,9 @@ package projekt.cloud.piece.music.player.storage.audio.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import projekt.cloud.piece.music.player.storage.audio.entity.AudioEntity.AudioEntityConstants.AUDIO_TABLE_NAME
 
-@Entity
+@Entity(tableName = AUDIO_TABLE_NAME)
 class AudioEntity(
     @PrimaryKey
     @ColumnInfo(name = AUDIO_COLUMN_ID)
@@ -22,6 +23,7 @@ class AudioEntity(
 ) {
 
     companion object AudioEntityConstants {
+        const val AUDIO_TABLE_NAME = "audio"
         const val AUDIO_COLUMN_ID = "id"
         const val AUDIO_COLUMN_TITLE = "title"
         const val AUDIO_COLUMN_ARTIST = "artist"
