@@ -27,6 +27,7 @@ import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.databinding.FragmentQueryMediaBinding
 import projekt.cloud.piece.music.player.storage.audio.AudioDatabase
 import projekt.cloud.piece.music.player.storage.audio.AudioDatabase.AudioDatabaseUtil.audioDatabase
+import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase.Companion.runtimeDatabase
 import projekt.cloud.piece.music.player.util.ContextUtil.requireWindowInsets
 import projekt.cloud.piece.music.player.util.CoroutineUtil.default
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
@@ -68,12 +69,22 @@ class QueryMediaFragment: BaseFragment<FragmentQueryMediaBinding>() {
         }
 
         lifecycleScope.main {
+
+            val audioDatabase = withContext(default) {
+                requireContext().audioDatabase
+            }
+
             subtitle.text = getString(
                 R.string.query_media_query_body_complete,
                 withContext(default) {
-                    queryMediaStore(requireContext().audioDatabase)
+                    queryMediaStore(audioDatabase)
                 }
             )
+
+            withContext(default) {
+                requireContext().runtimeDatabase.audioMetadataDao()
+                    .insert(audioDatabase.metadataDao().query())
+            }
 
             with(finish) {
                 icon = null
