@@ -5,12 +5,14 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import projekt.cloud.piece.music.player.storage.audio.dao.MetadataDao
+import projekt.cloud.piece.music.player.storage.audio.databaseView.AudioMetadata
 import projekt.cloud.piece.music.player.storage.audio.entity.AlbumEntity
 import projekt.cloud.piece.music.player.storage.audio.entity.ArtistEntity
 import projekt.cloud.piece.music.player.storage.audio.entity.AudioEntity
 
 @Database(
     entities = [AudioEntity::class, ArtistEntity::class, AlbumEntity::class],
+    views = [AudioMetadata::class],
     version = 1
 )
 abstract class AudioDatabase: RoomDatabase() {
