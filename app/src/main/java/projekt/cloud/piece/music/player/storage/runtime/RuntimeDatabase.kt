@@ -16,12 +16,25 @@ import projekt.cloud.piece.music.player.storage.runtime.entity.AudioMetadataEnti
 )
 abstract class RuntimeDatabase: RoomDatabase() {
 
-    companion object {
-        val Context.runtimeDatabase: RuntimeDatabase
-            get() = Room.inMemoryDatabaseBuilder(this, RuntimeDatabase::class.java)
+    companion object RuntimeDatabaseUtil {
+        private fun Context.createRuntimeDatabase() =
+            Room.inMemoryDatabaseBuilder(this, RuntimeDatabase::class.java)
                 .build()
+        private fun Context.returnOrCreate(): RuntimeDatabase {
+            return instance ?: synchronized(this@RuntimeDatabaseUtil) {
+                instance ?: createRuntimeDatabase().also { instance = it }
+            }
+        }
+
+        @Volatile
+        private var instance: RuntimeDatabase? = null
+        val Context.runtimeDatabase: RuntimeDatabase
+            get() = returnOrCreate()
+
     }
 
     abstract fun audioMetadataDao(): AudioMetadataDao
+
+
 
 }
