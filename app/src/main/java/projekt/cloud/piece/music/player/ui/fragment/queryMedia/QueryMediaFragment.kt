@@ -15,6 +15,7 @@ import android.provider.MediaStore.Audio.Media.IS_MUSIC
 import android.util.TypedValue
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.edit
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.AppBarLayout
@@ -33,6 +34,7 @@ import projekt.cloud.piece.music.player.ui.activity.main.MainActivity
 import projekt.cloud.piece.music.player.util.ContextUtil.requireWindowInsets
 import projekt.cloud.piece.music.player.util.CoroutineUtil.default
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
+import projekt.cloud.piece.music.player.util.PreferenceUtil.defaultSharedPreference
 
 class QueryMediaFragment: BaseFragment<FragmentQueryMediaBinding>() {
 
@@ -99,6 +101,7 @@ class QueryMediaFragment: BaseFragment<FragmentQueryMediaBinding>() {
         finish.setOnClickListener {
             if (isComplete) {
                 // Completed
+                complete()
             }
         }
     }
@@ -123,6 +126,26 @@ class QueryMediaFragment: BaseFragment<FragmentQueryMediaBinding>() {
                 }
             }
         return count
+    }
+
+    private fun complete() {
+        lifecycleScope.main {
+            saveCompleteFlag()
+            with(requireActivity()) {
+                startActivity(Intent(requireContext(), MainActivity::class.java))
+                finish()
+            }
+        }
+    }
+
+    // Need blocking
+    private suspend fun saveCompleteFlag() {
+        withContext(default) {
+            requireContext().defaultSharedPreference
+                .edit(true) {
+                    putBoolean(getString(R.string.launcher_complete), true)
+                }
+        }
     }
 
 }
