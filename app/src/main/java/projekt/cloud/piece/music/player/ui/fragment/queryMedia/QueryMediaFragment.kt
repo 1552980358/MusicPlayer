@@ -117,8 +117,8 @@ class QueryMediaFragment: BaseFragment<FragmentQueryMediaBinding>() {
                         cursor.getString(cursor.getColumnIndexOrThrow(TITLE)),
                         cursor.getString(cursor.getColumnIndexOrThrow(ARTIST_ID)),
                         cursor.getString(cursor.getColumnIndexOrThrow(ARTIST)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(ALBUM)),
                         cursor.getString(cursor.getColumnIndexOrThrow(ALBUM_ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(ALBUM)),
                         cursor.getLong(cursor.getColumnIndexOrThrow(DURATION)),
                         cursor.getLong(cursor.getColumnIndexOrThrow(SIZE))
                     )
