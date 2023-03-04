@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">CloudPiece - MusicPlayer</string>
 
+    <string name="nav_main_host_home">Home</string>
+    <string name="nav_main_host_music_library">Library</string>
+
     <string name="permission_title">Permission</string>
     <string name="permission_storage_title">Read External Storage</string>
     <string name="permission_storage_body">Access audio file located at external storage\n(Android 12.1 SDK32 or below)</string>
