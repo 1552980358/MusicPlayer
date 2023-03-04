@@ -10,7 +10,8 @@ import projekt.cloud.piece.music.player.util.LifecycleProperty
 
 abstract class BaseMultiDensityFragment<VB: ViewBinding, LC: BaseLayoutCompat<VB>>: BaseFragment<VB>() {
 
-    private var layoutCompat: LC by layoutCompatProperty()
+    protected var layoutCompat: LC by layoutCompatProperty()
+        private set
 
     private fun layoutCompatProperty(): LifecycleProperty<LC> =
         LayoutCompatProperty(this)
