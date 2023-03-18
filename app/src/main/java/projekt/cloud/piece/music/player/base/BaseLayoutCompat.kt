@@ -10,7 +10,7 @@ import projekt.cloud.piece.music.player.util.ScreenDensity.COMPACT
 import projekt.cloud.piece.music.player.util.ScreenDensity.EXPANDED
 import projekt.cloud.piece.music.player.util.ScreenDensity.MEDIUM
 
-private typealias RequireWindowInsetsListener = (Rect) -> Unit
+typealias RequireWindowInsetsListener = (Rect) -> Unit
 
 abstract class BaseLayoutCompat<VB: ViewBinding>(private var _binding: VB?) {
 
