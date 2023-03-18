@@ -1,0 +1,17 @@
+package projekt.cloud.piece.music.player.util
+
+object TimeUtil {
+
+    private const val SECOND = 1000
+    private const val MINUTE = 60
+
+    private val Long.millsToMinute: Long
+        get() = this / SECOND / MINUTE
+
+    private val Long.millsToSecond: Long
+        get() = this / SECOND % MINUTE
+
+    val Long.durationStr: String
+        get() = "${millsToMinute}:${millsToSecond}"
+
+}
