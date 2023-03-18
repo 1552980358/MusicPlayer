@@ -10,11 +10,20 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/constraint_fill"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/fragment_container_view"
+        app:layout_constraintEnd_toStartOf="@id/material_toolbar"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/nav_main_host"
         app:menuGravity="center" />
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/material_toolbar"
+        android:layout_width="@dimen/constraint_fill"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintStart_toEndOf="@id/navigation_rail_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/fragment_container_view"/>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container_view"
@@ -23,7 +32,7 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         app:layout_constraintStart_toEndOf="@id/navigation_rail_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/material_toolbar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:navGraph="@navigation/nav_graph_main_host" />
 
