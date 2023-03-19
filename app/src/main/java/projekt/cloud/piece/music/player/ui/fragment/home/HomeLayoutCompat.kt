@@ -3,6 +3,7 @@ package projekt.cloud.piece.music.player.ui.fragment.home
 import android.graphics.Rect
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.updatePadding
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import kotlin.reflect.KClass
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
@@ -10,6 +11,7 @@ import projekt.cloud.piece.music.player.databinding.FragmentHomeBinding
 
 open class HomeLayoutCompat: BaseLayoutCompat<FragmentHomeBinding> {
 
+    @Suppress("unused")
     constructor(): super(null)
     constructor(binding: FragmentHomeBinding): super(binding)
 
@@ -54,6 +56,13 @@ open class HomeLayoutCompat: BaseLayoutCompat<FragmentHomeBinding> {
             coordinatorLayout.updatePadding(bottom = insets.bottom)
         }
 
+    }
+
+    private val recyclerView: RecyclerView
+        get() = binding.recyclerView
+
+    fun setupRecyclerViewAdapter(adapter: RecyclerView.Adapter<*>) {
+        recyclerView.adapter = adapter
     }
 
 }
