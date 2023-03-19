@@ -45,7 +45,8 @@
                 android:layout_height="@dimen/md_spec_size_image_56"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:shapeAppearance="?attr/roundShapeableImageAppearance" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/material_text_view_duration"
