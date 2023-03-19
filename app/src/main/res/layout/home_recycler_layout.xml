@@ -52,6 +52,8 @@
                 android:id="@+id/material_text_view_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="@{duration}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -77,6 +79,8 @@
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="@{artist + ` - ` + album}"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
 
