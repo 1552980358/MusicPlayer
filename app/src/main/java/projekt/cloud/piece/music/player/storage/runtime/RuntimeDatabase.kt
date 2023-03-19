@@ -30,6 +30,9 @@ abstract class RuntimeDatabase: RoomDatabase() {
         private var instance: RuntimeDatabase? = null
         val Context.runtimeDatabase: RuntimeDatabase
             get() = returnOrCreate()
+        fun Context.runtimeDatabase(): RuntimeDatabase {
+            return runtimeDatabase
+        }
 
     }
 
