@@ -12,7 +12,7 @@
     <dimen name="md_spec_list_72">72dp</dimen>
     <dimen name="md_spec_size_image_56">56dp</dimen>
 
-    <dimen name="md_spec_card_radius_12">12dp</dimen>
+    <dimen name="md_spec_corner_radius_12">12dp</dimen>
 
     <dimen name="query_media_image_size">36dp</dimen>
     <dimen name="query_media_image_container_height">96dp</dimen>
