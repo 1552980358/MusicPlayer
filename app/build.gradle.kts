@@ -70,7 +70,7 @@ dependencies {
 
     implementation("com.google.android.material:material:1.8.0")
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.0")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.10")
 
     testImplementation("junit:junit:4.13.2")
 
