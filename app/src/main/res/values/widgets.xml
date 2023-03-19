@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- For ShapeableImageView -->
+    <style name="Widget.MaterialComponents.ShapeableImageView.RoundCorner">
+        <item name="cornerFamily">rounded</item>
+    </style>
+    <style name="Widget.MaterialComponents.ShapeableImageView.RoundCorner.Circle" 
+        parent="@style/Widget.MaterialComponents.ShapeableImageView.RoundCorner">
+        <item name="cornerSize">50%</item>
+    </style>
+    <style name="Widget.MaterialComponents.ShapeableImageView.RoundCorner.Full"
+        parent="@style/Widget.MaterialComponents.ShapeableImageView.RoundCorner">
+        <item name="cornerSize">@dimen/md_spec_corner_radius_12</item>
+    </style>
+
+</resources>

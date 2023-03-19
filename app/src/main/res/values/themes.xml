@@ -10,6 +10,9 @@
         <item name="android:windowLightStatusBar" tools:targetApi="Q">?attr/isLightTheme</item>
 
         <item name="materialCardViewStyle">?attr/materialCardViewFilledStyle</item>
+
+        <item name="circleShapeableImageAppearance">@style/Widget.MaterialComponents.ShapeableImageView.RoundCorner.Circle</item>
+        <item name="roundShapeableImageAppearance">@style/Widget.MaterialComponents.ShapeableImageView.RoundCorner.Full</item>
     </style>
 
     <style name="Theme.CloudPieceMusicPlayer" parent="Base.Theme.CloudPieceMusicPlayer" />
