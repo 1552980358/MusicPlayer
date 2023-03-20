@@ -5,12 +5,14 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import projekt.cloud.piece.music.player.storage.runtime.dao.AudioMetadataDao
+import projekt.cloud.piece.music.player.storage.runtime.dao.PlaybackDao
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.AlbumView
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.ArtistView
 import projekt.cloud.piece.music.player.storage.runtime.entity.AudioMetadataEntity
+import projekt.cloud.piece.music.player.storage.runtime.entity.PlaybackEntity
 
 @Database(
-    entities = [AudioMetadataEntity::class],
+    entities = [AudioMetadataEntity::class, PlaybackEntity::class],
     views = [ArtistView::class, AlbumView::class],
     version = 1
 )
@@ -38,6 +40,6 @@ abstract class RuntimeDatabase: RoomDatabase() {
 
     abstract fun audioMetadataDao(): AudioMetadataDao
 
-
+    abstract fun playbackDao(): PlaybackDao
 
 }
