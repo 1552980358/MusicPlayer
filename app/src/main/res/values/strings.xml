@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">CloudPiece - MusicPlayer</string>
+    <string name="playback_channel_name">Playback Notification</string>
 
     <string name="nav_main_host_home">Home</string>
     <string name="nav_main_host_music_library">Library</string>
