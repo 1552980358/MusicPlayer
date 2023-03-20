@@ -65,4 +65,12 @@ open class HomeLayoutCompat: BaseLayoutCompat<FragmentHomeBinding> {
         recyclerView.adapter = adapter
     }
 
+    private var playMediaWithId: ((String) -> Unit)? = null
+    fun setPlayMediaWithId(block: ((String) -> Unit)) {
+        playMediaWithId = block
+    }
+    fun invokePlayWithId(id: String) {
+        playMediaWithId?.invoke(id)
+    }
+
 }

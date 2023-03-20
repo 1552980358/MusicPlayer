@@ -16,13 +16,21 @@ import projekt.cloud.piece.music.player.util.UriUtil.albumArtUri
 
 object HomeRecyclerViewUtil {
 
-    private class ViewHolder(private val binding: HomeRecyclerLayoutBinding): RecyclerView.ViewHolder(binding.root) {
+    private class HomeRecyclerViewHolder(
+        private val binding: HomeRecyclerLayoutBinding,
+        homeLayoutCompat: HomeLayoutCompat
+    ): RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.homeLayoutCompat = homeLayoutCompat
+        }
 
         private val image: ShapeableImageView
             get() = binding.shapeableImageViewImage
 
         fun bind(fragment: Fragment, audioMetadata: AudioMetadataEntity) {
             with(binding) {
+                id = audioMetadata.id
                 title = audioMetadata.title
                 artist = audioMetadata.artistName
                 album = audioMetadata.albumTitle
@@ -41,15 +49,20 @@ object HomeRecyclerViewUtil {
 
     }
 
-    private class Adapter(
-        private val fragment: Fragment, private val audioList: List<AudioMetadataEntity>
-    ): RecyclerView.Adapter<ViewHolder>() {
+    private class HomeRecyclerViewAdapter(
+        private val fragment: Fragment,
+        private val audioList: List<AudioMetadataEntity>,
+        private val homeLayoutCompat: HomeLayoutCompat
+    ): RecyclerView.Adapter<HomeRecyclerViewHolder>() {
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
-            HomeRecyclerLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = HomeRecyclerViewHolder(
+            HomeRecyclerLayoutBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false
+            ),
+            homeLayoutCompat
         )
 
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: HomeRecyclerViewHolder, position: Int) {
             holder.bind(fragment, audioList[position])
         }
 
@@ -58,10 +71,9 @@ object HomeRecyclerViewUtil {
     }
 
     fun getRecyclerViewAdapter(
-        fragment: Fragment, audioList: List<AudioMetadataEntity>
+        fragment: Fragment, audioList: List<AudioMetadataEntity>, homeLayoutCompat: HomeLayoutCompat
     ): RecyclerView.Adapter<*> {
-        return Adapter(fragment, audioList)
+        return HomeRecyclerViewAdapter(fragment, audioList, homeLayoutCompat)
     }
 
 }
-

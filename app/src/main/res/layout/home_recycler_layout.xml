@@ -5,6 +5,16 @@
 
     <data>
 
+        <import type="projekt.cloud.piece.music.player.ui.fragment.home.HomeLayoutCompat" />
+
+        <variable
+            name="homeLayoutCompat"
+            type="HomeLayoutCompat" />
+
+        <variable
+            name="id"
+            type="String" />
+
         <variable
             name="duration"
             type="String" />
@@ -34,6 +44,7 @@
             android:paddingStart="@dimen/md_spec_spacing_hor_16"
             android:paddingEnd="@dimen/md_spec_spacing_hor_24"
             android:paddingVertical="@dimen/md_spec_spacing_ver_8"
+            android:onClick="@{() -> homeLayoutCompat.invokePlayWithId(id)}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
