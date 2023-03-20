@@ -21,7 +21,7 @@ abstract class BaseMultiDensityFragment<VB: ViewBinding, LC: BaseLayoutCompat<VB
     protected var layoutCompat: LC by layoutCompatProperty()
         private set
 
-    private fun layoutCompatProperty(): LifecycleProperty<LC> =
+    private fun layoutCompatProperty(): LifecycleProperty<Fragment, LC> =
         LayoutCompatProperty(this)
 
     private class LayoutCompatProperty<VB: ViewBinding, LC: BaseLayoutCompat<VB>>(fragment: Fragment): ViewLifecycleProperty<LC>(fragment) {
