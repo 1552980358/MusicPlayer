@@ -6,7 +6,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ART
@@ -68,7 +68,7 @@ class PlaybackService: BaseLifecycleMediaBrowserService() {
         const val START_COMMAND_PLAYBACK_START = "$START_COMMAND_PLAYBACK.Start"
         const val START_COMMAND_PLAYBACK_PAUSE = "$START_COMMAND_PLAYBACK.Pause"
 
-        const val NOTIFICATION_ID = 1552980358
+        const val NOTIFICATION_ID = 1
 
         const val DURATION_START = 0L
     }
@@ -99,10 +99,8 @@ class PlaybackService: BaseLifecycleMediaBrowserService() {
     private val audioPlayer by lazy { AudioPlayer(this) }
 
     override fun onCreate() {
+        Log.d(TAG, "onCreate")
         super.onCreate()
-
-        // Setup player
-        audioPlayer.setupPlayer(this@PlaybackService)
 
         _mediaSessionCompat = MediaSessionCompat(this, TAG)
         with(mediaSessionCompat) {
@@ -112,8 +110,9 @@ class PlaybackService: BaseLifecycleMediaBrowserService() {
                 object: MediaSessionCompat.Callback() {
                     override fun onPlay() {
                         Log.d(TAG, "onPlay: audioMetadata=$audioMetadata")
-                        if (playbackStateCompat.playbackState != STATE_PAUSED
-                            && playbackStateCompat.playbackState != STATE_BUFFERING) {
+
+                        if (playbackStateCompat.state != STATE_PAUSED
+                            && playbackStateCompat.state != STATE_BUFFERING) {
                             return
                         }
 
@@ -134,7 +133,8 @@ class PlaybackService: BaseLifecycleMediaBrowserService() {
 
                     override fun onPause() {
                         Log.d(TAG, "onPause: audioMetadata=$audioMetadata")
-                        if (playbackStateCompat.playbackState == STATE_PLAYING) {
+
+                        if (playbackStateCompat.state == STATE_PLAYING) {
                             // Pause player
 
                             lifecycleScope.main {
@@ -161,6 +161,8 @@ class PlaybackService: BaseLifecycleMediaBrowserService() {
                     }
 
                     override fun onPlayFromMediaId(mediaId: String, extras: Bundle?) {
+                        Log.d(TAG, "onPlayFromMediaId: mediaId=$mediaId")
+
                         lifecycleScope.main {
                             // Get data
                             order = withContext(default) {
@@ -173,8 +175,6 @@ class PlaybackService: BaseLifecycleMediaBrowserService() {
                                     .query(mediaId)
                             }
                             _audioMetadata = audioMetadata
-
-                            Log.d(TAG, "onPlayFromMediaId: order=$order audioMetadata=$audioMetadata")
 
                             // Update state
                             playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
@@ -231,6 +231,9 @@ class PlaybackService: BaseLifecycleMediaBrowserService() {
             isActive = true
         }
         sessionToken = mediaSessionCompat.sessionToken
+
+        // Setup player
+        audioPlayer.setupPlayer(this@PlaybackService)
 
         playbackNotificationHelper = PlaybackNotificationHelper(this)
     }
@@ -289,7 +292,6 @@ class PlaybackService: BaseLifecycleMediaBrowserService() {
                     }
                     isForeground = false
                 }
-                stopSelf()
             }
             else -> {
                 Log.d(TAG, "onStartCommand: MediaButtonReceiver.handleIntent")
@@ -349,11 +351,13 @@ class PlaybackService: BaseLifecycleMediaBrowserService() {
         return BrowserRoot(packageName, null)
     }
 
-    override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        result.detach()
+    override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaItem>>) {
+        result.sendResult(null)
     }
 
     override fun onDestroy() {
+        Log.e(TAG, "onDestroy")
+
         audioPlayer.close()
 
         super.onDestroy()
