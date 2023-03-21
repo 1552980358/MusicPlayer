@@ -25,10 +25,6 @@ interface PlaybackDao {
     @Query("SELECT MAX(`${PLAYBACK_COLUMN_ORDER}`) FROM $PLAYBACK_TABLE_NAME")
     suspend fun lastOrder(): Int
 
-    suspend fun queryAudio(order: Int): AudioMetadataEntity {
-        return (this as AudioMetadataDao).query(queryId(order))
-    }
-
     @Query("SELECT $PLAYBACK_COLUMN_ID FROM $PLAYBACK_TABLE_NAME WHERE `$PLAYBACK_COLUMN_ORDER` = :order")
     suspend fun queryId(order: Int): String
 
