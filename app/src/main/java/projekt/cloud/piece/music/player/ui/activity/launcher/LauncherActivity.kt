@@ -1,8 +1,15 @@
 package projekt.cloud.piece.music.player.ui.activity.launcher
 
+import android.Manifest.permission.FOREGROUND_SERVICE
+import android.Manifest.permission.POST_NOTIFICATIONS
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.READ_MEDIA_AUDIO
 import android.content.Intent
+import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
@@ -30,7 +37,7 @@ class LauncherActivity: AppCompatActivity() {
 
         lifecycleScope.main {
             when {
-                checkLauncherComplete(getString(R.string.launcher_complete)) -> {
+                checkPermissionsGranted() && checkLauncherComplete(getString(R.string.launcher_complete)) -> {
                     lifecycleScope.main {
                         initialRuntimeDatabase()
                         startActivity(Intent(this@LauncherActivity, MainActivity::class.java))
@@ -44,6 +51,33 @@ class LauncherActivity: AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private val readMediaPermission: String
+        get() = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> READ_MEDIA_AUDIO
+            else -> READ_EXTERNAL_STORAGE
+        }
+
+    private fun checkPermissionsGranted(): Boolean {
+        if (ContextCompat.checkSelfPermission(
+                this, readMediaPermission
+        ) != PERMISSION_GRANTED) {
+            return false
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+            && ContextCompat.checkSelfPermission(
+                this, FOREGROUND_SERVICE
+            ) == PERMISSION_GRANTED) {
+            return false
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+            && ContextCompat.checkSelfPermission(
+                this, POST_NOTIFICATIONS
+            ) == PERMISSION_GRANTED) {
+            return false
+        }
+        return true
     }
 
     private suspend fun checkLauncherComplete(name: String): Boolean {
