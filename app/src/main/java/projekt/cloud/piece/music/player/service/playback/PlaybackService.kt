@@ -42,6 +42,7 @@ import com.bumptech.glide.Glide
 import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLifecycleMediaBrowserService
+import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase
 import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase.RuntimeDatabaseUtil.runtimeDatabase
 import projekt.cloud.piece.music.player.storage.runtime.entity.AudioMetadataEntity
 import projekt.cloud.piece.music.player.util.CoroutineUtil.default
@@ -94,7 +95,10 @@ class PlaybackService: BaseLifecycleMediaBrowserService() {
     private var _audioMetadata: AudioMetadataEntity? = null
     private val audioMetadata: AudioMetadataEntity
         get() = _audioMetadata!!
+    @Volatile
     private var order = -1
+        @Synchronized set
+        @Synchronized get
 
     private val audioPlayer by lazy { AudioPlayer(this) }
 
@@ -153,11 +157,42 @@ class PlaybackService: BaseLifecycleMediaBrowserService() {
                     }
 
                     override fun onSkipToPrevious() {
-                        super.onSkipToPrevious()
+                        Log.d(TAG, "onSkipToPrevious")
+
+                        lifecycleScope.main {
+                            playAudioWithOrder(
+                                runtimeDatabase,
+                                when {
+                                    order > 0 -> { --order }
+                                    else -> when (repeatMode) {
+                                        REPEAT_MODE_NONE -> {
+                                            return@main playAudioMetadata(audioMetadata)
+                                        }
+                                        else -> {
+                                            runtimeDatabase.playbackDao().lastOrder()
+                                        }
+                                    }
+                                }
+                            )
+                        }
                     }
 
                     override fun onSkipToNext() {
-                        super.onSkipToNext()
+                        Log.d(TAG, "onSkipToNext")
+
+                        lifecycleScope.main {
+                            playAudioWithOrder(
+                                runtimeDatabase,
+                                when {
+                                    !runtimeDatabase.playbackDao().isLastOrder(order) -> { ++order }
+                                    else -> when (repeatMode) {
+                                        // Repeat self
+                                        REPEAT_MODE_NONE -> { order }
+                                        else -> { 0 }
+                                    }
+                                }
+                            )
+                        }
                     }
 
                     override fun onPlayFromMediaId(mediaId: String, extras: Bundle?) {
@@ -170,24 +205,11 @@ class PlaybackService: BaseLifecycleMediaBrowserService() {
                                     .queryOrder(mediaId)
                             }
 
-                            val audioMetadata = withContext(default) {
-                                runtimeDatabase.audioMetadataDao()
-                                    .query(mediaId)
-                            }
-                            _audioMetadata = audioMetadata
-
-                            // Update state
-                            playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
-                                .setState(STATE_BUFFERING, DURATION_START, PLAYBACK_SPEED)
-                                .build()
-                            setPlaybackState(playbackStateCompat)
-                            setMetadata(
-                                MediaMetadataCompat.Builder()
-                                    .putString(METADATA_KEY_TITLE, audioMetadata.title)
-                                    .putString(METADATA_KEY_ARTIST, audioMetadata.artistName)
-                                    .putString(METADATA_KEY_ALBUM, audioMetadata.albumTitle)
-                                    .putLong(METADATA_KEY_DURATION, audioMetadata.duration)
-                                    .build()
+                            playAudioMetadata(
+                                withContext(default) {
+                                    runtimeDatabase.audioMetadataDao()
+                                        .query(mediaId)
+                                }
                             )
 
                             // Prepare
@@ -239,6 +261,45 @@ class PlaybackService: BaseLifecycleMediaBrowserService() {
     }
 
     private var isForeground = false
+
+    private suspend fun playAudioWithOrder(runtimeDatabase: RuntimeDatabase, order: Int) {
+        this.order = order
+        playAudioMetadata(
+            withContext(default) {
+                runtimeDatabase.audioMetadataDao()
+                    .query(
+                        runtimeDatabase.playbackDao()
+                            .queryId(order)
+                    )
+            }
+        )
+    }
+
+    private suspend fun playAudioMetadata(audioMetadata: AudioMetadataEntity) {
+        _audioMetadata = audioMetadata
+
+        // Update state
+        playbackStateCompat = PlaybackStateCompat.Builder(playbackStateCompat)
+            .setState(STATE_BUFFERING, DURATION_START, PLAYBACK_SPEED)
+            .build()
+        mediaSessionCompat.setPlaybackState(playbackStateCompat)
+        mediaSessionCompat.setMetadata(
+            MediaMetadataCompat.Builder()
+                .putString(METADATA_KEY_TITLE, audioMetadata.title)
+                .putString(METADATA_KEY_ARTIST, audioMetadata.artistName)
+                .putString(METADATA_KEY_ALBUM, audioMetadata.albumTitle)
+                .putLong(METADATA_KEY_DURATION, audioMetadata.duration)
+                .build()
+        )
+
+        // Prepare
+        audioPlayer.prepareUri(audioMetadata.id.audioUri)
+
+        // Start play
+        mediaSessionCompat.controller
+            .transportControls
+            .play()
+    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.getStringExtra(START_COMMAND_PLAYBACK)) {
