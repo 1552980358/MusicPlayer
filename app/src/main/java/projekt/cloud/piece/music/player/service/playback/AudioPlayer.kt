@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player.Listener
 import java.io.Closeable
 import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
@@ -17,6 +18,10 @@ class AudioPlayer(lifecycleOwner: LifecycleOwner): Closeable {
     fun setupPlayer(context: Context) {
         exoPlayer = ExoPlayer.Builder(context)
             .build()
+    }
+
+    fun setListener(listener: Listener) {
+        exoPlayer.addListener(listener)
     }
 
     suspend fun prepareUri(uri: Uri) {

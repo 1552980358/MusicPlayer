@@ -24,7 +24,9 @@ import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_NEXT
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_STOP
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ALL
 import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_NONE
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ONE
 import android.support.v4.media.session.PlaybackStateCompat.RepeatMode
 import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_NONE
 import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
@@ -39,6 +41,8 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.lifecycleScope
 import androidx.media.session.MediaButtonReceiver
 import com.bumptech.glide.Glide
+import com.google.android.exoplayer2.Player.Listener
+import com.google.android.exoplayer2.Player.STATE_ENDED
 import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLifecycleMediaBrowserService
@@ -53,7 +57,7 @@ import projekt.cloud.piece.music.player.util.ServiceUtil.startSelfForeground
 import projekt.cloud.piece.music.player.util.UriUtil.albumArtUri
 import projekt.cloud.piece.music.player.util.UriUtil.audioUri
 
-class PlaybackService: BaseLifecycleMediaBrowserService() {
+class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
 
     private companion object PlaybackServiceConst {
         const val TAG = "PlaybackService"
@@ -156,6 +160,10 @@ class PlaybackService: BaseLifecycleMediaBrowserService() {
                         }
                     }
 
+                    override fun onStop() {
+
+                    }
+
                     override fun onSkipToPrevious() {
                         Log.d(TAG, "onSkipToPrevious")
 
@@ -211,12 +219,6 @@ class PlaybackService: BaseLifecycleMediaBrowserService() {
                                         .query(mediaId)
                                 }
                             )
-
-                            // Prepare
-                            audioPlayer.prepareUri(audioMetadata.id.audioUri)
-
-                            // Start play
-                            onPlay()
                         }
                     }
 
@@ -255,7 +257,8 @@ class PlaybackService: BaseLifecycleMediaBrowserService() {
         sessionToken = mediaSessionCompat.sessionToken
 
         // Setup player
-        audioPlayer.setupPlayer(this@PlaybackService)
+        audioPlayer.setupPlayer(this)
+        audioPlayer.setListener(this)
 
         playbackNotificationHelper = PlaybackNotificationHelper(this)
     }
@@ -414,6 +417,30 @@ class PlaybackService: BaseLifecycleMediaBrowserService() {
 
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaItem>>) {
         result.sendResult(null)
+    }
+
+    override fun onPlaybackStateChanged(playbackState: Int) {
+        if (playbackState == STATE_ENDED) {
+            lifecycleScope.main {
+                val runtimeDatabase = runtimeDatabase
+                when (repeatMode) {
+                    REPEAT_MODE_NONE -> {
+                        if (runtimeDatabase.playbackDao().isLastOrder(order)) {
+                            return@main mediaSessionCompat.controller
+                                .transportControls
+                                .stop()
+                        }
+                        playAudioWithOrder(runtimeDatabase, ++order)
+                    }
+                    REPEAT_MODE_ONE -> { playAudioMetadata(audioMetadata) }
+                    REPEAT_MODE_ALL -> {
+                        mediaSessionCompat.controller
+                            .transportControls
+                            .skipToNext()
+                    }
+                }
+            }
+        }
     }
 
     override fun onDestroy() {
