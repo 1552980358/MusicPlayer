@@ -10,6 +10,10 @@
     <string name="permission_storage_body">Access audio file located at external storage\n(Android 12.1 SDK32 or below)</string>
     <string name="permission_media_title">Read Audio Media</string>
     <string name="permission_media_body">Access audio file with OS provided querying\n(Android 13 SDK33 or above)</string>
+    <string name="permission_foreground_title">Foreground Service</string>
+    <string name="permission_foreground_body">Start a foreground service for keep playing audio</string>
+    <string name="permission_notification_title">Post Notification</string>
+    <string name="permission_notification_body">Posting notification to notification drawer for controlling audio playback</string>
 
     <string name="permission_button_grant">Grant Permission</string>
     <string name="permission_button_settings">Go to Settings</string>

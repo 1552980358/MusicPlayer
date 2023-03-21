@@ -1,9 +1,12 @@
 package projekt.cloud.piece.music.player.ui.fragment.permission
 
+import android.Manifest.permission.FOREGROUND_SERVICE
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.READ_MEDIA_AUDIO
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,7 +18,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.core.view.updatePadding
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.appbar.AppBarLayout
@@ -45,7 +47,7 @@ class PermissionFragment: BaseFragment<FragmentPermissionBinding>(), View.OnClic
     private val settings: MaterialButton
         get() = binding.materialButtonSettings
 
-    private lateinit var requestPermission: ActivityResultLauncher<String>
+    private lateinit var requestPermission: ActivityResultLauncher<Array<String>>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         requireContext().requireWindowInsets {  rect ->
@@ -53,30 +55,30 @@ class PermissionFragment: BaseFragment<FragmentPermissionBinding>(), View.OnClic
             container.updatePadding(bottom = rect.bottom)
         }
 
-        requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            Log.e(TAG, "RequestPermission() => $isGranted")
-            when {
-                isGranted -> { completePermissionGrant() }
-                else -> { onPermissionGrantDenied() }
+        requestPermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
+            Log.e(TAG, "RequestMultiplePermissions() => $results")
+
+            results.forEach { (_, isGranted) ->
+                if (!isGranted) {
+                    return@registerForActivityResult onPermissionGrantDenied()
+                }
             }
+            completePermissionGrant()
         }
 
         grant.setOnClickListener(this)
         settings.setOnClickListener(this)
 
         when {
-            checkPermissionGranted -> { completePermissionGrant() }
-            else -> { startGrantPermission() }
+            checkPermissionsGranted() -> { completePermissionGrant() }
+            else -> { startGrantPermissions() }
         }
     }
 
-    private val checkPermissionGranted: Boolean
-        get() = ContextCompat.checkSelfPermission(requireContext(), permissionRequest) == PERMISSION_GRANTED
-
-    private fun startGrantPermission() {
+    private fun startGrantPermissions() {
         Log.e(TAG, "startGrantPermission()")
         onPermissionGrantStart()
-        requestPermission.launch(permissionRequest)
+        requestPermission.launch(permissions)
     }
 
     private fun startApplicationDetailPage() {
@@ -109,10 +111,45 @@ class PermissionFragment: BaseFragment<FragmentPermissionBinding>(), View.OnClic
         grant.textScaleX = 1F
     }
 
-    private val permissionRequest: String
+    private val readMediaPermission: String
         get() = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> READ_MEDIA_AUDIO
             else -> READ_EXTERNAL_STORAGE
+        }
+
+    private fun checkPermissionsGranted(): Boolean {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(), readMediaPermission
+            ) != PERMISSION_GRANTED) {
+            return false
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+            && ContextCompat.checkSelfPermission(
+                requireContext(), FOREGROUND_SERVICE
+            ) == PERMISSION_GRANTED) {
+            return false
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+            && ContextCompat.checkSelfPermission(
+                requireContext(), POST_NOTIFICATIONS
+            ) == PERMISSION_GRANTED) {
+            return false
+        }
+        return true
+    }
+
+    private val permissions: Array<String>
+        get() {
+            return arrayListOf(readMediaPermission)
+                .also { arrayList ->
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        arrayList.add(FOREGROUND_SERVICE)
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        arrayList.add(POST_NOTIFICATIONS)
+                    }
+                }
+                .toTypedArray()
         }
 
     private fun completePermissionGrant() {
@@ -124,7 +161,7 @@ class PermissionFragment: BaseFragment<FragmentPermissionBinding>(), View.OnClic
 
     override fun onClick(v: View?) {
         when (v) {
-            grant -> { startGrantPermission() }
+            grant -> { startGrantPermissions() }
             settings -> { startApplicationDetailPage() }
         }
     }
