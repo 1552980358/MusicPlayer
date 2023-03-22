@@ -68,13 +68,13 @@ class LauncherActivity: AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
             && ContextCompat.checkSelfPermission(
                 this, FOREGROUND_SERVICE
-            ) == PERMISSION_GRANTED) {
+            ) != PERMISSION_GRANTED) {
             return false
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
             && ContextCompat.checkSelfPermission(
                 this, POST_NOTIFICATIONS
-            ) == PERMISSION_GRANTED) {
+            ) != PERMISSION_GRANTED) {
             return false
         }
         return true
