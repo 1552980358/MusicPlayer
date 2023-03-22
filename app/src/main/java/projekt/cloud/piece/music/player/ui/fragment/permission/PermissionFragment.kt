@@ -126,13 +126,13 @@ class PermissionFragment: BaseFragment<FragmentPermissionBinding>(), View.OnClic
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
             && ContextCompat.checkSelfPermission(
                 requireContext(), FOREGROUND_SERVICE
-            ) == PERMISSION_GRANTED) {
+            ) != PERMISSION_GRANTED) {
             return false
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
             && ContextCompat.checkSelfPermission(
                 requireContext(), POST_NOTIFICATIONS
-            ) == PERMISSION_GRANTED) {
+            ) != PERMISSION_GRANTED) {
             return false
         }
         return true
