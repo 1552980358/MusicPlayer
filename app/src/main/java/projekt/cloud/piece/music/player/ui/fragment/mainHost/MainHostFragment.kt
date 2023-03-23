@@ -22,11 +22,12 @@ class MainHostFragment: BaseMainHostFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        layoutCompat.setupNavigation(
-            binding.fragmentContainerView
-                .getFragment<NavHostFragment>()
-                .navController
-        )
+        val childNavController = binding.fragmentContainerView
+            .getFragment<NavHostFragment>()
+            .navController
+
+        layoutCompat.setupNavigation(childNavController)
+        layoutCompat.setupNavigationItems(this, childNavController)
     }
 
 }
