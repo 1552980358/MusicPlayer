@@ -3,13 +3,26 @@ package projekt.cloud.piece.music.player.ui.fragment.home
 import android.graphics.Rect
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.updatePadding
+import androidx.fragment.app.Fragment
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.google.android.material.appbar.AppBarLayout
 import kotlin.reflect.KClass
+import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.databinding.FragmentHomeBinding
+import projekt.cloud.piece.music.player.util.ViewUtil.canScrollUp
 
-open class HomeLayoutCompat: BaseLayoutCompat<FragmentHomeBinding> {
+private interface HomeInterface {
+
+    // Compat limited method
+    fun setupRecyclerViewAction(fragment: Fragment) = Unit
+
+}
+
+open class HomeLayoutCompat: BaseLayoutCompat<FragmentHomeBinding>, HomeInterface {
 
     @Suppress("unused")
     constructor(): super(null)
@@ -32,6 +45,36 @@ open class HomeLayoutCompat: BaseLayoutCompat<FragmentHomeBinding> {
 
         override fun onSetupRequireWindowInsets() = { insets: Rect ->
             appBarLayout.updatePadding(top = insets.top)
+        }
+
+        override fun setupRecyclerViewAction(fragment: Fragment) {
+            val homeViewModel: HomeViewModel by fragment.navGraphViewModels(R.id.nav_graph_main_host)
+            var isIdle = false
+            recyclerView.addOnScrollListener(
+                object: OnScrollListener() {
+                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                        isIdle = newState == SCROLL_STATE_IDLE
+
+                        val isOnTop = !recyclerView.canScrollUp
+                        if (homeViewModel.isOnTop != isOnTop) {
+                            homeViewModel.updateTopState(isOnTop)
+                        }
+                        if (isOnTop && isIdle) {
+                            resetAppBarLayoutOffset()
+                        }
+                    }
+                }
+            )
+
+            homeViewModel.observeScrollToTop(fragment.viewLifecycleOwner) { scrollToTop ->
+                if (scrollToTop && recyclerView.canScrollUp && isIdle) {
+                    recyclerView.smoothScrollToPosition(0)
+                }
+            }
+        }
+
+        private fun resetAppBarLayoutOffset() {
+            appBarLayout.offsetTopAndBottom(-1)
         }
 
     }
@@ -58,7 +101,7 @@ open class HomeLayoutCompat: BaseLayoutCompat<FragmentHomeBinding> {
 
     }
 
-    private val recyclerView: RecyclerView
+    protected val recyclerView: RecyclerView
         get() = binding.recyclerView
 
     fun setupRecyclerViewAdapter(adapter: RecyclerView.Adapter<*>) {

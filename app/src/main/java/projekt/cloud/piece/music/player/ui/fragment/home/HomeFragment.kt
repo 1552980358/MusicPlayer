@@ -31,6 +31,8 @@ class HomeFragment: BaseMultiDensityFragment<FragmentHomeBinding, HomeLayoutComp
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        layoutCompat.setupRecyclerViewAction(this)
+
         val mainViewModel: MainViewModel by activityViewModels()
 
         lifecycleScope.main {
