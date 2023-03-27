@@ -1,10 +1,13 @@
 package projekt.cloud.piece.music.player.ui.fragment.mainHost
 
+import android.content.Context
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigationrail.NavigationRailView
 import kotlin.reflect.KClass
@@ -14,6 +17,8 @@ import projekt.cloud.piece.music.player.databinding.FragmentMainHostBinding
 import projekt.cloud.piece.music.player.ui.fragment.home.HomeViewModel
 
 private interface MainHostInterface {
+
+    fun setupColor(context: Context) = Unit
 
     fun setupNavigation(navController: NavController) = Unit
 
@@ -32,6 +37,12 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
         get() = W600dpImpl::class
     override val w1240dpImpl: KClass<*>
         get() = W1240dpImpl::class
+
+    /**
+     * Shared views
+     **/
+    protected val constraintLayout: ConstraintLayout
+        get() = binding.constraintLayout
 
     private class CompatImpl(binding: FragmentMainHostBinding): MainHostLayoutCompat(binding) {
 
@@ -63,6 +74,12 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
         private val navigationRailView: NavigationRailView
             get() = binding.navigationRailView!!
 
+        override fun setupColor(context: Context) {
+            val backgroundColor = SurfaceColors.SURFACE_2.getColor(context)
+            navigationRailView.setBackgroundColor(backgroundColor)
+            constraintLayout.setBackgroundColor(backgroundColor)
+        }
+
         override fun setupNavigation(navController: NavController) {
             navigationRailView.setupWithNavController(navController)
         }
@@ -73,6 +90,12 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
 
         private val navigationView: NavigationView
             get() = binding.navigationView!!
+
+        override fun setupColor(context: Context) {
+            val backgroundColor = SurfaceColors.SURFACE_2.getColor(context)
+            constraintLayout.setBackgroundColor(backgroundColor)
+            navigationView.setBackgroundColor(backgroundColor)
+        }
 
         override fun setupNavigation(navController: NavController) {
             navigationView.setupWithNavController(navController)

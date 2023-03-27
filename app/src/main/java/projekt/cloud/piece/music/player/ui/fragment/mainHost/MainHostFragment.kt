@@ -26,6 +26,7 @@ class MainHostFragment: BaseMainHostFragment() {
             .getFragment<NavHostFragment>()
             .navController
 
+        layoutCompat.setupColor(requireContext())
         layoutCompat.setupNavigation(childNavController)
         layoutCompat.setupNavigationItems(this, childNavController)
     }
