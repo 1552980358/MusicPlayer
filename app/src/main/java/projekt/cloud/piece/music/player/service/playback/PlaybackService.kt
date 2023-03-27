@@ -11,6 +11,7 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ART
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ART_URI
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
 import android.support.v4.media.session.MediaSessionCompat
@@ -85,6 +86,8 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
     private var playbackStateCompat = PlaybackStateCompat.Builder()
         .setActions(PLAYBACK_ACTION)
         .setState(STATE_NONE, DURATION_START, PLAYBACK_SPEED)
+        .build()
+    private var mediaMetadataCompat = MediaMetadataCompat.Builder()
         .build()
 
     @ShuffleMode
@@ -244,10 +247,7 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
             )
 
             setPlaybackState(playbackStateCompat)
-            setMetadata(
-                MediaMetadataCompat.Builder()
-                    .build()
-            )
+            setMetadata(mediaMetadataCompat)
 
             setShuffleMode(shuffleMode)
             setRepeatMode(repeatMode)
@@ -286,14 +286,15 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
             .setState(STATE_BUFFERING, DURATION_START, PLAYBACK_SPEED)
             .build()
         mediaSessionCompat.setPlaybackState(playbackStateCompat)
-        mediaSessionCompat.setMetadata(
-            MediaMetadataCompat.Builder()
-                .putString(METADATA_KEY_TITLE, audioMetadata.title)
-                .putString(METADATA_KEY_ARTIST, audioMetadata.artistName)
-                .putString(METADATA_KEY_ALBUM, audioMetadata.albumTitle)
-                .putLong(METADATA_KEY_DURATION, audioMetadata.duration)
-                .build()
-        )
+
+        mediaMetadataCompat = MediaMetadataCompat.Builder()
+            .putString(METADATA_KEY_TITLE, audioMetadata.title)
+            .putString(METADATA_KEY_ARTIST, audioMetadata.artistName)
+            .putString(METADATA_KEY_ALBUM, audioMetadata.albumTitle)
+            .putLong(METADATA_KEY_DURATION, audioMetadata.duration)
+            .putString(METADATA_KEY_ART_URI, audioMetadata.album.albumArtUri.toString())
+            .build()
+        mediaSessionCompat.setMetadata(mediaMetadataCompat)
 
         // Prepare
         audioPlayer.prepareUri(audioMetadata.id.audioUri)
@@ -330,11 +331,7 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
                     )
 
                     mediaSessionCompat.setMetadata(
-                        MediaMetadataCompat.Builder()
-                            .putString(METADATA_KEY_TITLE, audioMetadata.title)
-                            .putString(METADATA_KEY_ARTIST, audioMetadata.artistName)
-                            .putString(METADATA_KEY_ALBUM, audioMetadata.albumTitle)
-                            .putLong(METADATA_KEY_DURATION, audioMetadata.duration)
+                        MediaMetadataCompat.Builder(mediaMetadataCompat)
                             .putBitmap(METADATA_KEY_ART, bitmap)
                             .build()
                     )
