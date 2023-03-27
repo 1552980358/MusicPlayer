@@ -34,7 +34,20 @@
         app:layout_constraintStart_toEndOf="@id/navigation_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/material_toolbar"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/main_host_playback_bar"
         app:navGraph="@navigation/nav_graph_main_host" />
+
+    <include
+        android:id="@+id/main_host_playback_bar"
+        android:layout_width="@dimen/constraint_fill"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/md_spec_spacing_hor_16"
+        android:layout_marginBottom="@dimen/md_spec_spacing_ver_8"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/navigation_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fragment_container_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        layout="@layout/main_host_playback_bar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

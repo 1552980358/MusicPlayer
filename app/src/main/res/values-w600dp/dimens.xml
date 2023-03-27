@@ -1,2 +1,7 @@
 <resources>
+
+    <dimen name="main_host_playback_bar_height">64dp</dimen>
+    <dimen name="main_host_playback_bar_spacing">8dp</dimen>
+    <dimen name="main_host_playback_bar_image_size">48dp</dimen>
+
 </resources>

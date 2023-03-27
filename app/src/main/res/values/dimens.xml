@@ -19,4 +19,8 @@
 
     <dimen name="notification_large_image_size_64">64dp</dimen>
 
+    <dimen name="main_host_playback_bar_height">52dp</dimen>
+    <dimen name="main_host_playback_bar_spacing">8dp</dimen>
+    <dimen name="main_host_playback_bar_image_size">36dp</dimen>
+
 </resources>

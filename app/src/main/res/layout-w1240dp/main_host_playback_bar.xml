@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.graphics.drawable.Drawable" />
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="artist"
+            type="String" />
+
+        <variable
+            name="cover"
+            type="Drawable" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout_playback_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="@dimen/constraint_fill"
+            android:layout_height="@dimen/main_host_playback_bar_height"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="@dimen/md_spec_spacing_hor_16"
+                android:paddingEnd="@dimen/md_spec_spacing_hor_24"
+                android:paddingVertical="@dimen/md_spec_spacing_ver_8">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/shapeable_image_view_image"
+                    android:layout_width="@dimen/main_host_playback_bar_image_size"
+                    android:layout_height="@dimen/main_host_playback_bar_image_size"
+                    app:shapeAppearance="@style/Widget.MaterialComponents.ShapeableImageView.RoundCorner.Full"
+                    android:src="@{cover}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="@dimen/constraint_fill"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/md_spec_spacing_hor_16"
+                    android:orientation="vertical"
+                    app:layout_constraintStart_toEndOf="@id/shapeable_image_view_image"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{title}"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{artist}"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
