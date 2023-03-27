@@ -32,9 +32,9 @@ class HomeFragment: BaseMultiDensityFragment<FragmentHomeBinding, HomeLayoutComp
         super.onViewCreated(view, savedInstanceState)
 
         layoutCompat.setupRecyclerViewAction(this)
+        layoutCompat.setupRecyclerViewBottomMargin(this)
 
         val mainViewModel: MainViewModel by activityViewModels()
-
         lifecycleScope.main {
             val audioMetadataList = withContext(default) {
                 requireContext().runtimeDatabase

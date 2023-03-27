@@ -12,12 +12,16 @@ import kotlin.reflect.KClass
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.databinding.FragmentHomeBinding
+import projekt.cloud.piece.music.player.ui.fragment.mainHost.MainHostViewModel
 import projekt.cloud.piece.music.player.util.ViewUtil.canScrollUp
 
 private interface HomeInterface {
 
     // Compat limited method
     fun setupRecyclerViewAction(fragment: Fragment) = Unit
+
+    // Compat limited method
+    fun setupRecyclerViewBottomMargin(fragment: Fragment) = Unit
 
 }
 
@@ -74,6 +78,15 @@ open class HomeLayoutCompat: BaseLayoutCompat<FragmentHomeBinding>, HomeInterfac
 
         private fun resetAppBarLayoutOffset() {
             appBarLayout.offsetTopAndBottom(-1)
+        }
+
+        override fun setupRecyclerViewBottomMargin(fragment: Fragment) {
+            val mainHostViewModel: MainHostViewModel by fragment.navGraphViewModels(
+                R.id.nav_graph_main_host
+            )
+            mainHostViewModel.bottomMargin.observe(fragment.viewLifecycleOwner) { bottomInsets ->
+                recyclerView.updatePadding(bottom = bottomInsets)
+            }
         }
 
     }
