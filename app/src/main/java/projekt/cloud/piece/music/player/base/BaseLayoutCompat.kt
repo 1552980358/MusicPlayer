@@ -52,6 +52,9 @@ abstract class BaseLayoutCompat<VB: ViewBinding>(private var _binding: VB?) {
 
     fun onDestroy() {
         _binding = null
+        onRecycleInstance()
     }
+
+    open fun onRecycleInstance() = Unit
 
 }
