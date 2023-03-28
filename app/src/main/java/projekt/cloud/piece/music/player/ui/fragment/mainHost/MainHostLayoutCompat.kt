@@ -50,10 +50,6 @@ private interface MainHostInterface {
 
     fun setupPlaybackBar(fragment: Fragment, navController: NavController) = Unit
 
-    fun onPlaybackStateChanged(@PlaybackStateCompat.State state: Int) = Unit
-
-    fun onMetadataChanged(context: Context, metadata: MediaMetadataCompat) = Unit
-
 }
 
 open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, MainHostInterface {
@@ -76,12 +72,25 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
     protected val playbackBar: MainHostPlaybackBarBinding
         get() = binding.mainHostPlaybackBar
 
-    override fun onMetadataChanged(context: Context, metadata: MediaMetadataCompat) {
+    fun notifyMetadataChanged(context: Context, metadata: MediaMetadataCompat) {
         playbackBar.title = metadata.getString(METADATA_KEY_TITLE)
         playbackBar.artist = metadata.getString(METADATA_KEY_ARTIST)
         playbackBar.cover = BitmapDrawable(
             context.resources, metadata.getBitmap(METADATA_KEY_ART)
         )
+    }
+
+    fun notifyPlaybackStateChanged(@PlaybackStateCompat.State state: Int) {
+        onPlaybackStateChanged(state, true)
+    }
+
+    protected open fun onPlaybackStateChanged(
+        @PlaybackStateCompat.State state: Int, requireAnimation: Boolean
+    ) = Unit
+
+    fun recoverPlaybackBar(fragment: Fragment, mediaControllerCompat: MediaControllerCompat) {
+        onPlaybackStateChanged(mediaControllerCompat.playbackState.state, false)
+        notifyMetadataChanged(fragment.requireContext(), mediaControllerCompat.metadata)
     }
 
     private class CompatImpl(binding: FragmentMainHostBinding): MainHostLayoutCompat(binding) {
@@ -160,7 +169,9 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
             }
         }
 
-        override fun onPlaybackStateChanged(@PlaybackStateCompat.State state: Int) {
+        override fun onPlaybackStateChanged(
+            @PlaybackStateCompat.State state: Int, requireAnimation: Boolean
+        ) {
             when (state) {
                 STATE_PLAYING -> {
                     if (bottomSheetBehavior.state != STATE_COLLAPSED) {
@@ -223,22 +234,30 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
         private var isPlaybackBarShown = false
             @Synchronized set
 
-        override fun onPlaybackStateChanged(state: Int) {
-            when (state) {
-                STATE_BUFFERING, STATE_PLAYING, STATE_PAUSED -> {
-                    if (!isPlaybackBarShown) {
+        override fun onPlaybackStateChanged(
+            @PlaybackStateCompat.State state: Int, requireAnimation: Boolean
+        ) {
+            val constraintSet = when (state) {
+                STATE_BUFFERING, STATE_PLAYING, STATE_PAUSED -> when {
+                    isPlaybackBarShown -> { null }
+                    else -> {
                         isPlaybackBarShown = true
-                        TransitionManager.beginDelayedTransition(constraintLayout)
-                        playingSet.applyTo(constraintLayout)
+                        playingSet
                     }
                 }
-                else -> {
-                    if (isPlaybackBarShown) {
+                else -> when {
+                    !isPlaybackBarShown -> { null }
+                    else -> {
                         isPlaybackBarShown = false
-                        TransitionManager.beginDelayedTransition(constraintLayout)
-                        originSet.applyTo(constraintLayout)
+                        originSet
                     }
                 }
+            }
+            constraintSet?.let {
+                if (requireAnimation) {
+                    TransitionManager.beginDelayedTransition(constraintLayout)
+                }
+                constraintSet.applyTo(constraintLayout)
             }
         }
 
@@ -278,22 +297,30 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
         private var isPlaybackBarShown = false
             @Synchronized set
 
-        override fun onPlaybackStateChanged(state: Int) {
-            when (state) {
-                STATE_BUFFERING, STATE_PLAYING, STATE_PAUSED -> {
-                    if (!isPlaybackBarShown) {
+        override fun onPlaybackStateChanged(
+            @PlaybackStateCompat.State state: Int, requireAnimation: Boolean
+        ) {
+            val constraintSet = when (state) {
+                STATE_BUFFERING, STATE_PLAYING, STATE_PAUSED -> when {
+                    isPlaybackBarShown -> { null }
+                    else -> {
                         isPlaybackBarShown = true
-                        TransitionManager.beginDelayedTransition(constraintLayout)
-                        playingSet.applyTo(constraintLayout)
+                        playingSet
                     }
                 }
-                else -> {
-                    if (isPlaybackBarShown) {
+                else -> when {
+                    !isPlaybackBarShown -> { null }
+                    else -> {
                         isPlaybackBarShown = false
-                        TransitionManager.beginDelayedTransition(constraintLayout)
-                        originSet.applyTo(constraintLayout)
+                        originSet
                     }
                 }
+            }
+            constraintSet?.let {
+                if (requireAnimation) {
+                    TransitionManager.beginDelayedTransition(constraintLayout)
+                }
+                constraintSet.applyTo(constraintLayout)
             }
         }
 

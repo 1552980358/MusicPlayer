@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
@@ -20,10 +21,10 @@ class MainHostFragment: BaseMainHostFragment() {
 
     private val mediaControllerCallback = object: MediaControllerCompat.Callback() {
         override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
-            layoutCompat.onPlaybackStateChanged(state.state)
+            layoutCompat.notifyPlaybackStateChanged(state.state)
         }
         override fun onMetadataChanged(metadata: MediaMetadataCompat) {
-            layoutCompat.onMetadataChanged(requireContext(), metadata)
+            layoutCompat.notifyMetadataChanged(requireContext(), metadata)
         }
     }
 
@@ -56,6 +57,9 @@ class MainHostFragment: BaseMainHostFragment() {
 
     private fun registerCallback(mediaControllerCompat: MediaControllerCompat) {
         mediaControllerCompat.registerCallback(mediaControllerCallback)
+        if (mediaControllerCompat.playbackState.state != STATE_NONE) {
+            layoutCompat.recoverPlaybackBar(this, mediaControllerCompat)
+        }
     }
 
     override fun onDestroyView() {
