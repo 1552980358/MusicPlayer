@@ -60,6 +60,10 @@ private interface MainHostInterface {
 
 open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, MainHostInterface {
 
+    private companion object {
+        const val STATE_UNKNOWN = -1
+    }
+
     constructor(): super(null)
     constructor(binding: FragmentMainHostBinding): super(binding)
 
@@ -101,7 +105,7 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
         onPlaybackStateChanged(context, state, true)
     }
 
-    private var lastPlaybackState = STATE_NONE
+    private var lastPlaybackState = STATE_UNKNOWN
         @Synchronized
         private set
 
@@ -112,16 +116,22 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
         ContextCompat.getDrawable(
             context, getPlaybackDrawableId(state, lastPlaybackState)
         )?.let { drawable ->
-            playbackBar.playbackController = drawable
+            playbackControl.setImageDrawable(drawable)
             if (drawable is AnimatedVectorDrawable) {
                 drawable.start()
             }
         }
-        lastPlaybackState = state
     }
 
     private fun getPlaybackDrawableId(state: Int, lastState: Int): Int {
+        lastPlaybackState = state
         return when (lastState) {
+            STATE_UNKNOWN -> when (state) {
+                STATE_PLAYING -> { R.drawable.ic_round_pause_24 }
+                STATE_BUFFERING -> { R.drawable.av_round_play_to_pause_24 }
+                // STATE_PAUSED -> { R.drawable.ic_round_play_24 }
+                else -> { R.drawable.ic_round_play_24 }
+            }
             STATE_NONE -> when (state) {
                 STATE_BUFFERING, STATE_PLAYING -> { R.drawable.ic_round_pause_24 }
                 else -> { R.drawable.ic_round_play_24 }

@@ -17,10 +17,6 @@
         <variable
             name="cover"
             type="Drawable" />
-
-        <variable
-            name="playbackController"
-            type="Drawable" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -93,7 +89,6 @@
                         android:layout_width="@dimen/md_spec_vector_24"
                         android:layout_height="@dimen/md_spec_vector_24"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@{playbackController}"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/app_compat_image_button_next"
                         app:layout_constraintTop_toTopOf="parent"
