@@ -21,7 +21,7 @@ class MainHostFragment: BaseMainHostFragment() {
 
     private val mediaControllerCallback = object: MediaControllerCompat.Callback() {
         override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
-            layoutCompat.notifyPlaybackStateChanged(state.state)
+            layoutCompat.notifyPlaybackStateChanged(requireContext(), state.state)
         }
         override fun onMetadataChanged(metadata: MediaMetadataCompat) {
             layoutCompat.notifyMetadataChanged(requireContext(), metadata)
@@ -51,6 +51,7 @@ class MainHostFragment: BaseMainHostFragment() {
             val mediaControllerCompat = MediaControllerCompat.getMediaController(requireActivity())
             if (isConnected && mediaControllerCompat != null) {
                 registerCallback(mediaControllerCompat)
+                layoutCompat.setupPlaybackControl(mediaControllerCompat.transportControls)
             }
         }
     }
@@ -58,7 +59,7 @@ class MainHostFragment: BaseMainHostFragment() {
     private fun registerCallback(mediaControllerCompat: MediaControllerCompat) {
         mediaControllerCompat.registerCallback(mediaControllerCallback)
         if (mediaControllerCompat.playbackState.state != STATE_NONE) {
-            layoutCompat.recoverPlaybackBar(this, mediaControllerCompat)
+            layoutCompat.recoverPlaybackBar(requireContext(), mediaControllerCompat)
         }
     }
 

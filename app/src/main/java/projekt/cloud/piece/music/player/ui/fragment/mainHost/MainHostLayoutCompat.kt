@@ -2,23 +2,27 @@ package projekt.cloud.piece.music.player.ui.fragment.mainHost
 
 import android.content.Context
 import android.graphics.Rect
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ART
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
 import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.MediaControllerCompat.TransportControls
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.view.View
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.constraintlayout.widget.ConstraintSet.GONE
 import androidx.constraintlayout.widget.ConstraintSet.VISIBLE
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -50,6 +54,8 @@ private interface MainHostInterface {
 
     fun setupPlaybackBar(fragment: Fragment, navController: NavController) = Unit
 
+    fun setupPlaybackControl(transportControls: TransportControls)
+
 }
 
 open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, MainHostInterface {
@@ -71,6 +77,17 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
         get() = binding.constraintLayout
     protected val playbackBar: MainHostPlaybackBarBinding
         get() = binding.mainHostPlaybackBar
+    private val playbackControl: AppCompatImageButton
+        get() = playbackBar.appCompatImageButtonPlayControl
+
+    override fun setupPlaybackControl(transportControls: TransportControls) {
+        playbackControl.setOnClickListener {
+            when (lastPlaybackState) {
+                STATE_PLAYING -> { transportControls.pause() }
+                STATE_PAUSED -> { transportControls.play() }
+            }
+        }
+    }
 
     fun notifyMetadataChanged(context: Context, metadata: MediaMetadataCompat) {
         playbackBar.title = metadata.getString(METADATA_KEY_TITLE)
@@ -80,17 +97,60 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
         )
     }
 
-    fun notifyPlaybackStateChanged(@PlaybackStateCompat.State state: Int) {
-        onPlaybackStateChanged(state, true)
+    fun notifyPlaybackStateChanged(context: Context, @PlaybackStateCompat.State state: Int) {
+        onPlaybackStateChanged(context, state, true)
     }
 
-    protected open fun onPlaybackStateChanged(
-        @PlaybackStateCompat.State state: Int, requireAnimation: Boolean
-    ) = Unit
+    private var lastPlaybackState = STATE_NONE
+        @Synchronized
+        private set
 
-    fun recoverPlaybackBar(fragment: Fragment, mediaControllerCompat: MediaControllerCompat) {
-        onPlaybackStateChanged(mediaControllerCompat.playbackState.state, false)
-        notifyMetadataChanged(fragment.requireContext(), mediaControllerCompat.metadata)
+    @Synchronized
+    protected open fun onPlaybackStateChanged(
+        context: Context, @PlaybackStateCompat.State state: Int, requireAnimation: Boolean
+    ) {
+        ContextCompat.getDrawable(
+            context, getPlaybackDrawableId(state, lastPlaybackState)
+        )?.let { drawable ->
+            playbackBar.playbackController = drawable
+            if (drawable is AnimatedVectorDrawable) {
+                drawable.start()
+            }
+        }
+        lastPlaybackState = state
+    }
+
+    private fun getPlaybackDrawableId(state: Int, lastState: Int): Int {
+        return when (lastState) {
+            STATE_NONE -> when (state) {
+                STATE_BUFFERING, STATE_PLAYING -> { R.drawable.ic_round_pause_24 }
+                else -> { R.drawable.ic_round_play_24 }
+            }
+            STATE_PLAYING -> when (state) {
+                // STATE_BUFFERING -> { R.drawable.ic_round_pause_24 }
+                STATE_PAUSED -> { R.drawable.av_round_pause_to_play_24 }
+                // Keep unchanged
+                else -> { R.drawable.ic_round_pause_24 }
+            }
+            STATE_PAUSED -> when (state) {
+                STATE_BUFFERING, STATE_PLAYING -> { R.drawable.av_round_play_to_pause_24 }
+                else -> { R.drawable.ic_round_play_24 }
+            }
+            STATE_BUFFERING -> when (state) {
+                // STATE_PLAYING -> { R.drawable.ic_round_pause_24 }
+                STATE_PAUSED -> { R.drawable.av_round_pause_to_play_24 }
+                // Keep unchanged
+                else -> { R.drawable.ic_round_pause_24 }
+            }
+            else -> R.drawable.ic_round_pause_24
+        }
+    }
+
+    fun recoverPlaybackBar(context: Context, mediaControllerCompat: MediaControllerCompat) {
+        onPlaybackStateChanged(
+            context, mediaControllerCompat.playbackState.state, false
+        )
+        notifyMetadataChanged(context, mediaControllerCompat.metadata)
     }
 
     private class CompatImpl(binding: FragmentMainHostBinding): MainHostLayoutCompat(binding) {
@@ -169,8 +229,9 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
             }
         }
 
+        @Synchronized
         override fun onPlaybackStateChanged(
-            @PlaybackStateCompat.State state: Int, requireAnimation: Boolean
+            context: Context, @PlaybackStateCompat.State state: Int, requireAnimation: Boolean
         ) {
             when (state) {
                 STATE_PLAYING -> {
@@ -192,6 +253,7 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
                     // Not Implemented
                 }
             }
+            super.onPlaybackStateChanged(context, state, requireAnimation)
         }
 
         override fun onRecycleInstance() {
@@ -204,6 +266,8 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
 
         private val navigationRailView: NavigationRailView
             get() = binding.navigationRailView!!
+        private val next: AppCompatImageButton
+            get() = playbackBar.appCompatImageButtonNext!!
 
         val originSet = ConstraintSet().apply {
             clone(constraintLayout)
@@ -231,11 +295,17 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
             navigationRailView.setupWithNavController(navController)
         }
 
+        override fun setupPlaybackControl(transportControls: TransportControls) {
+            super.setupPlaybackControl(transportControls)
+            next.setOnClickListener { transportControls.skipToNext() }
+        }
+
         private var isPlaybackBarShown = false
             @Synchronized set
 
+        @Synchronized
         override fun onPlaybackStateChanged(
-            @PlaybackStateCompat.State state: Int, requireAnimation: Boolean
+            context: Context, @PlaybackStateCompat.State state: Int, requireAnimation: Boolean
         ) {
             val constraintSet = when (state) {
                 STATE_BUFFERING, STATE_PLAYING, STATE_PAUSED -> when {
@@ -259,6 +329,7 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
                 }
                 constraintSet.applyTo(constraintLayout)
             }
+            super.onPlaybackStateChanged(context, state, requireAnimation)
         }
 
     }
@@ -267,6 +338,10 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
 
         private val navigationView: NavigationView
             get() = binding.navigationView!!
+        private val prev: AppCompatImageButton
+            get() = playbackBar.appCompatImageButtonPrev!!
+        private val next: AppCompatImageButton
+            get() = playbackBar.appCompatImageButtonNext!!
 
         val originSet = ConstraintSet().apply {
             clone(constraintLayout)
@@ -294,11 +369,18 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
             navigationView.setupWithNavController(navController)
         }
 
+        override fun setupPlaybackControl(transportControls: TransportControls) {
+            super.setupPlaybackControl(transportControls)
+            prev.setOnClickListener { transportControls.skipToPrevious() }
+            next.setOnClickListener { transportControls.skipToNext() }
+        }
+
         private var isPlaybackBarShown = false
             @Synchronized set
 
+        @Synchronized
         override fun onPlaybackStateChanged(
-            @PlaybackStateCompat.State state: Int, requireAnimation: Boolean
+            context: Context, @PlaybackStateCompat.State state: Int, requireAnimation: Boolean
         ) {
             val constraintSet = when (state) {
                 STATE_BUFFERING, STATE_PLAYING, STATE_PAUSED -> when {
@@ -322,6 +404,7 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
                 }
                 constraintSet.applyTo(constraintLayout)
             }
+            super.onPlaybackStateChanged(context, state, requireAnimation)
         }
 
     }

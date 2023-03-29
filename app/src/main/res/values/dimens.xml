@@ -11,6 +11,8 @@
 
     <dimen name="md_spec_list_72">72dp</dimen>
     <dimen name="md_spec_size_image_56">56dp</dimen>
+    <dimen name="md_spec_trailing_24">@dimen/md_spec_vector_24</dimen>
+    <dimen name="md_spec_vector_24">24dp</dimen>
 
     <dimen name="md_spec_corner_radius_12">12dp</dimen>
 
