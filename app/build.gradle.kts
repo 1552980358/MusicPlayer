@@ -62,9 +62,9 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
     implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
     implementation("androidx.preference:preference-ktx:1.2.0")
-    implementation("androidx.room:room-runtime:2.5.0")
-    implementation("androidx.room:room-ktx:2.5.0")
-    ksp("androidx.room:room-compiler:2.5.0")
+    implementation("androidx.room:room-runtime:2.5.1")
+    implementation("androidx.room:room-ktx:2.5.1")
+    ksp("androidx.room:room-compiler:2.5.1")
 
     implementation("com.github.bumptech.glide:glide:4.15.1")
     ksp("com.github.bumptech.glide:ksp:4.15.1")
