@@ -5,9 +5,9 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import kotlin.reflect.KClass
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
-import projekt.cloud.piece.music.player.base.BaseLayoutCompat.BaseLayoutCompatUtil.layoutCompat
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
 import projekt.cloud.piece.music.player.databinding.FragmentHomeBinding
 import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase
@@ -17,16 +17,14 @@ import projekt.cloud.piece.music.player.storage.runtime.entity.PlaybackEntity
 import projekt.cloud.piece.music.player.ui.activity.main.MainViewModel
 import projekt.cloud.piece.music.player.util.CoroutineUtil.default
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
-import projekt.cloud.piece.music.player.util.ScreenDensity.ScreenDensityUtil.screenDensity
 
 class HomeFragment: BaseMultiDensityFragment<FragmentHomeBinding, HomeLayoutCompat>() {
 
     override val viewBindingClass: Class<FragmentHomeBinding>
         get() = FragmentHomeBinding::class.java
 
-    override fun onCreateLayoutCompat(binding: FragmentHomeBinding): HomeLayoutCompat {
-        return binding.layoutCompat(requireContext().screenDensity)
-    }
+    override val layoutCompatClass: KClass<HomeLayoutCompat>
+        get() = HomeLayoutCompat::class
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

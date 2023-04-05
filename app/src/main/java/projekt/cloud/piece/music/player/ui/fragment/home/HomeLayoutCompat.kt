@@ -1,6 +1,7 @@
 package projekt.cloud.piece.music.player.ui.fragment.home
 
 import android.graphics.Rect
+import androidx.annotation.Keep
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.navigation.navGraphViewModels
@@ -13,31 +14,46 @@ import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.databinding.FragmentHomeBinding
 import projekt.cloud.piece.music.player.ui.fragment.mainHost.MainHostViewModel
+import projekt.cloud.piece.music.player.util.ScreenDensity
 import projekt.cloud.piece.music.player.util.ViewUtil.canScrollUp
 
-private interface HomeInterface {
+abstract class HomeLayoutCompat(binding: FragmentHomeBinding): BaseLayoutCompat<FragmentHomeBinding>(binding) {
+
+    private companion object {
+        @Suppress("unused")
+        @Keep
+        @JvmStatic
+        @JvmName(METHOD_GET_IMPL)
+        fun getImpl(screenDensity: ScreenDensity): KClass<*> {
+            return determineLayoutCompat(
+                screenDensity,
+                arrayOf(CompatImpl::class, W600dpImpl::class, W1240dpImpl::class)
+            )
+        }
+    }
+
+    protected val recyclerView: RecyclerView
+        get() = binding.recyclerView
+
+    fun setupRecyclerViewAdapter(adapter: RecyclerView.Adapter<*>) {
+        recyclerView.adapter = adapter
+    }
+
+    private var playMediaWithId: ((String) -> Unit)? = null
+    fun setPlayMediaWithId(block: ((String) -> Unit)) {
+        playMediaWithId = block
+    }
+    fun invokePlayWithId(id: String) {
+        playMediaWithId?.invoke(id)
+    }
 
     // Compat limited method
-    fun setupRecyclerViewAction(fragment: Fragment) = Unit
+    open fun setupRecyclerViewAction(fragment: Fragment) = Unit
 
     // Compat limited method
-    fun setupRecyclerViewBottomMargin(fragment: Fragment) = Unit
+    open fun setupRecyclerViewBottomMargin(fragment: Fragment) = Unit
 
-}
-
-open class HomeLayoutCompat: BaseLayoutCompat<FragmentHomeBinding>, HomeInterface {
-
-    @Suppress("unused")
-    constructor(): super(null)
-    constructor(binding: FragmentHomeBinding): super(binding)
-
-    override val compatImpl: KClass<*>
-        get() = CompatImpl::class
-    override val w600dpImpl: KClass<*>
-        get() = W600dpImpl::class
-    override val w1240dpImpl: KClass<*>
-        get() = W1240dpImpl::class
-
+    @Keep
     private class CompatImpl(binding: FragmentHomeBinding): HomeLayoutCompat(binding) {
 
         private val appBarLayout: AppBarLayout
@@ -91,27 +107,14 @@ open class HomeLayoutCompat: BaseLayoutCompat<FragmentHomeBinding>, HomeInterfac
 
     }
 
+    @Keep
     private class W600dpImpl(binding: FragmentHomeBinding): HomeLayoutCompat(binding) {
 
     }
 
+    @Keep
     private class W1240dpImpl(binding: FragmentHomeBinding): HomeLayoutCompat(binding) {
 
-    }
-
-    protected val recyclerView: RecyclerView
-        get() = binding.recyclerView
-
-    fun setupRecyclerViewAdapter(adapter: RecyclerView.Adapter<*>) {
-        recyclerView.adapter = adapter
-    }
-
-    private var playMediaWithId: ((String) -> Unit)? = null
-    fun setPlayMediaWithId(block: ((String) -> Unit)) {
-        playMediaWithId = block
-    }
-    fun invokePlayWithId(id: String) {
-        playMediaWithId?.invoke(id)
     }
 
 }

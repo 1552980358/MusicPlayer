@@ -18,20 +18,22 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialSharedAxis
+import kotlin.reflect.KClass
 import projekt.cloud.piece.music.player.R
-import projekt.cloud.piece.music.player.base.BaseLayoutCompat.BaseLayoutCompatUtil.layoutCompat
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
 import projekt.cloud.piece.music.player.databinding.FragmentPlayerBinding
 import projekt.cloud.piece.music.player.ui.activity.main.MainViewModel
 import projekt.cloud.piece.music.player.util.FragmentUtil.viewLifecycleProperty
 import projekt.cloud.piece.music.player.util.PlaybackPositionManager
 import projekt.cloud.piece.music.player.util.PlaybackStateManager
-import projekt.cloud.piece.music.player.util.ScreenDensity.ScreenDensityUtil.screenDensity
 
 class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayoutCompat>() {
 
     override val viewBindingClass: Class<FragmentPlayerBinding>
         get() = FragmentPlayerBinding::class.java
+
+    override val layoutCompatClass: KClass<PlayerLayoutCompat>
+        get() = PlayerLayoutCompat::class
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,10 +55,6 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
             duration = transitionDurationLong       /** 800 **/
             addTarget(R.id.drawer_layout_root)
         }
-    }
-
-    override fun onCreateLayoutCompat(binding: FragmentPlayerBinding): PlayerLayoutCompat {
-        return binding.layoutCompat(requireContext().screenDensity)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

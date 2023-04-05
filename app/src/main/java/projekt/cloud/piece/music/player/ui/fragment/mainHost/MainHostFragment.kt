@@ -9,16 +9,18 @@ import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import projekt.cloud.piece.music.player.base.BaseLayoutCompat.BaseLayoutCompatUtil.layoutCompat
+import kotlin.reflect.KClass
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
 import projekt.cloud.piece.music.player.databinding.FragmentMainHostBinding
 import projekt.cloud.piece.music.player.ui.activity.main.MainViewModel
-import projekt.cloud.piece.music.player.util.ScreenDensity.ScreenDensityUtil.screenDensity
 
-private typealias BaseMainHostFragment =
-        BaseMultiDensityFragment<FragmentMainHostBinding, MainHostLayoutCompat>
+class MainHostFragment: BaseMultiDensityFragment<FragmentMainHostBinding, MainHostLayoutCompat>() {
 
-class MainHostFragment: BaseMainHostFragment() {
+    override val viewBindingClass: Class<FragmentMainHostBinding>
+        get() = FragmentMainHostBinding::class.java
+
+    override val layoutCompatClass: KClass<MainHostLayoutCompat>
+        get() = MainHostLayoutCompat::class
 
     private val mediaControllerCallback = object: MediaControllerCompat.Callback() {
         override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
@@ -27,13 +29,6 @@ class MainHostFragment: BaseMainHostFragment() {
         override fun onMetadataChanged(metadata: MediaMetadataCompat) {
             layoutCompat.notifyMetadataChanged(requireContext(), metadata)
         }
-    }
-
-    override val viewBindingClass: Class<FragmentMainHostBinding>
-        get() = FragmentMainHostBinding::class.java
-
-    override fun onCreateLayoutCompat(binding: FragmentMainHostBinding): MainHostLayoutCompat {
-        return binding.layoutCompat(requireContext().screenDensity)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

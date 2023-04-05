@@ -8,6 +8,7 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.view.View.OnClickListener
 import androidx.annotation.DrawableRes
+import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -26,20 +27,26 @@ import projekt.cloud.piece.music.player.databinding.FragmentPlayerBinding
 import projekt.cloud.piece.music.player.util.CoroutineUtil.default
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 import projekt.cloud.piece.music.player.util.PlaybackStateManager
+import projekt.cloud.piece.music.player.util.ScreenDensity
 import projekt.cloud.piece.music.player.util.TimeUtil.durationStr
 import projekt.cloud.piece.music.player.util.TimeUtil.timeStr
 
-open class PlayerLayoutCompat: BaseLayoutCompat<FragmentPlayerBinding> {
+abstract class PlayerLayoutCompat(binding: FragmentPlayerBinding): BaseLayoutCompat<FragmentPlayerBinding>(binding) {
 
-    constructor(): super(null)
-    constructor(binding: FragmentPlayerBinding): super(binding)
+    private companion object {
 
-    override val compatImpl: KClass<*>
-        get() = CompatImpl::class
-    override val w600dpImpl: KClass<*>
-        get() = W600dpImpl::class
-    override val w1240dpImpl: KClass<*>
-        get() = W1240dpImpl::class
+        @Suppress("unused")
+        @Keep
+        @JvmStatic
+        @JvmName(METHOD_GET_IMPL)
+        fun getImpl(screenDensity: ScreenDensity): KClass<*> {
+            return determineLayoutCompat(
+                screenDensity,
+                arrayOf(CompatImpl::class, W600dpImpl::class, W1240dpImpl::class)
+            )
+        }
+
+    }
 
     private val constantRoot: ConstraintLayout
         get() = binding.constraintLayoutRoot
@@ -138,8 +145,13 @@ open class PlayerLayoutCompat: BaseLayoutCompat<FragmentPlayerBinding> {
         next.setOnClickListener(onClickListener)
     }
 
+    @Keep
     private class CompatImpl(binding: FragmentPlayerBinding): PlayerLayoutCompat(binding)
+
+    @Keep
     private class W600dpImpl(binding: FragmentPlayerBinding): PlayerLayoutCompat(binding)
+
+    @Keep
     private class W1240dpImpl(binding: FragmentPlayerBinding): PlayerLayoutCompat(binding)
 
 }

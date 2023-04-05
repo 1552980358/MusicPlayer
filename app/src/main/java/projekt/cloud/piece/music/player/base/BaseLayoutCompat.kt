@@ -19,29 +19,44 @@ abstract class BaseLayoutCompat<VB: ViewBinding>(private var _binding: VB?) {
 
     companion object BaseLayoutCompatUtil {
 
-        inline fun <VB: ViewBinding, reified LC: BaseLayoutCompat<VB>> VB.layoutCompat(screenDensity: ScreenDensity): LC {
-            return LC::class.java.newInstance()
-                .getImpl(screenDensity)
-                .primaryConstructor!!
+        const val METHOD_GET_IMPL = "getImpl"
+
+        fun determineLayoutCompat(
+            screenDensity: ScreenDensity, layoutCompatArray: Array<KClass<*>>
+        ): KClass<*> {
+            return when (screenDensity) {
+                COMPACT -> layoutCompatArray[0]
+                MEDIUM -> layoutCompatArray[1]
+                EXPANDED -> layoutCompatArray[2]
+            }
+        }
+
+        fun <VB: ViewBinding, LC: BaseLayoutCompat<VB>> VB.reflectLayoutCompat(
+            layoutCompatClass: KClass<LC>, screenDensity: ScreenDensity
+        ): LC {
+            return getLayoutCompatInstance(
+                invokeGetImpl(layoutCompatClass, screenDensity)
+            )
+        }
+
+        private fun <VB: ViewBinding, LC: BaseLayoutCompat<VB>> invokeGetImpl(
+            kClass: KClass<LC>, screenDensity: ScreenDensity
+        ): KClass<out LC> {
+            @Suppress("UNCHECKED_CAST")
+            return kClass.java.getDeclaredMethod(METHOD_GET_IMPL, ScreenDensity::class.java)
                 .apply { isAccessible = true }
-                .call(this) as LC
+                .invoke(null, screenDensity) as KClass<out LC>
+        }
+
+        private fun <VB: ViewBinding, LC: BaseLayoutCompat<VB>> VB.getLayoutCompatInstance(
+            layoutCompatClass: KClass<out LC>
+        ): LC {
+            return layoutCompatClass.primaryConstructor!!
+                .apply { isAccessible = true }
+                .call(this)
         }
 
     }
-
-    fun getImpl(screenDensity: ScreenDensity): KClass<*> {
-        return when (screenDensity) {
-            COMPACT -> compatImpl
-            MEDIUM -> w600dpImpl
-            EXPANDED -> w1240dpImpl
-        }
-    }
-
-    protected abstract val compatImpl: KClass<*>
-
-    protected abstract val w600dpImpl: KClass<*>
-
-    protected abstract val w1240dpImpl: KClass<*>
 
     open val requireWindowInsets: Boolean
         get() = false

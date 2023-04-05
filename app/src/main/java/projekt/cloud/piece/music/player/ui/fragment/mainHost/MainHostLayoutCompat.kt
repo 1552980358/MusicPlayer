@@ -19,6 +19,7 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.view.View
+import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -48,6 +49,7 @@ import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.databinding.FragmentMainHostBinding
 import projekt.cloud.piece.music.player.databinding.MainHostPlaybackBarBinding
 import projekt.cloud.piece.music.player.ui.fragment.home.HomeViewModel
+import projekt.cloud.piece.music.player.util.ScreenDensity
 
 private interface MainHostInterface {
 
@@ -63,21 +65,25 @@ private interface MainHostInterface {
 
 }
 
-open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, MainHostInterface {
+abstract class MainHostLayoutCompat(
+    binding: FragmentMainHostBinding
+): BaseLayoutCompat<FragmentMainHostBinding>(binding), MainHostInterface {
 
     private companion object {
         const val STATE_UNKNOWN = -1
+
+        @Suppress("unused")
+        @Keep
+        @JvmStatic
+        @JvmName(METHOD_GET_IMPL)
+        fun getImpl(screenDensity: ScreenDensity): KClass<*> {
+            return determineLayoutCompat(
+                screenDensity,
+                arrayOf(CompatImpl::class, W600dpImpl::class, W1240dpImpl::class)
+            )
+        }
+
     }
-
-    constructor(): super(null)
-    constructor(binding: FragmentMainHostBinding): super(binding)
-
-    override val compatImpl: KClass<*>
-        get() = CompatImpl::class
-    override val w600dpImpl: KClass<*>
-        get() = W600dpImpl::class
-    override val w1240dpImpl: KClass<*>
-        get() = W1240dpImpl::class
 
     /**
      * Shared views
@@ -187,6 +193,7 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
         notifyMetadataChanged(context, mediaControllerCompat.metadata)
     }
 
+    @Keep
     private class CompatImpl(binding: FragmentMainHostBinding): MainHostLayoutCompat(binding) {
 
         private val bottomNavigationView: BottomNavigationView
@@ -296,6 +303,7 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
 
     }
 
+    @Keep
     private class W600dpImpl(binding: FragmentMainHostBinding): MainHostLayoutCompat(binding) {
 
         private val navigationRailView: NavigationRailView
@@ -368,6 +376,7 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
 
     }
 
+    @Keep
     private class W1240dpImpl(binding: FragmentMainHostBinding): MainHostLayoutCompat(binding) {
 
         private val navigationView: NavigationView

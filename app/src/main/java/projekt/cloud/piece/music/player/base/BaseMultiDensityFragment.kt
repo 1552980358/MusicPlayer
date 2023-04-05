@@ -4,8 +4,11 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import androidx.viewbinding.ViewBinding
+import kotlin.reflect.KClass
+import projekt.cloud.piece.music.player.base.BaseLayoutCompat.BaseLayoutCompatUtil.reflectLayoutCompat
 import projekt.cloud.piece.music.player.util.ContextUtil.requireWindowInsets
 import projekt.cloud.piece.music.player.util.FragmentUtil.viewLifecycleProperty
+import projekt.cloud.piece.music.player.util.ScreenDensity.ScreenDensityUtil.screenDensity
 
 private class NullRequireWindowInsetsListenerException: IllegalArgumentException(MESSAGE) {
     companion object {
@@ -18,8 +21,10 @@ abstract class BaseMultiDensityFragment<VB: ViewBinding, LC: BaseLayoutCompat<VB
     protected var layoutCompat: LC by viewLifecycleProperty()
         private set
 
+    protected abstract val layoutCompatClass: KClass<LC>
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        layoutCompat = onCreateLayoutCompat(binding)
+        layoutCompat = binding.reflectLayoutCompat(layoutCompatClass, requireActivity().screenDensity)
         if (layoutCompat.requireWindowInsets) {
             when (val listener = layoutCompat.windowInsetsRequireListener) {
                 null -> { throw NullRequireWindowInsetsListenerException() }
@@ -27,8 +32,6 @@ abstract class BaseMultiDensityFragment<VB: ViewBinding, LC: BaseLayoutCompat<VB
             }
         }
     }
-
-    protected abstract fun onCreateLayoutCompat(binding: VB): LC
 
     private fun requireWindowInsets(listener: (Rect) -> Unit) {
         requireContext().requireWindowInsets(listener)
