@@ -5,8 +5,11 @@ import android.graphics.Rect
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ALBUM
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ART
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ARTIST
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_ART_URI
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaControllerCompat.TransportControls
@@ -17,6 +20,7 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.constraintlayout.widget.ConstraintSet.GONE
@@ -27,6 +31,7 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.ui.setupWithNavController
 import androidx.transition.TransitionManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -83,12 +88,31 @@ open class MainHostLayoutCompat: BaseLayoutCompat<FragmentMainHostBinding>, Main
         get() = binding.mainHostPlaybackBar
     private val playbackControl: AppCompatImageButton
         get() = playbackBar.appCompatImageButtonPlayControl
+    private val cover: AppCompatImageView
+        get() = playbackBar.shapeableImageViewImage
 
     override fun setupPlaybackControl(transportControls: TransportControls) {
         playbackControl.setOnClickListener {
             when (lastPlaybackState) {
                 STATE_PLAYING -> { transportControls.pause() }
                 STATE_PAUSED -> { transportControls.play() }
+            }
+        }
+    }
+
+    fun setupSwitchingToPlayer(mediaControllerCompat: MediaControllerCompat, navController: NavController) {
+        cover.setOnClickListener {
+            mediaControllerCompat.metadata?.let { mediaMetadataCompat ->
+                navController.navigate(
+                    MainHostFragmentDirections.toPlayer(
+                        mediaMetadataCompat.getString(METADATA_KEY_TITLE),
+                        mediaMetadataCompat.getString(METADATA_KEY_ARTIST),
+                        mediaMetadataCompat.getString(METADATA_KEY_ALBUM),
+                        mediaMetadataCompat.getLong(METADATA_KEY_DURATION),
+                        mediaMetadataCompat.getString(METADATA_KEY_ART_URI)
+                    ),
+                    FragmentNavigatorExtras(cover to cover.transitionName)
+                )
             }
         }
     }

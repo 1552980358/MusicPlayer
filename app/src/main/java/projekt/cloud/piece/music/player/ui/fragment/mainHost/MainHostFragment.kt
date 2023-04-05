@@ -8,6 +8,7 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat.BaseLayoutCompatUtil.layoutCompat
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
 import projekt.cloud.piece.music.player.databinding.FragmentMainHostBinding
@@ -48,10 +49,13 @@ class MainHostFragment: BaseMainHostFragment() {
 
         val mainViewModel: MainViewModel by activityViewModels()
         mainViewModel.isMediaBrowserCompatConnected.observe(viewLifecycleOwner) { isConnected ->
-            val mediaControllerCompat = MediaControllerCompat.getMediaController(requireActivity())
-            if (isConnected && mediaControllerCompat != null) {
-                registerCallback(mediaControllerCompat)
-                layoutCompat.setupPlaybackControl(mediaControllerCompat.transportControls)
+            if (isConnected) {
+                MediaControllerCompat.getMediaController(requireActivity())
+                    ?.let { mediaControllerCompat ->
+                        registerCallback(mediaControllerCompat)
+                        layoutCompat.setupPlaybackControl(mediaControllerCompat.transportControls)
+                        layoutCompat.setupSwitchingToPlayer(mediaControllerCompat, findNavController())
+                    }
             }
         }
     }
@@ -66,7 +70,6 @@ class MainHostFragment: BaseMainHostFragment() {
     override fun onDestroyView() {
         MediaControllerCompat.getMediaController(requireActivity())
             ?.unregisterCallback(mediaControllerCallback)
-
         super.onDestroyView()
     }
 

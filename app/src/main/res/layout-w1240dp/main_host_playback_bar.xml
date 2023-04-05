@@ -44,12 +44,13 @@
                     android:id="@+id/shapeable_image_view_image"
                     android:layout_width="@dimen/main_host_playback_bar_image_size"
                     android:layout_height="@dimen/main_host_playback_bar_image_size"
-                    app:shapeAppearance="@style/Widget.MaterialComponents.ShapeableImageView.RoundCorner.Full"
                     android:src="@{cover}"
+                    android:transitionName="@string/player_shared_element_cover"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/linear_layout_metadata"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:shapeAppearance="?attr/roundShapeableImageAppearance" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/linear_layout_metadata"

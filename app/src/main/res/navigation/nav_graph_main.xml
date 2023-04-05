@@ -9,7 +9,11 @@
     <fragment
         android:id="@+id/main_host"
         android:name="projekt.cloud.piece.music.player.ui.fragment.mainHost.MainHostFragment"
-        tools:layout="@layout/fragment_main_host" />
+        tools:layout="@layout/fragment_main_host">
+        <action
+            android:id="@+id/to_player"
+            app:destination="@+id/player" />
+    </fragment>
 
     <fragment
         android:id="@+id/player"
