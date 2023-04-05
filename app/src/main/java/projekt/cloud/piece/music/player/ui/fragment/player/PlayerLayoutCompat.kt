@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.slider.Slider
+import com.google.android.material.slider.Slider.OnSliderTouchListener
 import kotlin.reflect.KClass
 import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
@@ -60,10 +61,24 @@ open class PlayerLayoutCompat: BaseLayoutCompat<FragmentPlayerBinding> {
         constantRoot.updatePadding(top = insets.top, bottom = insets.bottom)
     }
 
-    fun setupSlider() {
+    fun setupSlider(
+        transportControls: TransportControls, slidingListener: (Boolean) -> Unit
+    ) {
         position.setLabelFormatter { value ->
             value.toLong().durationStr
         }
+        position.addOnSliderTouchListener(
+            object: OnSliderTouchListener {
+                override fun onStartTrackingTouch(slider: Slider) =
+                    slidingListener.invoke(true)
+
+                override fun onStopTrackingTouch(slider: Slider) {
+                    // Update playback to position first
+                    transportControls.seekTo(slider.value.toLong())
+                    slidingListener.invoke(false)
+                }
+            }
+        )
     }
 
     fun updateMetadata(title: String, artist: String, album: String, duration: Long) {
@@ -82,9 +97,11 @@ open class PlayerLayoutCompat: BaseLayoutCompat<FragmentPlayerBinding> {
             .into(cover)
     }
 
-    fun updatePlaybackPosition(positionLong: Long) {
+    fun updatePlaybackPosition(positionLong: Long, isSliding: Boolean) {
         binding.position = positionLong.timeStr
-        position.value = positionLong.toFloat()
+        if (!isSliding) {
+            position.value = positionLong.toFloat()
+        }
     }
 
     fun notifyUpdatePlaybackController(fragment: Fragment, @DrawableRes resId: Int) {

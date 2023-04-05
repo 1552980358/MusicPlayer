@@ -61,7 +61,6 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        layoutCompat.setupSlider()
 
         updateMetadataFromArgs()
 
@@ -69,7 +68,19 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
         mainViewModel.isMediaBrowserCompatConnected.observe(viewLifecycleOwner) { isConnected ->
             if (isConnected) {
                 MediaControllerCompat.getMediaController(requireActivity())
-                    ?.let { mediaControllerCompat -> setupMediaController(mediaControllerCompat) }
+                    ?.let { mediaControllerCompat ->
+                        var isSliding = false
+
+                        layoutCompat.setupSlider(mediaControllerCompat.transportControls) { isSliderTouching ->
+                            // slidingListener: (Boolean) -> Unit
+                            isSliding = isSliderTouching
+                        }
+
+                        setupMediaController(mediaControllerCompat) { position: Long ->
+                            // doOnPositionUpdate: (Long) -> Unit
+                            layoutCompat.updatePlaybackPosition(position, isSliding)
+                        }
+                    }
             }
         }
     }
@@ -79,13 +90,12 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
             ?.unregisterCallback(callback)
     }
 
-    private fun setupMediaController(mediaControllerCompat: MediaControllerCompat) {
+    private fun setupMediaController(
+        mediaControllerCompat: MediaControllerCompat, doOnPositionUpdate: (Long) -> Unit
+    ) {
         val playbackStateManager = PlaybackStateManager()
 
         var playbackPositionManager: PlaybackPositionManager? = null
-        val doOnPositionUpdate = { position: Long ->
-            layoutCompat.updatePlaybackPosition(position)
-        }
         callback = object: MediaControllerCompat.Callback() {
             override fun onPlaybackStateChanged(playbackStateCompat: PlaybackStateCompat) {
                 playbackPositionManager = setupPlaybackPositionManager(
