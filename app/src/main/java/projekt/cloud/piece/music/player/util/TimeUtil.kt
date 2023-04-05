@@ -20,4 +20,7 @@ object TimeUtil {
     val Long.durationStr: String
         get() = "${millsToMinute}:${millsToSecond.leadingZero}"
 
+    val Long.timeStr: String
+        get() = "${millsToMinute.leadingZero}:${millsToSecond.leadingZero}"
+
 }
