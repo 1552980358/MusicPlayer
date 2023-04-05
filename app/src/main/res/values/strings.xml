@@ -24,4 +24,6 @@
     <string name="query_media_query_body_complete">Total %d audio found.</string>
     <string name="query_media_button_finish">Finish</string>
 
+    <string name="player_shared_element_cover">cover_image</string>
+
 </resources>
