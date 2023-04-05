@@ -11,4 +11,25 @@
         android:name="projekt.cloud.piece.music.player.ui.fragment.mainHost.MainHostFragment"
         tools:layout="@layout/fragment_main_host" />
 
+    <fragment
+        android:id="@+id/player"
+        android:name="projekt.cloud.piece.music.player.ui.fragment.player.PlayerFragment"
+        tools:layout="@layout/fragment_player">
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="artist"
+            app:argType="string" />
+        <argument
+            android:name="album"
+            app:argType="string" />
+        <argument
+            android:name="duration"
+            app:argType="long" />
+        <argument
+            android:name="cover_uri"
+            app:argType="string" />
+    </fragment>
+
 </navigation>
