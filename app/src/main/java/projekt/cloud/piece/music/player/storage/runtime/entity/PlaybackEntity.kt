@@ -9,7 +9,7 @@ import projekt.cloud.piece.music.player.storage.runtime.entity.PlaybackEntity.Pl
 class PlaybackEntity(
     @PrimaryKey
     @ColumnInfo(name = PLAYBACK_COLUMN_ORDER)
-    val order: Int,
+    var order: Int,
     @ColumnInfo(name = PLAYBACK_COLUMN_ID)
     val id: String
 ) {
