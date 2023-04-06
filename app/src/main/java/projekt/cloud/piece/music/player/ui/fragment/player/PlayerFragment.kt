@@ -60,6 +60,8 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        layoutCompat.setupShuffleMode()
+
         updateMetadataFromArgs()
 
         val mainViewModel: MainViewModel by activityViewModels()
@@ -92,8 +94,8 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
         mediaControllerCompat: MediaControllerCompat, doOnPositionUpdate: (Long) -> Unit
     ) {
         val playbackStateManager = PlaybackStateManager()
-
         var playbackPositionManager: PlaybackPositionManager? = null
+
         callback = object: MediaControllerCompat.Callback() {
             override fun onPlaybackStateChanged(playbackStateCompat: PlaybackStateCompat) {
                 playbackPositionManager = setupPlaybackPositionManager(
@@ -104,10 +106,16 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
                     playbackStateManager.updatePlaybackState(playbackStateCompat.state)
                 )
             }
+
             override fun onMetadataChanged(mediaMetadataCompat: MediaMetadataCompat) {
                 updateMetadataFromMediaMetadataCompat(mediaMetadataCompat)
             }
+
+            override fun onShuffleModeChanged(shuffleMode: Int) {
+                layoutCompat.notifyShuffleModeChanged(shuffleMode)
+            }
         }
+
         mediaControllerCompat.registerCallback(callback)
         // Recover state
         mediaControllerCompat.playbackState?.let { playbackStateCompat ->
@@ -121,9 +129,10 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
                 )
             }
         }
+        layoutCompat.setShuffleMode(mediaControllerCompat.shuffleMode)
 
         layoutCompat.setupPlaybackControls(
-            playbackStateManager, mediaControllerCompat.transportControls
+            playbackStateManager, mediaControllerCompat, mediaControllerCompat.transportControls
         )
     }
 

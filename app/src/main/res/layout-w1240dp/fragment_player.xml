@@ -131,10 +131,10 @@
                 android:layout_marginHorizontal="@dimen/md_spec_spacing_hor_16"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/constraint_layout_playback_control_container" />
+                app:layout_constraintBottom_toTopOf="@id/constraint_layout_playback_control" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraint_layout_playback_control_container"
+                android:id="@+id/constraint_layout_playback_control"
                 android:layout_width="@dimen/constraint_fill"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/md_spec_spacing_hor_16"
@@ -176,7 +176,7 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraint_layout_playback_control"
+                    android:id="@+id/constraint_layout_playback_control_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="@dimen/md_spec_spacing_hor_16"
