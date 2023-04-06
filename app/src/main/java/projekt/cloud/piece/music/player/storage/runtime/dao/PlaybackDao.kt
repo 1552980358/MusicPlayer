@@ -35,7 +35,10 @@ interface PlaybackDao {
             "FROM $AUDIO_METADATA_TABLE_NAME " +
             "WHERE $AUDIO_METADATA_COLUMN_ID in " +
             "(SELECT $PLAYBACK_COLUMN_ID FROM $PLAYBACK_TABLE_NAME)")
-    suspend fun query(): List<AudioMetadataEntity>
+    suspend fun queryAll(): List<AudioMetadataEntity>
+
+    @Query("SELECT * FROM $PLAYBACK_TABLE_NAME")
+    suspend fun query(): List<PlaybackEntity>
 
     @Query("DELETE FROM $PLAYBACK_TABLE_NAME")
     suspend fun clear()
