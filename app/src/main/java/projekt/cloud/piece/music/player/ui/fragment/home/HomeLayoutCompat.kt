@@ -9,28 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.google.android.material.appbar.AppBarLayout
-import kotlin.reflect.KClass
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.databinding.FragmentHomeBinding
 import projekt.cloud.piece.music.player.ui.fragment.mainHost.MainHostViewModel
-import projekt.cloud.piece.music.player.util.ScreenDensity
 import projekt.cloud.piece.music.player.util.ViewUtil.canScrollUp
 
 abstract class HomeLayoutCompat(binding: FragmentHomeBinding): BaseLayoutCompat<FragmentHomeBinding>(binding) {
-
-    private companion object {
-        @Suppress("unused")
-        @Keep
-        @JvmStatic
-        @JvmName(METHOD_GET_IMPL)
-        fun getImpl(screenDensity: ScreenDensity): KClass<*> {
-            return determineLayoutCompat(
-                screenDensity,
-                arrayOf(CompatImpl::class, W600dpImpl::class, W1240dpImpl::class)
-            )
-        }
-    }
 
     protected val recyclerView: RecyclerView
         get() = binding.recyclerView

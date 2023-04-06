@@ -19,34 +19,32 @@ abstract class BaseLayoutCompat<VB: ViewBinding>(private var _binding: VB?) {
 
     companion object BaseLayoutCompatUtil {
 
-        const val METHOD_GET_IMPL = "getImpl"
-
-        fun determineLayoutCompat(
-            screenDensity: ScreenDensity, layoutCompatArray: Array<KClass<*>>
-        ): KClass<*> {
-            return when (screenDensity) {
-                COMPACT -> layoutCompatArray[0]
-                MEDIUM -> layoutCompatArray[1]
-                EXPANDED -> layoutCompatArray[2]
-            }
-        }
-
         fun <VB: ViewBinding, LC: BaseLayoutCompat<VB>> VB.reflectLayoutCompat(
             layoutCompatClass: KClass<LC>, screenDensity: ScreenDensity
         ): LC {
             return getLayoutCompatInstance(
-                invokeGetImpl(layoutCompatClass, screenDensity)
+                layoutCompatClass.getLayoutCompatImplClass(screenDensity)
             )
         }
 
-        private fun <VB: ViewBinding, LC: BaseLayoutCompat<VB>> invokeGetImpl(
-            kClass: KClass<LC>, screenDensity: ScreenDensity
+        private fun <LC: BaseLayoutCompat<*>> KClass<LC>.getLayoutCompatImplClass(
+            screenDensity: ScreenDensity
         ): KClass<out LC> {
             @Suppress("UNCHECKED_CAST")
-            return kClass.java.getDeclaredMethod(METHOD_GET_IMPL, ScreenDensity::class.java)
-                .apply { isAccessible = true }
-                .invoke(null, screenDensity) as KClass<out LC>
+            return Class.forName("${java.name}$${screenDensity.layoutCompat}")
+                .kotlin as KClass<out LC>
         }
+
+        private const val IMPL_COMPAT = "CompatImpl"
+        private const val IMPL_W600DP = "W600dpImpl"
+        private const val IMPL_W1240DP = "W1240dpImpl"
+
+        private val ScreenDensity.layoutCompat: String
+            get() = when (this) {
+                COMPACT -> IMPL_COMPAT
+                MEDIUM -> IMPL_W600DP
+                EXPANDED -> IMPL_W1240DP
+            }
 
         private fun <VB: ViewBinding, LC: BaseLayoutCompat<VB>> VB.getLayoutCompatInstance(
             layoutCompatClass: KClass<out LC>

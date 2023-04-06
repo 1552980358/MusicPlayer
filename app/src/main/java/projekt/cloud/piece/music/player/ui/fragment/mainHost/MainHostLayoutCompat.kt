@@ -43,13 +43,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigationrail.NavigationRailView
-import kotlin.reflect.KClass
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.databinding.FragmentMainHostBinding
 import projekt.cloud.piece.music.player.databinding.MainHostPlaybackBarBinding
 import projekt.cloud.piece.music.player.ui.fragment.home.HomeViewModel
-import projekt.cloud.piece.music.player.util.ScreenDensity
 
 private interface MainHostInterface {
 
@@ -71,18 +69,6 @@ abstract class MainHostLayoutCompat(
 
     private companion object {
         const val STATE_UNKNOWN = -1
-
-        @Suppress("unused")
-        @Keep
-        @JvmStatic
-        @JvmName(METHOD_GET_IMPL)
-        fun getImpl(screenDensity: ScreenDensity): KClass<*> {
-            return determineLayoutCompat(
-                screenDensity,
-                arrayOf(CompatImpl::class, W600dpImpl::class, W1240dpImpl::class)
-            )
-        }
-
     }
 
     /**

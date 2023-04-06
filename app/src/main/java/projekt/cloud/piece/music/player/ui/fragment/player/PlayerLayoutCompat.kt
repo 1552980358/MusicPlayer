@@ -20,33 +20,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.slider.Slider
 import com.google.android.material.slider.Slider.OnSliderTouchListener
-import kotlin.reflect.KClass
 import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.databinding.FragmentPlayerBinding
 import projekt.cloud.piece.music.player.util.CoroutineUtil.default
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 import projekt.cloud.piece.music.player.util.PlaybackStateManager
-import projekt.cloud.piece.music.player.util.ScreenDensity
 import projekt.cloud.piece.music.player.util.TimeUtil.durationStr
 import projekt.cloud.piece.music.player.util.TimeUtil.timeStr
 
 abstract class PlayerLayoutCompat(binding: FragmentPlayerBinding): BaseLayoutCompat<FragmentPlayerBinding>(binding) {
-
-    private companion object {
-
-        @Suppress("unused")
-        @Keep
-        @JvmStatic
-        @JvmName(METHOD_GET_IMPL)
-        fun getImpl(screenDensity: ScreenDensity): KClass<*> {
-            return determineLayoutCompat(
-                screenDensity,
-                arrayOf(CompatImpl::class, W600dpImpl::class, W1240dpImpl::class)
-            )
-        }
-
-    }
 
     private val constantRoot: ConstraintLayout
         get() = binding.constraintLayoutRoot
