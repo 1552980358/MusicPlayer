@@ -21,6 +21,7 @@ import android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY_PAUSE
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SEEK_TO
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_NEXT
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_QUEUE_ITEM
@@ -29,6 +30,7 @@ import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ALL
 import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_NONE
 import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ONE
 import android.support.v4.media.session.PlaybackStateCompat.RepeatMode
+import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
 import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_NONE
 import android.support.v4.media.session.PlaybackStateCompat.STATE_BUFFERING
 import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
@@ -49,6 +51,7 @@ import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLifecycleMediaBrowserService
 import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase
 import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase.RuntimeDatabaseUtil.runtimeDatabase
+import projekt.cloud.piece.music.player.storage.runtime.dao.PlaybackDao
 import projekt.cloud.piece.music.player.storage.runtime.entity.AudioMetadataEntity
 import projekt.cloud.piece.music.player.util.CoroutineUtil.default
 import projekt.cloud.piece.music.player.util.CoroutineUtil.io
@@ -68,7 +71,8 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
             ACTION_PLAY or ACTION_PAUSE or ACTION_PLAY_PAUSE or ACTION_STOP or
                     ACTION_SEEK_TO or
                     ACTION_PLAY_FROM_MEDIA_ID or
-                    ACTION_SKIP_TO_NEXT or ACTION_SKIP_TO_PREVIOUS or ACTION_SKIP_TO_QUEUE_ITEM
+                    ACTION_SKIP_TO_NEXT or ACTION_SKIP_TO_PREVIOUS or ACTION_SKIP_TO_QUEUE_ITEM or
+                    ACTION_SET_SHUFFLE_MODE
 
         const val START_COMMAND_PLAYBACK = "${TAG}.Playback"
         const val START_COMMAND_PLAYBACK_START = "$START_COMMAND_PLAYBACK.Start"
@@ -243,6 +247,20 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
                             }
                         }
                     }
+
+                    override fun onSetShuffleMode(shuffleMode: Int) {
+                        lifecycleScope.main {
+                            runtimeDatabase.playbackDao().let { playbackDao ->
+                                when (shuffleMode) {
+                                    SHUFFLE_MODE_ALL -> { shufflePlaybackEntity(playbackDao) }
+                                    else -> { sortPlaybackEntity(playbackDao) }
+                                }
+                            }
+                            this@PlaybackService.shuffleMode = shuffleMode
+                            mediaSessionCompat.setShuffleMode(shuffleMode)
+                        }
+                    }
+
                 }
             )
 
@@ -303,6 +321,29 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
         mediaSessionCompat.controller
             .transportControls
             .play()
+    }
+
+    private suspend fun shufflePlaybackEntity(playbackDao: PlaybackDao) {
+        return withContext(default) {
+            playbackDao.insert(
+                playbackDao.query().shuffled()
+                    .onEachIndexed { index, playbackEntity ->
+                        playbackEntity.order = index
+                    }
+            )
+        }
+    }
+
+    private suspend fun sortPlaybackEntity(playbackDao: PlaybackDao) {
+        return withContext(default) {
+            playbackDao.insert(
+                playbackDao.query()
+                    .sortedBy { it.id }
+                    .onEachIndexed { index, playbackEntity ->
+                        playbackEntity.order = index
+                    }
+            )
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
