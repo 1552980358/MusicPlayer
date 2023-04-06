@@ -2,6 +2,7 @@ package projekt.cloud.piece.music.player.ui.fragment.home
 
 import android.os.Bundle
 import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -65,10 +66,15 @@ class HomeFragment: BaseMultiDensityFragment<FragmentHomeBinding, HomeLayoutComp
         layoutCompat.setPlayMediaWithId { id ->
             job?.cancel()
             job = lifecycleScope.main {
-                // Convert into playback entity list
-                val playbackList = getPlaybackList(audioMetadataList)
-                // Put playlist into runtime database
-                putPlaylistIntoRuntimeDatabase(runtimeDatabase, playbackList)
+                // Put into runtime database
+                putPlaylistIntoRuntimeDatabase(
+                    runtimeDatabase,
+                    // Convert into playback entity list
+                    getPlaybackList(
+                        // Check if shuffle required, then shuffle list
+                        shuffleAudioMetadataListIfRequired(mediaControllerCompat, audioMetadataList)
+                    )
+                )
                 // Call for audio play
                 mediaControllerCompat.transportControls
                     .playFromMediaId(id, null)
@@ -82,7 +88,14 @@ class HomeFragment: BaseMultiDensityFragment<FragmentHomeBinding, HomeLayoutComp
     ) = withContext(default) {
         audioMetadataList.mapIndexed { index, audioMetadataEntity ->
             PlaybackEntity(index, audioMetadataEntity.id)
-        }
+        } as ArrayList
+    }
+
+    private suspend fun shuffleAudioMetadataListIfRequired(
+        mediaControllerCompat: MediaControllerCompat, audioMetadataList: List<AudioMetadataEntity>
+    ) = withContext(default) {
+        audioMetadataList.takeIf { mediaControllerCompat.shuffleMode != SHUFFLE_MODE_ALL }
+            ?: audioMetadataList.shuffled()
     }
 
     private suspend fun putPlaylistIntoRuntimeDatabase(
