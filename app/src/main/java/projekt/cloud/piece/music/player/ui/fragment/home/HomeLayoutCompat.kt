@@ -20,6 +20,10 @@ abstract class HomeLayoutCompat(binding: FragmentHomeBinding): BaseLayoutCompat<
     protected val recyclerView: RecyclerView
         get() = binding.recyclerView
 
+    /**
+     * [setupRecyclerViewAdapter]
+     * @param adapter [RecyclerView.Adapter]
+     **/
     fun setupRecyclerViewAdapter(adapter: RecyclerView.Adapter<*>) {
         recyclerView.adapter = adapter
     }
@@ -32,10 +36,18 @@ abstract class HomeLayoutCompat(binding: FragmentHomeBinding): BaseLayoutCompat<
         playMediaWithId?.invoke(id)
     }
 
-    // Compat limited method
+    /**
+     * [setupRecyclerViewAction]
+     * @param fragment [Fragment]
+     * For Compat only
+     **/
     open fun setupRecyclerViewAction(fragment: Fragment) = Unit
 
-    // Compat limited method
+    /**
+     * [setupRecyclerViewBottomMargin]
+     * @param fragment [Fragment]
+     * For Compat only
+     **/
     open fun setupRecyclerViewBottomMargin(fragment: Fragment) = Unit
 
     @Keep
