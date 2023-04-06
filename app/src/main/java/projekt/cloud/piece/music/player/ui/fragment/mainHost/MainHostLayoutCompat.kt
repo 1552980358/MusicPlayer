@@ -49,23 +49,9 @@ import projekt.cloud.piece.music.player.databinding.FragmentMainHostBinding
 import projekt.cloud.piece.music.player.databinding.MainHostPlaybackBarBinding
 import projekt.cloud.piece.music.player.ui.fragment.home.HomeViewModel
 
-private interface MainHostInterface {
-
-    fun setupColor(context: Context) = Unit
-
-    fun setupNavigation(navController: NavController) = Unit
-
-    fun setupNavigationItems(fragment: Fragment, navController: NavController) = Unit
-
-    fun setupPlaybackBar(fragment: Fragment, navController: NavController) = Unit
-
-    fun setupPlaybackControl(transportControls: TransportControls)
-
-}
-
 abstract class MainHostLayoutCompat(
     binding: FragmentMainHostBinding
-): BaseLayoutCompat<FragmentMainHostBinding>(binding), MainHostInterface {
+): BaseLayoutCompat<FragmentMainHostBinding>(binding) {
 
     private companion object {
         const val STATE_UNKNOWN = -1
@@ -83,7 +69,42 @@ abstract class MainHostLayoutCompat(
     private val cover: AppCompatImageView
         get() = playbackBar.shapeableImageViewImage
 
-    override fun setupPlaybackControl(transportControls: TransportControls) {
+    /**
+     * [setupColor]
+     * @param context [Context]
+     * For W600dp and W1240dp
+     **/
+    open fun setupColor(context: Context) = Unit
+
+    /**
+     * [setupNavigation]
+     * @param navController [NavController]
+     * For Compat, W600dp and W1240dp
+     **/
+    abstract fun setupNavigation(navController: NavController)
+
+    /**
+     * [setupNavigationItems]
+     * @param fragment [Fragment]
+     * @param navController [NavController]
+     * For Compat
+     **/
+    open fun setupNavigationItems(fragment: Fragment, navController: NavController) = Unit
+
+    /**
+     * [setupPlaybackBar]
+     * @param fragment [Fragment]
+     * @param navController [NavController]
+     * For Compat
+     **/
+    open fun setupPlaybackBar(fragment: Fragment, navController: NavController) = Unit
+
+    /**
+     * [setupPlaybackControl]
+     * @param transportControls [TransportControls]
+     * Contains common methods, override by W600dp and W1240dp
+     **/
+    open fun setupPlaybackControl(transportControls: TransportControls) {
         playbackControl.setOnClickListener {
             when (lastPlaybackState) {
                 STATE_PLAYING -> { transportControls.pause() }
