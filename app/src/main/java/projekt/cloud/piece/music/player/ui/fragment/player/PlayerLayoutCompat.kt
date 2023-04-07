@@ -5,6 +5,10 @@ import android.graphics.drawable.AnimatedVectorDrawable
 import android.net.Uri
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaControllerCompat.TransportControls
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ALL
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_NONE
+import android.support.v4.media.session.PlaybackStateCompat.REPEAT_MODE_ONE
+import android.support.v4.media.session.PlaybackStateCompat.RepeatMode
 import android.support.v4.media.session.PlaybackStateCompat.ShuffleMode
 import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
 import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_NONE
@@ -27,6 +31,7 @@ import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.slider.Slider
 import com.google.android.material.slider.Slider.OnSliderTouchListener
 import kotlinx.coroutines.withContext
+import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.databinding.FragmentPlayerBinding
 import projekt.cloud.piece.music.player.util.CoroutineUtil.default
@@ -45,6 +50,8 @@ abstract class PlayerLayoutCompat(binding: FragmentPlayerBinding): BaseLayoutCom
         get() = binding.shapeableImageViewImageCover
     private val playbackControl: FloatingActionButton
         get() = binding.floatingActionButtonPlaybackControl
+    private val repeat: AppCompatImageButton
+        get() = binding.appCompatImageButtonRepeat
     private val prev: AppCompatImageButton
         get() = binding.appCompatImageButtonPrev
     private val next: AppCompatImageButton
@@ -54,10 +61,10 @@ abstract class PlayerLayoutCompat(binding: FragmentPlayerBinding): BaseLayoutCom
     private val shuffle: AppCompatImageButton
         get() = binding.appCompatImageButtonShuffle
 
-    private val shuffleEnabledPlaybackControlContainerSet = ConstraintSet()
-    private val shuffleDisabledPlaybackControlContainerSet = ConstraintSet()
+    private val playbackContainerSet = ConstraintSet()
 
     private companion object {
+        const val REPEAT_DISABLED_ALPHA = 0.5F
         const val SHUFFLE_DISABLED_ALPHA = 0.5F
     }
 
@@ -132,6 +139,15 @@ abstract class PlayerLayoutCompat(binding: FragmentPlayerBinding): BaseLayoutCom
     ) {
         val onClickListener = OnClickListener {
             when (it) {
+                repeat -> {
+                    transportControls.setRepeatMode(
+                        when (mediaControllerCompat.repeatMode) {
+                            REPEAT_MODE_NONE -> REPEAT_MODE_ALL
+                            REPEAT_MODE_ALL -> REPEAT_MODE_ONE
+                            else -> REPEAT_MODE_NONE
+                        }
+                    )
+                }
                 playbackControl -> {
                     when (playbackStateManager.playbackState) {
                         STATE_PLAYING -> { transportControls.pause() }
@@ -150,6 +166,7 @@ abstract class PlayerLayoutCompat(binding: FragmentPlayerBinding): BaseLayoutCom
                 }
             }
         }
+        repeat.setOnClickListener(onClickListener)
         playbackControl.setOnClickListener(onClickListener)
         prev.setOnClickListener(onClickListener)
         next.setOnClickListener(onClickListener)
@@ -157,25 +174,39 @@ abstract class PlayerLayoutCompat(binding: FragmentPlayerBinding): BaseLayoutCom
     }
 
     fun setupShuffleMode() {
-        shuffleEnabledPlaybackControlContainerSet.clone(playbackControlContainer)
-        shuffleDisabledPlaybackControlContainerSet.apply {
-            clone(playbackControlContainer)
-            setAlpha(shuffle.id, SHUFFLE_DISABLED_ALPHA)
-        }
+        playbackContainerSet.clone(playbackControlContainer)
     }
 
-    fun notifyShuffleModeChanged(@ShuffleMode shuffleMode: Int) {
-        updateShuffleMode(shuffleMode, true)
+    fun notifyPlaybackModesChanged(@RepeatMode repeatMode: Int, @ShuffleMode shuffleMode: Int) {
+        setPlaybackModes(repeatMode, shuffleMode, true)
     }
 
-    fun setShuffleMode(@ShuffleMode shuffleMode: Int) {
-        updateShuffleMode(shuffleMode, false)
+    fun setPlaybackModes(@RepeatMode repeatMode: Int, @ShuffleMode shuffleMode: Int) {
+        setPlaybackModes(repeatMode, shuffleMode, false)
     }
 
-    private fun updateShuffleMode(@ShuffleMode shuffleMode: Int, requireTransition: Boolean) {
-        when (shuffleMode) {
-            SHUFFLE_MODE_ALL -> shuffleEnabledPlaybackControlContainerSet
-            else -> shuffleDisabledPlaybackControlContainerSet
+    private fun setPlaybackModes(
+        @RepeatMode repeatMode: Int, @ShuffleMode shuffleMode: Int, requireTransition: Boolean
+    ) {
+        repeat.setImageResource(
+            when (repeatMode) {
+                REPEAT_MODE_ONE -> R.drawable.ic_round_repeat_one_24
+                else -> R.drawable.ic_round_repeat_24
+            }
+        )
+        when {
+            repeatMode != REPEAT_MODE_NONE && shuffleMode != SHUFFLE_MODE_NONE -> {
+                playbackContainerSet
+            }
+            else -> ConstraintSet().apply {
+                clone(playbackContainerSet)
+                if (repeatMode == REPEAT_MODE_NONE) {
+                    setAlpha(repeat.id, REPEAT_DISABLED_ALPHA)
+                }
+                if (shuffleMode == SHUFFLE_MODE_NONE) {
+                    setAlpha(shuffle.id, SHUFFLE_DISABLED_ALPHA)
+                }
+            }
         }.let { constraintSet ->
             if (requireTransition) {
                 TransitionManager.beginDelayedTransition(playbackControlContainer)

@@ -112,7 +112,11 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
             }
 
             override fun onShuffleModeChanged(shuffleMode: Int) {
-                layoutCompat.notifyShuffleModeChanged(shuffleMode)
+                layoutCompat.notifyPlaybackModesChanged(mediaControllerCompat.repeatMode, shuffleMode)
+            }
+
+            override fun onRepeatModeChanged(repeatMode: Int) {
+                layoutCompat.notifyPlaybackModesChanged(repeatMode, mediaControllerCompat.shuffleMode)
             }
         }
 
@@ -129,7 +133,9 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
                 )
             }
         }
-        layoutCompat.setShuffleMode(mediaControllerCompat.shuffleMode)
+        layoutCompat.setPlaybackModes(
+            mediaControllerCompat.repeatMode, mediaControllerCompat.shuffleMode
+        )
 
         layoutCompat.setupPlaybackControls(
             playbackStateManager, mediaControllerCompat, mediaControllerCompat.transportControls
