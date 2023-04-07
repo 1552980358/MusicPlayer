@@ -171,29 +171,28 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
     }
 
     private fun updateMetadataFromArgs(playerFragmentArgs: PlayerFragmentArgs) {
-        layoutCompat.updateMetadata(
+        updateMetadata(
             playerFragmentArgs.title,
             playerFragmentArgs.artist,
             playerFragmentArgs.album,
-            playerFragmentArgs.duration
-        )
-        layoutCompat.updateCoverImage(
-            this,
+            playerFragmentArgs.duration,
             Uri.parse(playerFragmentArgs.coverUri)
         )
     }
 
     private fun updateMetadataFromMediaMetadataCompat(mediaMetadataCompat: MediaMetadataCompat) {
-        layoutCompat.updateMetadata(
+        updateMetadata(
             mediaMetadataCompat.getString(METADATA_KEY_TITLE),
             mediaMetadataCompat.getString(METADATA_KEY_ARTIST),
             mediaMetadataCompat.getString(METADATA_KEY_ALBUM),
-            mediaMetadataCompat.getLong(METADATA_KEY_DURATION)
-        )
-        layoutCompat.updateCoverImage(
-            this,
+            mediaMetadataCompat.getLong(METADATA_KEY_DURATION),
             Uri.parse(mediaMetadataCompat.getString(METADATA_KEY_ART_URI))
         )
+    }
+
+    private fun updateMetadata(title: String, artist: String, album: String, duration: Long, coverUri: Uri) {
+        layoutCompat.updateMetadata(title, artist, album, duration)
+        layoutCompat.updateCoverImage(this@PlayerFragment, coverUri)
     }
 
 }
