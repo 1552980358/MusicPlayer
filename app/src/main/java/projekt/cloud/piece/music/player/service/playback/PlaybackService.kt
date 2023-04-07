@@ -21,6 +21,7 @@ import android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_PLAY_PAUSE
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SEEK_TO
+import android.support.v4.media.session.PlaybackStateCompat.ACTION_SET_REPEAT_MODE
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SET_SHUFFLE_MODE
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_NEXT
 import android.support.v4.media.session.PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
@@ -72,7 +73,7 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
                     ACTION_SEEK_TO or
                     ACTION_PLAY_FROM_MEDIA_ID or
                     ACTION_SKIP_TO_NEXT or ACTION_SKIP_TO_PREVIOUS or ACTION_SKIP_TO_QUEUE_ITEM or
-                    ACTION_SET_SHUFFLE_MODE
+                    ACTION_SET_REPEAT_MODE or ACTION_SET_SHUFFLE_MODE
 
         const val START_COMMAND_PLAYBACK = "${TAG}.Playback"
         const val START_COMMAND_PLAYBACK_START = "$START_COMMAND_PLAYBACK.Start"
@@ -246,6 +247,11 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
                                 setPlaybackState(playbackStateCompat)
                             }
                         }
+                    }
+
+                    override fun onSetRepeatMode(repeatMode: Int) {
+                        this@PlaybackService.repeatMode = repeatMode
+                        mediaSessionCompat.setRepeatMode(repeatMode)
                     }
 
                     override fun onSetShuffleMode(shuffleMode: Int) {
