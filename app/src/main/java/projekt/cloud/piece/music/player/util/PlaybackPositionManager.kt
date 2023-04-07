@@ -1,5 +1,7 @@
 package projekt.cloud.piece.music.player.util
 
+import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
 import java.io.Closeable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -10,6 +12,7 @@ import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 class PlaybackPositionManager @JvmOverloads constructor(
     coroutineScope: CoroutineScope,
     position: Long = DEFAULT_POSITION,
+    mediaMetadataCompat: MediaMetadataCompat?,
     doOnUpdate: (Long) -> Unit
 ): Closeable {
 
@@ -24,7 +27,7 @@ class PlaybackPositionManager @JvmOverloads constructor(
         @Synchronized
         private set
 
-    var duration = DURATION_UNKNOWN
+    var duration = mediaMetadataCompat?.getLong(METADATA_KEY_DURATION) ?: DURATION_UNKNOWN
         @Synchronized
         set
 
