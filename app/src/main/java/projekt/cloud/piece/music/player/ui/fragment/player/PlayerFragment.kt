@@ -12,6 +12,7 @@ import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_TITLE
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
+import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -62,7 +63,8 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
 
         layoutCompat.setupShuffleMode()
 
-        updateMetadataFromArgs()
+        val playerFragmentArgs: PlayerFragmentArgs by navArgs()
+        updateMetadataFromArgs(playerFragmentArgs)
 
         val mainViewModel: MainViewModel by activityViewModels()
         mainViewModel.isMediaBrowserCompatConnected.observe(viewLifecycleOwner) { isConnected ->
@@ -98,11 +100,13 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
 
         callback = object: MediaControllerCompat.Callback() {
             override fun onPlaybackStateChanged(playbackStateCompat: PlaybackStateCompat) {
-                playbackPositionManager = setupPlaybackPositionManager(
-                    playbackPositionManager, playbackStateCompat.position, doOnPositionUpdate
-                )
-                mediaControllerCompat.metadata?.let { mediaMetadataCompat ->
-                    playbackPositionManager?.duration = mediaMetadataCompat.getLong(METADATA_KEY_DURATION)
+                playbackPositionManager?.close()
+                if (playbackStateCompat.state == STATE_PLAYING) {
+                    playbackPositionManager = setupPlaybackPositionManager(
+                        playbackStateCompat.position,
+                        mediaControllerCompat.metadata,
+                        doOnPositionUpdate
+                    )
                 }
                 layoutCompat.notifyUpdatePlaybackController(
                     this@PlayerFragment,
@@ -127,14 +131,24 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
         mediaControllerCompat.registerCallback(callback)
         // Recover state
         mediaControllerCompat.playbackState?.let { playbackStateCompat ->
-            if (playbackStateCompat.state != STATE_NONE) {
-                playbackPositionManager = setupPlaybackPositionManager(
-                    playbackPositionManager, playbackStateCompat.position, doOnPositionUpdate
-                )
-                layoutCompat.notifyUpdatePlaybackController(
-                    this,
-                    playbackStateManager.updatePlaybackState(playbackStateCompat.state)
-                )
+
+            playbackStateCompat.state.let { playbackState ->
+                // Check if require update position
+                if (playbackState == STATE_PLAYING) {
+                    playbackPositionManager = setupPlaybackPositionManager(
+                        playbackStateCompat.position,
+                        mediaControllerCompat.metadata,
+                        doOnPositionUpdate
+                    )
+                }
+
+                if (playbackState != STATE_NONE) {
+                    doOnPositionUpdate.invoke(playbackStateCompat.position)
+                    layoutCompat.notifyUpdatePlaybackController(
+                        this,
+                        playbackStateManager.updatePlaybackState(playbackStateCompat.state)
+                    )
+                }
             }
         }
         layoutCompat.setPlaybackModes(
@@ -147,15 +161,13 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
     }
 
     private fun setupPlaybackPositionManager(
-        playbackPositionManager: PlaybackPositionManager?, playbackPosition: Long, doOnPositionUpdate: (Long) -> Unit
+        playbackPosition: Long,
+        mediaMetadataCompat: MediaMetadataCompat?,
+        doOnPositionUpdate: (Long) -> Unit
     ): PlaybackPositionManager {
-        playbackPositionManager?.close()
-        return PlaybackPositionManager(lifecycleScope, playbackPosition, doOnPositionUpdate)
-    }
-
-    private fun updateMetadataFromArgs() {
-        val playerFragmentArgs: PlayerFragmentArgs by navArgs()
-        updateMetadataFromArgs(playerFragmentArgs)
+        return PlaybackPositionManager(
+            lifecycleScope, playbackPosition, mediaMetadataCompat, doOnPositionUpdate
+        )
     }
 
     private fun updateMetadataFromArgs(playerFragmentArgs: PlayerFragmentArgs) {
