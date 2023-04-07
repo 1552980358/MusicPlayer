@@ -17,11 +17,16 @@ class PlaybackPositionManager @JvmOverloads constructor(
         const val DEFAULT_POSITION = 0L
         const val DELAY_SEPARATION = 200L
         const val ROUNDING_SEPARATION = DELAY_SEPARATION
+        const val DURATION_UNKNOWN = -1L
     }
 
     var position = position
         @Synchronized
         private set
+
+    var duration = DURATION_UNKNOWN
+        @Synchronized
+        set
 
     @Volatile
     private var isContinue = true
@@ -37,7 +42,7 @@ class PlaybackPositionManager @JvmOverloads constructor(
             main { doOnUpdate.invoke(initPosition) }
             roundUpPosition(initPosition % ROUNDING_SEPARATION)
 
-            while (isContinue) {
+            while (isContinue && canContinue) {
                 main { doOnUpdate.invoke(position) }
                 delay(DELAY_SEPARATION)
                 position += DELAY_SEPARATION
@@ -51,6 +56,9 @@ class PlaybackPositionManager @JvmOverloads constructor(
             delay(ROUNDING_SEPARATION - separation)
         }
     }
+
+    private val canContinue: Boolean
+        get() = duration == DURATION_UNKNOWN || position <= duration
 
     override fun close() {
         isContinue = false

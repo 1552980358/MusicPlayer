@@ -101,6 +101,9 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
                 playbackPositionManager = setupPlaybackPositionManager(
                     playbackPositionManager, playbackStateCompat.position, doOnPositionUpdate
                 )
+                mediaControllerCompat.metadata?.let { mediaMetadataCompat ->
+                    playbackPositionManager?.duration = mediaMetadataCompat.getLong(METADATA_KEY_DURATION)
+                }
                 layoutCompat.notifyUpdatePlaybackController(
                     this@PlayerFragment,
                     playbackStateManager.updatePlaybackState(playbackStateCompat.state)
@@ -109,6 +112,7 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
 
             override fun onMetadataChanged(mediaMetadataCompat: MediaMetadataCompat) {
                 updateMetadataFromMediaMetadataCompat(mediaMetadataCompat)
+                playbackPositionManager?.duration = mediaMetadataCompat.getLong(METADATA_KEY_DURATION)
             }
 
             override fun onShuffleModeChanged(shuffleMode: Int) {
