@@ -61,6 +61,7 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        layoutCompat.setupExit(this)
         layoutCompat.setupShuffleMode()
 
         val playerFragmentArgs: PlayerFragmentArgs by navArgs()

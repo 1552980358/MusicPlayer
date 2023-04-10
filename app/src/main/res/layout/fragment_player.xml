@@ -63,6 +63,28 @@
                         app:layout_constraintDimensionRatio="1:1"
                         app:shapeAppearance="?attr/roundShapeableImageAppearance" />
 
+                    <com.google.android.material.circularreveal.cardview.CircularRevealCardView
+                        android:id="@+id/circular_reveal_card_view_exit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/md_spec_spacing_hor_16"
+                        android:layout_marginVertical="@dimen/md_spec_spacing_ver_16"
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:visibility="invisible"
+                        app:cardBackgroundColor="?attr/colorSurface"
+                        app:cardCornerRadius="@dimen/player_exit_radius"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="@dimen/md_spec_vector_24"
+                            android:layout_height="@dimen/md_spec_vector_24"
+                            android:layout_marginHorizontal="@dimen/md_spec_spacing_hor_8"
+                            android:layout_marginVertical="@dimen/md_spec_spacing_hor_8"
+                            android:src="@drawable/ic_round_arrow_back_24" />
+
+                    </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.LinearLayoutCompat

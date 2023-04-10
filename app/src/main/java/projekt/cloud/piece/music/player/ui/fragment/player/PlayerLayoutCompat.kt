@@ -20,16 +20,22 @@ import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.animation.doOnStart
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.TransitionManager
 import com.bumptech.glide.Glide
+import com.google.android.material.circularreveal.CircularRevealCompat
+import com.google.android.material.circularreveal.CircularRevealWidget.RevealInfo
+import com.google.android.material.circularreveal.cardview.CircularRevealCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.slider.Slider
 import com.google.android.material.slider.Slider.OnSliderTouchListener
+import kotlin.math.max
 import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
@@ -37,6 +43,7 @@ import projekt.cloud.piece.music.player.databinding.FragmentPlayerBinding
 import projekt.cloud.piece.music.player.util.CoroutineUtil.default
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 import projekt.cloud.piece.music.player.util.PlaybackStateManager
+import projekt.cloud.piece.music.player.util.ResourceUtil.getLong
 import projekt.cloud.piece.music.player.util.TimeUtil.durationStr
 import projekt.cloud.piece.music.player.util.TimeUtil.timeStr
 
@@ -74,6 +81,8 @@ abstract class PlayerLayoutCompat(binding: FragmentPlayerBinding): BaseLayoutCom
     override fun onSetupRequireWindowInsets() = { insets: Rect ->
         constantRoot.updatePadding(top = insets.top, bottom = insets.bottom)
     }
+
+    abstract fun setupExit(fragment: Fragment)
 
     fun setupSlider(
         transportControls: TransportControls, slidingListener: (Boolean) -> Unit
@@ -216,12 +225,65 @@ abstract class PlayerLayoutCompat(binding: FragmentPlayerBinding): BaseLayoutCom
     }
 
     @Keep
-    private class CompatImpl(binding: FragmentPlayerBinding): PlayerLayoutCompat(binding)
+    private class CompatImpl(binding: FragmentPlayerBinding): PlayerLayoutCompat(binding) {
+
+        private companion object {
+            const val CIRCULAR_REVEAL_START_RADIUS = 0F
+        }
+
+        private val exit: CircularRevealCardView
+            get() = binding.circularRevealCardViewExit!!
+
+        override fun setupExit(fragment: Fragment) {
+            exit.setOnClickListener {
+                fragment.requireActivity()
+                    .onBackPressedDispatcher
+                    .onBackPressed()
+            }
+            fragment.lifecycleScope.launchWhenResumed {
+                val maxRadius = max(exit.width / 2F, exit.height / 2F)
+
+                exit.revealInfo = RevealInfo(maxRadius, maxRadius, CIRCULAR_REVEAL_START_RADIUS)
+
+                CircularRevealCompat.createCircularReveal(exit, maxRadius, maxRadius, maxRadius)
+                    .setDuration(fragment.resources.getLong(R.integer.anim_duration_400) / 2)
+                    .apply { doOnStart { exit.isVisible = true } }
+                    .start()
+            }
+        }
+
+    }
 
     @Keep
-    private class W600dpImpl(binding: FragmentPlayerBinding): PlayerLayoutCompat(binding)
+    private class W600dpImpl(binding: FragmentPlayerBinding): PlayerLayoutCompat(binding) {
+
+        private val exit: AppCompatImageButton
+            get() = binding.appCompatImageButtonExit!!
+
+        override fun setupExit(fragment: Fragment) {
+            exit.setOnClickListener {
+                fragment.requireActivity()
+                    .onBackPressedDispatcher
+                    .onBackPressed()
+            }
+        }
+
+    }
 
     @Keep
-    private class W1240dpImpl(binding: FragmentPlayerBinding): PlayerLayoutCompat(binding)
+    private class W1240dpImpl(binding: FragmentPlayerBinding): PlayerLayoutCompat(binding) {
+
+        private val exit: AppCompatImageButton
+            get() = binding.appCompatImageButtonExit!!
+
+        override fun setupExit(fragment: Fragment) {
+            exit.setOnClickListener {
+                fragment.requireActivity()
+                    .onBackPressedDispatcher
+                    .onBackPressed()
+            }
+        }
+
+    }
 
 }

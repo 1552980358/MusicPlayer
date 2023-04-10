@@ -37,12 +37,35 @@
             android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraint_layout_top_bar"
+                android:layout_width="@dimen/constraint_fill"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/md_spec_spacing_ver_8"
+                android:layout_marginHorizontal="@dimen/md_spec_spacing_hor_16"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/constraint_layout_metadata">
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/app_compat_image_button_exit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_round_keyboard_arrow_down_24"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraint_layout_metadata"
                 android:layout_width="@dimen/constraint_fill"
                 android:layout_height="@dimen/constraint_fill"
                 android:layout_marginHorizontal="@dimen/md_spec_spacing_hor_16"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/constraint_layout_top_bar"
                 app:layout_constraintBottom_toTopOf="@id/slider_position">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -131,6 +154,7 @@
                 android:layout_marginHorizontal="@dimen/md_spec_spacing_hor_16"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/constraint_layout_metadata"
                 app:layout_constraintBottom_toTopOf="@id/constraint_layout_playback_control" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -138,9 +162,10 @@
                 android:layout_width="@dimen/constraint_fill"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/md_spec_spacing_hor_16"
-                android:layout_marginVertical="@dimen/md_spec_spacing_ver_8"
+                android:layout_marginBottom="@dimen/md_spec_spacing_ver_8"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/slider_position"
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
