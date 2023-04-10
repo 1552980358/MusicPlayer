@@ -1,8 +1,10 @@
 package projekt.cloud.piece.music.player.util
 
+import androidx.annotation.IntRange
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import projekt.cloud.piece.music.player.util.ResourceUtil.getLong
 
 object FragmentUtil {
 
@@ -35,5 +37,11 @@ object FragmentUtil {
         }
 
     }
+
+    fun Fragment.getInt(@IntRange resId: Int) =
+        resources.getInteger(resId)
+
+    fun Fragment.getLong(@IntRange resId: Int) =
+        resources.getLong(resId)
 
 }
