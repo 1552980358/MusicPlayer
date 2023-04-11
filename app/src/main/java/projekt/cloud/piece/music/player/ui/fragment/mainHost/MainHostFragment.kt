@@ -49,7 +49,7 @@ class MainHostFragment: BaseMultiDensityFragment<FragmentMainHostBinding, MainHo
                     ?.let { mediaControllerCompat ->
                         registerCallback(mediaControllerCompat)
                         layoutCompat.setupPlaybackControl(mediaControllerCompat.transportControls)
-                        layoutCompat.setupSwitchingToPlayer(mediaControllerCompat, findNavController())
+                        layoutCompat.setupNavigatingToPlayer(mediaControllerCompat, findNavController())
                     }
             }
         }

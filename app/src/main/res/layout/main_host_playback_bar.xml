@@ -24,44 +24,56 @@
         android:id="@+id/constraint_layout_playback_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/main_host_playback_bar_height"
-        android:paddingHorizontal="@dimen/md_spec_spacing_hor_16"
-        android:paddingVertical="@dimen/md_spec_spacing_ver_8"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         tools:showIn="@layout/fragment_main_host"
         style="?attr/bottomSheetStyle">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/shapeable_image_view_image"
-            android:layout_width="@dimen/main_host_playback_bar_image_size"
-            android:layout_height="@dimen/main_host_playback_bar_image_size"
-            android:src="@{cover}"
-            android:transitionName="@string/player_shared_element_cover"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:shapeAppearance="?attr/roundShapeableImageAppearance" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/material_text_view_title"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_layout_playback_bar_container"
             android:layout_width="@dimen/constraint_fill"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/md_spec_spacing_hor_16"
-            android:text="@{title + ` - ` + artist}"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-            app:layout_constraintStart_toEndOf="@id/shapeable_image_view_image"
-            app:layout_constraintEnd_toStartOf="@id/app_compat_image_button_play_control"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/app_compat_image_button_play_control"
-            android:layout_width="@dimen/md_spec_trailing_24"
-            android:layout_height="@dimen/md_spec_trailing_24"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            app:layout_constraintStart_toEndOf="@id/material_text_view_title"
+            android:layout_height="@dimen/constraint_fill"
+            android:background="?attr/selectableItemBackground"
+            android:paddingHorizontal="@dimen/md_spec_spacing_hor_16"
+            android:paddingVertical="@dimen/md_spec_spacing_ver_8"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/shapeable_image_view_image"
+                android:layout_width="@dimen/main_host_playback_bar_image_size"
+                android:layout_height="@dimen/main_host_playback_bar_image_size"
+                android:src="@{cover}"
+                android:transitionName="@string/player_shared_element_cover"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:shapeAppearance="?attr/roundShapeableImageAppearance" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/material_text_view_title"
+                android:layout_width="@dimen/constraint_fill"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/md_spec_spacing_hor_16"
+                android:text="@{title + ` - ` + artist}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                app:layout_constraintStart_toEndOf="@id/shapeable_image_view_image"
+                app:layout_constraintEnd_toStartOf="@id/app_compat_image_button_play_control"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/app_compat_image_button_play_control"
+                android:layout_width="@dimen/md_spec_trailing_24"
+                android:layout_height="@dimen/md_spec_trailing_24"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:layout_constraintStart_toEndOf="@id/material_text_view_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

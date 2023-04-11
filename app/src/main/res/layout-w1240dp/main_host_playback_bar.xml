@@ -25,8 +25,10 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/material_card_view_playback_bar_container"
             android:layout_width="@dimen/constraint_fill"
             android:layout_height="@dimen/main_host_playback_bar_height"
+            android:foreground="?attr/selectableItemBackground"
             app:cardBackgroundColor="?attr/colorSurface"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

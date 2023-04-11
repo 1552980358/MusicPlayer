@@ -19,6 +19,7 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.view.View
+import android.view.View.OnClickListener
 import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatImageView
@@ -40,6 +41,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigationrail.NavigationRailView
@@ -113,8 +115,14 @@ abstract class MainHostLayoutCompat(
         }
     }
 
-    fun setupSwitchingToPlayer(mediaControllerCompat: MediaControllerCompat, navController: NavController) {
-        cover.setOnClickListener {
+    abstract fun setupNavigatingToPlayer(
+        mediaControllerCompat: MediaControllerCompat, navController: NavController
+    )
+
+    protected fun navigateToPlayerListener(
+        mediaControllerCompat: MediaControllerCompat, navController: NavController
+    ): OnClickListener {
+        return OnClickListener {
             mediaControllerCompat.metadata?.let { mediaMetadataCompat ->
                 navController.navigate(
                     MainHostFragmentDirections.toPlayer(
@@ -207,8 +215,10 @@ abstract class MainHostLayoutCompat(
             get() = binding.bottomNavigationView!!
         private val bottomSheet: ConstraintLayout
             get() = playbackBar.constraintLayoutPlaybackBar
+        private val playbackBarContainer: ConstraintLayout
+            get() = playbackBar.constraintLayoutPlaybackBarContainer!!
 
-        private var _bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>? = null
+                private var _bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>? = null
         private val bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
             get() = _bottomSheetBehavior!!
 
@@ -277,6 +287,14 @@ abstract class MainHostLayoutCompat(
             }
         }
 
+        override fun setupNavigatingToPlayer(
+            mediaControllerCompat: MediaControllerCompat, navController: NavController
+        ) {
+            playbackBarContainer.setOnClickListener(
+                navigateToPlayerListener(mediaControllerCompat, navController)
+            )
+        }
+
         @Synchronized
         override fun onPlaybackStateChanged(
             context: Context, @PlaybackStateCompat.State state: Int, requireAnimation: Boolean
@@ -317,6 +335,8 @@ abstract class MainHostLayoutCompat(
             get() = binding.navigationRailView!!
         private val next: AppCompatImageButton
             get() = playbackBar.appCompatImageButtonNext!!
+        private val playbackBarContainer: MaterialCardView
+            get() = playbackBar.materialCardViewPlaybackBarContainer!!
 
         val originSet = ConstraintSet().apply {
             clone(constraintLayout)
@@ -347,6 +367,14 @@ abstract class MainHostLayoutCompat(
         override fun setupPlaybackControl(transportControls: TransportControls) {
             super.setupPlaybackControl(transportControls)
             next.setOnClickListener { transportControls.skipToNext() }
+        }
+
+        override fun setupNavigatingToPlayer(
+            mediaControllerCompat: MediaControllerCompat, navController: NavController
+        ) {
+            playbackBarContainer.setOnClickListener(
+                navigateToPlayerListener(mediaControllerCompat, navController)
+            )
         }
 
         private var isPlaybackBarShown = false
@@ -392,6 +420,8 @@ abstract class MainHostLayoutCompat(
             get() = playbackBar.appCompatImageButtonPrev!!
         private val next: AppCompatImageButton
             get() = playbackBar.appCompatImageButtonNext!!
+        private val playbackBarContainer: MaterialCardView
+            get() = playbackBar.materialCardViewPlaybackBarContainer!!
 
         val originSet = ConstraintSet().apply {
             clone(constraintLayout)
@@ -423,6 +453,14 @@ abstract class MainHostLayoutCompat(
             super.setupPlaybackControl(transportControls)
             prev.setOnClickListener { transportControls.skipToPrevious() }
             next.setOnClickListener { transportControls.skipToNext() }
+        }
+
+        override fun setupNavigatingToPlayer(
+            mediaControllerCompat: MediaControllerCompat, navController: NavController
+        ) {
+            playbackBarContainer.setOnClickListener(
+                navigateToPlayerListener(mediaControllerCompat, navController)
+            )
         }
 
         private var isPlaybackBarShown = false
