@@ -38,7 +38,7 @@ jobs:
         continue-on-error: true
         run: |
           mkdir -p ${{ env.sdk_root }}
-          yes | ${{ env.cmd_line_tools_root }}/bin/sdkmanager --sdk_root=${{ env.sdk_root }} --licenses
+          yes 2>/dev/null | ${{ env.cmd_line_tools_root }}/bin/sdkmanager --sdk_root=${{ env.sdk_root }} --licenses
         shell: bash
 
       - name: Setup File 'local.properties'
