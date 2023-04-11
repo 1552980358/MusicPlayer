@@ -224,6 +224,7 @@
                                     android:src="@drawable/ic_round_play_24"
                                     app:tint="?attr/colorOnPrimaryContainer"
                                     app:elevation="0dp"
+                                    app:pressedTranslationZ="0dp"
                                     app:layout_constraintStart_toEndOf="@id/app_compat_image_button_prev"
                                     app:layout_constraintEnd_toStartOf="@id/app_compat_image_button_next"
                                     app:layout_constraintEnd_toEndOf="parent"
