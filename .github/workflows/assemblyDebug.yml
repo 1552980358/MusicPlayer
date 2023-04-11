@@ -30,20 +30,15 @@ jobs:
           unzip ./command_line_tools.zip
           
           echo "ANDROID_HOME=./cmdline-tools/sdk" >> $GITHUB_ENV
+          echo "cmd_line_tools_root=./cmdline-tools" >> $GITHUB_ENV
           echo "sdk_root=./cmdline-tools/sdk" >> $GITHUB_ENV
         shell: bash
 
       - name: Setup Android Build Tool
+        continue-on-error: true
         run: |
-          SDK_LICENSES_PATH=${{ env.sdk_root }}/licenses
-          mkdir -p $SDK_LICENSES_PATH
-          # Accept all licenses
-          echo -e "\n601085b94cd77f0b54ff86406957099ebe79c4d6" > $SDK_LICENSES_PATH/android-googletv-license
-          echo -e "\n859f317696f67ef3d7f30a50a5560e7834b43903" > $SDK_LICENSES_PATH/android-sdk-arm-dbt-license
-          echo -e "\n24333f8a63b6825ea9c5514f83c2829b004d1fee" > $SDK_LICENSES_PATH/android-sdk-license
-          echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > $SDK_LICENSES_PATH/android-sdk-preview-license
-          echo -e "\n33b6a2b64607f11b759f320ef9dff4ae5c47d97a" > $SDK_LICENSES_PATH/google-gdk-license
-          echo -e "\ne9acab5b5fbb560a72cfaecce8946896ff6aab9d" > $SDK_LICENSES_PATH/mips-android-sysimage-license
+          mkdir -p ${{ env.sdk_root }}
+          yes | ${{ env.cmd_line_tools_root }}/bin/sdkmanager --sdk_root=${{ env.sdk_root }} --licenses
         shell: bash
 
       - name: Setup File 'local.properties'
