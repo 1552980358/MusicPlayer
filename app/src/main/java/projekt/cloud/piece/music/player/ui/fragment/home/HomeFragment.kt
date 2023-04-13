@@ -3,7 +3,6 @@ package projekt.cloud.piece.music.player.ui.fragment.home
 import android.os.Bundle
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
-import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import kotlin.reflect.KClass
@@ -27,9 +26,7 @@ class HomeFragment: BaseMultiDensityFragment<FragmentHomeBinding, HomeLayoutComp
     override val layoutCompatClass: KClass<HomeLayoutCompat>
         get() = HomeLayoutCompat::class
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun onSetupLayoutCompat(layoutCompat: HomeLayoutCompat, savedInstanceState: Bundle?) {
         layoutCompat.setupRecyclerViewAction(this)
         layoutCompat.setupRecyclerViewBottomMargin(this)
 
@@ -54,7 +51,6 @@ class HomeFragment: BaseMultiDensityFragment<FragmentHomeBinding, HomeLayoutComp
                 }
             }
         }
-
     }
 
     private var job: Job? = null

@@ -49,7 +49,7 @@ class PermissionFragment: BaseFragment<FragmentPermissionBinding>(), View.OnClic
 
     private lateinit var requestPermission: ActivityResultLauncher<Array<String>>
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onSetupBinding(binding: FragmentPermissionBinding, savedInstanceState: Bundle?) {
         requireContext().requireWindowInsets {  rect ->
             appBarLayout.updatePadding(top = rect.top)
             container.updatePadding(bottom = rect.bottom)

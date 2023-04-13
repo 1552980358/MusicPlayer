@@ -13,7 +13,6 @@ import android.provider.MediaStore.Audio.AudioColumns.TITLE
 import android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 import android.provider.MediaStore.Audio.Media.IS_MUSIC
 import android.util.TypedValue
-import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.edit
 import androidx.core.view.updatePadding
@@ -51,7 +50,7 @@ class QueryMediaFragment: BaseFragment<FragmentQueryMediaBinding>() {
     private val finish: MaterialButton
         get() = binding.materialButtonFinish
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onSetupBinding(binding: FragmentQueryMediaBinding, savedInstanceState: Bundle?) {
         var isComplete = false
 
         requireContext().requireWindowInsets { insets ->

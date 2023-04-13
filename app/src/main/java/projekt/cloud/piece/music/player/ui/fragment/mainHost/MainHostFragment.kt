@@ -5,7 +5,6 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
-import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -31,8 +30,7 @@ class MainHostFragment: BaseMultiDensityFragment<FragmentMainHostBinding, MainHo
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onSetupLayoutCompat(layoutCompat: MainHostLayoutCompat, savedInstanceState: Bundle?) {
         val childNavController = binding.fragmentContainerView
             .getFragment<NavHostFragment>()
             .navController

@@ -13,7 +13,6 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
-import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
@@ -58,9 +57,7 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun onSetupLayoutCompat(layoutCompat: PlayerLayoutCompat, savedInstanceState: Bundle?) {
         layoutCompat.setupExit(this)
         layoutCompat.setupShuffleMode()
 
