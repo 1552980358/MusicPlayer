@@ -35,7 +35,6 @@ class MainHostFragment: BaseMultiDensityFragment<FragmentMainHostBinding, MainHo
             .getFragment<NavHostFragment>()
             .navController
 
-        layoutCompat.setupColor(requireContext())
         layoutCompat.setupNavigation(childNavController)
         layoutCompat.setupNavigationItems(this, childNavController)
         layoutCompat.setupPlaybackBar(this, childNavController)

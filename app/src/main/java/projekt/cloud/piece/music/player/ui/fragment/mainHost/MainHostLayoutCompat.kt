@@ -20,6 +20,7 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.view.View
 import android.view.View.OnClickListener
+import androidx.annotation.ColorInt
 import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatImageView
@@ -42,11 +43,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCa
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.elevation.SurfaceColors
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigationrail.NavigationRailView
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
+import projekt.cloud.piece.music.player.base.interfaces.SurfaceColorsInterface
 import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
 import projekt.cloud.piece.music.player.databinding.FragmentMainHostBinding
 import projekt.cloud.piece.music.player.databinding.MainHostPlaybackBarBinding
@@ -54,7 +55,7 @@ import projekt.cloud.piece.music.player.ui.fragment.home.HomeViewModel
 
 abstract class MainHostLayoutCompat(
     binding: FragmentMainHostBinding
-): BaseLayoutCompat<FragmentMainHostBinding>(binding) {
+): BaseLayoutCompat<FragmentMainHostBinding>(binding), SurfaceColorsInterface {
 
     private companion object {
         const val STATE_UNKNOWN = -1
@@ -71,13 +72,6 @@ abstract class MainHostLayoutCompat(
         get() = playbackBar.appCompatImageButtonPlayControl
     private val cover: AppCompatImageView
         get() = playbackBar.shapeableImageViewImage
-
-    /**
-     * [setupColor]
-     * @param context [Context]
-     * For W600dp and W1240dp
-     **/
-    open fun setupColor(context: Context) = Unit
 
     /**
      * [setupNavigation]
@@ -115,6 +109,9 @@ abstract class MainHostLayoutCompat(
             }
         }
     }
+
+    override val requireSurface2Color: Boolean
+        get() = true
 
     abstract fun setupNavigatingToPlayer(
         mediaControllerCompat: MediaControllerCompat, navController: NavController
@@ -210,7 +207,9 @@ abstract class MainHostLayoutCompat(
     }
 
     @Keep
-    private class CompatImpl(binding: FragmentMainHostBinding): MainHostLayoutCompat(binding) {
+    private class CompatImpl(
+        binding: FragmentMainHostBinding
+    ): MainHostLayoutCompat(binding) {
 
         private val bottomNavigationView: BottomNavigationView
             get() = binding.bottomNavigationView!!
@@ -241,14 +240,15 @@ abstract class MainHostLayoutCompat(
             }
         }
 
+        override fun onSurface2ColorObtained(@ColorInt color: Int) {
+            bottomSheet.setBackgroundColor(color)
+        }
+
         override fun setupPlaybackBar(fragment: Fragment, navController: NavController) {
             val mainHostViewModel: MainHostViewModel by fragment.viewModels(
                 { navController.getViewModelStoreOwner(R.id.nav_graph_main_host) }
             )
 
-            bottomSheet.setBackgroundColor(
-                SurfaceColors.SURFACE_2.getColor(fragment.requireContext())
-            )
             @Suppress("UNCHECKED_CAST")
             _bottomSheetBehavior = (bottomSheet.layoutParams as CoordinatorLayout.LayoutParams)
                 .behavior as BottomSheetBehavior<ConstraintLayout>
@@ -354,10 +354,9 @@ abstract class MainHostLayoutCompat(
             constraintLayout.updatePadding(bottom = insets.bottom)
         }
 
-        override fun setupColor(context: Context) {
-            val backgroundColor = SurfaceColors.SURFACE_2.getColor(context)
-            navigationRailView.setBackgroundColor(backgroundColor)
-            constraintLayout.setBackgroundColor(backgroundColor)
+        override fun onSurface2ColorObtained(@ColorInt color: Int) {
+            navigationRailView.setBackgroundColor(color)
+            constraintLayout.setBackgroundColor(color)
         }
 
         override fun setupNavigation(navController: NavController) {
@@ -438,10 +437,9 @@ abstract class MainHostLayoutCompat(
             constraintLayout.updatePadding(bottom = insets.bottom)
         }
 
-        override fun setupColor(context: Context) {
-            val backgroundColor = SurfaceColors.SURFACE_2.getColor(context)
-            constraintLayout.setBackgroundColor(backgroundColor)
-            navigationView.setBackgroundColor(backgroundColor)
+        override fun onSurface2ColorObtained(@ColorInt color: Int) {
+            constraintLayout.setBackgroundColor(color)
+            navigationView.setBackgroundColor(color)
         }
 
         override fun setupNavigation(navController: NavController) {
