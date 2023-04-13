@@ -5,6 +5,7 @@ import androidx.annotation.CallSuper
 import androidx.viewbinding.ViewBinding
 import kotlin.reflect.KClass
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat.BaseLayoutCompatUtil.reflectLayoutCompat
+import projekt.cloud.piece.music.player.base.interfaces.SurfaceColorsInterface
 import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
 import projekt.cloud.piece.music.player.util.FragmentUtil.viewLifecycleProperty
 import projekt.cloud.piece.music.player.util.ScreenDensity.ScreenDensityUtil.screenDensity
@@ -36,8 +37,13 @@ abstract class BaseMultiDensityFragment<VB: ViewBinding, LC: BaseLayoutCompat<VB
     }
 
     protected open fun onSetupLayoutCompatInterfaces(layoutCompat: LC) {
-        if (layoutCompat is WindowInsetsInterface) {
-            layoutCompat.requireWindowInset(requireContext())
+        requireContext().let { context ->
+            if (layoutCompat is WindowInsetsInterface) {
+                layoutCompat.requireWindowInset(context)
+            }
+            if (layoutCompat is SurfaceColorsInterface) {
+                layoutCompat.requireSurfaceColors(context)
+            }
         }
     }
 
