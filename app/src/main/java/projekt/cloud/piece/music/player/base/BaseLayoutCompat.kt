@@ -1,6 +1,5 @@
 package projekt.cloud.piece.music.player.base
 
-import android.graphics.Rect
 import androidx.viewbinding.ViewBinding
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
@@ -9,8 +8,6 @@ import projekt.cloud.piece.music.player.util.ScreenDensity
 import projekt.cloud.piece.music.player.util.ScreenDensity.COMPACT
 import projekt.cloud.piece.music.player.util.ScreenDensity.EXPANDED
 import projekt.cloud.piece.music.player.util.ScreenDensity.MEDIUM
-
-typealias RequireWindowInsetsListener = (Rect) -> Unit
 
 abstract class BaseLayoutCompat<VB: ViewBinding>(private var _binding: VB?) {
 
@@ -55,13 +52,6 @@ abstract class BaseLayoutCompat<VB: ViewBinding>(private var _binding: VB?) {
         }
 
     }
-
-    open val requireWindowInsets: Boolean
-        get() = false
-
-    val windowInsetsRequireListener: RequireWindowInsetsListener?
-        get() = onSetupRequireWindowInsets()
-    protected open fun onSetupRequireWindowInsets(): RequireWindowInsetsListener? = null
 
     fun onDestroy() {
         _binding = null
