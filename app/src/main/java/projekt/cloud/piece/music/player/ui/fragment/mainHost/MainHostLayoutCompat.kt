@@ -47,6 +47,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigationrail.NavigationRailView
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
+import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
 import projekt.cloud.piece.music.player.databinding.FragmentMainHostBinding
 import projekt.cloud.piece.music.player.databinding.MainHostPlaybackBarBinding
 import projekt.cloud.piece.music.player.ui.fragment.home.HomeViewModel
@@ -329,7 +330,9 @@ abstract class MainHostLayoutCompat(
     }
 
     @Keep
-    private class W600dpImpl(binding: FragmentMainHostBinding): MainHostLayoutCompat(binding) {
+    private class W600dpImpl(
+        binding: FragmentMainHostBinding
+    ): MainHostLayoutCompat(binding), WindowInsetsInterface {
 
         private val navigationRailView: NavigationRailView
             get() = binding.navigationRailView!!
@@ -346,9 +349,6 @@ abstract class MainHostLayoutCompat(
             clone(constraintLayout)
             setVisibility(R.id.main_host_playback_bar, VISIBLE)
         }
-
-        override val requireWindowInsets: Boolean
-            get() = true
 
         override fun onSetupRequireWindowInsets() = { insets: Rect ->
             constraintLayout.updatePadding(bottom = insets.bottom)
@@ -412,7 +412,9 @@ abstract class MainHostLayoutCompat(
     }
 
     @Keep
-    private class W1240dpImpl(binding: FragmentMainHostBinding): MainHostLayoutCompat(binding) {
+    private class W1240dpImpl(
+        binding: FragmentMainHostBinding
+    ): MainHostLayoutCompat(binding), WindowInsetsInterface {
 
         private val navigationView: NavigationView
             get() = binding.navigationView!!
@@ -431,9 +433,6 @@ abstract class MainHostLayoutCompat(
             clone(constraintLayout)
             setVisibility(R.id.main_host_playback_bar, VISIBLE)
         }
-
-        override val requireWindowInsets: Boolean
-            get() = true
 
         override fun onSetupRequireWindowInsets() = { insets: Rect ->
             constraintLayout.updatePadding(bottom = insets.bottom)

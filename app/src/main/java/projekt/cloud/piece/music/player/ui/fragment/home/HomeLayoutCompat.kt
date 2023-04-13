@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.google.android.material.appbar.AppBarLayout
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
+import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
 import projekt.cloud.piece.music.player.databinding.FragmentHomeBinding
 import projekt.cloud.piece.music.player.ui.fragment.mainHost.MainHostViewModel
 import projekt.cloud.piece.music.player.util.ViewUtil.canScrollUp
@@ -51,13 +52,12 @@ abstract class HomeLayoutCompat(binding: FragmentHomeBinding): BaseLayoutCompat<
     open fun setupRecyclerViewBottomMargin(fragment: Fragment) = Unit
 
     @Keep
-    private class CompatImpl(binding: FragmentHomeBinding): HomeLayoutCompat(binding) {
+    private class CompatImpl(
+        binding: FragmentHomeBinding
+    ): HomeLayoutCompat(binding), WindowInsetsInterface {
 
         private val appBarLayout: AppBarLayout
             get() = binding.appBarLayout!!
-
-        override val requireWindowInsets: Boolean
-            get() = true
 
         override fun onSetupRequireWindowInsets() = { insets: Rect ->
             appBarLayout.updatePadding(top = insets.top)

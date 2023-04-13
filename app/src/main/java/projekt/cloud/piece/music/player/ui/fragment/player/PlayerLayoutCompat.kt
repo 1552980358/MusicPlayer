@@ -39,6 +39,7 @@ import kotlin.math.max
 import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
+import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
 import projekt.cloud.piece.music.player.databinding.FragmentPlayerBinding
 import projekt.cloud.piece.music.player.util.CoroutineUtil.default
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
@@ -47,7 +48,9 @@ import projekt.cloud.piece.music.player.util.ResourceUtil.getLong
 import projekt.cloud.piece.music.player.util.TimeUtil.durationStr
 import projekt.cloud.piece.music.player.util.TimeUtil.timeStr
 
-abstract class PlayerLayoutCompat(binding: FragmentPlayerBinding): BaseLayoutCompat<FragmentPlayerBinding>(binding) {
+abstract class PlayerLayoutCompat(
+    binding: FragmentPlayerBinding
+): BaseLayoutCompat<FragmentPlayerBinding>(binding), WindowInsetsInterface {
 
     private val constantRoot: ConstraintLayout
         get() = binding.constraintLayoutRoot
@@ -74,9 +77,6 @@ abstract class PlayerLayoutCompat(binding: FragmentPlayerBinding): BaseLayoutCom
         const val REPEAT_DISABLED_ALPHA = 0.5F
         const val SHUFFLE_DISABLED_ALPHA = 0.5F
     }
-
-    override val requireWindowInsets: Boolean
-        get() = true
 
     override fun onSetupRequireWindowInsets() = { insets: Rect ->
         constantRoot.updatePadding(top = insets.top, bottom = insets.bottom)
