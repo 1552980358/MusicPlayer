@@ -7,6 +7,7 @@ import android.Manifest.permission.READ_MEDIA_AUDIO
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -25,10 +26,10 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicatorSpec
 import com.google.android.material.progressindicator.IndeterminateDrawable
 import projekt.cloud.piece.music.player.base.BaseFragment
+import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
 import projekt.cloud.piece.music.player.databinding.FragmentPermissionBinding
-import projekt.cloud.piece.music.player.util.ContextUtil.requireWindowInsets
 
-class PermissionFragment: BaseFragment<FragmentPermissionBinding>(), View.OnClickListener {
+class PermissionFragment: BaseFragment<FragmentPermissionBinding>(), WindowInsetsInterface, View.OnClickListener {
 
     private companion object {
         const val TAG = "PermissionFragment"
@@ -49,11 +50,12 @@ class PermissionFragment: BaseFragment<FragmentPermissionBinding>(), View.OnClic
 
     private lateinit var requestPermission: ActivityResultLauncher<Array<String>>
 
+    override fun onSetupRequireWindowInsets() = { insets: Rect ->
+        appBarLayout.updatePadding(top = insets.top)
+        container.updatePadding(bottom = insets.bottom)
+    }
+
     override fun onSetupBinding(binding: FragmentPermissionBinding, savedInstanceState: Bundle?) {
-        requireContext().requireWindowInsets {  rect ->
-            appBarLayout.updatePadding(top = rect.top)
-            container.updatePadding(bottom = rect.bottom)
-        }
 
         requestPermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
             Log.e(TAG, "RequestMultiplePermissions() => $results")

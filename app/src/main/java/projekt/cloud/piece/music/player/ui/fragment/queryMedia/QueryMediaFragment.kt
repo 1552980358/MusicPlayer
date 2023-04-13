@@ -1,6 +1,7 @@
 package projekt.cloud.piece.music.player.ui.fragment.queryMedia
 
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.provider.MediaStore.Audio.AudioColumns.ARTIST
 import android.provider.MediaStore.Audio.AudioColumns.ARTIST_ID
@@ -25,17 +26,17 @@ import com.google.android.material.textview.MaterialTextView
 import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseFragment
+import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
 import projekt.cloud.piece.music.player.databinding.FragmentQueryMediaBinding
 import projekt.cloud.piece.music.player.storage.audio.AudioDatabase
 import projekt.cloud.piece.music.player.storage.audio.AudioDatabase.AudioDatabaseUtil.audioDatabase
 import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase.RuntimeDatabaseUtil.runtimeDatabase
 import projekt.cloud.piece.music.player.ui.activity.main.MainActivity
-import projekt.cloud.piece.music.player.util.ContextUtil.requireWindowInsets
 import projekt.cloud.piece.music.player.util.CoroutineUtil.default
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 import projekt.cloud.piece.music.player.util.PreferenceUtil.defaultSharedPreference
 
-class QueryMediaFragment: BaseFragment<FragmentQueryMediaBinding>() {
+class QueryMediaFragment: BaseFragment<FragmentQueryMediaBinding>(), WindowInsetsInterface {
 
     override val viewBindingClass: Class<FragmentQueryMediaBinding>
         get() = FragmentQueryMediaBinding::class.java
@@ -50,13 +51,13 @@ class QueryMediaFragment: BaseFragment<FragmentQueryMediaBinding>() {
     private val finish: MaterialButton
         get() = binding.materialButtonFinish
 
+    override fun onSetupRequireWindowInsets() = { insets: Rect ->
+        container.updatePadding(bottom = insets.bottom)
+        appBarLayout.updatePadding(top = insets.top)
+    }
+
     override fun onSetupBinding(binding: FragmentQueryMediaBinding, savedInstanceState: Bundle?) {
         var isComplete = false
-
-        requireContext().requireWindowInsets { insets ->
-            container.updatePadding(bottom = insets.bottom)
-            appBarLayout.updatePadding(top = insets.top)
-        }
 
         with(finish) {
             textScaleX = 0F
