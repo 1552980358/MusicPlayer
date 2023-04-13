@@ -1,13 +1,11 @@
 package projekt.cloud.piece.music.player.base
 
-import android.graphics.Rect
 import android.os.Bundle
-import android.view.View
+import androidx.annotation.CallSuper
 import androidx.viewbinding.ViewBinding
 import kotlin.reflect.KClass
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat.BaseLayoutCompatUtil.reflectLayoutCompat
 import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
-import projekt.cloud.piece.music.player.util.ContextUtil.requireWindowInsets
 import projekt.cloud.piece.music.player.util.FragmentUtil.viewLifecycleProperty
 import projekt.cloud.piece.music.player.util.ScreenDensity.ScreenDensityUtil.screenDensity
 
@@ -18,16 +16,34 @@ abstract class BaseMultiDensityFragment<VB: ViewBinding, LC: BaseLayoutCompat<VB
 
     protected abstract val layoutCompatClass: KClass<LC>
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        layoutCompat = binding.reflectLayoutCompat(layoutCompatClass, requireActivity().screenDensity)
-        val layoutCompat = layoutCompat
+    /**
+     * Don't override this,
+     * go and override [onSetupLayoutCompat]
+     **/
+    @CallSuper
+    override fun onSetupBinding(binding: VB, savedInstanceState: Bundle?) {
+        onCreateLayoutCompat(binding)
+        onSetupLayoutCompatInterfaces(layoutCompat)
+        onSetupLayoutCompat(layoutCompat, savedInstanceState)
+    }
+
+    private fun onCreateLayoutCompat(binding: VB) {
+        layoutCompat = createLayoutCompat(binding)
+    }
+
+    private fun createLayoutCompat(binding: VB): LC {
+        return binding.reflectLayoutCompat(layoutCompatClass, requireActivity().screenDensity)
+    }
+
+    protected open fun onSetupLayoutCompatInterfaces(layoutCompat: LC) {
         if (layoutCompat is WindowInsetsInterface) {
-            requireWindowInsets(layoutCompat.windowInsetsRequireListener)
+            layoutCompat.requireWindowInset(requireContext())
         }
     }
 
-    private fun requireWindowInsets(listener: (Rect) -> Unit) {
-        requireContext().requireWindowInsets(listener)
-    }
+    /**
+     * Set up at here, super is not required to call
+     **/
+    protected open fun onSetupLayoutCompat(layoutCompat: LC, savedInstanceState: Bundle?) = Unit
 
 }
