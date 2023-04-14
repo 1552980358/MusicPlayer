@@ -22,6 +22,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.animation.doOnStart
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnAttach
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
@@ -241,15 +242,20 @@ abstract class PlayerLayoutCompat(
                     .onBackPressed()
             }
             fragment.lifecycleScope.launchWhenResumed {
-                val maxRadius = max(exit.width / 2F, exit.height / 2F)
-
-                exit.revealInfo = RevealInfo(maxRadius, maxRadius, CIRCULAR_REVEAL_START_RADIUS)
-
-                CircularRevealCompat.createCircularReveal(exit, maxRadius, maxRadius, maxRadius)
-                    .setDuration(fragment.resources.getLong(R.integer.anim_duration_400) / 2)
-                    .apply { doOnStart { exit.isVisible = true } }
-                    .start()
+                when {
+                    exit.isAttachedToWindow -> startExitButtonAnimation(fragment)
+                    else -> exit.doOnAttach { startExitButtonAnimation(fragment) }
+                }
             }
+        }
+
+        private fun startExitButtonAnimation(fragment: Fragment) {
+            val maxRadius = max(exit.width / 2F, exit.height / 2F)
+            exit.revealInfo = RevealInfo(maxRadius, maxRadius, CIRCULAR_REVEAL_START_RADIUS)
+            CircularRevealCompat.createCircularReveal(exit, maxRadius, maxRadius, maxRadius)
+                .setDuration(fragment.resources.getLong(R.integer.anim_duration_400) / 2)
+                .apply { doOnStart { exit.isVisible = true } }
+                .start()
         }
 
     }
