@@ -4,4 +4,7 @@
     <dimen name="main_host_playback_bar_spacing">8dp</dimen>
     <dimen name="main_host_playback_bar_image_size">48dp</dimen>
 
+    <dimen name="library_start_width">360dp</dimen>
+    <dimen name="library_end_width">480dp</dimen>
+
 </resources>

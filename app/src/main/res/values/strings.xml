@@ -26,4 +26,10 @@
 
     <string name="player_shared_element_cover">cover_image</string>
 
+    <string-array name="library_tab_labels">
+        <item>Artist</item>
+        <item>Album</item>
+        <item>Playlist</item>
+    </string-array>
+
 </resources>

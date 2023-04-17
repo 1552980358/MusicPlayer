@@ -10,7 +10,7 @@
         android:title="@string/nav_main_host_home" />
 
     <item
-        android:id="@+id/music_library"
+        android:id="@+id/library"
         android:checkable="true"
         android:enabled="true"
         android:icon="@drawable/ic_library_music_24"
