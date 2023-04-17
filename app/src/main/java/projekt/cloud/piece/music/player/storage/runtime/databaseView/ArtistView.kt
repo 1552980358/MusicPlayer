@@ -37,4 +37,12 @@ data class ArtistView(
         const val ARTIST_VIEW_COLUMN_DURATION = "duration"
     }
 
+    @Ignore
+    private var _albums: List<String>? = null
+    val albums: List<String>
+        get() = _albums!!
+    fun setAlbums(albums: List<String>?) {
+        _albums = albums
+    }
+
 }
