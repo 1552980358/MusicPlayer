@@ -2,6 +2,7 @@ package projekt.cloud.piece.music.player.ui.fragment.library
 
 import android.content.res.Resources
 import androidx.annotation.Keep
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -13,12 +14,19 @@ import projekt.cloud.piece.music.player.databinding.FragmentLibraryBinding
 
 abstract class LibraryLayoutCompat(
     binding: FragmentLibraryBinding
-): BaseLayoutCompat<FragmentLibraryBinding>(binding) {
+): BaseLayoutCompat<FragmentLibraryBinding>(binding), SurfaceColorsInterface {
 
-    protected val tabLayout: TabLayout
+    private val tabLayout: TabLayout
         get() = binding.tabLayout
     private val viewPager2: ViewPager2
         get() = binding.viewPager2
+
+    override val requireSurface2Color: Boolean
+        get() = true
+
+    override fun onSurface2ColorObtained(color: Int) {
+        tabLayout.setBackgroundColor(color)
+    }
 
     fun setupTabLayout(resources: Resources) {
         resources.getStringArray(R.array.library_tab_labels).let { label ->
@@ -33,21 +41,20 @@ abstract class LibraryLayoutCompat(
     }
 
     @Keep
-    private class CompatImpl(binding: FragmentLibraryBinding): LibraryLayoutCompat(binding)
+    private class CompatImpl(binding: FragmentLibraryBinding): LibraryLayoutCompat(binding) {
 
-    @Keep
-    private class W600dpImpl(
-        binding: FragmentLibraryBinding
-    ): LibraryLayoutCompat(binding), SurfaceColorsInterface {
-
-        override val requireSurface2Color: Boolean
-            get() = true
+        private val root: ConstraintLayout
+            get() = binding.constraintLayoutRoot
 
         override fun onSurface2ColorObtained(color: Int) {
-            tabLayout.setBackgroundColor(color)
+            super.onSurface2ColorObtained(color)
+            root.setBackgroundColor(color)
         }
 
     }
+
+    @Keep
+    private class W600dpImpl(binding: FragmentLibraryBinding): LibraryLayoutCompat(binding)
 
     @Keep
     private class W1240dpImpl(binding: FragmentLibraryBinding): LibraryLayoutCompat(binding)
