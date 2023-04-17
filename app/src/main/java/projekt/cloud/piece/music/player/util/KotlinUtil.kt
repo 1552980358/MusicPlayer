@@ -7,6 +7,6 @@ object KotlinUtil {
     fun <T> Any.to(): T = this as T
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> Any.tryTo(): T? = this as? T
+    fun <T> Any?.tryTo(): T? = this as? T
 
 }
