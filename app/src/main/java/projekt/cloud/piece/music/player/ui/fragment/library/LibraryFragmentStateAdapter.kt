@@ -2,10 +2,13 @@ package projekt.cloud.piece.music.player.ui.fragment.library
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import projekt.cloud.piece.music.player.ui.fragment.library.artist.ArtistLibraryFragment
 
 class LibraryFragmentStateAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
 
-    private val fragments = listOf<Fragment>()
+    private val fragments = listOf<Fragment>(
+        ArtistLibraryFragment()
+    )
 
     override fun getItemCount(): Int {
         return fragments.size

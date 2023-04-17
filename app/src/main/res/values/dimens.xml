@@ -2,6 +2,7 @@
     <dimen name="linear_fill">0dp</dimen>
     <dimen name="constraint_fill">0dp</dimen>
 
+    <dimen name="md_spec_spacing_hor_4">4dp</dimen>
     <dimen name="md_spec_spacing_hor_8">8dp</dimen>
     <dimen name="md_spec_spacing_hor_16">16dp</dimen>
     <dimen name="md_spec_spacing_hor_24">24dp</dimen>
@@ -11,6 +12,7 @@
     <dimen name="md_spec_spacing_ver_16">16dp</dimen>
 
     <dimen name="md_spec_list_72">72dp</dimen>
+    <dimen name="md_spec_size_image_40">40dp</dimen>
     <dimen name="md_spec_size_image_56">56dp</dimen>
     <dimen name="md_spec_trailing_24">@dimen/md_spec_vector_24</dimen>
     <dimen name="md_spec_vector_24">24dp</dimen>
