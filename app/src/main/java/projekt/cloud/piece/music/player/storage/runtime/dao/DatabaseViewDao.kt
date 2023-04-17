@@ -1,0 +1,14 @@
+package projekt.cloud.piece.music.player.storage.runtime.dao
+
+import androidx.room.Dao
+import androidx.room.Query
+import projekt.cloud.piece.music.player.storage.runtime.databaseView.ArtistView
+import projekt.cloud.piece.music.player.storage.runtime.databaseView.ArtistView.AlbumViewConstant.ARTIST_VIEW_NAME
+
+@Dao
+interface DatabaseViewDao {
+
+    @Query("SELECT * FROM $ARTIST_VIEW_NAME")
+    suspend fun queryArtist(): List<ArtistView>
+
+}

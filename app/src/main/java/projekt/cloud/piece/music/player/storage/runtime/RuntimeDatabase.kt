@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import projekt.cloud.piece.music.player.storage.runtime.dao.AudioMetadataDao
+import projekt.cloud.piece.music.player.storage.runtime.dao.DatabaseViewDao
 import projekt.cloud.piece.music.player.storage.runtime.dao.PlaybackDao
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.AlbumView
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.ArtistView
@@ -41,5 +42,7 @@ abstract class RuntimeDatabase: RoomDatabase() {
     abstract fun audioMetadataDao(): AudioMetadataDao
 
     abstract fun playbackDao(): PlaybackDao
+
+    abstract fun databaseViewDao(): DatabaseViewDao
 
 }
