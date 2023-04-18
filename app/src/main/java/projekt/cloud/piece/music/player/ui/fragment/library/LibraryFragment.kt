@@ -16,6 +16,7 @@ class LibraryFragment: BaseMultiDensityFragment<FragmentLibraryBinding, LibraryL
     override fun onSetupLayoutCompat(layoutCompat: LibraryLayoutCompat, savedInstanceState: Bundle?) {
         layoutCompat.setupViewPager2(this)
         layoutCompat.setupTabLayout(resources)
+        layoutCompat.setupRootBottomMargin(this)
     }
 
 }
