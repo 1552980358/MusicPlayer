@@ -1,11 +1,14 @@
 package projekt.cloud.piece.music.player.ui.fragment.library
 
 import android.content.res.Resources
+import android.view.View.OVER_SCROLL_NEVER
 import androidx.annotation.Keep
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isNotEmpty
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.navigation.navGraphViewModels
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -14,6 +17,7 @@ import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.base.interfaces.SurfaceColorsInterface
 import projekt.cloud.piece.music.player.databinding.FragmentLibraryBinding
 import projekt.cloud.piece.music.player.ui.fragment.mainHost.MainHostViewModel
+import projekt.cloud.piece.music.player.util.KotlinUtil.tryTo
 
 abstract class LibraryLayoutCompat(
     binding: FragmentLibraryBinding
@@ -48,6 +52,11 @@ abstract class LibraryLayoutCompat(
 
     fun setupViewPager2(fragment: Fragment) {
         viewPager2.adapter = LibraryFragmentStateAdapter(fragment)
+        if (viewPager2.isNotEmpty()) {
+            viewPager2.getChildAt(0)
+                .tryTo<RecyclerView>()
+                ?.overScrollMode = OVER_SCROLL_NEVER
+        }
     }
 
     @Keep
