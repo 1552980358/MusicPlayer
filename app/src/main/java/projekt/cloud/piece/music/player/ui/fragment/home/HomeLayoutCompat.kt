@@ -1,7 +1,6 @@
 package projekt.cloud.piece.music.player.ui.fragment.home
 
 import android.graphics.Rect
-import androidx.annotation.Keep
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.navigation.navGraphViewModels
@@ -14,9 +13,25 @@ import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
 import projekt.cloud.piece.music.player.databinding.FragmentHomeBinding
 import projekt.cloud.piece.music.player.ui.fragment.mainHost.MainHostViewModel
+import projekt.cloud.piece.music.player.util.ScreenDensity
+import projekt.cloud.piece.music.player.util.ScreenDensity.COMPACT
+import projekt.cloud.piece.music.player.util.ScreenDensity.EXPANDED
+import projekt.cloud.piece.music.player.util.ScreenDensity.MEDIUM
 import projekt.cloud.piece.music.player.util.ViewUtil.canScrollUp
 
 abstract class HomeLayoutCompat(binding: FragmentHomeBinding): BaseLayoutCompat<FragmentHomeBinding>(binding) {
+
+    companion object HomeLayoutCompatUtil {
+
+        fun inflate(screenDensity: ScreenDensity, binding: FragmentHomeBinding): HomeLayoutCompat {
+            return when (screenDensity) {
+                COMPACT -> CompatImpl(binding)
+                MEDIUM -> W600dpImpl(binding)
+                EXPANDED -> W1240dpImpl(binding)
+            }
+        }
+
+    }
 
     protected val recyclerView: RecyclerView
         get() = binding.recyclerView
@@ -51,7 +66,6 @@ abstract class HomeLayoutCompat(binding: FragmentHomeBinding): BaseLayoutCompat<
      **/
     open fun setupRecyclerViewBottomMargin(fragment: Fragment) = Unit
 
-    @Keep
     private class CompatImpl(
         binding: FragmentHomeBinding
     ): HomeLayoutCompat(binding), WindowInsetsInterface {
@@ -104,14 +118,8 @@ abstract class HomeLayoutCompat(binding: FragmentHomeBinding): BaseLayoutCompat<
 
     }
 
-    @Keep
-    private class W600dpImpl(binding: FragmentHomeBinding): HomeLayoutCompat(binding) {
+    private class W600dpImpl(binding: FragmentHomeBinding): HomeLayoutCompat(binding)
 
-    }
-
-    @Keep
-    private class W1240dpImpl(binding: FragmentHomeBinding): HomeLayoutCompat(binding) {
-
-    }
+    private class W1240dpImpl(binding: FragmentHomeBinding): HomeLayoutCompat(binding)
 
 }

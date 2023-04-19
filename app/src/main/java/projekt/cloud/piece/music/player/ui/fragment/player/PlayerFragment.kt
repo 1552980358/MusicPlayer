@@ -18,12 +18,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialSharedAxis
-import kotlin.reflect.KClass
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
+import projekt.cloud.piece.music.player.base.LayoutCompatInflater
 import projekt.cloud.piece.music.player.base.ViewBindingInflater
 import projekt.cloud.piece.music.player.databinding.FragmentPlayerBinding
 import projekt.cloud.piece.music.player.ui.activity.main.MainViewModel
+import projekt.cloud.piece.music.player.ui.fragment.player.PlayerLayoutCompat.LibraryLayoutCompatUtil
 import projekt.cloud.piece.music.player.util.FragmentUtil.viewLifecycleProperty
 import projekt.cloud.piece.music.player.util.PlaybackPositionManager
 import projekt.cloud.piece.music.player.util.PlaybackStateManager
@@ -33,8 +34,8 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
     override val viewBindingInflater: ViewBindingInflater<FragmentPlayerBinding>
         get() = FragmentPlayerBinding::inflate
 
-    override val layoutCompatClass: KClass<PlayerLayoutCompat>
-        get() = PlayerLayoutCompat::class
+    override val layoutCompatInflater: LayoutCompatInflater<FragmentPlayerBinding, PlayerLayoutCompat>
+        get() = LibraryLayoutCompatUtil::inflate
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

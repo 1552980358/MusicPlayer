@@ -3,19 +3,21 @@ package projekt.cloud.piece.music.player.base
 import android.os.Bundle
 import androidx.annotation.CallSuper
 import androidx.viewbinding.ViewBinding
-import kotlin.reflect.KClass
-import projekt.cloud.piece.music.player.base.BaseLayoutCompat.BaseLayoutCompatUtil.reflectLayoutCompat
 import projekt.cloud.piece.music.player.base.interfaces.SurfaceColorsInterface
 import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
 import projekt.cloud.piece.music.player.util.FragmentUtil.viewLifecycleProperty
+import projekt.cloud.piece.music.player.util.ScreenDensity
 import projekt.cloud.piece.music.player.util.ScreenDensity.ScreenDensityUtil.screenDensity
 
-abstract class BaseMultiDensityFragment<VB: ViewBinding, LC: BaseLayoutCompat<VB>>: BaseFragment<VB>() {
+typealias LayoutCompatInflater<VB, LC> = (ScreenDensity, VB) -> LC
+
+abstract class BaseMultiDensityFragment<VB, LC>: BaseFragment<VB>()
+        where VB: ViewBinding, LC: BaseLayoutCompat<VB> {
 
     protected var layoutCompat: LC by viewLifecycleProperty()
         private set
 
-    protected abstract val layoutCompatClass: KClass<LC>
+    protected abstract val layoutCompatInflater: LayoutCompatInflater<VB, LC>
 
     /**
      * Don't override this,
@@ -29,11 +31,9 @@ abstract class BaseMultiDensityFragment<VB: ViewBinding, LC: BaseLayoutCompat<VB
     }
 
     private fun onCreateLayoutCompat(binding: VB) {
-        layoutCompat = createLayoutCompat(binding)
-    }
-
-    private fun createLayoutCompat(binding: VB): LC {
-        return binding.reflectLayoutCompat(layoutCompatClass, requireActivity().screenDensity)
+        layoutCompat = layoutCompatInflater.invoke(
+            requireActivity().screenDensity, binding
+        )
     }
 
     protected open fun onSetupLayoutCompatInterfaces(layoutCompat: LC) {

@@ -21,7 +21,6 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.annotation.ColorInt
-import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -52,13 +51,27 @@ import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
 import projekt.cloud.piece.music.player.databinding.FragmentMainHostBinding
 import projekt.cloud.piece.music.player.databinding.MainHostPlaybackBarBinding
 import projekt.cloud.piece.music.player.ui.fragment.home.HomeViewModel
+import projekt.cloud.piece.music.player.util.ScreenDensity
+import projekt.cloud.piece.music.player.util.ScreenDensity.COMPACT
+import projekt.cloud.piece.music.player.util.ScreenDensity.EXPANDED
+import projekt.cloud.piece.music.player.util.ScreenDensity.MEDIUM
 
 abstract class MainHostLayoutCompat(
     binding: FragmentMainHostBinding
 ): BaseLayoutCompat<FragmentMainHostBinding>(binding), SurfaceColorsInterface {
 
-    private companion object {
-        const val STATE_UNKNOWN = -1
+    companion object LibraryLayoutCompatUtil {
+
+        fun inflate(screenDensity: ScreenDensity, binding: FragmentMainHostBinding): MainHostLayoutCompat {
+            return when (screenDensity) {
+                COMPACT -> CompatImpl(binding)
+                MEDIUM -> W600dpImpl(binding)
+                EXPANDED -> W1240dpImpl(binding)
+            }
+        }
+
+        private const val STATE_UNKNOWN = -1
+
     }
 
     /**
@@ -206,7 +219,6 @@ abstract class MainHostLayoutCompat(
         notifyMetadataChanged(context, mediaControllerCompat.metadata)
     }
 
-    @Keep
     private class CompatImpl(
         binding: FragmentMainHostBinding
     ): MainHostLayoutCompat(binding) {
@@ -329,7 +341,6 @@ abstract class MainHostLayoutCompat(
 
     }
 
-    @Keep
     private class W600dpImpl(
         binding: FragmentMainHostBinding
     ): MainHostLayoutCompat(binding), WindowInsetsInterface {
@@ -410,7 +421,6 @@ abstract class MainHostLayoutCompat(
 
     }
 
-    @Keep
     private class W1240dpImpl(
         binding: FragmentMainHostBinding
     ): MainHostLayoutCompat(binding), WindowInsetsInterface {

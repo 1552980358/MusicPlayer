@@ -5,10 +5,10 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import kotlin.reflect.KClass
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
+import projekt.cloud.piece.music.player.base.LayoutCompatInflater
 import projekt.cloud.piece.music.player.base.ViewBindingInflater
 import projekt.cloud.piece.music.player.databinding.FragmentHomeBinding
 import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase
@@ -16,6 +16,7 @@ import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase.RuntimeD
 import projekt.cloud.piece.music.player.storage.runtime.entity.AudioMetadataEntity
 import projekt.cloud.piece.music.player.storage.runtime.entity.PlaybackEntity
 import projekt.cloud.piece.music.player.ui.activity.main.MainViewModel
+import projekt.cloud.piece.music.player.ui.fragment.home.HomeLayoutCompat.HomeLayoutCompatUtil
 import projekt.cloud.piece.music.player.util.CoroutineUtil.default
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 
@@ -24,8 +25,8 @@ class HomeFragment: BaseMultiDensityFragment<FragmentHomeBinding, HomeLayoutComp
     override val viewBindingInflater: ViewBindingInflater<FragmentHomeBinding>
         get() = FragmentHomeBinding::inflate
 
-    override val layoutCompatClass: KClass<HomeLayoutCompat>
-        get() = HomeLayoutCompat::class
+    override val layoutCompatInflater: LayoutCompatInflater<FragmentHomeBinding, HomeLayoutCompat>
+        get() = HomeLayoutCompatUtil::inflate
 
     override fun onSetupLayoutCompat(layoutCompat: HomeLayoutCompat, savedInstanceState: Bundle?) {
         layoutCompat.setupRecyclerViewAction(this)

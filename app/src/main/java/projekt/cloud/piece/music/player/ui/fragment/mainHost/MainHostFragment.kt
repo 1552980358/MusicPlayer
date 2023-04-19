@@ -8,19 +8,20 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_NONE
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import kotlin.reflect.KClass
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
+import projekt.cloud.piece.music.player.base.LayoutCompatInflater
 import projekt.cloud.piece.music.player.base.ViewBindingInflater
 import projekt.cloud.piece.music.player.databinding.FragmentMainHostBinding
 import projekt.cloud.piece.music.player.ui.activity.main.MainViewModel
+import projekt.cloud.piece.music.player.ui.fragment.mainHost.MainHostLayoutCompat.LibraryLayoutCompatUtil
 
 class MainHostFragment: BaseMultiDensityFragment<FragmentMainHostBinding, MainHostLayoutCompat>() {
 
     override val viewBindingInflater: ViewBindingInflater<FragmentMainHostBinding>
         get() = FragmentMainHostBinding::inflate
 
-    override val layoutCompatClass: KClass<MainHostLayoutCompat>
-        get() = MainHostLayoutCompat::class
+    override val layoutCompatInflater: LayoutCompatInflater<FragmentMainHostBinding, MainHostLayoutCompat>
+        get() = LibraryLayoutCompatUtil::inflate
 
     private val mediaControllerCallback = object: MediaControllerCompat.Callback() {
         override fun onPlaybackStateChanged(state: PlaybackStateCompat) {

@@ -16,7 +16,6 @@ import android.support.v4.media.session.PlaybackStateCompat.STATE_PAUSED
 import android.support.v4.media.session.PlaybackStateCompat.STATE_PLAYING
 import android.view.View.OnClickListener
 import androidx.annotation.DrawableRes
-import androidx.annotation.Keep
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -46,12 +45,31 @@ import projekt.cloud.piece.music.player.util.CoroutineUtil.default
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 import projekt.cloud.piece.music.player.util.PlaybackStateManager
 import projekt.cloud.piece.music.player.util.ResourceUtil.getLong
+import projekt.cloud.piece.music.player.util.ScreenDensity
+import projekt.cloud.piece.music.player.util.ScreenDensity.COMPACT
+import projekt.cloud.piece.music.player.util.ScreenDensity.EXPANDED
+import projekt.cloud.piece.music.player.util.ScreenDensity.MEDIUM
 import projekt.cloud.piece.music.player.util.TimeUtil.durationStr
 import projekt.cloud.piece.music.player.util.TimeUtil.timeStr
 
 abstract class PlayerLayoutCompat(
     binding: FragmentPlayerBinding
 ): BaseLayoutCompat<FragmentPlayerBinding>(binding), WindowInsetsInterface {
+
+    companion object LibraryLayoutCompatUtil {
+
+        fun inflate(screenDensity: ScreenDensity, binding: FragmentPlayerBinding): PlayerLayoutCompat {
+            return when (screenDensity) {
+                COMPACT -> CompatImpl(binding)
+                MEDIUM -> W600dpImpl(binding)
+                EXPANDED -> W1240dpImpl(binding)
+            }
+        }
+
+        private const val REPEAT_DISABLED_ALPHA = 0.5F
+        private const val SHUFFLE_DISABLED_ALPHA = 0.5F
+
+    }
 
     private val constantRoot: ConstraintLayout
         get() = binding.constraintLayoutRoot
@@ -73,11 +91,6 @@ abstract class PlayerLayoutCompat(
         get() = binding.appCompatImageButtonShuffle
 
     private val playbackContainerSet = ConstraintSet()
-
-    private companion object {
-        const val REPEAT_DISABLED_ALPHA = 0.5F
-        const val SHUFFLE_DISABLED_ALPHA = 0.5F
-    }
 
     override fun onSetupRequireWindowInsets() = { insets: Rect ->
         constantRoot.updatePadding(top = insets.top, bottom = insets.bottom)
@@ -225,7 +238,6 @@ abstract class PlayerLayoutCompat(
         }
     }
 
-    @Keep
     private class CompatImpl(binding: FragmentPlayerBinding): PlayerLayoutCompat(binding) {
 
         private companion object {
@@ -260,7 +272,6 @@ abstract class PlayerLayoutCompat(
 
     }
 
-    @Keep
     private class W600dpImpl(binding: FragmentPlayerBinding): PlayerLayoutCompat(binding) {
 
         private val exit: AppCompatImageButton
@@ -276,7 +287,6 @@ abstract class PlayerLayoutCompat(
 
     }
 
-    @Keep
     private class W1240dpImpl(binding: FragmentPlayerBinding): PlayerLayoutCompat(binding) {
 
         private val exit: AppCompatImageButton

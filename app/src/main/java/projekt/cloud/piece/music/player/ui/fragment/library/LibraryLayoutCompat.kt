@@ -2,7 +2,6 @@ package projekt.cloud.piece.music.player.ui.fragment.library
 
 import android.content.res.Resources
 import android.view.View.OVER_SCROLL_NEVER
-import androidx.annotation.Keep
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isNotEmpty
 import androidx.core.view.updatePadding
@@ -18,10 +17,26 @@ import projekt.cloud.piece.music.player.base.interfaces.SurfaceColorsInterface
 import projekt.cloud.piece.music.player.databinding.FragmentLibraryBinding
 import projekt.cloud.piece.music.player.ui.fragment.mainHost.MainHostViewModel
 import projekt.cloud.piece.music.player.util.KotlinUtil.tryTo
+import projekt.cloud.piece.music.player.util.ScreenDensity
+import projekt.cloud.piece.music.player.util.ScreenDensity.COMPACT
+import projekt.cloud.piece.music.player.util.ScreenDensity.EXPANDED
+import projekt.cloud.piece.music.player.util.ScreenDensity.MEDIUM
 
 abstract class LibraryLayoutCompat(
     binding: FragmentLibraryBinding
 ): BaseLayoutCompat<FragmentLibraryBinding>(binding), SurfaceColorsInterface {
+
+    companion object LibraryLayoutCompatUtil {
+
+        fun inflate(screenDensity: ScreenDensity, binding: FragmentLibraryBinding): LibraryLayoutCompat {
+            return when (screenDensity) {
+                COMPACT -> CompatImpl(binding)
+                MEDIUM -> W600dpImpl(binding)
+                EXPANDED -> W1240dpImpl(binding)
+            }
+        }
+
+    }
 
     private val tabLayout: TabLayout
         get() = binding.tabLayout
@@ -59,7 +74,6 @@ abstract class LibraryLayoutCompat(
         }
     }
 
-    @Keep
     private class CompatImpl(binding: FragmentLibraryBinding): LibraryLayoutCompat(binding) {
 
         private val root: ConstraintLayout
@@ -81,10 +95,8 @@ abstract class LibraryLayoutCompat(
 
     }
 
-    @Keep
     private class W600dpImpl(binding: FragmentLibraryBinding): LibraryLayoutCompat(binding)
 
-    @Keep
     private class W1240dpImpl(binding: FragmentLibraryBinding): LibraryLayoutCompat(binding)
 
 }
