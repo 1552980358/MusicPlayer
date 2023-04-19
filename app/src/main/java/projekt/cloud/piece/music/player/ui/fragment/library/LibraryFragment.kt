@@ -3,12 +3,13 @@ package projekt.cloud.piece.music.player.ui.fragment.library
 import android.os.Bundle
 import kotlin.reflect.KClass
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
+import projekt.cloud.piece.music.player.base.ViewBindingInflater
 import projekt.cloud.piece.music.player.databinding.FragmentLibraryBinding
 
 class LibraryFragment: BaseMultiDensityFragment<FragmentLibraryBinding, LibraryLayoutCompat>() {
 
-    override val viewBindingClass: Class<FragmentLibraryBinding>
-        get() = FragmentLibraryBinding::class.java
+    override val viewBindingInflater: ViewBindingInflater<FragmentLibraryBinding>
+        get() = FragmentLibraryBinding::inflate
 
     override val layoutCompatClass: KClass<LibraryLayoutCompat>
         get() = LibraryLayoutCompat::class

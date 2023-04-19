@@ -26,6 +26,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicatorSpec
 import com.google.android.material.progressindicator.IndeterminateDrawable
 import projekt.cloud.piece.music.player.base.BaseFragment
+import projekt.cloud.piece.music.player.base.ViewBindingInflater
 import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
 import projekt.cloud.piece.music.player.databinding.FragmentPermissionBinding
 
@@ -36,9 +37,6 @@ class PermissionFragment: BaseFragment<FragmentPermissionBinding>(), WindowInset
         const val URI_SCHEME_PACKAGE = "package"
     }
 
-    override val viewBindingClass: Class<FragmentPermissionBinding>
-        get() = FragmentPermissionBinding::class.java
-
     private val container: ConstraintLayout
         get() = binding.constraintLayout
     private val appBarLayout: AppBarLayout
@@ -48,15 +46,17 @@ class PermissionFragment: BaseFragment<FragmentPermissionBinding>(), WindowInset
     private val settings: MaterialButton
         get() = binding.materialButtonSettings
 
-    private lateinit var requestPermission: ActivityResultLauncher<Array<String>>
+    override val viewBindingInflater: ViewBindingInflater<FragmentPermissionBinding>
+        get() = FragmentPermissionBinding::inflate
 
     override fun onSetupRequireWindowInsets() = { insets: Rect ->
         appBarLayout.updatePadding(top = insets.top)
         container.updatePadding(bottom = insets.bottom)
     }
 
-    override fun onSetupBinding(binding: FragmentPermissionBinding, savedInstanceState: Bundle?) {
+    private lateinit var requestPermission: ActivityResultLauncher<Array<String>>
 
+    override fun onSetupBinding(binding: FragmentPermissionBinding, savedInstanceState: Bundle?) {
         requestPermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
             Log.e(TAG, "RequestMultiplePermissions() => $results")
 

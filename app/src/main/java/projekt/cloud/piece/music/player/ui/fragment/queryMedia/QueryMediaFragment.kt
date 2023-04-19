@@ -26,6 +26,7 @@ import com.google.android.material.textview.MaterialTextView
 import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseFragment
+import projekt.cloud.piece.music.player.base.ViewBindingInflater
 import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
 import projekt.cloud.piece.music.player.databinding.FragmentQueryMediaBinding
 import projekt.cloud.piece.music.player.storage.audio.AudioDatabase
@@ -38,9 +39,6 @@ import projekt.cloud.piece.music.player.util.PreferenceUtil.defaultSharedPrefere
 
 class QueryMediaFragment: BaseFragment<FragmentQueryMediaBinding>(), WindowInsetsInterface {
 
-    override val viewBindingClass: Class<FragmentQueryMediaBinding>
-        get() = FragmentQueryMediaBinding::class.java
-
     private val container: ConstraintLayout
         get() = binding.constraintLayout
     private val appBarLayout: AppBarLayout
@@ -50,6 +48,9 @@ class QueryMediaFragment: BaseFragment<FragmentQueryMediaBinding>(), WindowInset
 
     private val finish: MaterialButton
         get() = binding.materialButtonFinish
+
+    override val viewBindingInflater: ViewBindingInflater<FragmentQueryMediaBinding>
+        get() = FragmentQueryMediaBinding::inflate
 
     override fun onSetupRequireWindowInsets() = { insets: Rect ->
         container.updatePadding(bottom = insets.bottom)

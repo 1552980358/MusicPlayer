@@ -9,6 +9,7 @@ import kotlin.reflect.KClass
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
+import projekt.cloud.piece.music.player.base.ViewBindingInflater
 import projekt.cloud.piece.music.player.databinding.FragmentHomeBinding
 import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase
 import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase.RuntimeDatabaseUtil.runtimeDatabase
@@ -20,8 +21,8 @@ import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 
 class HomeFragment: BaseMultiDensityFragment<FragmentHomeBinding, HomeLayoutCompat>() {
 
-    override val viewBindingClass: Class<FragmentHomeBinding>
-        get() = FragmentHomeBinding::class.java
+    override val viewBindingInflater: ViewBindingInflater<FragmentHomeBinding>
+        get() = FragmentHomeBinding::inflate
 
     override val layoutCompatClass: KClass<HomeLayoutCompat>
         get() = HomeLayoutCompat::class

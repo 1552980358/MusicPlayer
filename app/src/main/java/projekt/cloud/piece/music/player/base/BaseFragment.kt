@@ -10,20 +10,20 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
 import projekt.cloud.piece.music.player.util.FragmentUtil.viewLifecycleProperty
-import projekt.cloud.piece.music.player.util.ViewBindingInflater.ViewBindingInflaterUtil.inflate
+import projekt.cloud.piece.music.player.util.KotlinUtil.tryTo
+
+typealias ViewBindingInflater<VB> = (LayoutInflater, ViewGroup?, Boolean) -> VB
 
 abstract class BaseFragment<VB: ViewBinding>: Fragment() {
 
     protected var binding: VB by viewLifecycleProperty()
 
-    protected abstract val viewBindingClass: Class<VB>
+    protected abstract val viewBindingInflater: ViewBindingInflater<VB>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = viewBindingClass.inflate(inflater, container, false).also { binding ->
-            if (binding is ViewDataBinding) {
-                binding.lifecycleOwner = viewLifecycleOwner
-            }
-        }
+        binding = viewBindingInflater.invoke(layoutInflater, container, false)
+        binding.tryTo<ViewDataBinding>()
+            ?.lifecycleOwner = this
         return binding.root
     }
 

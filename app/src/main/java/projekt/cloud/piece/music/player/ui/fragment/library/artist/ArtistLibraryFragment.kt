@@ -5,6 +5,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.base.BaseFragment
+import projekt.cloud.piece.music.player.base.ViewBindingInflater
 import projekt.cloud.piece.music.player.databinding.FragmentLibraryObjectBinding
 import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase
 import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase.RuntimeDatabaseUtil.runtimeDatabase
@@ -14,8 +15,8 @@ import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 
 class ArtistLibraryFragment: BaseFragment<FragmentLibraryObjectBinding>() {
 
-    override val viewBindingClass: Class<FragmentLibraryObjectBinding>
-        get() = FragmentLibraryObjectBinding::class.java
+    override val viewBindingInflater: ViewBindingInflater<FragmentLibraryObjectBinding>
+        get() = FragmentLibraryObjectBinding::inflate
 
     private val recyclerView: RecyclerView
         get() = binding.recyclerView

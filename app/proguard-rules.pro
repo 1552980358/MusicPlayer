@@ -19,11 +19,3 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
-
--keepclassmembers class projekt.cloud.piece.music.player.databinding.*Binding extends androidx.databinding.ViewDataBinding {
-    public static inflate(android.view.LayoutInflater, android.view.ViewGroup, boolean);
-}
-
--keepclassmembers class projekt.cloud.piece.music.player.databinding.*Binding implements androidx.viewbinding.ViewBinding {
-    public static inflate(android.view.LayoutInflater, android.view.ViewGroup, boolean);
-}

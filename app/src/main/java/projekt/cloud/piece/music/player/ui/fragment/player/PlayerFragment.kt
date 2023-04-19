@@ -21,6 +21,7 @@ import com.google.android.material.transition.platform.MaterialSharedAxis
 import kotlin.reflect.KClass
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
+import projekt.cloud.piece.music.player.base.ViewBindingInflater
 import projekt.cloud.piece.music.player.databinding.FragmentPlayerBinding
 import projekt.cloud.piece.music.player.ui.activity.main.MainViewModel
 import projekt.cloud.piece.music.player.util.FragmentUtil.viewLifecycleProperty
@@ -29,8 +30,8 @@ import projekt.cloud.piece.music.player.util.PlaybackStateManager
 
 class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayoutCompat>() {
 
-    override val viewBindingClass: Class<FragmentPlayerBinding>
-        get() = FragmentPlayerBinding::class.java
+    override val viewBindingInflater: ViewBindingInflater<FragmentPlayerBinding>
+        get() = FragmentPlayerBinding::inflate
 
     override val layoutCompatClass: KClass<PlayerLayoutCompat>
         get() = PlayerLayoutCompat::class

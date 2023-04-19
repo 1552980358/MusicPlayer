@@ -10,13 +10,14 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import kotlin.reflect.KClass
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
+import projekt.cloud.piece.music.player.base.ViewBindingInflater
 import projekt.cloud.piece.music.player.databinding.FragmentMainHostBinding
 import projekt.cloud.piece.music.player.ui.activity.main.MainViewModel
 
 class MainHostFragment: BaseMultiDensityFragment<FragmentMainHostBinding, MainHostLayoutCompat>() {
 
-    override val viewBindingClass: Class<FragmentMainHostBinding>
-        get() = FragmentMainHostBinding::class.java
+    override val viewBindingInflater: ViewBindingInflater<FragmentMainHostBinding>
+        get() = FragmentMainHostBinding::inflate
 
     override val layoutCompatClass: KClass<MainHostLayoutCompat>
         get() = MainHostLayoutCompat::class
