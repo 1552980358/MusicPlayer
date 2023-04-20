@@ -23,11 +23,13 @@ class ArtistLibraryRecyclerAdapter(
     private val recyclerViewPool = RecycledViewPool()
 
     private class ViewHolder(
-        private val binding: ArtistLibraryRecyclerLayoutBinding,
+        parent: ViewGroup,
         fragment: Fragment,
         recyclerViewPool: RecycledViewPool,
         onItemClick: (String) -> Unit
-    ): BaseViewHolder(binding) {
+    ): BaseBindingViewHolder<ArtistLibraryRecyclerLayoutBinding>(
+        ArtistLibraryRecyclerLayoutBinding::inflate, parent
+    ) {
 
         private val recyclerView: RecyclerView
             get() = binding.recyclerView
@@ -57,15 +59,7 @@ class ArtistLibraryRecyclerAdapter(
 
     override fun onCreateViewHolder(
         layoutInflater: LayoutInflater, parent: ViewGroup
-    ): BaseViewHolder = ViewHolder(
-        createViewBinding(layoutInflater, parent),
-        fragment,
-        recyclerViewPool,
-        onItemClick
-    )
-
-    private fun createViewBinding(layoutInflater: LayoutInflater, parent: ViewGroup) =
-        ArtistLibraryRecyclerLayoutBinding.inflate(layoutInflater, parent, false)
+    ): BaseViewHolder = ViewHolder(parent, fragment, recyclerViewPool, onItemClick)
 
     override fun getItemCount() = artistList.size
 

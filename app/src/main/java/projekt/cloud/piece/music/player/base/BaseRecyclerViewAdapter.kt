@@ -11,6 +11,14 @@ abstract class BaseRecyclerViewAdapter: Adapter<BaseViewHolder>() {
 
     abstract class BaseViewHolder(binding: ViewBinding): ViewHolder(binding.root)
 
+    protected abstract class BaseBindingViewHolder<VB: ViewBinding>(protected val binding: VB): BaseViewHolder(binding) {
+
+        constructor(inflater: (LayoutInflater, ViewGroup?, Boolean) -> VB, viewGroup: ViewGroup): this(
+            inflater.invoke(LayoutInflater.from(viewGroup.context), viewGroup, false)
+        )
+
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         return onCreateViewHolder(LayoutInflater.from(parent.context), parent)
     }

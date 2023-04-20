@@ -18,8 +18,11 @@ class ArtistLibraryChildRecyclerAdapter(
 ): BaseRecyclerViewAdapter() {
 
     private class ViewHolder(
-        private val binding: ArtistLibraryChildRecyclerLayoutBinding
-    ): BaseViewHolder(binding) {
+        parent: ViewGroup
+    ): BaseBindingViewHolder<ArtistLibraryChildRecyclerLayoutBinding>(
+        ArtistLibraryChildRecyclerLayoutBinding::inflate,
+        parent
+    ) {
 
         private val image: ShapeableImageView
             get() = binding.shapeableImageViewImage
@@ -47,11 +50,8 @@ class ArtistLibraryChildRecyclerAdapter(
     }
 
     override fun onCreateViewHolder(layoutInflater: LayoutInflater, parent: ViewGroup): BaseViewHolder {
-        return ViewHolder(createViewBinding(layoutInflater, parent))
+        return ViewHolder(parent)
     }
-
-    private fun createViewBinding(layoutInflater: LayoutInflater, parent: ViewGroup) =
-        ArtistLibraryChildRecyclerLayoutBinding.inflate(layoutInflater, parent, false)
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
         albumList?.get(position)?.let { album ->
