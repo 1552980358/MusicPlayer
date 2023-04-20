@@ -38,18 +38,10 @@ abstract class HomeLayoutCompat(binding: FragmentHomeBinding): BaseLayoutCompat<
 
     /**
      * [setupRecyclerViewAdapter]
-     * @param adapter [RecyclerView.Adapter]
+     * @param adapter [HomeRecyclerAdapter]
      **/
-    fun setupRecyclerViewAdapter(adapter: RecyclerView.Adapter<*>) {
+    fun setupRecyclerViewAdapter(adapter: HomeRecyclerAdapter) {
         recyclerView.adapter = adapter
-    }
-
-    private var playMediaWithId: ((String) -> Unit)? = null
-    fun setPlayMediaWithId(block: ((String) -> Unit)) {
-        playMediaWithId = block
-    }
-    fun invokePlayWithId(id: String) {
-        playMediaWithId?.invoke(id)
     }
 
     /**

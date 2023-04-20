@@ -33,23 +33,13 @@ class HomeFragment: BaseMultiDensityFragment<FragmentHomeBinding, HomeLayoutComp
         layoutCompat.setupRecyclerViewBottomMargin(this)
 
         val mainViewModel: MainViewModel by activityViewModels()
-        lifecycleScope.main {
-            val audioMetadataList = withContext(default) {
-                requireContext().runtimeDatabase
-                    .audioMetadataDao()
-                    .query()
-            }
 
-            layoutCompat.setupRecyclerViewAdapter(
-                HomeRecyclerViewUtil.getRecyclerViewAdapter(
-                    this@HomeFragment, audioMetadataList, layoutCompat
-                )
-            )
+        val runtimeDatabase = requireContext().runtimeDatabase
 
-            mainViewModel.isMediaBrowserCompatConnected.observe(viewLifecycleOwner) { isConnected ->
-                val mediaControllerCompat = MediaControllerCompat.getMediaController(requireActivity())
-                if (isConnected && mediaControllerCompat != null) {
-                    registerTransportControls(mediaControllerCompat, audioMetadataList)
+        mainViewModel.isMediaBrowserCompatConnected.observe(viewLifecycleOwner) { isConnected ->
+            if (isConnected) {
+                MediaControllerCompat.getMediaController(requireActivity())?.let { mediaControllerCompat ->
+                    startRegisterTransportControls(runtimeDatabase, mediaControllerCompat)
                 }
             }
         }
@@ -57,27 +47,62 @@ class HomeFragment: BaseMultiDensityFragment<FragmentHomeBinding, HomeLayoutComp
 
     private var job: Job? = null
 
-    private fun registerTransportControls(
-        mediaControllerCompat: MediaControllerCompat, audioMetadataList: List<AudioMetadataEntity>
+    private fun startRegisterTransportControls(
+        runtimeDatabase: RuntimeDatabase, mediaControllerCompat: MediaControllerCompat
     ) {
-        val runtimeDatabase = requireContext().runtimeDatabase
-        layoutCompat.setPlayMediaWithId { id ->
-            job?.cancel()
-            job = lifecycleScope.main {
-                // Put into runtime database
-                putPlaylistIntoRuntimeDatabase(
-                    runtimeDatabase,
-                    // Convert into playback entity list
-                    getPlaybackList(
-                        // Check if shuffle required, then shuffle list
-                        shuffleAudioMetadataListIfRequired(mediaControllerCompat, audioMetadataList)
-                    )
-                )
-                // Call for audio play
-                mediaControllerCompat.transportControls
-                    .playFromMediaId(id, null)
-                job = null
+        lifecycleScope.main {
+            val audioList = queryAudioList(runtimeDatabase)
+
+            val onItemClick = { id: String ->
+                job = startAudioUpdateJob(id, audioList, runtimeDatabase, mediaControllerCompat)
             }
+
+            // Update RecyclerView
+            layoutCompat.setupRecyclerViewAdapter(
+                createRecyclerViewAdapter(audioList, onItemClick)
+            )
+        }
+    }
+
+    private suspend fun queryAudioList(runtimeDatabase: RuntimeDatabase): List<AudioMetadataEntity> {
+        return withContext(default) {
+            runtimeDatabase.audioMetadataDao()
+                .query()
+        }
+    }
+
+    private suspend fun createRecyclerViewAdapter(
+        audioList: List<AudioMetadataEntity>,
+        onItemClick: (String) -> Unit
+    ): HomeRecyclerAdapter {
+        // Other than create on Main thread,
+        // let it be created at background has a better performance for UI update
+        return withContext(default) {
+            HomeRecyclerAdapter(this@HomeFragment, audioList, onItemClick)
+        }
+    }
+
+    private fun startAudioUpdateJob(
+        id: String,
+        audioList: List<AudioMetadataEntity>,
+        runtimeDatabase: RuntimeDatabase,
+        mediaControllerCompat: MediaControllerCompat
+    ): Job {
+        // Clear previous work
+        job?.cancel()
+        // Start wORK
+        return lifecycleScope.main {
+            putPlaylistIntoRuntimeDatabase(
+                runtimeDatabase,
+                // Convert into playback entity list
+                getPlaybackList(
+                    // Check if shuffle required, then shuffle list
+                    shuffleAudioMetadataListIfRequired(mediaControllerCompat, audioList)
+                )
+            )
+            // Call for audio play
+            mediaControllerCompat.transportControls
+                .playFromMediaId(id, null)
         }
     }
 
