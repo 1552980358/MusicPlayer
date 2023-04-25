@@ -127,11 +127,13 @@ abstract class PlayerLayoutCompat(
     }
 
     fun updateCoverImage(fragment: Fragment, uri: Uri) {
-        Glide.with(fragment)
-            .load(uri)
-            .placeholder(cover.drawable)
-            // .transition(DrawableTransitionOptions.withCrossFade())
-            .into(cover)
+        if (fragment.context != null) {
+            Glide.with(fragment)
+                .load(uri)
+                .placeholder(cover.drawable)
+                // .transition(DrawableTransitionOptions.withCrossFade())
+                .into(cover)
+        }
     }
 
     fun updatePlaybackPosition(positionLong: Long, isSliding: Boolean) {

@@ -25,7 +25,6 @@ import projekt.cloud.piece.music.player.base.ViewBindingInflater
 import projekt.cloud.piece.music.player.databinding.FragmentPlayerBinding
 import projekt.cloud.piece.music.player.ui.activity.main.MainViewModel
 import projekt.cloud.piece.music.player.ui.fragment.player.PlayerLayoutCompat.LibraryLayoutCompatUtil
-import projekt.cloud.piece.music.player.util.FragmentUtil.viewLifecycleProperty
 import projekt.cloud.piece.music.player.util.PlaybackPositionManager
 import projekt.cloud.piece.music.player.util.PlaybackStateManager
 
@@ -64,7 +63,7 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
         layoutCompat.setupShuffleMode()
 
         val playerFragmentArgs: PlayerFragmentArgs by navArgs()
-        updateMetadataFromArgs(playerFragmentArgs)
+        updateMetadataFromArgs(layoutCompat, playerFragmentArgs)
 
         val mainViewModel: MainViewModel by activityViewModels()
         mainViewModel.isMediaBrowserCompatConnected.observe(viewLifecycleOwner) { isConnected ->
@@ -78,7 +77,7 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
                             isSliding = isSliderTouching
                         }
 
-                        setupMediaController(mediaControllerCompat) { position: Long ->
+                        setupMediaController(layoutCompat, mediaControllerCompat) { position: Long ->
                             // doOnPositionUpdate: (Long) -> Unit
                             layoutCompat.updatePlaybackPosition(position, isSliding)
                         }
@@ -87,18 +86,17 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
         }
     }
 
-    private var callback: MediaControllerCompat.Callback by viewLifecycleProperty { callback ->
-        MediaControllerCompat.getMediaController(requireActivity())
-            ?.unregisterCallback(callback)
-    }
+    private lateinit var mediaControllerCallback: MediaControllerCompat.Callback
 
     private fun setupMediaController(
-        mediaControllerCompat: MediaControllerCompat, doOnPositionUpdate: (Long) -> Unit
+        layoutCompat: PlayerLayoutCompat,
+        mediaControllerCompat: MediaControllerCompat,
+        doOnPositionUpdate: (Long) -> Unit
     ) {
         val playbackStateManager = PlaybackStateManager()
         var playbackPositionManager: PlaybackPositionManager? = null
 
-        callback = object: MediaControllerCompat.Callback() {
+        mediaControllerCallback = object: MediaControllerCompat.Callback() {
             override fun onPlaybackStateChanged(playbackStateCompat: PlaybackStateCompat) {
                 playbackPositionManager?.close()
                 if (playbackStateCompat.state == STATE_PLAYING) {
@@ -115,7 +113,7 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
             }
 
             override fun onMetadataChanged(mediaMetadataCompat: MediaMetadataCompat) {
-                updateMetadataFromMediaMetadataCompat(mediaMetadataCompat)
+                updateMetadataFromMediaMetadataCompat(layoutCompat, mediaMetadataCompat)
                 playbackPositionManager?.duration = mediaMetadataCompat.getLong(METADATA_KEY_DURATION)
             }
 
@@ -128,7 +126,7 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
             }
         }
 
-        mediaControllerCompat.registerCallback(callback)
+        mediaControllerCompat.registerCallback(mediaControllerCallback)
         // Recover state
         mediaControllerCompat.playbackState?.let { playbackStateCompat ->
 
@@ -170,8 +168,9 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
         )
     }
 
-    private fun updateMetadataFromArgs(playerFragmentArgs: PlayerFragmentArgs) {
+    private fun updateMetadataFromArgs(layoutCompat: PlayerLayoutCompat, playerFragmentArgs: PlayerFragmentArgs) {
         updateMetadata(
+            layoutCompat,
             playerFragmentArgs.title,
             playerFragmentArgs.artist,
             playerFragmentArgs.album,
@@ -180,8 +179,11 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
         )
     }
 
-    private fun updateMetadataFromMediaMetadataCompat(mediaMetadataCompat: MediaMetadataCompat) {
+    private fun updateMetadataFromMediaMetadataCompat(
+        layoutCompat: PlayerLayoutCompat, mediaMetadataCompat: MediaMetadataCompat
+    ) {
         updateMetadata(
+            layoutCompat,
             mediaMetadataCompat.getString(METADATA_KEY_TITLE),
             mediaMetadataCompat.getString(METADATA_KEY_ARTIST),
             mediaMetadataCompat.getString(METADATA_KEY_ALBUM),
@@ -190,9 +192,19 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
         )
     }
 
-    private fun updateMetadata(title: String, artist: String, album: String, duration: Long, coverUri: Uri) {
+    private fun updateMetadata(
+        layoutCompat: PlayerLayoutCompat,
+        title: String, artist: String, album: String, duration: Long,
+        coverUri: Uri
+    ) {
         layoutCompat.updateMetadata(title, artist, album, duration)
         layoutCompat.updateCoverImage(this@PlayerFragment, coverUri)
+    }
+
+    override fun onStop() {
+        MediaControllerCompat.getMediaController(requireActivity())
+            .unregisterCallback(mediaControllerCallback)
+        super.onStop()
     }
 
 }
