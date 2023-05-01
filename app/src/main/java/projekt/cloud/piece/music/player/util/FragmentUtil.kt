@@ -20,12 +20,10 @@ object FragmentUtil {
             fragment.viewLifecycleOwnerLiveData.observe(
                 fragment,
                 object: Observer<LifecycleOwner> {
-                    override fun onChanged(viewLifecycleOwner: LifecycleOwner?) {
-                        viewLifecycleOwner?.lifecycle?.let { viewLifecycle ->
-                            viewLifecycle.addObserver(this@ViewLifecycleProperty)
-                            fragment.viewLifecycleOwnerLiveData
-                                .removeObserver(this)
-                        }
+                    override fun onChanged(value: LifecycleOwner) {
+                        value.lifecycle.addObserver(this@ViewLifecycleProperty)
+                        fragment.viewLifecycleOwnerLiveData
+                            .removeObserver(this)
                     }
                 }
             )
