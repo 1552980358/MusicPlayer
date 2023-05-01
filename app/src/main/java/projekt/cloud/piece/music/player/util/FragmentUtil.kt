@@ -9,7 +9,7 @@ import projekt.cloud.piece.music.player.util.ResourceUtil.getLong
 object FragmentUtil {
 
     @JvmOverloads
-    fun <T> Fragment.viewLifecycleProperty(doOnDestroy: ((T) -> Unit)? = null): LifecycleProperty<Fragment, T> =
+    fun <T> Fragment.viewLifecycleProperty(doOnDestroy: ((T) -> Unit)? = null): ViewLifecycleProperty<T> =
         ViewLifecycleProperty(this, doOnDestroy)
 
     open class ViewLifecycleProperty<T>(
@@ -41,5 +41,11 @@ object FragmentUtil {
 
     fun Fragment.getLong(@IntRange resId: Int) =
         resources.getLong(resId)
+
+    val Fragment.childFragments: List<Fragment>
+        get() = childFragmentManager.fragments
+
+    fun Fragment.childFragments(list: List<Fragment>) =
+        childFragments.takeIf { it.isNotEmpty() } ?: list
 
 }
