@@ -5,12 +5,17 @@
 
     <data>
 
-        <import type="kotlin.jvm.functions.Function1" />
+        <import type="android.view.View" />
+        <import type="kotlin.jvm.functions.Function3" />
         <import type="kotlin.Unit" />
 
         <variable
             name="id"
             type="String" />
+
+        <variable
+            name="pos"
+            type="Integer" />
 
         <variable
             name="title"
@@ -22,7 +27,7 @@
 
         <variable
             name="onItemClick"
-            type="Function1&lt;String, Unit>" />
+            type="Function3&lt;String, Integer, View, Unit>" />
 
     </data>
 
@@ -32,7 +37,7 @@
         android:paddingStart="@dimen/md_spec_spacing_hor_16"
         android:paddingEnd="@dimen/md_spec_spacing_hor_24"
         android:background="?attr/selectableItemBackground"
-        android:onClick="@{() -> onItemClick.invoke(id)}">
+        android:onClick="@{(view) -> onItemClick.invoke(id, pos, view)}">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/shapeable_image_view_image_art"

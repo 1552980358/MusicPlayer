@@ -1,6 +1,7 @@
 package projekt.cloud.piece.music.player.ui.fragment.library.artist
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +18,7 @@ import projekt.cloud.piece.music.player.util.TimeUtil.durationStr
 class ArtistLibraryRecyclerAdapter(
     private val artistList: List<ArtistView>,
     private val fragment: Fragment,
-    private val onItemClick: (String) -> Unit
+    private val onItemClick: (String, Int, View) -> Unit
 ): BaseRecyclerViewAdapter() {
 
     private val recyclerViewPool = RecycledViewPool()
@@ -26,7 +27,7 @@ class ArtistLibraryRecyclerAdapter(
         parent: ViewGroup,
         fragment: Fragment,
         recyclerViewPool: RecycledViewPool,
-        onItemClick: (String) -> Unit
+        onItemClick: (String, Int, View) -> Unit
     ): BaseBindingViewHolder<ArtistLibraryRecyclerLayoutBinding>(
         ArtistLibraryRecyclerLayoutBinding::inflate, parent
     ) {
@@ -44,8 +45,9 @@ class ArtistLibraryRecyclerAdapter(
             recyclerView.setRecycledViewPool(recyclerViewPool)
         }
 
-        fun bindData(id: String, title: String, duration: Long) {
+        fun bindData(id: String, pos: Int, title: String, duration: Long) {
             binding.id = id
+            binding.pos = pos
             binding.title = title
             binding.duration = duration.durationStr
         }
@@ -66,7 +68,7 @@ class ArtistLibraryRecyclerAdapter(
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
         artistList[position].let { artist ->
             holder.to<ViewHolder>().let { viewHolder ->
-                viewHolder.bindData(artist.id, artist.title, artist.duration)
+                viewHolder.bindData(artist.id, position, artist.title, artist.duration)
                 viewHolder.updateList(artist.albums)
             }
         }

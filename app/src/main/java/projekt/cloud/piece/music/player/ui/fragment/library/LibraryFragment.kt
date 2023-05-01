@@ -19,6 +19,7 @@ class LibraryFragment: BaseMultiDensityFragment<FragmentLibraryBinding, LibraryL
         layoutCompat.setupViewPager2(this)
         layoutCompat.setupTabLayout(resources)
         layoutCompat.setupRootBottomMargin(this)
+        layoutCompat.setupReturnAnimation(this)
     }
 
 }

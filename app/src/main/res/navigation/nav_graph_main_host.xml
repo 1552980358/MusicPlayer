@@ -14,6 +14,50 @@
     <fragment
         android:id="@+id/library"
         android:name="projekt.cloud.piece.music.player.ui.fragment.library.LibraryFragment"
-        tools:layout="@layout/fragment_library" />
+        tools:layout="@layout/fragment_library">
+
+        <action
+            android:id="@+id/to_artist"
+            app:destination="@id/artist" />
+
+        <action
+            android:id="@+id/to_album"
+            app:destination="@id/album" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/artist"
+        android:name="projekt.cloud.piece.music.player.ui.fragment.artist.ArtistFragment"
+        tools:layout="@layout/fragment_artist">
+
+        <!--suppress NavigationFile -->
+        <argument
+            android:name="id"
+            app:argType="string" />
+
+        <!--suppress NavigationFile -->
+        <argument
+            android:name="pos"
+            app:argType="integer" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/album"
+        android:name="projekt.cloud.piece.music.player.ui.fragment.album.AlbumFragment"
+        tools:layout="@layout/fragment_artist">
+
+        <!--suppress NavigationFile -->
+        <argument
+            android:name="id"
+            app:argType="string" />
+
+        <!--suppress NavigationFile -->
+        <argument
+            android:name="pos"
+            app:argType="integer" />
+
+    </fragment>
 
 </navigation>

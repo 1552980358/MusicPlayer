@@ -2,6 +2,7 @@ package projekt.cloud.piece.music.player.ui.fragment.library.album
 
 import android.net.Uri
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -16,12 +17,12 @@ import projekt.cloud.piece.music.player.util.UriUtil.albumArtUri
 class AlbumLibraryRecyclerAdapter(
     private val albumList: List<AlbumView>,
     private val fragment: Fragment,
-    private val onItemClick: (String) -> Unit
+    private val onItemClick: (String, Int, View) -> Unit
 ): BaseRecyclerViewAdapter() {
 
     private class ViewHolder(
         parent: ViewGroup,
-        onItemClick: (String) -> Unit
+        onItemClick: (String, Int, View) -> Unit
     ): BaseBindingViewHolder<AlbumLibraryRecyclerLayoutBinding>(
         AlbumLibraryRecyclerLayoutBinding::inflate, parent
     ) {
@@ -33,13 +34,14 @@ class AlbumLibraryRecyclerAdapter(
         private val art: ShapeableImageView
             get() = binding.shapeableImageViewImageArt
 
-        fun bindData(fragment: Fragment, album: AlbumView) {
-            bindData(album)
+        fun bindData(fragment: Fragment, album: AlbumView, pos: Int) {
+            bindData(album, pos)
             setCoverImage(fragment, album.id.albumArtUri)
         }
 
-        private fun bindData(album: AlbumView) {
+        private fun bindData(album: AlbumView, pos: Int) {
             binding.id = album.id
+            binding.pos = pos
             binding.title = album.title
             binding.duration = album.duration.durationStr
         }
@@ -58,7 +60,7 @@ class AlbumLibraryRecyclerAdapter(
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
         holder.to<ViewHolder>()
-            .bindData(fragment, albumList[position])
+            .bindData(fragment, albumList[position], position)
     }
 
     override fun getItemCount() = albumList.size

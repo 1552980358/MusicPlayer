@@ -6,12 +6,18 @@
 
     <data>
 
-        <import type="kotlin.jvm.functions.Function1" />
+        <import type="android.view.View" />
+
+        <import type="kotlin.jvm.functions.Function3" />
         <import type="kotlin.Unit" />
 
         <variable
             name="id"
             type="String" />
+
+        <variable
+            name="pos"
+            type="Integer" />
 
         <variable
             name="title"
@@ -23,14 +29,14 @@
 
         <variable
             name="onRootClick"
-            type="Function1&lt;String, Unit>" />
+            type="Function3&lt;String, Integer, View, Unit>" />
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{() -> onRootClick.invoke(id)}"
+        android:onClick="@{(view) -> onRootClick.invoke(id, pos, view)}"
         android:background="?attr/selectableItemBackground"
         android:paddingVertical="@dimen/md_spec_spacing_ver_12">
 
