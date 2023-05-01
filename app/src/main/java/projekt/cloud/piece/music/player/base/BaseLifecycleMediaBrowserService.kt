@@ -48,8 +48,7 @@ abstract class BaseLifecycleMediaBrowserService: MediaBrowserServiceCompat(), Li
         super.onDestroy()
     }
 
-    override fun getLifecycle(): Lifecycle {
-        return serviceLifecycleDispatcher.lifecycle
-    }
+    override val lifecycle: Lifecycle
+        get() = serviceLifecycleDispatcher.lifecycle
 
 }
