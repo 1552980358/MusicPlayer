@@ -31,6 +31,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -44,6 +45,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigationrail.NavigationRailView
+import kotlin.math.abs
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.base.interfaces.SurfaceColorsInterface
@@ -223,6 +225,8 @@ abstract class MainHostLayoutCompat(
         binding: FragmentMainHostBinding
     ): MainHostLayoutCompat(binding) {
 
+        private val fragmentContainer: FragmentContainerView
+            get() = binding.fragmentContainerView
         private val bottomNavigationView: BottomNavigationView
             get() = binding.bottomNavigationView!!
         private val bottomSheet: ConstraintLayout
@@ -230,7 +234,7 @@ abstract class MainHostLayoutCompat(
         private val playbackBarContainer: ConstraintLayout
             get() = playbackBar.constraintLayoutPlaybackBarContainer!!
 
-                private var _bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>? = null
+        private var _bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>? = null
         private val bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
             get() = _bottomSheetBehavior!!
 
@@ -257,10 +261,6 @@ abstract class MainHostLayoutCompat(
         }
 
         override fun setupPlaybackBar(fragment: Fragment, navController: NavController) {
-            val mainHostViewModel: MainHostViewModel by fragment.viewModels(
-                { navController.getViewModelStoreOwner(R.id.nav_graph_main_host) }
-            )
-
             @Suppress("UNCHECKED_CAST")
             _bottomSheetBehavior = (bottomSheet.layoutParams as CoordinatorLayout.LayoutParams)
                 .behavior as BottomSheetBehavior<ConstraintLayout>
@@ -277,24 +277,34 @@ abstract class MainHostLayoutCompat(
 
                 addBottomSheetCallback(
                     object: BottomSheetCallback() {
+
                         override fun onStateChanged(bottomSheet: View, newState: Int) {
                             when (newState) {
                                 STATE_HIDDEN -> {
-                                    val mediaControllerCompat =
-                                        MediaControllerCompat.getMediaController(fragment.requireActivity())
-                                    mediaControllerCompat.transportControls
-                                        .stop()
-                                    mainHostViewModel.setBottomMargin(0)
+                                    MediaControllerCompat.getMediaController(fragment.requireActivity())
+                                        ?.transportControls
+                                        ?.stop()
+                                    // Hidden
+                                    fragmentContainer.updatePadding(bottom = 0)
                                 }
                                 STATE_COLLAPSED -> {
-                                    mainHostViewModel.setBottomMargin(bottomSheet.height)
+                                    fragmentContainer.updatePadding(bottom = bottomSheet.height)
                                 }
                                 else -> {
                                     // Not Implemented
                                 }
                             }
                         }
-                        override fun onSlide(bottomSheet: View, slideOffset: Float) = Unit
+
+                        override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                            bottomSheet.height.let { height ->
+                                // Diff => visible height of bottom sheet
+                                fragmentContainer.updatePadding(
+                                    bottom = height - abs(slideOffset * height).toInt()
+                                )
+                            }
+                        }
+
                     }
                 )
             }
