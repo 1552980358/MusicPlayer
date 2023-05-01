@@ -32,4 +32,13 @@
         <item>Playlist</item>
     </string-array>
 
+    <string name="library_transition">library_transition</string>
+    <string name="library_transition_artist">artist</string>
+    <string name="library_transition_album">album</string>
+    <string name="library_transition_pos">pos</string>
+
+    <string name="artist_transition">artist_transition</string>
+
+    <string name="album_transition">album_transition</string>
+
 </resources>
