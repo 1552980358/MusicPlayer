@@ -30,7 +30,6 @@ class HomeFragment: BaseMultiDensityFragment<FragmentHomeBinding, HomeLayoutComp
 
     override fun onSetupLayoutCompat(layoutCompat: HomeLayoutCompat, savedInstanceState: Bundle?) {
         layoutCompat.setupRecyclerViewAction(this)
-        layoutCompat.setupRecyclerViewBottomMargin(this)
 
         val mainViewModel: MainViewModel by activityViewModels()
 

@@ -7,11 +7,9 @@ import android.view.View.OVER_SCROLL_NEVER
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.SharedElementCallback
 import androidx.core.view.isNotEmpty
-import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.clearFragmentResultListener
 import androidx.fragment.app.setFragmentResultListener
-import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -21,7 +19,6 @@ import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.base.interfaces.SurfaceColorsInterface
 import projekt.cloud.piece.music.player.databinding.FragmentLibraryBinding
 import projekt.cloud.piece.music.player.ui.fragment.library.base.BaseLibraryObjectFragment
-import projekt.cloud.piece.music.player.ui.fragment.mainHost.MainHostViewModel
 import projekt.cloud.piece.music.player.util.KotlinUtil.ifNull
 import projekt.cloud.piece.music.player.util.KotlinUtil.to
 import projekt.cloud.piece.music.player.util.KotlinUtil.tryTo
@@ -61,13 +58,6 @@ abstract class LibraryLayoutCompat(
         tabLayout.setBackgroundColor(color)
     }
 
-    /**
-     * [setupRootBottomMargin]
-     * @param fragment [Fragment]
-     * For Compat only
-     **/
-    open fun setupRootBottomMargin(fragment: Fragment) = Unit
-
     open fun setupReturnAnimation(fragment: Fragment) = Unit
 
     fun setupTabLayout(resources: Resources) {
@@ -97,15 +87,6 @@ abstract class LibraryLayoutCompat(
         override fun onSurface2ColorObtained(color: Int) {
             super.onSurface2ColorObtained(color)
             root.setBackgroundColor(color)
-        }
-
-        override fun setupRootBottomMargin(fragment: Fragment) {
-            val mainHostViewModel: MainHostViewModel by fragment.navGraphViewModels(
-                R.id.nav_graph_main_host
-            )
-            mainHostViewModel.bottomMargin.observe(fragment.viewLifecycleOwner) { bottomInsets ->
-                root.updatePadding(bottom = bottomInsets)
-            }
         }
 
         override fun setupReturnAnimation(fragment: Fragment) {

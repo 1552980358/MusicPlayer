@@ -12,7 +12,6 @@ import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
 import projekt.cloud.piece.music.player.databinding.FragmentHomeBinding
-import projekt.cloud.piece.music.player.ui.fragment.mainHost.MainHostViewModel
 import projekt.cloud.piece.music.player.util.ScreenDensity
 import projekt.cloud.piece.music.player.util.ScreenDensity.COMPACT
 import projekt.cloud.piece.music.player.util.ScreenDensity.EXPANDED
@@ -50,13 +49,6 @@ abstract class HomeLayoutCompat(binding: FragmentHomeBinding): BaseLayoutCompat<
      * For Compat only
      **/
     open fun setupRecyclerViewAction(fragment: Fragment) = Unit
-
-    /**
-     * [setupRecyclerViewBottomMargin]
-     * @param fragment [Fragment]
-     * For Compat only
-     **/
-    open fun setupRecyclerViewBottomMargin(fragment: Fragment) = Unit
 
     private class CompatImpl(
         binding: FragmentHomeBinding
@@ -97,15 +89,6 @@ abstract class HomeLayoutCompat(binding: FragmentHomeBinding): BaseLayoutCompat<
 
         private fun resetAppBarLayoutOffset() {
             appBarLayout.offsetTopAndBottom(-1)
-        }
-
-        override fun setupRecyclerViewBottomMargin(fragment: Fragment) {
-            val mainHostViewModel: MainHostViewModel by fragment.navGraphViewModels(
-                R.id.nav_graph_main_host
-            )
-            mainHostViewModel.bottomMargin.observe(fragment.viewLifecycleOwner) { bottomInsets ->
-                recyclerView.updatePadding(bottom = bottomInsets)
-            }
         }
 
     }
