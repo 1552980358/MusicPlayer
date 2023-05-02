@@ -70,7 +70,10 @@ abstract class LibraryLayoutCompat(
 
     fun setupViewPager2(fragment: Fragment) {
         viewPager2.adapter.ifNull {
-            viewPager2.adapter = LibraryFragmentStateAdapter(fragment)
+            LibraryFragmentStateAdapter(fragment).let { adapter ->
+                viewPager2.adapter = adapter
+                viewPager2.offscreenPageLimit = adapter.itemCount
+            }
             if (viewPager2.isNotEmpty()) {
                 viewPager2.getChildAt(0)
                     .tryTo<RecyclerView>()
