@@ -201,6 +201,11 @@ class PlayerFragment: BaseMultiDensityFragment<FragmentPlayerBinding, PlayerLayo
         layoutCompat.updateCoverImage(this@PlayerFragment, coverUri)
     }
 
+    override fun onResume() {
+        super.onResume()
+        layoutCompat.showExitAnim(this)
+    }
+
     override fun onStop() {
         MediaControllerCompat.getMediaController(requireActivity())
             .unregisterCallback(mediaControllerCallback)

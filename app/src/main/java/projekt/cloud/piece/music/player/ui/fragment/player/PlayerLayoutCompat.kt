@@ -21,7 +21,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.animation.doOnStart
 import androidx.core.content.ContextCompat
-import androidx.core.view.doOnAttach
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
@@ -97,6 +97,14 @@ abstract class PlayerLayoutCompat(
     }
 
     abstract fun setupExit(fragment: Fragment)
+
+    /**
+     * [showExitAnim]
+     * @param fragment [Fragment]
+     * to show exit button
+     * Compat only
+     **/
+    open fun showExitAnim(fragment: Fragment) = Unit
 
     fun setupSlider(
         transportControls: TransportControls, slidingListener: (Boolean) -> Unit
@@ -255,11 +263,12 @@ abstract class PlayerLayoutCompat(
                     .onBackPressedDispatcher
                     .onBackPressed()
             }
-            fragment.lifecycleScope.launchWhenResumed {
-                when {
-                    exit.isAttachedToWindow -> startExitButtonAnimation(fragment)
-                    else -> exit.doOnAttach { startExitButtonAnimation(fragment) }
-                }
+
+        }
+
+        override fun showExitAnim(fragment: Fragment) {
+            if (exit.isInvisible) {
+                startExitButtonAnimation(fragment)
             }
         }
 
