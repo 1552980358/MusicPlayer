@@ -21,4 +21,10 @@ object KotlinUtil {
         }
     }
 
+    inline fun <T> T?.ifNotNull(block: () -> Unit) {
+        if (this != null) {
+            block.invoke()
+        }
+    }
+
 }
