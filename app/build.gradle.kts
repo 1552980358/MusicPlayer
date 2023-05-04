@@ -70,7 +70,7 @@ dependencies {
     ksp("com.github.bumptech.glide:ksp:4.15.1")
 
     implementation("com.google.android.exoplayer:exoplayer-core:2.18.6")
-    implementation("com.google.android.material:material:1.8.0")
+    implementation("com.google.android.material:material:1.9.0")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.10")
 
