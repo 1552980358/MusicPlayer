@@ -3,7 +3,6 @@ package projekt.cloud.piece.music.player.storage.runtime.databaseView
 import androidx.room.ColumnInfo
 import androidx.room.DatabaseView
 import androidx.room.Ignore
-import projekt.cloud.piece.music.player.storage.runtime.databaseView.ArtistView.AlbumViewConstant
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.ArtistView.AlbumViewConstant.ARTIST_VIEW_COLUMN_DURATION
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.ArtistView.AlbumViewConstant.ARTIST_VIEW_COLUMN_ID
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.ArtistView.AlbumViewConstant.ARTIST_VIEW_COLUMN_NAME
@@ -29,7 +28,7 @@ data class ArtistView(
     @ColumnInfo(ARTIST_VIEW_COLUMN_ID)
     val id: String,
     @ColumnInfo(ARTIST_VIEW_COLUMN_NAME)
-    val title: String,
+    val name: String,
     @ColumnInfo(ARTIST_VIEW_COLUMN_SONG_COUNT)
     val songCount: Int,
     @ColumnInfo(ARTIST_VIEW_COLUMN_DURATION)
