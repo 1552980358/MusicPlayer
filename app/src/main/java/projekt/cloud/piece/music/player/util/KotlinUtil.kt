@@ -1,6 +1,5 @@
 package projekt.cloud.piece.music.player.util
 
-
 object KotlinUtil {
 
     @Suppress("UNCHECKED_CAST")
@@ -13,7 +12,7 @@ object KotlinUtil {
         get() = this == null
 
     inline val <T> T?.isNotNull: Boolean
-        get() = !isNull
+        get() = this != null
 
     inline fun <T> T?.ifNull(block: () -> Unit) {
         if (this == null) {
