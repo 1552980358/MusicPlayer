@@ -94,20 +94,20 @@ class ArtistLibraryFragment: BaseLibraryObjectFragment() {
 
     private fun setRecyclerViewAdapter(fragment: Fragment, artists: List<ArtistView>) {
         recyclerView.adapter.ifNull {
-            recyclerView.adapter = createRecyclerViewAdapter(artists) { id, pos, view ->
-                setupAndNavigateToArtist(fragment, id, pos, view)
+            recyclerView.adapter = createRecyclerViewAdapter(artists) { id, name, pos, view ->
+                setupAndNavigateToArtist(fragment, id, name, pos, view)
             }
         }
     }
 
     private fun createRecyclerViewAdapter(
         artistList: List<ArtistView>,
-        onItemClick: (String, Int, View) -> Unit
+        onItemClick: (String, String, Int, View) -> Unit
     ): RecyclerView.Adapter<*> {
         return ArtistLibraryRecyclerAdapter(artistList, this, onItemClick)
     }
 
-    private fun setupAndNavigateToArtist(fragment: Fragment, id: String, pos: Int, view: View) {
+    private fun setupAndNavigateToArtist(fragment: Fragment, id: String, name: String, pos: Int, view: View) {
         lifecycleScope.default {
             /**
              * !!! Important !!!
@@ -120,7 +120,7 @@ class ArtistLibraryFragment: BaseLibraryObjectFragment() {
             // Prepare transition name
             view.transitionName = getString(R.string.artist_transition)
             // Start navigate
-            navigateToArtist(fragment.findNavController(), id, pos, view)
+            navigateToArtist(fragment.findNavController(), id, name, pos, view)
         }
     }
 
@@ -132,10 +132,12 @@ class ArtistLibraryFragment: BaseLibraryObjectFragment() {
         }
     }
 
-    private fun navigateToArtist(navController: NavController, id: String, pos: Int, view: View) {
+    private fun navigateToArtist(
+        navController: NavController, id: String, name: String, pos: Int, view: View
+    ) {
         lifecycleScope.main {
             navController.navigate(
-                LibraryFragmentDirections.toArtist(id, pos),
+                LibraryFragmentDirections.toArtist(id, name, pos),
                 FragmentNavigatorExtras(view to view.transitionName)
             )
         }
