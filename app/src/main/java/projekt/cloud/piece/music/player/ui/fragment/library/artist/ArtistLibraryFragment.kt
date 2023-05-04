@@ -77,8 +77,8 @@ class ArtistLibraryFragment: BaseLibraryObjectFragment() {
         runtimeDatabase: RuntimeDatabase
     ): Map<String, List<String>> {
         return withContext(default) {
-            runtimeDatabase.audioMetadataDao()
-                .queryAlbumOfArtist()
+            runtimeDatabase.databaseViewDao()
+                .queryAlbumsOfArtists()
         }
     }
 
