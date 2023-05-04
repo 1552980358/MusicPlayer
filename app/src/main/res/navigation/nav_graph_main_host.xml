@@ -38,6 +38,11 @@
 
         <!--suppress NavigationFile -->
         <argument
+            android:name="name"
+            app:argType="string" />
+
+        <!--suppress NavigationFile -->
+        <argument
             android:name="pos"
             app:argType="integer" />
 
