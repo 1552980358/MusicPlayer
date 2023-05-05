@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.MapInfo
 import androidx.room.Query
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.AlbumView
+import projekt.cloud.piece.music.player.storage.runtime.databaseView.AlbumView.AlbumViewConstant.ALBUM_VIEW_COLUMN_ID
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.AlbumView.AlbumViewConstant.ALBUM_VIEW_NAME
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.ArtistView
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.ArtistView.AlbumViewConstant.ARTIST_VIEW_COLUMN_ID
@@ -30,5 +31,8 @@ interface DatabaseViewDao {
 
     @Query("SELECT * FROM $ALBUM_VIEW_NAME")
     suspend fun queryAlbum(): List<AlbumView>
+
+    @Query("SELECT * FROM $ALBUM_VIEW_NAME where $ALBUM_VIEW_COLUMN_ID = :id")
+    suspend fun queryAlbum(id: String): AlbumView
 
 }
