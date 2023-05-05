@@ -41,6 +41,8 @@
     <string name="artist_transition">artist_transition</string>
     <string name="artist_metadata_str">%d songs | %s</string>
 
+    <string name="album_title">Album</string>
     <string name="album_transition">album_transition</string>
+    <string name="album_metadata_str">%d songs | %s</string>
 
 </resources>

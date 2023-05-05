@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="metadataStr"
+            type="String" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout_album_cover_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:showIn="@layout/fragment_album">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/shapeable_image_view_cover"
+            android:layout_width="@dimen/constraint_fill"
+            android:layout_height="@dimen/constraint_fill"
+            app:srcCompat="@drawable/ic_round_album_24"
+            app:shapeAppearance="?attr/roundShapeableImageAppearance"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintDimensionRatio="1:1" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/material_text_view_title"
+            android:layout_width="@dimen/constraint_fill"
+            android:layout_height="wrap_content"
+            android:text="@{title}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/shapeable_image_view_cover"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/shapeable_image_view_cover"
+            app:layout_constraintBottom_toTopOf="@id/material_text_view_metadata" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/material_text_view_metadata"
+            android:layout_width="@dimen/constraint_fill"
+            android:layout_height="wrap_content"
+            android:text="@{metadataStr}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/shapeable_image_view_cover"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/material_text_view_title"
+            app:layout_constraintBottom_toBottomOf="@id/shapeable_image_view_cover" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

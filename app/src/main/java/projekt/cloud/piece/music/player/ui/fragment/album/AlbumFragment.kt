@@ -4,19 +4,34 @@ import android.graphics.Color.TRANSPARENT
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.platform.MaterialContainerTransform
+import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
-import projekt.cloud.piece.music.player.base.BaseFragment
+import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
+import projekt.cloud.piece.music.player.base.LayoutCompatInflater
 import projekt.cloud.piece.music.player.base.OnBackPressedListener
 import projekt.cloud.piece.music.player.base.ViewBindingInflater
 import projekt.cloud.piece.music.player.databinding.FragmentAlbumBinding
+import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase
+import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase.RuntimeDatabaseUtil.runtimeDatabase
+import projekt.cloud.piece.music.player.storage.runtime.databaseView.AlbumView
+import projekt.cloud.piece.music.player.storage.runtime.entity.AudioMetadataEntity
+import projekt.cloud.piece.music.player.ui.fragment.album.AlbumLayoutCompat.AlbumLayoutCompatUtil
+import projekt.cloud.piece.music.player.util.CoroutineUtil.default
+import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 
-class AlbumFragment: BaseFragment<FragmentAlbumBinding>() {
+class AlbumFragment: BaseMultiDensityFragment<FragmentAlbumBinding, AlbumLayoutCompat>() {
 
     override val viewBindingInflater: ViewBindingInflater<FragmentAlbumBinding>
         get() = FragmentAlbumBinding::inflate
+
+    override val layoutCompatInflater: LayoutCompatInflater<FragmentAlbumBinding, AlbumLayoutCompat>
+        get() = AlbumLayoutCompatUtil::inflate
+
+    private val args by navArgs<AlbumFragmentArgs>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,9 +40,58 @@ class AlbumFragment: BaseFragment<FragmentAlbumBinding>() {
         }
     }
 
+    override fun onSetupLayoutCompat(layoutCompat: AlbumLayoutCompat, savedInstanceState: Bundle?) {
+        val albumId = args.id
+
+        layoutCompat.setupAlbumCover(this, albumId)
+        layoutCompat.setupCollapsingAppBar(this)
+        layoutCompat.setupNavigation(this)
+
+        lifecycleScope.main {
+            val runtimeDatabase = requireContext().runtimeDatabase
+
+            setupAlbumMetadata(
+                layoutCompat,
+                queryAlbum(runtimeDatabase, albumId)
+            )
+
+            setRecyclerViewAdapter(
+                layoutCompat,
+                queryAudioList(runtimeDatabase, albumId)
+            )
+        }
+    }
+
+    private fun setupAlbumMetadata(layoutCompat: AlbumLayoutCompat, albumView: AlbumView) {
+        layoutCompat.setupAlbumMetadata(this, albumView)
+    }
+
+    private suspend fun queryAlbum(runtimeDatabase: RuntimeDatabase, id: String): AlbumView {
+        return withContext(default) {
+            runtimeDatabase.databaseViewDao()
+                .queryAlbum(id)
+        }
+    }
+
+    private fun setRecyclerViewAdapter(
+        layoutCompat: AlbumLayoutCompat, audioList: List<AudioMetadataEntity>
+    ) {
+        layoutCompat.setRecyclerViewAdapter(audioList) {
+            // TODO: Preserved for playing audio and creating playlist
+        }
+    }
+
+    private suspend fun queryAudioList(
+        runtimeDatabase: RuntimeDatabase, id: String
+    ): List<AudioMetadataEntity> {
+        return withContext(default) {
+            runtimeDatabase.audioMetadataDao()
+                .queryForAlbum(id)
+        }
+    }
+
     override val onBackPressed: OnBackPressedListener
         get() = {
-            val args: AlbumFragmentArgs by navArgs()
             setFragmentResult(
                 getString(R.string.library_transition),
                 bundleOf(
