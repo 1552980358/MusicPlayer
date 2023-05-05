@@ -30,12 +30,12 @@
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/material_toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="?attr/actionBarSize"
                     app:navigationIcon="@drawable/ic_round_arrow_back_24" />
 
                 <androidx.constraintlayout.widget.Placeholder
                     android:id="@+id/placeholder_toolbar"
-                    android:layout_width="@dimen/constraint_fill"
+                    android:layout_width="match_parent"
                     android:layout_height="@dimen/md_spec_size_image_56" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
