@@ -23,6 +23,7 @@ import projekt.cloud.piece.music.player.databinding.ArtistAvatarBinding
 import projekt.cloud.piece.music.player.databinding.FragmentArtistBinding
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.ArtistView
 import projekt.cloud.piece.music.player.storage.runtime.entity.AudioMetadataEntity
+import projekt.cloud.piece.music.player.util.AutoExpandableAppBarLayoutBehavior
 import projekt.cloud.piece.music.player.util.KotlinUtil.ifNotNull
 import projekt.cloud.piece.music.player.util.KotlinUtil.tryTo
 import projekt.cloud.piece.music.player.util.ScreenDensity
@@ -134,8 +135,8 @@ abstract class ArtistLayoutCompat(
 
             appBarLayout.layoutParams.tryTo<CoordinatorLayout.LayoutParams>()
                 ?.behavior
-                .tryTo<ArtistAppBarBehavior>()
-                ?.setupIsAppBarContentExpandedListener(fragment, isAppBarContentExpanded)
+                .tryTo<AutoExpandableAppBarLayoutBehavior>()
+                ?.setObserver(fragment, isAppBarContentExpanded)
         }
 
         private fun createTransitionSet(doOnEnd: () -> Unit): TransitionSet {
