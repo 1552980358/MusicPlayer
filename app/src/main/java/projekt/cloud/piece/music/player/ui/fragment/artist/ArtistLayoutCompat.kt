@@ -3,6 +3,7 @@ package projekt.cloud.piece.music.player.ui.fragment.artist
 import androidx.annotation.UiThread
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -23,6 +24,7 @@ import projekt.cloud.piece.music.player.databinding.FragmentArtistBinding
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.ArtistView
 import projekt.cloud.piece.music.player.storage.runtime.entity.AudioMetadataEntity
 import projekt.cloud.piece.music.player.util.KotlinUtil.ifNotNull
+import projekt.cloud.piece.music.player.util.KotlinUtil.tryTo
 import projekt.cloud.piece.music.player.util.ScreenDensity
 import projekt.cloud.piece.music.player.util.ScreenDensity.COMPACT
 import projekt.cloud.piece.music.player.util.ScreenDensity.EXPANDED
@@ -77,9 +79,9 @@ abstract class ArtistLayoutCompat(
         // private val avatarArt: ShapeableImageView
         //     get() = avatar.shapeableImageViewArt
 
-        private var _isAppBarExpanded = MutableLiveData<Boolean>()
-        private val isAppBarExpanded: LiveData<Boolean>
-            get() = _isAppBarExpanded
+        private var _isAppBarContentExpanded = MutableLiveData<Boolean>()
+        private val isAppBarContentExpanded: LiveData<Boolean>
+            get() = _isAppBarContentExpanded
 
         override fun setupCollapsingAppBar(fragment: Fragment) {
             val originalSet = ConstraintSet().apply {
@@ -91,7 +93,7 @@ abstract class ArtistLayoutCompat(
 
             var transitionSet: TransitionSet? = null
             var currentSet = originalSet
-            _isAppBarExpanded.value = currentSet == originalSet
+            _isAppBarContentExpanded.value = currentSet == originalSet
 
             /**
              * Should not directly set as `appBarLayout.totalScrollRange / 2`
@@ -120,14 +122,20 @@ abstract class ArtistLayoutCompat(
                     }
                 }?.let { constraintSet ->
                     currentSet = constraintSet
-                    _isAppBarExpanded.value = currentSet == originalSet
-                    transitionSet = createTransitionSet { transitionSet = null }
+                    _isAppBarContentExpanded.value = currentSet == originalSet
+                    transitionSet = createTransitionSet {
+                        transitionSet = null
+                    }
                     TransitionManager.beginDelayedTransition(avatarContainer, transitionSet)
                     constraintSet.applyTo(avatarContainer)
                 }
 
             }
 
+            appBarLayout.layoutParams.tryTo<CoordinatorLayout.LayoutParams>()
+                ?.behavior
+                .tryTo<ArtistAppBarBehavior>()
+                ?.setupIsAppBarContentExpandedListener(fragment, isAppBarContentExpanded)
         }
 
         private fun createTransitionSet(doOnEnd: () -> Unit): TransitionSet {
@@ -160,7 +168,7 @@ abstract class ArtistLayoutCompat(
             avatar.metadataStr = metadataStr
 
             val fragmentLabel = fragment.getString(R.string.artist_title)
-            isAppBarExpanded.observe(fragment.viewLifecycleOwner) { isAppBarExpanded ->
+            isAppBarContentExpanded.observe(fragment.viewLifecycleOwner) { isAppBarExpanded ->
                 when {
                     isAppBarExpanded -> {
                         toolbar.title = artistName
