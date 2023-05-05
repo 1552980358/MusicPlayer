@@ -26,11 +26,14 @@
             android:id="@+id/shapeable_image_view_cover"
             android:layout_width="@dimen/constraint_fill"
             android:layout_height="@dimen/constraint_fill"
+            android:layout_marginHorizontal="@dimen/md_spec_spacing_hor_16"
+            android:layout_marginVertical="@dimen/md_spec_spacing_ver_8"
             app:srcCompat="@drawable/ic_round_album_24"
             app:shapeAppearance="?attr/roundShapeableImageAppearance"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1" />
 
         <com.google.android.material.textview.MaterialTextView
