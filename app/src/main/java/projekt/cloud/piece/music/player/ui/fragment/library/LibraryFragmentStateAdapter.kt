@@ -15,7 +15,7 @@ class LibraryFragmentStateAdapter private constructor(
 
     private companion object {
 
-        private val childFragments: List<BaseLibraryObjectFragment>
+        private val childFragments: List<BaseLibraryObjectFragment<*>>
             get() = listOf(ArtistLibraryFragment(), AlbumLibraryFragment())
 
     }
@@ -32,7 +32,7 @@ class LibraryFragmentStateAdapter private constructor(
         return fragments[position]
     }
 
-    operator fun get(position: Int): BaseLibraryObjectFragment {
+    operator fun get(position: Int): BaseLibraryObjectFragment<*> {
         return fragments[position].to()
     }
 

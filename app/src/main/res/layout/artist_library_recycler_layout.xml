@@ -7,7 +7,7 @@
     <data>
 
         <import type="android.view.View" />
-        <import type="kotlin.jvm.functions.Function4" />
+        <import type="kotlin.jvm.functions.Function3" />
         <import type="kotlin.Unit" />
 
         <variable
@@ -28,14 +28,14 @@
 
         <variable
             name="onRootClick"
-            type="Function4&lt;String, String, Integer, View, Unit>" />
+            type="Function3&lt;String, Integer, View, Unit>" />
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{(view) -> onRootClick.invoke(id, name, pos, view)}"
+        android:onClick="@{(view) -> onRootClick.invoke(id, pos, view)}"
         android:background="?attr/selectableItemBackground"
         android:paddingVertical="@dimen/md_spec_spacing_ver_12">
 

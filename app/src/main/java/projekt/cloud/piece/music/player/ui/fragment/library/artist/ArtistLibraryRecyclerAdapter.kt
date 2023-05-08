@@ -18,7 +18,7 @@ import projekt.cloud.piece.music.player.util.TimeUtil.durationStr
 class ArtistLibraryRecyclerAdapter(
     private val artistList: List<ArtistView>,
     private val fragment: Fragment,
-    private val onItemClick: (String, String, Int, View) -> Unit
+    private val onItemClick: (String, Int, View) -> Unit
 ): BaseRecyclerViewAdapter() {
 
     private val recyclerViewPool = RecycledViewPool()
@@ -27,7 +27,7 @@ class ArtistLibraryRecyclerAdapter(
         parent: ViewGroup,
         fragment: Fragment,
         recyclerViewPool: RecycledViewPool,
-        onItemClick: (String, String, Int, View) -> Unit
+        onItemClick: (String, Int, View) -> Unit
     ): BaseBindingViewHolder<ArtistLibraryRecyclerLayoutBinding>(
         ArtistLibraryRecyclerLayoutBinding::inflate, parent
     ) {

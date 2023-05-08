@@ -144,7 +144,7 @@ abstract class LibraryLayoutCompat(
                 .also { view -> view.transitionName = transitionName }
         }
 
-        private fun getLibraryFragment(index: Int): BaseLibraryObjectFragment {
+        private fun getLibraryFragment(index: Int): BaseLibraryObjectFragment<*> {
             return viewPager2.adapter
                 .to<LibraryFragmentStateAdapter>()[index]
         }
