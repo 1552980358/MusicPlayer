@@ -15,13 +15,37 @@ class LibraryFragmentStateAdapter private constructor(
 
     private companion object {
 
-        private val childFragments: List<BaseLibraryObjectFragment<*>>
+        private val libraryFragments: List<BaseLibraryObjectFragment<*>>
             get() = listOf(ArtistLibraryFragment(), AlbumLibraryFragment())
+
+        private fun Fragment.childFragments(): List<BaseLibraryObjectFragment<*>> {
+            val fragmentList = childFragments.filterIsInstance<BaseLibraryObjectFragment<*>>()
+                // Look at source code, it should be typed ArrayList
+                .to<ArrayList<BaseLibraryObjectFragment<*>>>()
+
+            if (fragmentList.isEmpty()) {
+                return libraryFragments
+            }
+
+            if (fragmentList.size == 1) {
+                when (fragmentList.first()) {
+                    is ArtistLibraryFragment -> {
+                        fragmentList.add(AlbumLibraryFragment())
+                    }
+                    is AlbumLibraryFragment -> {
+                        fragmentList.add(0, ArtistLibraryFragment())
+                    }
+                }
+            }
+
+            // fragmentList.size should > 1
+            return fragmentList
+        }
 
     }
 
     constructor(fragment: Fragment): this(
-        fragment, fragment.childFragments(childFragments)
+        fragment, fragment.childFragments()
     )
 
     override fun getItemCount(): Int {
