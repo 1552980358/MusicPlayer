@@ -8,6 +8,10 @@ object KotlinUtil {
     inline fun <reified T> Any?.tryTo(): T? =
         this as? T
 
+    inline fun <reified T> Any?.tryTo(block: (T) -> Unit): T? {
+        return tryTo<T>()?.also(block)
+    }
+
     inline val <T> T?.isNull: Boolean
         get() = this == null
 
@@ -15,13 +19,13 @@ object KotlinUtil {
         get() = this != null
 
     inline fun <T> T?.ifNull(block: () -> Unit) {
-        if (this == null) {
+        if (this.isNull) {
             block.invoke()
         }
     }
 
     inline fun <T> T?.ifNotNull(block: () -> Unit) {
-        if (this != null) {
+        if (this.isNotNull) {
             block.invoke()
         }
     }
