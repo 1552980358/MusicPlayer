@@ -1,6 +1,7 @@
 package projekt.cloud.piece.music.player.util
 
 import android.content.Context
+import androidx.fragment.app.Fragment
 import projekt.cloud.piece.music.player.R
 
 enum class ScreenDensity(val value: Int) {
@@ -16,6 +17,10 @@ enum class ScreenDensity(val value: Int) {
                 resources.getBoolean(R.bool.screen_density_expanded) -> EXPANDED
                 else -> COMPACT
             }
+
+        @JvmStatic
+        val Fragment.screenDensity: ScreenDensity
+            get() = requireContext().screenDensity
 
     }
 
