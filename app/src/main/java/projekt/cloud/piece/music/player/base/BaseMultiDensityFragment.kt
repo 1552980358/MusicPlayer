@@ -1,11 +1,14 @@
 package projekt.cloud.piece.music.player.base
 
 import android.os.Bundle
+import androidx.activity.addCallback
 import androidx.annotation.CallSuper
 import androidx.viewbinding.ViewBinding
+import projekt.cloud.piece.music.player.base.interfaces.BackPressedInterface
 import projekt.cloud.piece.music.player.base.interfaces.SurfaceColorsInterface
 import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
 import projekt.cloud.piece.music.player.util.FragmentUtil.viewLifecycleProperty
+import projekt.cloud.piece.music.player.util.KotlinUtil.tryTo
 import projekt.cloud.piece.music.player.util.ScreenDensity
 import projekt.cloud.piece.music.player.util.ScreenDensity.ScreenDensityUtil.screenDensity
 
@@ -44,6 +47,15 @@ abstract class BaseMultiDensityFragment<VB, LC>: BaseFragment<VB>()
             if (layoutCompat is SurfaceColorsInterface) {
                 layoutCompat.requireSurfaceColors(context)
             }
+        }
+        layoutCompat.tryTo<BackPressedInterface> { backPressedInterface ->
+            requireActivity().onBackPressedDispatcher
+                .addCallback(viewLifecycleOwner) {
+                    if (backPressedInterface.onBackPressed(this@BaseMultiDensityFragment)) {
+                        isEnabled = false
+                        remove()
+                    }
+                }
         }
     }
 

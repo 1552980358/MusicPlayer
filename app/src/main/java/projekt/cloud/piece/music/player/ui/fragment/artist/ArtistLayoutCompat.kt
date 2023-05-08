@@ -6,12 +6,14 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
+import projekt.cloud.piece.music.player.base.interfaces.BackPressedInterface
 import projekt.cloud.piece.music.player.databinding.ArtistAvatarBinding
 import projekt.cloud.piece.music.player.databinding.FragmentArtistBinding
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.ArtistView
@@ -56,7 +58,7 @@ abstract class ArtistLayoutCompat(
         recyclerView.adapter = ArtistRecyclerAdapter(fragment, audioList, onItemClick)
     }
 
-    private class CompatImpl(binding: FragmentArtistBinding): ArtistLayoutCompat(binding) {
+    private class CompatImpl(binding: FragmentArtistBinding): ArtistLayoutCompat(binding), BackPressedInterface {
 
         private val appBarLayout: AppBarLayout
             get() = binding.appBarLayout
@@ -125,6 +127,12 @@ abstract class ArtistLayoutCompat(
                     }
                 }
             }
+        }
+
+        override fun onBackPressed(fragment: Fragment): Boolean {
+            fragment.findNavController()
+                .navigateUp()
+            return false
         }
 
     }

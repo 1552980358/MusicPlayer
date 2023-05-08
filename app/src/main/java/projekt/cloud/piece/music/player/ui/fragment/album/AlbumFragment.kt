@@ -2,17 +2,16 @@ package projekt.cloud.piece.music.player.ui.fragment.album
 
 import android.graphics.Color.TRANSPARENT
 import android.os.Bundle
+import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
 import projekt.cloud.piece.music.player.base.LayoutCompatInflater
-import projekt.cloud.piece.music.player.base.OnBackPressedListener
 import projekt.cloud.piece.music.player.base.ViewBindingInflater
 import projekt.cloud.piece.music.player.databinding.FragmentAlbumBinding
 import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase
@@ -62,6 +61,11 @@ class AlbumFragment: BaseMultiDensityFragment<FragmentAlbumBinding, AlbumLayoutC
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setFragmentResult(args)
+    }
+
     private fun setupAlbumMetadata(layoutCompat: AlbumLayoutCompat, albumView: AlbumView) {
         layoutCompat.setupAlbumMetadata(this, albumView)
     }
@@ -90,17 +94,14 @@ class AlbumFragment: BaseMultiDensityFragment<FragmentAlbumBinding, AlbumLayoutC
         }
     }
 
-    override val onBackPressed: OnBackPressedListener
-        get() = {
-            setFragmentResult(
-                getString(R.string.library_transition),
-                bundleOf(
-                    getString(R.string.library_transition) to getString(R.string.library_transition_album),
-                    getString(R.string.library_transition_pos) to args.pos
-                )
+    private fun setFragmentResult(args: AlbumFragmentArgs) {
+        setFragmentResult(
+            getString(R.string.library_transition),
+            bundleOf(
+                getString(R.string.library_transition) to getString(R.string.library_transition_album),
+                getString(R.string.library_transition_pos) to args.pos
             )
-            findNavController().navigateUp()
-            true
-        }
+        )
+    }
 
 }

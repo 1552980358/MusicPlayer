@@ -2,17 +2,16 @@ package projekt.cloud.piece.music.player.ui.fragment.artist
 
 import android.graphics.Color.TRANSPARENT
 import android.os.Bundle
+import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
 import projekt.cloud.piece.music.player.base.LayoutCompatInflater
-import projekt.cloud.piece.music.player.base.OnBackPressedListener
 import projekt.cloud.piece.music.player.base.ViewBindingInflater
 import projekt.cloud.piece.music.player.databinding.FragmentArtistBinding
 import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase
@@ -58,6 +57,11 @@ class ArtistFragment: BaseMultiDensityFragment<FragmentArtistBinding, ArtistLayo
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setFragmentResult(args)
+    }
+
     private suspend fun queryArtist(
         runtimeDatabase: RuntimeDatabase, id: String
     ): ArtistView {
@@ -82,17 +86,14 @@ class ArtistFragment: BaseMultiDensityFragment<FragmentArtistBinding, ArtistLayo
         }
     }
 
-    override val onBackPressed: OnBackPressedListener
-        get() = {
-            setFragmentResult(
-                getString(R.string.library_transition),
-                bundleOf(
-                    getString(R.string.library_transition) to getString(R.string.library_transition_artist),
-                    getString(R.string.library_transition_pos) to args.pos
-                )
+    private fun setFragmentResult(args: ArtistFragmentArgs) {
+        setFragmentResult(
+            getString(R.string.library_transition),
+            bundleOf(
+                getString(R.string.library_transition) to getString(R.string.library_transition_artist),
+                getString(R.string.library_transition_pos) to args.pos
             )
-            findNavController().navigateUp()
-            true
-        }
+        )
+    }
 
 }
