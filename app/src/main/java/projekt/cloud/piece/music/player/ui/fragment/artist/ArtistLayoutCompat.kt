@@ -172,7 +172,60 @@ abstract class ArtistLayoutCompat(
 
     }
 
-    private class W600dpImpl(binding: FragmentArtistBinding): ArtistLayoutCompat(binding)
+    private class W600dpImpl(binding: FragmentArtistBinding): ArtistLayoutCompat(binding) {
+
+        private val appBarLayout: AppBarLayout
+            get() = binding.appBarLayout
+        private val toolbar: MaterialToolbar
+            get() = binding.materialToolbar
+
+        private val avatar: ArtistAvatarBinding
+            get() = binding.artistAvatar
+        private val avatarContainer: ConstraintLayout
+            get() = avatar.constraintLayoutAvatarContainer
+
+        private val isExpandedMutableLiveData = MutableLiveData<Boolean>()
+
+        override fun setupCollapsingAppBar(fragment: Fragment) {
+            val avatarContainer = avatarContainer
+            appBarLayout.setupAutoExpandableAppBarLayout(
+                fragment,
+                constraintLayout = avatarContainer,
+                isExpandedMutableLiveData,
+                expandedConstraintSet = createExpandedConstraintSet(avatarContainer),
+                collapsedConstraintSet = createCollapsedConstraintSet(fragment, avatarContainer),
+                transitionLimit = { appBarLayout.totalScrollRange / 2 }
+            )
+        }
+
+        private fun createExpandedConstraintSet(constraintLayout: ConstraintLayout): ConstraintSet {
+            return ConstraintSet().apply { clone(constraintLayout) }
+        }
+
+        private fun createCollapsedConstraintSet(fragment: Fragment, constraintLayout: ConstraintLayout): ConstraintSet {
+            return createExpandedConstraintSet(constraintLayout).apply {
+                val imageSize = fragment.resources.getDimensionPixelSize(R.dimen.md_spec_size_image_40)
+                constrainHeight(R.id.shapeable_image_view_art, imageSize)
+                constrainWidth(R.id.shapeable_image_view_art, imageSize)
+            }
+        }
+
+        override fun setupNavigation(fragment: Fragment) {
+            toolbar.setNavigationOnClickListener {
+                fragment.requireActivity()
+                    .onBackPressedDispatcher
+                    .onBackPressed()
+            }
+        }
+
+        override fun setupArtistMetadata(fragment: Fragment, artistView: ArtistView) {
+            avatar.name = artistView.name
+            avatar.metadataStr = fragment.getString(
+                R.string.artist_metadata_str, artistView.songCount, artistView.duration.durationStr
+            )
+        }
+
+    }
 
     private class W1240dpImpl(binding: FragmentArtistBinding): ArtistLayoutCompat(binding)
 

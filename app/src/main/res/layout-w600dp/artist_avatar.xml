@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="name"
+            type="String" />
+
+        <variable
+            name="metadataStr"
+            type="String" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout_avatar_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:showIn="@layout/fragment_artist">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/shapeable_image_view_art"
+            android:layout_width="@dimen/artist_avatar_image_size"
+            android:layout_height="@dimen/artist_avatar_image_size"
+            android:layout_marginHorizontal="@dimen/md_spec_spacing_hor_16"
+            android:layout_marginVertical="@dimen/md_spec_spacing_ver_8"
+            app:srcCompat="@drawable/ic_round_account_circle_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/linear_layout_metadata"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:shapeAppearance="?attr/circleShapeableImageAppearance" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/linear_layout_metadata"
+            android:layout_width="@dimen/constraint_fill"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/md_spec_spacing_hor_24"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@id/shapeable_image_view_art"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/shapeable_image_view_art"
+            app:layout_constraintTop_toTopOf="@id/shapeable_image_view_art">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/material_text_view_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{name}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/material_text_view_duration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{metadataStr}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

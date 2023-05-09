@@ -32,6 +32,10 @@
     <dimen name="library_start_width">0dp</dimen>
     <dimen name="library_end_width">0dp</dimen>
 
+    <!-- Just for registering, SHOULD NOT BE USED -->
+    <dimen name="artist_avatar_height">0dp</dimen>
+    <dimen name="artist_avatar_image_size">0dp</dimen>
+
     <dimen name="player_exit_radius">20dp</dimen>
 
 </resources>
