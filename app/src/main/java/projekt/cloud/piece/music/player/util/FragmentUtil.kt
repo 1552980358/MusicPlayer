@@ -36,13 +36,18 @@ object FragmentUtil {
 
     }
 
-    fun Fragment.getInt(@IntRange resId: Int) =
-        resources.getInteger(resId)
-
     fun Fragment.getLong(@IntRange resId: Int) =
         resources.getLong(resId)
 
     val Fragment.childFragments: List<Fragment>
         get() = childFragmentManager.fragments
+
+    inline fun <reified F: Fragment> Fragment.findParent(): F? {
+        var parent = parentFragment
+        while (parent != null && parent !is F) {
+            parent = parent.parentFragment
+        }
+        return parent as? F
+    }
 
 }
