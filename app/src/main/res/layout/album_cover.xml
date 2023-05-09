@@ -53,7 +53,7 @@
             android:layout_width="@dimen/constraint_fill"
             android:layout_height="wrap_content"
             android:text="@{metadataStr}"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@id/shapeable_image_view_cover"
             app:layout_constraintEnd_toEndOf="parent"

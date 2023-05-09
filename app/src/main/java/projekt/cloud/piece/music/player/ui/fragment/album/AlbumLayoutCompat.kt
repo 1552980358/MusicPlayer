@@ -86,10 +86,8 @@ abstract class AlbumLayoutCompat(binding: FragmentAlbumBinding): BaseLayoutCompa
                 fragment,
                 constraintLayout = albumCoverContainer,
                 isExpandedLiveData = _isExpandedLiveData,
-                expandedConstraintSet = ConstraintSet().apply { clone(albumCoverContainer) },
-                collapsedConstraintSet = ConstraintSet().apply {
-                    clone(fragment.requireContext(), R.layout.album_cover_collapsed)
-                },
+                expandedConstraintSet = createExpandedConstraintSet(albumCoverContainer),
+                collapsedConstraintSet = createCollapsedConstraintSet(fragment, albumCoverContainer),
                 /**
                  * Should not directly set as `appBarLayout.totalScrollRange / 2`
                  * because [setupCollapsingAppBar] is called
@@ -99,6 +97,38 @@ abstract class AlbumLayoutCompat(binding: FragmentAlbumBinding): BaseLayoutCompa
                  **/
                 transitionLimit = { appBarLayout.totalScrollRange / 2 }
             )
+        }
+
+        private fun createExpandedConstraintSet(container: ConstraintLayout): ConstraintSet {
+            return ConstraintSet().apply { clone(container) }
+        }
+
+        private fun createCollapsedConstraintSet(fragment: Fragment, container: ConstraintLayout): ConstraintSet {
+            return createExpandedConstraintSet(container).apply {
+                // Set size to ShapeableImageView
+                val imageSize = fragment.resources.getDimensionPixelSize(R.dimen.md_spec_size_image_40)
+                constrainHeight(R.id.shapeable_image_view_cover, imageSize)
+                constrainWidth(R.id.shapeable_image_view_cover, imageSize)
+
+                fragment.resources.getDimensionPixelSize(R.dimen.md_spec_spacing_hor_16).let { marginHorizontal ->
+                    // Set horizontal margin to ShapeableImageView
+                    setMargin(R.id.shapeable_image_view_cover, ConstraintSet.START, marginHorizontal)
+                    setMargin(R.id.shapeable_image_view_cover, ConstraintSet.END, marginHorizontal)
+
+                    // Connect ShapeableImageView and MaterialTextView
+                    connect(R.id.shapeable_image_view_cover, ConstraintSet.END, R.id.material_text_view_title, ConstraintSet.START, marginHorizontal)
+                }
+
+                // Set horizontal margin to ShapeableImageView
+                fragment.resources.getDimensionPixelSize(R.dimen.md_spec_spacing_ver_8).let { marginVertical ->
+                    setMargin(R.id.shapeable_image_view_cover, ConstraintSet.TOP, marginVertical)
+                    setMargin(R.id.shapeable_image_view_cover, ConstraintSet.BOTTOM, marginVertical)
+                }
+
+                // Show texts
+                setVisibility(R.id.material_text_view_title, ConstraintSet.VISIBLE)
+                setVisibility(R.id.material_text_view_metadata, ConstraintSet.VISIBLE)
+            }
         }
 
         override fun setupAlbumMetadata(fragment: Fragment, albumView: AlbumView) {
