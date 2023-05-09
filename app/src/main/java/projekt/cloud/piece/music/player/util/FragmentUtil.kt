@@ -45,7 +45,4 @@ object FragmentUtil {
     val Fragment.childFragments: List<Fragment>
         get() = childFragmentManager.fragments
 
-    fun Fragment.childFragments(list: List<Fragment>) =
-        childFragments.takeIf { it.isNotEmpty() } ?: list
-
 }
