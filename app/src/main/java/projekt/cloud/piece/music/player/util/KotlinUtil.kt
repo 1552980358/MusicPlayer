@@ -30,4 +30,16 @@ object KotlinUtil {
         }
     }
 
+    inline val Boolean?.isTrue: Boolean
+        get() = this == true
+
+    inline val Boolean?.ifFalse: Boolean
+        get() = this == false
+
+    fun Boolean?.ifFalse(block: () -> Unit) {
+        if (this.ifFalse) {
+            block.invoke()
+        }
+    }
+
 }
