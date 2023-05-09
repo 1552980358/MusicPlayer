@@ -10,6 +10,9 @@ interface LibraryFragmentInterface {
         openPane()
     }
 
+    val canSlide: Boolean
+        get() = true
+
     /**
      * [openPane]
      * Should be override for actual implementing SlidingPaneLayout class

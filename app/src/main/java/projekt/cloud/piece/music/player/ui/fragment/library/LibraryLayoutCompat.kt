@@ -190,6 +190,9 @@ abstract class LibraryLayoutCompat(
             super.navigateToAlbum(id)
         }
 
+        override val canSlide: Boolean
+            get() = slidingPaneLayout.isSlideable
+
         override fun openPane() {
             if (slidingPaneLayout.isSlideable && !slidingPaneLayout.isOpen) {
                 slidingPaneLayout.openPane()

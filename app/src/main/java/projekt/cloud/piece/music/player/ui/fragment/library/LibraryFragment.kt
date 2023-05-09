@@ -6,6 +6,7 @@ import projekt.cloud.piece.music.player.base.LayoutCompatInflater
 import projekt.cloud.piece.music.player.base.ViewBindingInflater
 import projekt.cloud.piece.music.player.databinding.FragmentLibraryBinding
 import projekt.cloud.piece.music.player.ui.fragment.library.LibraryLayoutCompat.LibraryLayoutCompatUtil
+import projekt.cloud.piece.music.player.util.KotlinUtil.isTrue
 import projekt.cloud.piece.music.player.util.KotlinUtil.tryTo
 
 private typealias BaseLibraryFragment = BaseMultiDensityFragment<FragmentLibraryBinding, LibraryLayoutCompat>
@@ -36,5 +37,10 @@ class LibraryFragment: BaseLibraryFragment(), LibraryFragmentInterface {
             libraryFragmentInterface.navigateToAlbum(id)
         }
     }
+
+    override val canSlide: Boolean
+        get() = layoutCompat.tryTo<LibraryFragmentInterface>()
+            ?.canSlide
+            .isTrue
 
 }
