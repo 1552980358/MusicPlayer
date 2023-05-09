@@ -8,13 +8,17 @@ import androidx.constraintlayout.widget.ConstraintSet.END
 import androidx.constraintlayout.widget.ConstraintSet.START
 import androidx.constraintlayout.widget.ConstraintSet.TOP
 import androidx.constraintlayout.widget.ConstraintSet.VISIBLE
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
+import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
@@ -23,7 +27,12 @@ import projekt.cloud.piece.music.player.databinding.ArtistAvatarBinding
 import projekt.cloud.piece.music.player.databinding.FragmentArtistBinding
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.ArtistView
 import projekt.cloud.piece.music.player.storage.runtime.entity.AudioMetadataEntity
+import projekt.cloud.piece.music.player.ui.fragment.library.LibraryFragment
 import projekt.cloud.piece.music.player.util.AutoExpandableAppBarLayoutContentUtil.setupAutoExpandableAppBarLayout
+import projekt.cloud.piece.music.player.util.CoroutineUtil.default
+import projekt.cloud.piece.music.player.util.CoroutineUtil.main
+import projekt.cloud.piece.music.player.util.FragmentUtil.findParent
+import projekt.cloud.piece.music.player.util.KotlinUtil.ifFalse
 import projekt.cloud.piece.music.player.util.ScreenDensity
 import projekt.cloud.piece.music.player.util.ScreenDensity.COMPACT
 import projekt.cloud.piece.music.player.util.ScreenDensity.EXPANDED
@@ -52,10 +61,14 @@ abstract class ArtistLayoutCompat(
     @UiThread
     open fun setupCollapsingAppBar(fragment: Fragment) = Unit
 
+    @UiThread
     open fun setupNavigation(fragment: Fragment) = Unit
 
     @UiThread
     open fun setupArtistMetadata(fragment: Fragment, artistView: ArtistView) = Unit
+
+    @UiThread
+    open fun setupMargin(fragment: Fragment) = Unit
 
     fun setRecyclerViewAdapter(
         fragment: Fragment, audioList: List<AudioMetadataEntity>, onItemClick: (String) -> Unit
@@ -174,6 +187,8 @@ abstract class ArtistLayoutCompat(
 
     private class W600dpImpl(binding: FragmentArtistBinding): ArtistLayoutCompat(binding) {
 
+        private val root: CoordinatorLayout
+            get() = binding.coordinatorLayoutRoot
         private val appBarLayout: AppBarLayout
             get() = binding.appBarLayout
         private val toolbar: MaterialToolbar
@@ -223,6 +238,23 @@ abstract class ArtistLayoutCompat(
             avatar.metadataStr = fragment.getString(
                 R.string.artist_metadata_str, artistView.songCount, artistView.duration.durationStr
             )
+        }
+
+        override fun setupMargin(fragment: Fragment) {
+            fragment.lifecycleScope.main {
+                findLibraryFragment(fragment)?.canSlide
+                    .ifFalse(::removeRootPaddingStart)
+            }
+        }
+
+        private suspend fun findLibraryFragment(fragment: Fragment): LibraryFragment? {
+            return withContext(default) {
+                fragment.findParent()
+            }
+        }
+
+        private fun removeRootPaddingStart() {
+            root.updatePadding(left = 0)
         }
 
     }

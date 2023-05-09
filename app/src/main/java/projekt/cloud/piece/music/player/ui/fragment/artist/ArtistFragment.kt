@@ -43,6 +43,7 @@ class ArtistFragment: BaseMultiDensityFragment<FragmentArtistBinding, ArtistLayo
     override fun onSetupLayoutCompat(layoutCompat: ArtistLayoutCompat, savedInstanceState: Bundle?) {
         layoutCompat.setupCollapsingAppBar(this)
         layoutCompat.setupNavigation(this)
+        layoutCompat.setupMargin(this)
 
         lifecycleScope.main {
             val runtimeDatabase = requireContext().runtimeDatabase
