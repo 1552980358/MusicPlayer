@@ -6,8 +6,11 @@ import projekt.cloud.piece.music.player.base.LayoutCompatInflater
 import projekt.cloud.piece.music.player.base.ViewBindingInflater
 import projekt.cloud.piece.music.player.databinding.FragmentLibraryBinding
 import projekt.cloud.piece.music.player.ui.fragment.library.LibraryLayoutCompat.LibraryLayoutCompatUtil
+import projekt.cloud.piece.music.player.util.KotlinUtil.tryTo
 
-class LibraryFragment: BaseMultiDensityFragment<FragmentLibraryBinding, LibraryLayoutCompat>() {
+private typealias BaseLibraryFragment = BaseMultiDensityFragment<FragmentLibraryBinding, LibraryLayoutCompat>
+
+class LibraryFragment: BaseLibraryFragment(), LibraryFragmentInterface {
 
     override val viewBindingInflater: ViewBindingInflater<FragmentLibraryBinding>
         get() = FragmentLibraryBinding::inflate
@@ -19,6 +22,19 @@ class LibraryFragment: BaseMultiDensityFragment<FragmentLibraryBinding, LibraryL
         layoutCompat.setupViewPager2(this)
         layoutCompat.setupTabLayout(resources)
         layoutCompat.setupReturnAnimation(this)
+        layoutCompat.setupSlidingPane(this)
+    }
+
+    override fun navigateToArtist(id: String) {
+        layoutCompat.tryTo<LibraryFragmentInterface> { libraryFragmentInterface ->
+            libraryFragmentInterface.navigateToArtist(id)
+        }
+    }
+
+    override fun navigateToAlbum(id: String) {
+        layoutCompat.tryTo<LibraryFragmentInterface> { libraryFragmentInterface ->
+            libraryFragmentInterface.navigateToAlbum(id)
+        }
     }
 
 }

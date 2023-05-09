@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.slidingpanelayout.widget.SlidingPaneLayout
+    <projekt.cloud.piece.music.player.widget.OpenSlidingPaneLayout
         android:id="@+id/sliding_pane_layout"
         android:layout_width="@dimen/constraint_fill"
         android:layout_height="@dimen/constraint_fill"
@@ -45,8 +45,12 @@
             android:id="@+id/fragment_container_view_end"
             android:layout_width="@dimen/library_end_width"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:layout_gravity="end"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            app:defaultNavHost="false"
+            app:navGraph="@navigation/nav_graph_library" />
 
-    </androidx.slidingpanelayout.widget.SlidingPaneLayout>
+    </projekt.cloud.piece.music.player.widget.OpenSlidingPaneLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,16 +4,22 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
 import android.view.View.OVER_SCROLL_NEVER
+import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.SharedElementCallback
 import androidx.core.view.isNotEmpty
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.clearFragmentResultListener
 import androidx.fragment.app.setFragmentResultListener
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
+import androidx.slidingpanelayout.widget.SlidingPaneLayout
+import androidx.slidingpanelayout.widget.SlidingPaneLayout.PanelSlideListener
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import projekt.cloud.piece.music.player.NavGraphLibraryDirections
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.base.interfaces.SurfaceColorsInterface
@@ -81,6 +87,8 @@ abstract class LibraryLayoutCompat(
             }
         }
     }
+
+    open fun setupSlidingPane(fragment: Fragment) = Unit
 
     private class CompatImpl(binding: FragmentLibraryBinding): LibraryLayoutCompat(binding) {
 
@@ -155,7 +163,79 @@ abstract class LibraryLayoutCompat(
 
     }
 
-    private class W600dpImpl(binding: FragmentLibraryBinding): LibraryLayoutCompat(binding)
+    private class W600dpImpl(
+        binding: FragmentLibraryBinding
+    ): LibraryLayoutCompat(binding), LibraryFragmentInterface {
+
+        private companion object {
+            const val ARG_POS = -1
+        }
+
+        private val slidingPaneLayout: SlidingPaneLayout
+            get() = binding.slidingPaneLayout!!
+
+        private val fragmentContainerView: FragmentContainerView
+            get() = binding.fragmentContainerViewEnd!!
+
+        private val navController = fragmentContainerView.getFragment<NavHostFragment>()
+            .navController
+
+        override fun navigateToArtist(id: String) {
+            navController.navigate(NavGraphLibraryDirections.toArtist(id, ARG_POS))
+            super.navigateToArtist(id)
+        }
+
+        override fun navigateToAlbum(id: String) {
+            navController.navigate(NavGraphLibraryDirections.toAlbum(id, ARG_POS))
+            super.navigateToAlbum(id)
+        }
+
+        override fun openPane() {
+            if (slidingPaneLayout.isSlideable && !slidingPaneLayout.isOpen) {
+                slidingPaneLayout.openPane()
+            }
+        }
+
+        override fun setupSlidingPane(fragment: Fragment) {
+            setupSlidingPane(fragment, slidingPaneLayout)
+        }
+
+        private fun setupSlidingPane(fragment: Fragment, slidingPaneLayout: SlidingPaneLayout) {
+            fragment.requireActivity().onBackPressedDispatcher
+                .addCallback(
+                    fragment.viewLifecycleOwner,
+                    object: LibrarySlidingPaneBackPressedCallback(slidingPaneLayout) {
+                        override fun handleOnBackPressed() {
+                            if (slidingPaneLayout.isOpen) {
+                                slidingPaneLayout.closePane()
+                            }
+                        }
+                    }
+                )
+        }
+
+        private abstract class LibrarySlidingPaneBackPressedCallback(
+            slidingPaneLayout: SlidingPaneLayout
+        ): OnBackPressedCallback(slidingPaneLayout.isSlideable), PanelSlideListener {
+
+            init {
+                @Suppress("LeakingThis")
+                slidingPaneLayout.addPanelSlideListener(this)
+            }
+
+            override fun onPanelSlide(panel: View, slideOffset: Float) = Unit
+
+            override fun onPanelOpened(panel: View) {
+                isEnabled = true
+            }
+
+            override fun onPanelClosed(panel: View) {
+                isEnabled = false
+            }
+
+        }
+
+    }
 
     private class W1240dpImpl(binding: FragmentLibraryBinding): LibraryLayoutCompat(binding)
 
