@@ -10,7 +10,6 @@ import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
 import projekt.cloud.piece.music.player.util.FragmentUtil.viewLifecycleProperty
 import projekt.cloud.piece.music.player.util.KotlinUtil.tryTo
 import projekt.cloud.piece.music.player.util.ScreenDensity
-import projekt.cloud.piece.music.player.util.ScreenDensity.ScreenDensityUtil.screenDensity
 
 typealias LayoutCompatInflater<VB, LC> = (ScreenDensity, VB) -> LC
 
@@ -34,9 +33,7 @@ abstract class BaseMultiDensityFragment<VB, LC>: BaseFragment<VB>()
     }
 
     private fun onCreateLayoutCompat(binding: VB) {
-        layoutCompat = layoutCompatInflater.invoke(
-            requireActivity().screenDensity, binding
-        )
+        layoutCompat = layoutCompatInflater.invoke(screenDensity, binding)
     }
 
     protected open fun onSetupLayoutCompatInterfaces(layoutCompat: LC) {
