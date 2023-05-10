@@ -8,10 +8,16 @@ import androidx.activity.addCallback
 import androidx.annotation.CallSuper
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
+import kotlin.reflect.KFunction2
+import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.base.interfaces.BackPressedInterface
 import projekt.cloud.piece.music.player.base.interfaces.TransitionInterface
 import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
+import projekt.cloud.piece.music.player.util.CoroutineUtil.default
+import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 import projekt.cloud.piece.music.player.util.FragmentUtil.viewLifecycleProperty
 import projekt.cloud.piece.music.player.util.KotlinUtil.tryTo
 import projekt.cloud.piece.music.player.util.ScreenDensity.ScreenDensityUtil.screenDensity
@@ -20,19 +26,21 @@ typealias ViewBindingInflater<VB> = (LayoutInflater, ViewGroup?, Boolean) -> VB
 
 abstract class BaseFragment<VB: ViewBinding>: Fragment() {
 
+    private companion object {
+
+        @JvmField
+        val asyncableMethodList = listOf(
+            BaseFragment<*>::setupBackPressedInterface,
+            BaseFragment<*>::setupWindowInsetsInterface
+        )
+
+    }
+
     protected var binding: VB by viewLifecycleProperty()
 
     protected abstract val viewBindingInflater: ViewBindingInflater<VB>
 
     protected val screenDensity by screenDensity()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        tryTo<TransitionInterface> {
-            it.applyTransitions(this, screenDensity)
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = viewBindingInflater.invoke(layoutInflater, container, false)
@@ -47,13 +55,42 @@ abstract class BaseFragment<VB: ViewBinding>: Fragment() {
      **/
     @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setupInterfaces(requireActivity())
         onSetupBinding(binding, savedInstanceState)
-        if (this is WindowInsetsInterface) {
-            requireWindowInset(requireContext())
-        }
+    }
 
+    private fun setupInterfaces(parentActivity: FragmentActivity) {
+        invokeAsyncableMethods(this, parentActivity)
+        tryTo<TransitionInterface> {
+            it.applyTransitions(this, screenDensity)
+        }
+    }
+
+    private fun invokeAsyncableMethods(fragment: BaseFragment<*>, parentActivity: FragmentActivity) {
+        /**
+         * Limit execution in lifecycle of this child of [BaseFragment]
+         **/
+        fragment.lifecycleScope.default {
+            asyncableMethodList.forEach { method ->
+                /**
+                 * Execute within [suspend],
+                 * allow being cancelled due to lifecycle [androidx.lifecycle.Lifecycle.State.DESTROYED]
+                 **/
+                invokeAsyncableMethod(method, fragment, parentActivity)
+            }
+        }
+    }
+
+    private suspend fun invokeAsyncableMethod(
+        method: KFunction2<BaseFragment<*>, FragmentActivity, Unit>,
+        fragment: BaseFragment<*>, parentActivity: FragmentActivity
+    ) = withContext(main) {
+        method.invoke(fragment, parentActivity)
+    }
+
+    private fun setupBackPressedInterface(parentActivity: FragmentActivity) {
         tryTo<BackPressedInterface> { backPressedInterface ->
-            requireActivity().onBackPressedDispatcher
+            parentActivity.onBackPressedDispatcher
                 .addCallback(viewLifecycleOwner) {
                     if (backPressedInterface.onBackPressed(this@BaseFragment)) {
                         isEnabled = false
@@ -61,7 +98,12 @@ abstract class BaseFragment<VB: ViewBinding>: Fragment() {
                     }
                 }
         }
+    }
 
+    private fun setupWindowInsetsInterface(parentActivity: FragmentActivity) {
+        tryTo<WindowInsetsInterface> { windowInsetsInterface ->
+            windowInsetsInterface.requireWindowInset(parentActivity)
+        }
     }
 
     protected open fun onSetupBinding(binding: VB, savedInstanceState: Bundle?) = Unit
