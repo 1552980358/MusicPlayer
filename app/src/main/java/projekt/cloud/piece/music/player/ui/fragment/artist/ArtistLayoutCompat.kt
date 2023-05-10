@@ -33,6 +33,7 @@ import projekt.cloud.piece.music.player.util.CoroutineUtil.default
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 import projekt.cloud.piece.music.player.util.FragmentUtil.findParent
 import projekt.cloud.piece.music.player.util.KotlinUtil.ifFalse
+import projekt.cloud.piece.music.player.util.KotlinUtil.ifTrue
 import projekt.cloud.piece.music.player.util.ScreenDensity
 import projekt.cloud.piece.music.player.util.ScreenDensity.COMPACT
 import projekt.cloud.piece.music.player.util.ScreenDensity.EXPANDED
@@ -226,6 +227,14 @@ abstract class ArtistLayoutCompat(
         }
 
         override fun setupNavigation(fragment: Fragment) {
+            fragment.lifecycleScope.main {
+                findLibraryFragment(fragment)?.canSlide
+                    .ifTrue { setupToolbarNavigation(fragment) }
+            }
+        }
+
+        private fun setupToolbarNavigation(fragment: Fragment) {
+            toolbar.setNavigationIcon(R.drawable.ic_round_arrow_back_24)
             toolbar.setNavigationOnClickListener {
                 fragment.requireActivity()
                     .onBackPressedDispatcher

@@ -45,7 +45,6 @@
                             android:id="@+id/material_toolbar"
                             android:layout_width="match_parent"
                             android:layout_height="?attr/actionBarSize"
-                            app:navigationIcon="@drawable/ic_round_arrow_back_24"
                             app:title="@string/artist_title" />
 
                         <androidx.constraintlayout.widget.Placeholder
