@@ -15,19 +15,14 @@ object KotlinUtil {
     inline val <T> T?.isNull: Boolean
         get() = this == null
 
-    inline val <T> T?.isNotNull: Boolean
-        get() = this != null
-
     inline fun <T> T?.ifNull(block: () -> Unit) {
         if (this.isNull) {
             block.invoke()
         }
     }
 
-    inline fun <T> T?.ifNotNull(block: () -> Unit) {
-        if (this.isNotNull) {
-            block.invoke()
-        }
+    inline fun <T> T?.ifNotNull(block: (T) -> Unit) {
+        this?.let { block.invoke(it) }
     }
 
     inline val Boolean?.isTrue: Boolean
