@@ -22,8 +22,11 @@ import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase.RuntimeD
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.ArtistView
 import projekt.cloud.piece.music.player.storage.runtime.entity.AudioMetadataEntity
 import projekt.cloud.piece.music.player.ui.fragment.artist.ArtistLayoutCompat.HomeLayoutCompatUtil
+import projekt.cloud.piece.music.player.ui.fragment.library.LibraryFragment
 import projekt.cloud.piece.music.player.util.CoroutineUtil.default
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
+import projekt.cloud.piece.music.player.util.FragmentUtil.findParent
+import projekt.cloud.piece.music.player.util.KotlinUtil.ifFalse
 
 class ArtistFragment: BaseMultiDensityFragment<FragmentArtistBinding, ArtistLayoutCompat>(), TransitionInterface {
 
@@ -44,8 +47,11 @@ class ArtistFragment: BaseMultiDensityFragment<FragmentArtistBinding, ArtistLayo
 
     override val medium: TransitionWrapper
         get() = transitionWrapper {
-            enterTransition = MaterialFadeThrough()
-            exitTransition = MaterialFadeThrough()
+            findParent<LibraryFragment>()?.canSlide
+                .ifFalse {
+                    enterTransition = MaterialFadeThrough()
+                    exitTransition = MaterialFadeThrough()
+                }
         }
 
     override fun onSetupLayoutCompat(layoutCompat: ArtistLayoutCompat, savedInstanceState: Bundle?) {
