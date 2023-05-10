@@ -8,11 +8,14 @@ import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.platform.MaterialContainerTransform
+import com.google.android.material.transition.platform.MaterialFadeThrough
 import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
 import projekt.cloud.piece.music.player.base.LayoutCompatInflater
 import projekt.cloud.piece.music.player.base.ViewBindingInflater
+import projekt.cloud.piece.music.player.base.interfaces.TransitionInterface
+import projekt.cloud.piece.music.player.base.interfaces.TransitionInterface.TransitionWrapper
 import projekt.cloud.piece.music.player.databinding.FragmentArtistBinding
 import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase
 import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase.RuntimeDatabaseUtil.runtimeDatabase
@@ -22,7 +25,7 @@ import projekt.cloud.piece.music.player.ui.fragment.artist.ArtistLayoutCompat.Ho
 import projekt.cloud.piece.music.player.util.CoroutineUtil.default
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 
-class ArtistFragment: BaseMultiDensityFragment<FragmentArtistBinding, ArtistLayoutCompat>() {
+class ArtistFragment: BaseMultiDensityFragment<FragmentArtistBinding, ArtistLayoutCompat>(), TransitionInterface {
 
     override val viewBindingInflater: ViewBindingInflater<FragmentArtistBinding>
         get() = FragmentArtistBinding::inflate
@@ -32,13 +35,18 @@ class ArtistFragment: BaseMultiDensityFragment<FragmentArtistBinding, ArtistLayo
 
     private val args: ArtistFragmentArgs by navArgs()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        sharedElementEnterTransition = MaterialContainerTransform().apply {
-            scrimColor = TRANSPARENT
+    override val compat: TransitionWrapper
+        get() = transitionWrapper {
+            sharedElementEnterTransition = MaterialContainerTransform().apply {
+                scrimColor = TRANSPARENT
+            }
         }
 
-    }
+    override val medium: TransitionWrapper
+        get() = transitionWrapper {
+            enterTransition = MaterialFadeThrough()
+            exitTransition = MaterialFadeThrough()
+        }
 
     override fun onSetupLayoutCompat(layoutCompat: ArtistLayoutCompat, savedInstanceState: Bundle?) {
         layoutCompat.setupCollapsingAppBar(this)
