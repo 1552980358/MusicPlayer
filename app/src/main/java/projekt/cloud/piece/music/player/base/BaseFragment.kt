@@ -10,6 +10,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import projekt.cloud.piece.music.player.base.interfaces.BackPressedInterface
+import projekt.cloud.piece.music.player.base.interfaces.TransitionInterface
 import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
 import projekt.cloud.piece.music.player.util.FragmentUtil.viewLifecycleProperty
 import projekt.cloud.piece.music.player.util.KotlinUtil.tryTo
@@ -24,6 +25,14 @@ abstract class BaseFragment<VB: ViewBinding>: Fragment() {
     protected abstract val viewBindingInflater: ViewBindingInflater<VB>
 
     protected val screenDensity by screenDensity()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        tryTo<TransitionInterface> {
+            it.applyTransitions(this, screenDensity)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = viewBindingInflater.invoke(layoutInflater, container, false)
