@@ -45,6 +45,7 @@ class AlbumFragment: BaseMultiDensityFragment<FragmentAlbumBinding, AlbumLayoutC
         layoutCompat.setupAlbumCover(this, albumId)
         layoutCompat.setupCollapsingAppBar(this)
         layoutCompat.setupNavigation(this)
+        layoutCompat.setupMargin(this)
 
         lifecycleScope.main {
             val runtimeDatabase = requireContext().runtimeDatabase

@@ -2,15 +2,18 @@ package projekt.cloud.piece.music.player.ui.fragment.album
 
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.imageview.ShapeableImageView
+import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
@@ -19,7 +22,13 @@ import projekt.cloud.piece.music.player.databinding.AlbumCoverBinding
 import projekt.cloud.piece.music.player.databinding.FragmentAlbumBinding
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.AlbumView
 import projekt.cloud.piece.music.player.storage.runtime.entity.AudioMetadataEntity
+import projekt.cloud.piece.music.player.ui.fragment.library.LibraryFragment
 import projekt.cloud.piece.music.player.util.AutoExpandableAppBarLayoutContentUtil.setupAutoExpandableAppBarLayout
+import projekt.cloud.piece.music.player.util.CoroutineUtil
+import projekt.cloud.piece.music.player.util.CoroutineUtil.main
+import projekt.cloud.piece.music.player.util.FragmentUtil.findParent
+import projekt.cloud.piece.music.player.util.KotlinUtil.ifFalse
+import projekt.cloud.piece.music.player.util.KotlinUtil.ifTrue
 import projekt.cloud.piece.music.player.util.ScreenDensity
 import projekt.cloud.piece.music.player.util.ScreenDensity.COMPACT
 import projekt.cloud.piece.music.player.util.ScreenDensity.EXPANDED
@@ -39,16 +48,36 @@ abstract class AlbumLayoutCompat(binding: FragmentAlbumBinding): BaseLayoutCompa
         }
     }
 
+    protected val appBarLayout: AppBarLayout
+        get() = binding.appBarLayout
+    protected val toolbar: MaterialToolbar
+        get() = binding.materialToolbar
     private val recyclerView: RecyclerView
         get() = binding.recyclerView
 
-    open fun setupAlbumCover(fragment: Fragment, albumId: String) = Unit
+    protected val albumCover: AlbumCoverBinding
+        get() = binding.albumCover
+    protected val cover: ShapeableImageView
+        get() = albumCover.shapeableImageViewCover
+    protected val albumCoverContainer: ConstraintLayout
+        get() = albumCover.constraintLayoutAlbumCoverContainer
+
+    protected val isExpandedLiveData = MutableLiveData<Boolean>()
+
+    fun setupAlbumCover(fragment: Fragment, albumId: String) {
+        Glide.with(fragment)
+            .load(albumId.albumArtUri)
+            .placeholder(R.drawable.ic_round_album_24)
+            .into(cover)
+    }
 
     open fun setupCollapsingAppBar(fragment: Fragment) = Unit
 
     open fun setupNavigation(fragment: Fragment) = Unit
 
     open fun setupAlbumMetadata(fragment: Fragment, albumView: AlbumView) = Unit
+
+    open fun setupMargin(fragment: Fragment) = Unit
 
     fun setRecyclerViewAdapter(
         audioList: List<AudioMetadataEntity>, onItemClick: (String) -> Unit
@@ -58,34 +87,11 @@ abstract class AlbumLayoutCompat(binding: FragmentAlbumBinding): BaseLayoutCompa
 
     private class CompatImpl(binding: FragmentAlbumBinding): AlbumLayoutCompat(binding), BackPressedInterface {
 
-        private val appBarLayout: AppBarLayout
-            get() = binding.appBarLayout
-        private val toolbar: MaterialToolbar
-            get() = binding.materialToolbar
-
-        private val albumCover: AlbumCoverBinding
-            get() = binding.albumCover
-        private val cover: ShapeableImageView
-            get() = albumCover.shapeableImageViewCover
-        private val albumCoverContainer: ConstraintLayout
-            get() = albumCover.constraintLayoutAlbumCoverContainer
-
-        private val _isExpandedLiveData = MutableLiveData<Boolean>()
-        private val isExpandedLiveData: LiveData<Boolean>
-            get() = _isExpandedLiveData
-
-        override fun setupAlbumCover(fragment: Fragment, albumId: String) {
-            Glide.with(fragment)
-                .load(albumId.albumArtUri)
-                .placeholder(R.drawable.ic_round_album_24)
-                .into(cover)
-        }
-
         override fun setupCollapsingAppBar(fragment: Fragment) {
             appBarLayout.setupAutoExpandableAppBarLayout(
                 fragment,
                 constraintLayout = albumCoverContainer,
-                isExpandedLiveData = _isExpandedLiveData,
+                isExpandedLiveData = isExpandedLiveData,
                 expandedConstraintSet = createExpandedConstraintSet(albumCoverContainer),
                 collapsedConstraintSet = createCollapsedConstraintSet(fragment, albumCoverContainer),
                 /**
@@ -171,7 +177,78 @@ abstract class AlbumLayoutCompat(binding: FragmentAlbumBinding): BaseLayoutCompa
 
     }
 
-    private class W600dpImpl(binding: FragmentAlbumBinding): AlbumLayoutCompat(binding)
+    private class W600dpImpl(binding: FragmentAlbumBinding): AlbumLayoutCompat(binding) {
+
+        private val root: CoordinatorLayout
+            get() = binding.coordinatorLayoutRoot
+
+        override fun setupCollapsingAppBar(fragment: Fragment) {
+            val appBarLayout = appBarLayout
+            val albumCoverContainer = albumCoverContainer
+            appBarLayout.setupAutoExpandableAppBarLayout(
+                fragment,
+                constraintLayout = albumCoverContainer,
+                isExpandedLiveData,
+                expandedConstraintSet = createExpandedConstraintSet(albumCoverContainer),
+                collapsedConstraintSet = createCollapsedConstraintSet(fragment, albumCoverContainer),
+                transitionLimit = { appBarLayout.totalScrollRange / 2 }
+            )
+        }
+
+        private fun createExpandedConstraintSet(constraintLayout: ConstraintLayout): ConstraintSet {
+            return ConstraintSet().apply { clone(constraintLayout) }
+        }
+
+        private fun createCollapsedConstraintSet(fragment: Fragment, constraintLayout: ConstraintLayout): ConstraintSet {
+            return createExpandedConstraintSet(constraintLayout).apply {
+                fragment.resources.getDimensionPixelSize(R.dimen.md_spec_size_image_40).let {  imageSize ->
+                    constrainHeight(R.id.shapeable_image_view_cover, imageSize)
+                    constrainWidth(R.id.shapeable_image_view_cover, imageSize)
+                }
+            }
+        }
+
+        override fun setupAlbumMetadata(fragment: Fragment, albumView: AlbumView) {
+            albumCover.title = albumView.title
+            albumCover.metadataStr = fragment.getString(
+                R.string.artist_metadata_str, albumView.songCount, albumView.duration.durationStr
+            )
+        }
+
+        override fun setupNavigation(fragment: Fragment) {
+            fragment.lifecycleScope.main {
+                findLibraryFragment(fragment)?.canSlide
+                    .ifTrue { setupToolbarNavigation(fragment) }
+            }
+        }
+
+        private suspend fun findLibraryFragment(fragment: Fragment): LibraryFragment? {
+            return withContext(CoroutineUtil.default) {
+                fragment.findParent()
+            }
+        }
+
+        private fun setupToolbarNavigation(fragment: Fragment) {
+            toolbar.setNavigationIcon(R.drawable.ic_round_arrow_back_24)
+            toolbar.setNavigationOnClickListener {
+                fragment.requireActivity()
+                    .onBackPressedDispatcher
+                    .onBackPressed()
+            }
+        }
+
+        override fun setupMargin(fragment: Fragment) {
+            fragment.lifecycleScope.main {
+                findLibraryFragment(fragment)?.canSlide
+                    .ifFalse(::removeRootPaddingStart)
+            }
+        }
+
+        private fun removeRootPaddingStart() {
+            root.updatePadding(left = 0)
+        }
+
+    }
 
     private class W1240dpImpl(binding: FragmentAlbumBinding): AlbumLayoutCompat(binding)
 
