@@ -55,8 +55,8 @@
             android:text="@{metadataStr}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@id/shapeable_image_view_cover"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/material_text_view_title"
+            app:layout_constraintEnd_toEndOf="@id/material_text_view_title"
             app:layout_constraintTop_toBottomOf="@id/material_text_view_title"
             app:layout_constraintBottom_toBottomOf="@id/shapeable_image_view_cover" />
 
