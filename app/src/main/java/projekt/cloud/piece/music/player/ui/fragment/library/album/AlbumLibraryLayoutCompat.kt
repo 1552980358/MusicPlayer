@@ -15,9 +15,11 @@ import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.databinding.FragmentLibraryObjectBinding
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.AlbumView
 import projekt.cloud.piece.music.player.ui.fragment.library.LibraryFragmentDirections
+import projekt.cloud.piece.music.player.ui.fragment.library.LibraryFragmentInterface
 import projekt.cloud.piece.music.player.util.CoroutineUtil.default
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 import projekt.cloud.piece.music.player.util.KotlinUtil.ifNotNull
+import projekt.cloud.piece.music.player.util.KotlinUtil.tryTo
 import projekt.cloud.piece.music.player.util.ScreenDensity
 import projekt.cloud.piece.music.player.util.ScreenDensity.COMPACT
 import projekt.cloud.piece.music.player.util.ScreenDensity.EXPANDED
@@ -104,7 +106,16 @@ abstract class AlbumLibraryLayoutCompat(
 
     }
 
-    private class W600dpImpl(binding: FragmentLibraryObjectBinding): AlbumLibraryLayoutCompat(binding)
+    private class W600dpImpl(binding: FragmentLibraryObjectBinding): AlbumLibraryLayoutCompat(binding) {
+
+        override fun doOnItemClick(fragment: Fragment, id: String, pos: Int, view: View) {
+            fragment.requireParentFragment()
+                .tryTo<LibraryFragmentInterface> { libraryFragmentInterface ->
+                    libraryFragmentInterface.navigateToAlbum(id)
+                }
+        }
+
+    }
 
     private class W1240dpImpl(binding: FragmentLibraryObjectBinding): AlbumLibraryLayoutCompat(binding)
 
