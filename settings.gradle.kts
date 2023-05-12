@@ -14,5 +14,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "CloudPiece - MusicPlayer"
+rootProject.name = "Cloudy"
 include(":app")

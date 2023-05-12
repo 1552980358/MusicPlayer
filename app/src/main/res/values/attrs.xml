@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <!-- For ShapableImageView -->
-    <attr name="circleShapeableImageAppearance" format="reference" />
-    <attr name="roundShapeableImageAppearance" format="reference" />
-
-</resources>

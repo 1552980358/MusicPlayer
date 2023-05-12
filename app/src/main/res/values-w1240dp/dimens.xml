@@ -1,9 +1,3 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <dimen name="main_host_playback_bar_height">72dp</dimen>
-    <dimen name="main_host_playback_bar_spacing">8dp</dimen>
-    <dimen name="main_host_playback_bar_image_size">56dp</dimen>
-
-    <dimen name="library_start_width">360dp</dimen>
-
 </resources>

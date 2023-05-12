@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "projekt.cloud.piece.music.player"
+    namespace = "projekt.cloud.piece.cloudy"
     compileSdk = 33
 
     defaultConfig {
@@ -67,10 +67,6 @@ dependencies {
     implementation("androidx.room:room-ktx:2.5.1")
     ksp("androidx.room:room-compiler:2.5.1")
 
-    implementation("com.github.bumptech.glide:glide:4.15.1")
-    ksp("com.github.bumptech.glide:ksp:4.15.1")
-
-    implementation("com.google.android.exoplayer:exoplayer-core:2.18.6")
     implementation("com.google.android.material:material:1.9.0")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.10")

@@ -1,27 +1,9 @@
-<resources
-    xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.CloudPieceMusicPlayer" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
 
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="Q">?attr/isLightTheme</item>
-
-        <item name="materialCardViewStyle">?attr/materialCardViewFilledStyle</item>
-
-        <item name="circleShapeableImageAppearance">@style/Widget.MaterialComponents.ShapeableImageView.RoundCorner.Circle</item>
-        <item name="roundShapeableImageAppearance">@style/Widget.MaterialComponents.ShapeableImageView.RoundCorner.Full</item>
+    <style name="Base.Theme.Cloudy" parent="Theme.Material3.DayNight.NoActionBar">
     </style>
 
-    <style name="Theme.CloudPieceMusicPlayer" parent="Base.Theme.CloudPieceMusicPlayer" />
-    
-    <style name="Theme.CloudPieceMusicPlayer.LauncherActivity" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">?attr/colorPrimary</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-        <item name="windowSplashScreenAnimationDuration">200</item>
-        <item name="postSplashScreenTheme">@style/Theme.CloudPieceMusicPlayer</item>
-    </style>
-    
+    <style name="Theme.Cloudy" parent="Base.Theme.Cloudy" />
+
 </resources>
