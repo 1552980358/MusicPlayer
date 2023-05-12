@@ -23,6 +23,7 @@ android {
         getByName("release") {
             isMinifyEnabled = true
             proguardFiles(
+                @Suppress("UnstableApiUsage")
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
@@ -46,7 +47,7 @@ android {
         jvmToolchain(17)
     }
 
-    @Suppress("DataBindingWithoutKapt")
+    @Suppress("UnstableApiUsage")
     buildFeatures {
         viewBinding = true
         dataBinding = true
