@@ -4,7 +4,6 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.material.imageview.ShapeableImageView
 import projekt.cloud.piece.music.player.base.BaseRecyclerViewAdapter
@@ -49,7 +48,7 @@ class HomeRecyclerAdapter(
         }
 
         private fun startObtainAlbumCover(fragment: Fragment, uri: Uri) {
-            fragment.lifecycleScope.main {
+            fragment.main {
                 Glide.with(fragment)
                     .load(uri)
                     .into(image)

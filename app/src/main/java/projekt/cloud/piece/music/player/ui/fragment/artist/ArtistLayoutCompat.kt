@@ -13,12 +13,10 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
-import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
@@ -29,7 +27,7 @@ import projekt.cloud.piece.music.player.storage.runtime.databaseView.ArtistView
 import projekt.cloud.piece.music.player.storage.runtime.entity.AudioMetadataEntity
 import projekt.cloud.piece.music.player.ui.fragment.library.LibraryFragment
 import projekt.cloud.piece.music.player.util.AutoExpandableAppBarLayoutContentUtil.setupAutoExpandableAppBarLayout
-import projekt.cloud.piece.music.player.util.CoroutineUtil.default
+import projekt.cloud.piece.music.player.util.CoroutineUtil.defaultBlocking
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 import projekt.cloud.piece.music.player.util.FragmentUtil.findParent
 import projekt.cloud.piece.music.player.util.KotlinUtil.ifFalse
@@ -227,7 +225,7 @@ abstract class ArtistLayoutCompat(
         }
 
         override fun setupNavigation(fragment: Fragment) {
-            fragment.lifecycleScope.main {
+            fragment.main {
                 findLibraryFragment(fragment)?.canSlide
                     .ifTrue { setupToolbarNavigation(fragment) }
             }
@@ -250,14 +248,14 @@ abstract class ArtistLayoutCompat(
         }
 
         override fun setupMargin(fragment: Fragment) {
-            fragment.lifecycleScope.main {
+            fragment.main {
                 findLibraryFragment(fragment)?.canSlide
                     .ifFalse(::removeRootPaddingStart)
             }
         }
 
         private suspend fun findLibraryFragment(fragment: Fragment): LibraryFragment? {
-            return withContext(default) {
+            return defaultBlocking {
                 fragment.findParent()
             }
         }

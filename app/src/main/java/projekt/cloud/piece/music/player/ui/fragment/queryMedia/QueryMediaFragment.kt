@@ -17,13 +17,11 @@ import android.util.TypedValue
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.edit
 import androidx.core.view.updatePadding
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicatorSpec
 import com.google.android.material.progressindicator.IndeterminateDrawable
 import com.google.android.material.textview.MaterialTextView
-import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseFragment
 import projekt.cloud.piece.music.player.base.ViewBindingInflater
@@ -33,7 +31,7 @@ import projekt.cloud.piece.music.player.storage.audio.AudioDatabase
 import projekt.cloud.piece.music.player.storage.audio.AudioDatabase.AudioDatabaseUtil.audioDatabase
 import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase.RuntimeDatabaseUtil.runtimeDatabase
 import projekt.cloud.piece.music.player.ui.activity.main.MainActivity
-import projekt.cloud.piece.music.player.util.CoroutineUtil.default
+import projekt.cloud.piece.music.player.util.CoroutineUtil.defaultBlocking
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 import projekt.cloud.piece.music.player.util.PreferenceUtil.defaultSharedPreference
 
@@ -73,20 +71,20 @@ class QueryMediaFragment: BaseFragment<FragmentQueryMediaBinding>(), WindowInset
             )
         }
 
-        lifecycleScope.main {
+        main {
 
-            val audioDatabase = withContext(default) {
+            val audioDatabase = defaultBlocking {
                 requireContext().audioDatabase
             }
 
             subtitle.text = getString(
                 R.string.query_media_query_body_complete,
-                withContext(default) {
+                defaultBlocking {
                     queryMediaStore(audioDatabase)
                 }
             )
 
-            withContext(default) {
+            defaultBlocking {
                 requireContext().runtimeDatabase.audioMetadataDao()
                     .insert(audioDatabase.metadataDao().query())
             }
@@ -130,7 +128,7 @@ class QueryMediaFragment: BaseFragment<FragmentQueryMediaBinding>(), WindowInset
     }
 
     private fun complete() {
-        lifecycleScope.main {
+        main {
             saveCompleteFlag()
             with(requireActivity()) {
                 startActivity(Intent(requireContext(), MainActivity::class.java))
@@ -141,7 +139,7 @@ class QueryMediaFragment: BaseFragment<FragmentQueryMediaBinding>(), WindowInset
 
     // Need blocking
     private suspend fun saveCompleteFlag() {
-        withContext(default) {
+        defaultBlocking {
             requireContext().defaultSharedPreference
                 .edit(true) {
                     putBoolean(getString(R.string.launcher_complete), true)

@@ -1,8 +1,6 @@
 package projekt.cloud.piece.music.player.ui.fragment.library.album
 
 import android.os.Bundle
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.base.LayoutCompatInflater
 import projekt.cloud.piece.music.player.databinding.FragmentLibraryObjectBinding
 import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase
@@ -10,7 +8,7 @@ import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase.RuntimeD
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.AlbumView
 import projekt.cloud.piece.music.player.ui.fragment.library.album.AlbumLibraryLayoutCompat.AlbumLibraryLayoutCompatUtil
 import projekt.cloud.piece.music.player.ui.fragment.library.base.BaseLibraryObjectFragment
-import projekt.cloud.piece.music.player.util.CoroutineUtil.default
+import projekt.cloud.piece.music.player.util.CoroutineUtil.defaultBlocking
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 
 class AlbumLibraryFragment: BaseLibraryObjectFragment<AlbumLibraryLayoutCompat>() {
@@ -37,7 +35,7 @@ class AlbumLibraryFragment: BaseLibraryObjectFragment<AlbumLibraryLayoutCompat>(
     }
 
     private fun startQueryAlbums(layoutCompat: AlbumLibraryLayoutCompat) {
-        lifecycleScope.main {
+        main {
             setRecyclerViewAdapter(
                 layoutCompat,
                 queryAndSetAlbums(requireActivity().runtimeDatabase)
@@ -52,7 +50,7 @@ class AlbumLibraryFragment: BaseLibraryObjectFragment<AlbumLibraryLayoutCompat>(
     }
 
     private suspend fun queryAlbums(runtimeDatabase: RuntimeDatabase): List<AlbumView> {
-        return withContext(default) {
+        return defaultBlocking {
             runtimeDatabase.databaseViewDao()
                 .queryAlbum()
         }

@@ -12,14 +12,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.databinding.ActivityLauncherBinding
 import projekt.cloud.piece.music.player.storage.audio.AudioDatabase.AudioDatabaseUtil.audioDatabase
 import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase.RuntimeDatabaseUtil.runtimeDatabase
 import projekt.cloud.piece.music.player.ui.activity.main.MainActivity
-import projekt.cloud.piece.music.player.util.CoroutineUtil.default
+import projekt.cloud.piece.music.player.util.CoroutineUtil.defaultBlocking
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 import projekt.cloud.piece.music.player.util.PreferenceUtil.defaultSharedPreference
 
@@ -35,10 +33,10 @@ class LauncherActivity: AppCompatActivity() {
         var continueSplashScreen = true
         splashScreen.setKeepOnScreenCondition { continueSplashScreen }
 
-        lifecycleScope.main {
+        main {
             when {
                 checkPermissionsGranted() && checkLauncherComplete(getString(R.string.launcher_complete)) -> {
-                    lifecycleScope.main {
+                    main {
                         initialRuntimeDatabase()
                         startActivity(Intent(this@LauncherActivity, MainActivity::class.java))
                         finish()
@@ -81,13 +79,13 @@ class LauncherActivity: AppCompatActivity() {
     }
 
     private suspend fun checkLauncherComplete(name: String): Boolean {
-        return withContext(default) {
+        return defaultBlocking {
             defaultSharedPreference.contains(name) && defaultSharedPreference.getBoolean(name, false)
         }
     }
 
     private suspend fun initialRuntimeDatabase() {
-        withContext(default) {
+        defaultBlocking {
             runtimeDatabase.audioMetadataDao()
                 .insert(audioDatabase.metadataDao().query())
         }

@@ -6,14 +6,12 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.imageview.ShapeableImageView
-import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
@@ -24,7 +22,7 @@ import projekt.cloud.piece.music.player.storage.runtime.databaseView.AlbumView
 import projekt.cloud.piece.music.player.storage.runtime.entity.AudioMetadataEntity
 import projekt.cloud.piece.music.player.ui.fragment.library.LibraryFragment
 import projekt.cloud.piece.music.player.util.AutoExpandableAppBarLayoutContentUtil.setupAutoExpandableAppBarLayout
-import projekt.cloud.piece.music.player.util.CoroutineUtil
+import projekt.cloud.piece.music.player.util.CoroutineUtil.defaultBlocking
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 import projekt.cloud.piece.music.player.util.FragmentUtil.findParent
 import projekt.cloud.piece.music.player.util.KotlinUtil.ifFalse
@@ -216,14 +214,14 @@ abstract class AlbumLayoutCompat(binding: FragmentAlbumBinding): BaseLayoutCompa
         }
 
         override fun setupNavigation(fragment: Fragment) {
-            fragment.lifecycleScope.main {
+            fragment.main {
                 findLibraryFragment(fragment)?.canSlide
                     .ifTrue { setupToolbarNavigation(fragment) }
             }
         }
 
         private suspend fun findLibraryFragment(fragment: Fragment): LibraryFragment? {
-            return withContext(CoroutineUtil.default) {
+            return defaultBlocking {
                 fragment.findParent()
             }
         }
@@ -238,7 +236,7 @@ abstract class AlbumLayoutCompat(binding: FragmentAlbumBinding): BaseLayoutCompa
         }
 
         override fun setupMargin(fragment: Fragment) {
-            fragment.lifecycleScope.main {
+            fragment.main {
                 findLibraryFragment(fragment)?.canSlide
                     .ifFalse(::removeRootPaddingStart)
             }

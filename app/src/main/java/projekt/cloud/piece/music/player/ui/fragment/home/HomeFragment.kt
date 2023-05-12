@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat.SHUFFLE_MODE_ALL
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
 import projekt.cloud.piece.music.player.base.LayoutCompatInflater
 import projekt.cloud.piece.music.player.base.ViewBindingInflater
@@ -17,7 +15,7 @@ import projekt.cloud.piece.music.player.storage.runtime.entity.AudioMetadataEnti
 import projekt.cloud.piece.music.player.storage.runtime.entity.PlaybackEntity
 import projekt.cloud.piece.music.player.ui.activity.main.MainViewModel
 import projekt.cloud.piece.music.player.ui.fragment.home.HomeLayoutCompat.HomeLayoutCompatUtil
-import projekt.cloud.piece.music.player.util.CoroutineUtil.default
+import projekt.cloud.piece.music.player.util.CoroutineUtil.defaultBlocking
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 
 class HomeFragment: BaseMultiDensityFragment<FragmentHomeBinding, HomeLayoutCompat>() {
@@ -49,7 +47,7 @@ class HomeFragment: BaseMultiDensityFragment<FragmentHomeBinding, HomeLayoutComp
     private fun startRegisterTransportControls(
         runtimeDatabase: RuntimeDatabase, mediaControllerCompat: MediaControllerCompat
     ) {
-        lifecycleScope.main {
+        main {
             val audioList = queryAudioList(runtimeDatabase)
 
             val onItemClick = { id: String ->
@@ -64,7 +62,7 @@ class HomeFragment: BaseMultiDensityFragment<FragmentHomeBinding, HomeLayoutComp
     }
 
     private suspend fun queryAudioList(runtimeDatabase: RuntimeDatabase): List<AudioMetadataEntity> {
-        return withContext(default) {
+        return defaultBlocking {
             runtimeDatabase.audioMetadataDao()
                 .query()
         }
@@ -76,7 +74,7 @@ class HomeFragment: BaseMultiDensityFragment<FragmentHomeBinding, HomeLayoutComp
     ): HomeRecyclerAdapter {
         // Other than create on Main thread,
         // let it be created at background has a better performance for UI update
-        return withContext(default) {
+        return defaultBlocking {
             HomeRecyclerAdapter(this@HomeFragment, audioList, onItemClick)
         }
     }
@@ -90,7 +88,7 @@ class HomeFragment: BaseMultiDensityFragment<FragmentHomeBinding, HomeLayoutComp
         // Clear previous work
         job?.cancel()
         // Start wORK
-        return lifecycleScope.main {
+        return main {
             putPlaylistIntoRuntimeDatabase(
                 runtimeDatabase,
                 // Convert into playback entity list
@@ -107,7 +105,7 @@ class HomeFragment: BaseMultiDensityFragment<FragmentHomeBinding, HomeLayoutComp
 
     private suspend fun getPlaybackList(
         audioMetadataList: List<AudioMetadataEntity>
-    ) = withContext(default) {
+    ) = defaultBlocking {
         audioMetadataList.mapIndexed { index, audioMetadataEntity ->
             PlaybackEntity(index, audioMetadataEntity.id)
         } as ArrayList
@@ -115,14 +113,14 @@ class HomeFragment: BaseMultiDensityFragment<FragmentHomeBinding, HomeLayoutComp
 
     private suspend fun shuffleAudioMetadataListIfRequired(
         mediaControllerCompat: MediaControllerCompat, audioMetadataList: List<AudioMetadataEntity>
-    ) = withContext(default) {
+    ) = defaultBlocking {
         audioMetadataList.takeIf { mediaControllerCompat.shuffleMode != SHUFFLE_MODE_ALL }
             ?: audioMetadataList.shuffled()
     }
 
     private suspend fun putPlaylistIntoRuntimeDatabase(
         runtimeDatabase: RuntimeDatabase, playbackList: List<PlaybackEntity>
-    ) = withContext(default) {
+    ) = defaultBlocking {
         with(runtimeDatabase.playbackDao()) {
             clear()
             insert(playbackList)

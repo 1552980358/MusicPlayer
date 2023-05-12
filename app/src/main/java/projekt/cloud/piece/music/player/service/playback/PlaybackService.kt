@@ -42,20 +42,18 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
-import androidx.lifecycle.lifecycleScope
 import androidx.media.session.MediaButtonReceiver
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.Player.Listener
 import com.google.android.exoplayer2.Player.STATE_ENDED
-import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLifecycleMediaBrowserService
 import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase
 import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase.RuntimeDatabaseUtil.runtimeDatabase
 import projekt.cloud.piece.music.player.storage.runtime.dao.PlaybackDao
 import projekt.cloud.piece.music.player.storage.runtime.entity.AudioMetadataEntity
-import projekt.cloud.piece.music.player.util.CoroutineUtil.default
-import projekt.cloud.piece.music.player.util.CoroutineUtil.io
+import projekt.cloud.piece.music.player.util.CoroutineUtil.defaultBlocking
+import projekt.cloud.piece.music.player.util.CoroutineUtil.ioBlocking
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 import projekt.cloud.piece.music.player.util.ServiceUtil.startSelf
 import projekt.cloud.piece.music.player.util.ServiceUtil.startSelfForeground
@@ -132,7 +130,7 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
                             return
                         }
 
-                        lifecycleScope.main {
+                        main {
                             if (!audioPlayer.isPlaying()) {
                                 audioPlayer.play()
                             }
@@ -153,7 +151,7 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
                         if (playbackStateCompat.state == STATE_PLAYING) {
                             // Pause player
 
-                            lifecycleScope.main {
+                            main {
                                 if (audioPlayer.isPlaying()) {
                                     audioPlayer.pause()
                                 }
@@ -175,7 +173,7 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
                     override fun onSkipToPrevious() {
                         Log.d(TAG, "onSkipToPrevious")
 
-                        lifecycleScope.main {
+                        main {
                             playAudioWithOrder(
                                 runtimeDatabase,
                                 when {
@@ -196,7 +194,7 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
                     override fun onSkipToNext() {
                         Log.d(TAG, "onSkipToNext")
 
-                        lifecycleScope.main {
+                        main {
                             playAudioWithOrder(
                                 runtimeDatabase,
                                 when {
@@ -214,15 +212,15 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
                     override fun onPlayFromMediaId(mediaId: String, extras: Bundle?) {
                         Log.d(TAG, "onPlayFromMediaId: mediaId=$mediaId")
 
-                        lifecycleScope.main {
+                        main {
                             // Get data
-                            order = withContext(default) {
+                            order = defaultBlocking {
                                 runtimeDatabase.playbackDao()
                                     .queryOrder(mediaId)
                             }
 
                             playAudioMetadata(
-                                withContext(default) {
+                                defaultBlocking {
                                     runtimeDatabase.audioMetadataDao()
                                         .query(mediaId)
                                 }
@@ -236,7 +234,7 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
 
                     override fun onSeekTo(pos: Long) {
                         if (pos >= DURATION_START) {
-                            lifecycleScope.main {
+                            main {
                                 // Update player pos
                                 audioPlayer.seekTo(pos)
 
@@ -255,7 +253,7 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
                     }
 
                     override fun onSetShuffleMode(shuffleMode: Int) {
-                        lifecycleScope.main {
+                        main {
                             runtimeDatabase.playbackDao().let { playbackDao ->
                                 when (shuffleMode) {
                                     SHUFFLE_MODE_ALL -> { shufflePlaybackEntity(playbackDao) }
@@ -292,7 +290,7 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
     private suspend fun playAudioWithOrder(runtimeDatabase: RuntimeDatabase, order: Int) {
         this.order = order
         playAudioMetadata(
-            withContext(default) {
+            defaultBlocking {
                 runtimeDatabase.audioMetadataDao()
                     .query(
                         runtimeDatabase.playbackDao()
@@ -330,7 +328,7 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
     }
 
     private suspend fun shufflePlaybackEntity(playbackDao: PlaybackDao) {
-        return withContext(default) {
+        return defaultBlocking {
             playbackDao.insert(
                 playbackDao.query().shuffled()
                     .onEachIndexed { index, playbackEntity ->
@@ -341,7 +339,7 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
     }
 
     private suspend fun sortPlaybackEntity(playbackDao: PlaybackDao) {
-        return withContext(default) {
+        return defaultBlocking {
             playbackDao.insert(
                 playbackDao.query()
                     .sortedBy { it.id }
@@ -363,7 +361,7 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
                 startForegroundIfRequired(createNotification(audioMetadata, null))
 
                 // Update image
-                lifecycleScope.main {
+                main {
                     val largeIconSize = resources.getDimensionPixelSize(
                         R.dimen.notification_large_image_size_64
                     )
@@ -434,7 +432,7 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
     )
 
     private suspend fun requestAlbumCover(uri: Uri, imageSize: Int): Bitmap? {
-        return withContext(io) {
+        return ioBlocking {
             @Suppress("BlockingMethodInNonBlockingContext")
             Glide.with(this@PlaybackService)
                 .asBitmap()
@@ -445,7 +443,7 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
     }
 
     private suspend fun requestDefaultCover(imageSize: Int): Bitmap? {
-        return withContext(default) {
+        return defaultBlocking {
             ContextCompat.getDrawable(
                 this@PlaybackService,
                 R.drawable.ic_round_audiotrack_24
@@ -465,7 +463,7 @@ class PlaybackService: BaseLifecycleMediaBrowserService(), Listener {
 
     override fun onPlaybackStateChanged(playbackState: Int) {
         if (playbackState == STATE_ENDED) {
-            lifecycleScope.main {
+            main {
                 val runtimeDatabase = runtimeDatabase
                 when (repeatMode) {
                     REPEAT_MODE_NONE -> {

@@ -4,7 +4,6 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.material.imageview.ShapeableImageView
 import projekt.cloud.piece.music.player.base.BaseRecyclerViewAdapter
@@ -43,7 +42,7 @@ class ArtistLibraryChildRecyclerAdapter(
 
     fun updateAlbumList(albumList: List<String>) {
         this.albumList = albumList
-        fragment.lifecycleScope.main {
+        fragment.main {
             @Suppress("NotifyDataSetChanged")
             notifyDataSetChanged()
         }

@@ -25,7 +25,6 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.transition.TransitionManager
 import com.bumptech.glide.Glide
 import com.google.android.material.circularreveal.CircularRevealCompat
@@ -36,12 +35,11 @@ import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.slider.Slider
 import com.google.android.material.slider.Slider.OnSliderTouchListener
 import kotlin.math.max
-import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseLayoutCompat
 import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
 import projekt.cloud.piece.music.player.databinding.FragmentPlayerBinding
-import projekt.cloud.piece.music.player.util.CoroutineUtil.default
+import projekt.cloud.piece.music.player.util.CoroutineUtil.defaultBlocking
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 import projekt.cloud.piece.music.player.util.PlaybackStateManager
 import projekt.cloud.piece.music.player.util.ResourceUtil.getLong
@@ -152,8 +150,8 @@ abstract class PlayerLayoutCompat(
     }
 
     fun notifyUpdatePlaybackController(fragment: Fragment, @DrawableRes resId: Int) {
-        fragment.lifecycleScope.main {
-            val drawable = withContext(default) {
+        fragment.main {
+            val drawable = defaultBlocking {
                 ContextCompat.getDrawable(fragment.requireContext(), resId)
             }
             if (drawable != null) {

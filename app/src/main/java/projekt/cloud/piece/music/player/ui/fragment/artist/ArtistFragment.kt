@@ -5,11 +5,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialFadeThrough
-import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
 import projekt.cloud.piece.music.player.base.LayoutCompatInflater
@@ -23,7 +21,7 @@ import projekt.cloud.piece.music.player.storage.runtime.databaseView.ArtistView
 import projekt.cloud.piece.music.player.storage.runtime.entity.AudioMetadataEntity
 import projekt.cloud.piece.music.player.ui.fragment.artist.ArtistLayoutCompat.HomeLayoutCompatUtil
 import projekt.cloud.piece.music.player.ui.fragment.library.LibraryFragment
-import projekt.cloud.piece.music.player.util.CoroutineUtil.default
+import projekt.cloud.piece.music.player.util.CoroutineUtil.defaultBlocking
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 import projekt.cloud.piece.music.player.util.FragmentUtil.findParent
 import projekt.cloud.piece.music.player.util.KotlinUtil.ifFalse
@@ -59,7 +57,7 @@ class ArtistFragment: BaseMultiDensityFragment<FragmentArtistBinding, ArtistLayo
         layoutCompat.setupNavigation(this)
         layoutCompat.setupMargin(this)
 
-        lifecycleScope.main {
+        main {
             val runtimeDatabase = requireContext().runtimeDatabase
 
             // Query ArtistView
@@ -80,7 +78,7 @@ class ArtistFragment: BaseMultiDensityFragment<FragmentArtistBinding, ArtistLayo
     private suspend fun queryArtist(
         runtimeDatabase: RuntimeDatabase, id: String
     ): ArtistView {
-        return withContext(default) {
+        return defaultBlocking {
             runtimeDatabase.databaseViewDao()
                 .queryArtist(id)
         }
@@ -89,7 +87,7 @@ class ArtistFragment: BaseMultiDensityFragment<FragmentArtistBinding, ArtistLayo
     private suspend fun queryAudio(
         runtimeDatabase: RuntimeDatabase, id: String
     ): List<AudioMetadataEntity> {
-        return withContext(default) {
+        return defaultBlocking {
             runtimeDatabase.audioMetadataDao()
                 .queryForArtist(id)
         }

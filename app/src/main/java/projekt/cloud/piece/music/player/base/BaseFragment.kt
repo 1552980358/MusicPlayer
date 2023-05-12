@@ -9,15 +9,13 @@ import androidx.annotation.CallSuper
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import kotlin.reflect.KFunction2
-import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.base.interfaces.BackPressedInterface
 import projekt.cloud.piece.music.player.base.interfaces.TransitionInterface
 import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
 import projekt.cloud.piece.music.player.util.CoroutineUtil.default
-import projekt.cloud.piece.music.player.util.CoroutineUtil.main
+import projekt.cloud.piece.music.player.util.CoroutineUtil.mainBlocking
 import projekt.cloud.piece.music.player.util.FragmentUtil.viewLifecycleProperty
 import projekt.cloud.piece.music.player.util.KotlinUtil.tryTo
 import projekt.cloud.piece.music.player.util.ScreenDensity.ScreenDensityUtil.screenDensity
@@ -70,7 +68,7 @@ abstract class BaseFragment<VB: ViewBinding>: Fragment() {
         /**
          * Limit execution in lifecycle of this child of [BaseFragment]
          **/
-        fragment.lifecycleScope.default {
+        fragment.default {
             asyncableMethodList.forEach { method ->
                 /**
                  * Execute within [suspend],
@@ -84,7 +82,7 @@ abstract class BaseFragment<VB: ViewBinding>: Fragment() {
     private suspend fun invokeAsyncableMethod(
         method: KFunction2<BaseFragment<*>, FragmentActivity, Unit>,
         fragment: BaseFragment<*>, parentActivity: FragmentActivity
-    ) = withContext(main) {
+    ) = mainBlocking {
         method.invoke(fragment, parentActivity)
     }
 

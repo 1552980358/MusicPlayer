@@ -5,10 +5,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.platform.MaterialContainerTransform
-import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.R
 import projekt.cloud.piece.music.player.base.BaseMultiDensityFragment
 import projekt.cloud.piece.music.player.base.LayoutCompatInflater
@@ -19,7 +17,7 @@ import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase.RuntimeD
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.AlbumView
 import projekt.cloud.piece.music.player.storage.runtime.entity.AudioMetadataEntity
 import projekt.cloud.piece.music.player.ui.fragment.album.AlbumLayoutCompat.AlbumLayoutCompatUtil
-import projekt.cloud.piece.music.player.util.CoroutineUtil.default
+import projekt.cloud.piece.music.player.util.CoroutineUtil.defaultBlocking
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 
 class AlbumFragment: BaseMultiDensityFragment<FragmentAlbumBinding, AlbumLayoutCompat>() {
@@ -47,7 +45,7 @@ class AlbumFragment: BaseMultiDensityFragment<FragmentAlbumBinding, AlbumLayoutC
         layoutCompat.setupNavigation(this)
         layoutCompat.setupMargin(this)
 
-        lifecycleScope.main {
+        main {
             val runtimeDatabase = requireContext().runtimeDatabase
 
             setupAlbumMetadata(
@@ -72,7 +70,7 @@ class AlbumFragment: BaseMultiDensityFragment<FragmentAlbumBinding, AlbumLayoutC
     }
 
     private suspend fun queryAlbum(runtimeDatabase: RuntimeDatabase, id: String): AlbumView {
-        return withContext(default) {
+        return defaultBlocking {
             runtimeDatabase.databaseViewDao()
                 .queryAlbum(id)
         }
@@ -89,7 +87,7 @@ class AlbumFragment: BaseMultiDensityFragment<FragmentAlbumBinding, AlbumLayoutC
     private suspend fun queryAudioList(
         runtimeDatabase: RuntimeDatabase, id: String
     ): List<AudioMetadataEntity> {
-        return withContext(default) {
+        return defaultBlocking {
             runtimeDatabase.audioMetadataDao()
                 .queryForAlbum(id)
         }

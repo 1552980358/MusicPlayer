@@ -1,8 +1,6 @@
 package projekt.cloud.piece.music.player.ui.fragment.library.artist
 
 import android.os.Bundle
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.withContext
 import projekt.cloud.piece.music.player.base.LayoutCompatInflater
 import projekt.cloud.piece.music.player.databinding.FragmentLibraryObjectBinding
 import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase
@@ -10,7 +8,7 @@ import projekt.cloud.piece.music.player.storage.runtime.RuntimeDatabase.RuntimeD
 import projekt.cloud.piece.music.player.storage.runtime.databaseView.ArtistView
 import projekt.cloud.piece.music.player.ui.fragment.library.artist.ArtistLibraryLayoutCompat.AlbumLibraryLayoutCompatUtil
 import projekt.cloud.piece.music.player.ui.fragment.library.base.BaseLibraryObjectFragment
-import projekt.cloud.piece.music.player.util.CoroutineUtil.default
+import projekt.cloud.piece.music.player.util.CoroutineUtil.defaultBlocking
 import projekt.cloud.piece.music.player.util.CoroutineUtil.main
 
 class ArtistLibraryFragment: BaseLibraryObjectFragment<ArtistLibraryLayoutCompat>() {
@@ -37,7 +35,7 @@ class ArtistLibraryFragment: BaseLibraryObjectFragment<ArtistLibraryLayoutCompat
     }
 
     private fun startQueryArtist(layoutCompat: ArtistLibraryLayoutCompat) {
-        lifecycleScope.main {
+        main {
             val runtimeDatabase = requireContext().runtimeDatabase
 
             val artists = queryAndSetArtists(runtimeDatabase)
@@ -59,7 +57,7 @@ class ArtistLibraryFragment: BaseLibraryObjectFragment<ArtistLibraryLayoutCompat
     private suspend fun queryArtists(
         runtimeDatabase: RuntimeDatabase
     ): List<ArtistView> {
-        return withContext(default) {
+        return defaultBlocking {
             runtimeDatabase.databaseViewDao()
                 .queryArtist()
         }
@@ -68,7 +66,7 @@ class ArtistLibraryFragment: BaseLibraryObjectFragment<ArtistLibraryLayoutCompat
     private suspend fun queryAlbums(
         runtimeDatabase: RuntimeDatabase
     ): Map<String, List<String>> {
-        return withContext(default) {
+        return defaultBlocking {
             runtimeDatabase.databaseViewDao()
                 .queryAlbumsOfArtists()
         }
@@ -77,7 +75,7 @@ class ArtistLibraryFragment: BaseLibraryObjectFragment<ArtistLibraryLayoutCompat
     private suspend fun applyAlbumsToArtist(
         artists: List<ArtistView>, albums: Map<String, List<String>>
     ) {
-        return withContext(default) {
+        return defaultBlocking {
             artists.forEach { artist ->
                 artist.setAlbums(albums[artist.id])
             }
