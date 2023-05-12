@@ -16,7 +16,6 @@ import projekt.cloud.piece.music.player.base.interfaces.TransitionInterface
 import projekt.cloud.piece.music.player.base.interfaces.WindowInsetsInterface
 import projekt.cloud.piece.music.player.util.CoroutineUtil.default
 import projekt.cloud.piece.music.player.util.CoroutineUtil.mainBlocking
-import projekt.cloud.piece.music.player.util.FragmentUtil.viewLifecycleProperty
 import projekt.cloud.piece.music.player.util.KotlinUtil.tryTo
 import projekt.cloud.piece.music.player.util.ScreenDensity.ScreenDensityUtil.screenDensity
 
@@ -28,21 +27,22 @@ abstract class BaseFragment<VB: ViewBinding>: Fragment() {
 
         @JvmField
         val asyncableMethodList = listOf(
-            BaseFragment<*>::setupBackPressedInterface,
-            BaseFragment<*>::setupWindowInsetsInterface
+            BaseFragment<*>::setupBackPressedInterface
         )
 
     }
 
-    protected var binding: VB by viewLifecycleProperty()
+    private var _binding: VB? = null
+    protected val binding: VB
+        get() = _binding!!
 
     protected abstract val viewBindingInflater: ViewBindingInflater<VB>
 
     protected val screenDensity by screenDensity()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = viewBindingInflater.invoke(layoutInflater, container, false)
-        binding.tryTo<ViewDataBinding>()
+        _binding = viewBindingInflater.invoke(layoutInflater, container, false)
+        _binding.tryTo<ViewDataBinding>()
             ?.lifecycleOwner = this
         return binding.root
     }
@@ -59,9 +59,8 @@ abstract class BaseFragment<VB: ViewBinding>: Fragment() {
 
     private fun setupInterfaces(parentActivity: FragmentActivity) {
         invokeAsyncableMethods(this, parentActivity)
-        tryTo<TransitionInterface> {
-            it.applyTransitions(this, screenDensity)
-        }
+        setupWindowInsetsInterface(parentActivity)
+        setupTransitionInterface()
     }
 
     private fun invokeAsyncableMethods(fragment: BaseFragment<*>, parentActivity: FragmentActivity) {
@@ -104,6 +103,18 @@ abstract class BaseFragment<VB: ViewBinding>: Fragment() {
         }
     }
 
+    private fun setupTransitionInterface() {
+        tryTo<TransitionInterface> { transitionInterface ->
+            transitionInterface.applyTransitions(this, screenDensity)
+        }
+    }
+
     protected open fun onSetupBinding(binding: VB, savedInstanceState: Bundle?) = Unit
+
+    @CallSuper
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
 
 }
