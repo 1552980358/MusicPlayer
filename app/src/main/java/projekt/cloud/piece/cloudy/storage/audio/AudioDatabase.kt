@@ -9,11 +9,12 @@ import projekt.cloud.piece.cloudy.storage.audio.dao.MetadataDao
 import projekt.cloud.piece.cloudy.storage.audio.entity.AlbumEntity
 import projekt.cloud.piece.cloudy.storage.audio.entity.ArtistEntity
 import projekt.cloud.piece.cloudy.storage.audio.entity.AudioEntity
+import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView
 import projekt.cloud.piece.cloudy.storage.util.SingleDatabaseInstance
 
 @Database(
     entities = [AudioEntity::class, ArtistEntity::class, AlbumEntity::class],
-    views = [MetadataDao::class],
+    views = [MetadataView::class],
     version = AUDIO_DATABASE_VERSION
 )
 abstract class AudioDatabase: RoomDatabase() {
