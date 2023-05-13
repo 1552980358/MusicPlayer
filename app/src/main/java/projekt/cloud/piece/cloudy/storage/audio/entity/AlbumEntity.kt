@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import projekt.cloud.piece.cloudy.storage.audio.entity.AlbumEntity.ArtistEntityConstants.TABLE_ALBUM
+import projekt.cloud.piece.cloudy.storage.audio.entity.AlbumEntity.AlbumEntityConstants.TABLE_ALBUM
 import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView
 
 @Entity(TABLE_ALBUM)
@@ -16,7 +16,7 @@ data class AlbumEntity(
     val title: String
 ) {
 
-    companion object ArtistEntityConstants {
+    companion object AlbumEntityConstants {
 
         const val TABLE_ALBUM = "album"
 

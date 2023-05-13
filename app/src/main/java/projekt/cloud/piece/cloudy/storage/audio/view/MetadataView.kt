@@ -2,9 +2,9 @@ package projekt.cloud.piece.cloudy.storage.audio.view
 
 import androidx.room.ColumnInfo
 import androidx.room.DatabaseView
-import projekt.cloud.piece.cloudy.storage.audio.entity.AlbumEntity.ArtistEntityConstants.ALBUM_ID
-import projekt.cloud.piece.cloudy.storage.audio.entity.AlbumEntity.ArtistEntityConstants.ALBUM_TITLE
-import projekt.cloud.piece.cloudy.storage.audio.entity.AlbumEntity.ArtistEntityConstants.TABLE_ALBUM
+import projekt.cloud.piece.cloudy.storage.audio.entity.AlbumEntity.AlbumEntityConstants.ALBUM_ID
+import projekt.cloud.piece.cloudy.storage.audio.entity.AlbumEntity.AlbumEntityConstants.ALBUM_TITLE
+import projekt.cloud.piece.cloudy.storage.audio.entity.AlbumEntity.AlbumEntityConstants.TABLE_ALBUM
 import projekt.cloud.piece.cloudy.storage.audio.entity.ArtistEntity.ArtistEntityConstants.ARTIST_ID
 import projekt.cloud.piece.cloudy.storage.audio.entity.ArtistEntity.ArtistEntityConstants.ARTIST_NAME
 import projekt.cloud.piece.cloudy.storage.audio.entity.ArtistEntity.ArtistEntityConstants.TABLE_ARTIST
