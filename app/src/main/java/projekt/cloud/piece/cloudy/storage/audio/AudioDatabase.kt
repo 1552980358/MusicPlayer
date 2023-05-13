@@ -9,6 +9,7 @@ import projekt.cloud.piece.cloudy.storage.audio.dao.MetadataDao
 import projekt.cloud.piece.cloudy.storage.audio.entity.AlbumEntity
 import projekt.cloud.piece.cloudy.storage.audio.entity.ArtistEntity
 import projekt.cloud.piece.cloudy.storage.audio.entity.AudioEntity
+import projekt.cloud.piece.cloudy.storage.util.SingleDatabaseInstance
 
 @Database(
     entities = [AudioEntity::class, ArtistEntity::class, AlbumEntity::class],
@@ -21,25 +22,17 @@ abstract class AudioDatabase: RoomDatabase() {
 
         const val AUDIO_DATABASE_VERSION = 1
 
+        val Context.audioDatabase: AudioDatabase
+            get() = instance.getInstance(this)
+
+        private val instance = SingleDatabaseInstance(::createDatabase)
+
+        private const val AUDIO_DATABASE_NAME = "audio.db"
         private val AUDIO_DATABASE_CLASS: Class<AudioDatabase>
             get() = AudioDatabase::class.java
-        private const val AUDIO_DATABASE_NAME = "audio.db"
-
-        val Context.audioDatabase: AudioDatabase
-            get() = instance ?: syncInstance
-
-        @Volatile
-        private var instance: AudioDatabase? = null
-        private val Context.syncInstance: AudioDatabase
-            get() = synchronized(this@AudioDatabaseUtil) {
-                instance ?: setInstance(newInstance)
-            }
-        private val Context.newInstance: AudioDatabase
-            get() = Room.databaseBuilder(this, AUDIO_DATABASE_CLASS, AUDIO_DATABASE_NAME)
+        private fun createDatabase(context: Context): AudioDatabase {
+            return Room.databaseBuilder(context, AUDIO_DATABASE_CLASS, AUDIO_DATABASE_NAME)
                 .build()
-        private fun setInstance(audioDatabase: AudioDatabase): AudioDatabase {
-            instance = audioDatabase
-            return audioDatabase
         }
 
     }
