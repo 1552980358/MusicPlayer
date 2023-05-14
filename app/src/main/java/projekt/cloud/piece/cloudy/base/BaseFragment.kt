@@ -8,8 +8,8 @@ import androidx.annotation.CallSuper
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-
-typealias BindingInflater<B> = (LayoutInflater, ViewGroup?, Boolean) -> B
+import projekt.cloud.piece.cloudy.util.ViewBindingInflater
+import projekt.cloud.piece.cloudy.util.ViewBindingUtil.inflate
 
 abstract class BaseFragment<B>: Fragment() where B: ViewBinding {
 
@@ -33,12 +33,12 @@ abstract class BaseFragment<B>: Fragment() where B: ViewBinding {
     }
 
     /**
-     * [BaseFragment.bindingInflater]
-     * @return [BindingInflater]
+     * [BaseFragment.viewBindingInflater]
+     * @return [projekt.cloud.piece.cloudy.util.ViewBindingInflater]
      *
      * Called for inflating binding during [androidx.fragment.app.Fragment.onCreateView]
      **/
-    protected abstract val bindingInflater: BindingInflater<B>
+    protected abstract val viewBindingInflater: ViewBindingInflater<B>
 
     /**
      * [BaseFragment.inflateBinding]
@@ -47,10 +47,10 @@ abstract class BaseFragment<B>: Fragment() where B: ViewBinding {
      * @return [B]
      *
      * Called for inflating binding during [androidx.fragment.app.Fragment.onCreateView]
-     * by returning result of calling [BaseFragment.bindingInflater]
+     * by returning result of calling [BaseFragment.viewBindingInflater]
      **/
     private fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): B {
-        return bindingInflater.invoke(inflater, container, false)
+        return viewBindingInflater.inflate(inflater, container)
     }
 
     /**
