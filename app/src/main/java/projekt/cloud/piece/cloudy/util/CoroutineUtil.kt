@@ -2,8 +2,10 @@ package projekt.cloud.piece.cloudy.util
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -47,6 +49,19 @@ object CoroutineUtil {
     }
     suspend fun <R> ioBlocking(block: SuspendScopedReturnBlock<R>): R {
         return blocking(io, block)
+    }
+
+    @Suppress("DeferredIsResult")
+    private fun <R> CoroutineScope.asyncTask(
+        context: CoroutineContext, block: SuspendScopedReturnBlock<R>
+    ): Deferred<R> {
+        return async(context, block = block)
+    }
+    fun <R> CoroutineScope.defaultAsync(block: SuspendScopedReturnBlock<R>): Deferred<R> {
+        return asyncTask(default, block)
+    }
+    fun <R> CoroutineScope.ioAsync(block: SuspendScopedReturnBlock<R>): Deferred<R> {
+        return asyncTask(io, block)
     }
 
 }
