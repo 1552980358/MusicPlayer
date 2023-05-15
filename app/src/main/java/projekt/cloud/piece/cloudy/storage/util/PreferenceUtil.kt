@@ -9,20 +9,20 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.preference.PreferenceManager
 import java.lang.IllegalArgumentException
 import kotlin.properties.ReadOnlyProperty
-import kotlin.reflect.KProperty
+import projekt.cloud.piece.cloudy.util.LifecycleOwnerProperty
 
 object PreferenceUtil {
 
     fun defaultSharedPreference(): ReadOnlyProperty<LifecycleOwner, SharedPreferences> {
-        return FragmentDefaultSharedPreference()
+        return LifecycleOwnerDefaultSharedPreference()
     }
 
-    private class FragmentDefaultSharedPreference: ReadOnlyProperty<LifecycleOwner, SharedPreferences> {
+    private class LifecycleOwnerDefaultSharedPreference: LifecycleOwnerProperty<SharedPreferences>() {
 
-        private var defaultSharedPreference: SharedPreferences? = null
-
-        override fun getValue(thisRef: LifecycleOwner, property: KProperty<*>): SharedPreferences {
-            return defaultSharedPreference ?: setDefaultSharedPreference(thisRef)
+        override fun syncCreateValue(thisRef: LifecycleOwner): SharedPreferences {
+            return PreferenceManager.getDefaultSharedPreferences(
+                getContext(thisRef)
+            )
         }
 
         private fun getContext(thisRef: LifecycleOwner): Context {
@@ -31,21 +31,6 @@ object PreferenceUtil {
                 is Fragment -> { thisRef.requireContext() }
                 else -> throw IllegalArgumentException("Unknown $thisRef: Host class should be the subclass of android.content.Context")
             }
-        }
-
-        @Synchronized
-        private fun setDefaultSharedPreference(thisRef: LifecycleOwner): SharedPreferences {
-            return defaultSharedPreference ?: getDefaultSharedPreference(getContext(thisRef))
-        }
-
-        @Synchronized
-        private fun getDefaultSharedPreference(context: Context): SharedPreferences {
-            return PreferenceManager.getDefaultSharedPreferences(context)
-                .apply(::setDefaultSharedPreference)
-        }
-
-        private fun setDefaultSharedPreference(sharedPreferences: SharedPreferences) {
-            defaultSharedPreference = sharedPreferences
         }
 
     }
