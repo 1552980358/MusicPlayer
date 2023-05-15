@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Cloudy</string>
+
+    <string name="guide_setup">guide_setup</string>
+
+    <string name="permissions_title">Permissions</string>
+    <string name="permissions_grant_all">GRANT ALL</string>
+    <string name="permissions_read_storage">Access audio file located at external storage</string>
+    <string name="permissions_read_media_audio">Access audio file by querying OS database</string>
+    <string name="permissions_foreground_service">Apply a foreground service for audio playback</string>
+    <string name="permissions_post_notifications">Posting notification to notification drawer for controlling audio playback</string>
+
 </resources>
