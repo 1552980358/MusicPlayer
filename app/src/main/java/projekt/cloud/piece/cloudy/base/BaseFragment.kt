@@ -14,10 +14,16 @@ import projekt.cloud.piece.cloudy.util.ViewBindingUtil.inflate
 abstract class BaseFragment<B>: Fragment() where B: ViewBinding {
 
     /**
+     * [BaseFragment.viewBindingInflater]
+     * @return [ViewBindingInflater]
+     *
+     * Called for inflating binding during [androidx.fragment.app.Fragment.onCreateView]
+     **/
+    protected abstract val viewBindingInflater: ViewBindingInflater<B>
+
+    /**
      * [BaseFragment._binding]
      * @type Nullable [B]
-     *
-     *
      **/
     private var _binding: B? = null
 
@@ -50,14 +56,6 @@ abstract class BaseFragment<B>: Fragment() where B: ViewBinding {
     protected inline fun requireBinding(block: (B) -> Unit = {}): B? {
         return bindingNullable?.apply(block)
     }
-
-    /**
-     * [BaseFragment.viewBindingInflater]
-     * @return [projekt.cloud.piece.cloudy.util.ViewBindingInflater]
-     *
-     * Called for inflating binding during [androidx.fragment.app.Fragment.onCreateView]
-     **/
-    protected abstract val viewBindingInflater: ViewBindingInflater<B>
 
     /**
      * [BaseFragment.inflateBinding]
@@ -148,6 +146,7 @@ abstract class BaseFragment<B>: Fragment() where B: ViewBinding {
      * Called after [androidx.fragment.app.Fragment.onStop],
      * and before [androidx.fragment.app.Fragment.onDestroy]
      **/
+    @CallSuper
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
