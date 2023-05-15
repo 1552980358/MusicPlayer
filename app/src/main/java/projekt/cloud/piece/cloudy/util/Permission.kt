@@ -26,6 +26,9 @@ class Permission private constructor(
         private val permissionList = arrayListOf<Permission>()
         val permissions: List<Permission>
             get() = permissionList
+        val permissionStrings: Array<String>
+            get() = permissionList.map { it.permission }
+                .toTypedArray()
 
         init {
             permissionList.let { permissionList ->
