@@ -14,22 +14,41 @@ import projekt.cloud.piece.cloudy.util.ViewBindingUtil.inflate
 abstract class BaseFragment<B>: Fragment() where B: ViewBinding {
 
     /**
-     * [_binding]
-     * @type [B]
+     * [BaseFragment._binding]
+     * @type Nullable [B]
+     *
+     *
      **/
     private var _binding: B? = null
+
+    /**
+     * [BaseFragment.bindingNullable]
+     * @type Nullable [B]
+     *
+     * Modifier `protected` is set for
+     * allowing `inline` modifier set to [BaseFragment.requireBinding].
+     *
+     * So, Don't call this,
+     * call [BaseFragment.requireBinding]
+     **/
+    protected val bindingNullable: B?
+        get() = _binding
+    /**
+     * [BaseFragment.binding]
+     * @type [B]
+     **/
     protected val binding: B
         get() = _binding!!
 
     /**
      * [BaseFragment.requireBinding]
-     * @param block [kotlin.reflect.KFunction1]
+     * @param block [kotlin.jvm.functions.Function1]
      *
      * Require binding in a safe way prevent null pointer exception
      * if binding required after the calling of [androidx.fragment.app.Fragment.onDestroyView]
      **/
-    protected fun requireBinding(block: (B) -> Unit) {
-        _binding?.let(block)
+    protected inline fun requireBinding(block: (B) -> Unit = {}): B? {
+        return bindingNullable?.apply(block)
     }
 
     /**
