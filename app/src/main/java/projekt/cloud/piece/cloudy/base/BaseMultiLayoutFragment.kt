@@ -3,17 +3,17 @@ package projekt.cloud.piece.cloudy.base
 import android.os.Bundle
 import androidx.annotation.CallSuper
 import androidx.viewbinding.ViewBinding
-import projekt.cloud.piece.cloudy.base.BaseLayoutAdapter.LayoutAdapterUtil.inflate
+import projekt.cloud.piece.cloudy.base.BaseLayoutAdapter.LayoutAdapterUtil.build
 import projekt.cloud.piece.cloudy.util.PixelDensity
 import projekt.cloud.piece.cloudy.util.PixelDensity.PixelDensityUtil.pixelDensity
 
 abstract class BaseMultiLayoutFragment<B: ViewBinding, A: BaseLayoutAdapter<B>>: BaseFragment<B>() {
 
     /**
-     * [BaseMultiLayoutFragment.layoutAdapterInflater]
-     * @type [LayoutAdapterInflater]
+     * [BaseMultiLayoutFragment.layoutAdapterBuilder]
+     * @type [LayoutAdapterBuilder]
      **/
-    protected abstract val layoutAdapterInflater: LayoutAdapterInflater<B, A>
+    protected abstract val layoutAdapterBuilder: LayoutAdapterBuilder<B, A>
 
     /**
      * [BaseMultiLayoutFragment._layoutAdapter]
@@ -76,7 +76,7 @@ abstract class BaseMultiLayoutFragment<B: ViewBinding, A: BaseLayoutAdapter<B>>:
      * Create layout adapter for this [BaseMultiLayoutFragment]
      **/
     private fun createLayoutAdapter(pixelDensity: PixelDensity, binding: B): A {
-        return layoutAdapterInflater.inflate(pixelDensity, binding)
+        return layoutAdapterBuilder.build(pixelDensity, binding) // layoutAdapterInflater.inflate(pixelDensity, binding)
     }
 
     /**

@@ -3,30 +3,31 @@ package projekt.cloud.piece.cloudy.ui.fragment.permissions
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import projekt.cloud.piece.cloudy.base.BaseLayoutAdapter
+import projekt.cloud.piece.cloudy.base.LayoutAdapterBuilder
+import projekt.cloud.piece.cloudy.base.LayoutAdapterConstructor
 import projekt.cloud.piece.cloudy.databinding.FragmentPermissionsBinding
 import projekt.cloud.piece.cloudy.util.PixelDensity
 import projekt.cloud.piece.cloudy.util.PixelDensity.COMPAT
-import projekt.cloud.piece.cloudy.util.PixelDensity.EXPANDED
-import projekt.cloud.piece.cloudy.util.PixelDensity.MEDIUM
 import projekt.cloud.piece.cloudy.util.Updatable
 import projekt.cloud.piece.cloudy.util.SurfaceColorUtil.setSurface2BackgroundColor
 import projekt.cloud.piece.cloudy.util.WindowInsetUtil.applySystemBarsInsets
+
+private typealias PermissionsLayoutAdapterConstructor =
+    LayoutAdapterConstructor<FragmentPermissionsBinding, PermissionsLayoutAdapter>
 
 abstract class PermissionsLayoutAdapter(
     binding: FragmentPermissionsBinding
 ): BaseLayoutAdapter<FragmentPermissionsBinding>(binding), Updatable {
 
-    companion object PermissionLayoutAdapterUtil {
+    companion object {
 
-        val inflater: (PixelDensity, FragmentPermissionsBinding) -> PermissionsLayoutAdapter
-            get() = ::inflate
+        val builder: LayoutAdapterBuilder<FragmentPermissionsBinding, PermissionsLayoutAdapter>
+            get() = ::builder
 
-        private fun inflate(
-            pixelDensity: PixelDensity, binding: FragmentPermissionsBinding
-        ): PermissionsLayoutAdapter {
+        private fun builder(pixelDensity: PixelDensity): PermissionsLayoutAdapterConstructor {
             return when (pixelDensity) {
-                COMPAT -> CompatImpl(binding)
-                MEDIUM, EXPANDED -> W600dpImpl(binding)
+                COMPAT -> ::CompatImpl
+                else -> ::W600dpImpl
             }
         }
 

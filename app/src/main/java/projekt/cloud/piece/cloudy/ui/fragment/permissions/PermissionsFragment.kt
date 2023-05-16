@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.transition.platform.MaterialFadeThrough
 import kotlinx.coroutines.CoroutineScope
 import projekt.cloud.piece.cloudy.base.BaseFragment
 import projekt.cloud.piece.cloudy.base.BaseMultiLayoutFragment
-import projekt.cloud.piece.cloudy.base.LayoutAdapterInflater
+import projekt.cloud.piece.cloudy.base.LayoutAdapterBuilder
 import projekt.cloud.piece.cloudy.databinding.FragmentPermissionsBinding
 import projekt.cloud.piece.cloudy.util.CoroutineUtil.defaultBlocking
 import projekt.cloud.piece.cloudy.util.LifecycleOwnerUtil.main
@@ -22,11 +24,18 @@ private typealias BasePermissionsFragment = BaseMultiLayoutFragment<FragmentPerm
 class PermissionsFragment: BasePermissionsFragment() {
 
     /**
-     * [BaseMultiLayoutFragment.layoutAdapterInflater]
-     * @type [LayoutAdapterInflater]
+     * [BaseMultiLayoutFragment.viewBindingInflater]
+     * @type [ViewBindingInflater]
      **/
-    override val layoutAdapterInflater: LayoutAdapterInflater<FragmentPermissionsBinding, PermissionsLayoutAdapter>
-        get() = PermissionsLayoutAdapter.inflater
+    override val viewBindingInflater: ViewBindingInflater<FragmentPermissionsBinding>
+        get() = FragmentPermissionsBinding::inflate
+
+    /**
+     * [BaseMultiLayoutFragment.layoutAdapterBuilder]
+     * @type [LayoutAdapterBuilder]
+     **/
+    override val layoutAdapterBuilder: LayoutAdapterBuilder<FragmentPermissionsBinding, PermissionsLayoutAdapter>
+        get() = PermissionsLayoutAdapter.builder
 
     /**
      * [PermissionsFragment.requestPermission]
@@ -46,6 +55,7 @@ class PermissionsFragment: BasePermissionsFragment() {
     private fun requestPermissionCallback(@Suppress("UNUSED_PARAMETER") isGranted: Boolean) {
         requestPermissionCallback?.invoke()
         requestPermissionCallback = null
+        startCheckPermissions()
     }
 
     /**
@@ -65,14 +75,23 @@ class PermissionsFragment: BasePermissionsFragment() {
         requireLayoutAdapter { layoutAdapter ->
             layoutAdapter.update()
         }
+        startCheckPermissions()
     }
 
     /**
-     * [BaseMultiLayoutFragment.viewBindingInflater]
-     * @type [ViewBindingInflater]
+     * [androidx.fragment.app.Fragment.onCreate]
+     * @param savedInstanceState [android.os.Bundle]
      **/
-    override val viewBindingInflater: ViewBindingInflater<FragmentPermissionsBinding>
-        get() = FragmentPermissionsBinding::inflate
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupTransitions()
+    }
+
+    private fun setupTransitions() {
+        exitTransition = MaterialFadeThrough()
+        reenterTransition = MaterialFadeThrough()
+        enterTransition = MaterialFadeThrough()
+    }
 
     /**
      * [BaseFragment.onSetupBinding]
@@ -93,7 +112,7 @@ class PermissionsFragment: BasePermissionsFragment() {
         @Suppress("UNUSED_PARAMETER")
         view: View
     ) {
-        requestMultiplePermissions.launch(permissionStrings)
+        main(::checkPermissionsAndStartRequest)
     }
 
     /**
@@ -156,6 +175,56 @@ class PermissionsFragment: BasePermissionsFragment() {
                 requestPermission.launch(permission.permission)
             }
         }
+    }
+
+    private suspend fun checkPermissionsAndStartRequest(
+        @Suppress("UNUSED_PARAMETER")
+        coroutineScope: CoroutineScope
+    ) {
+        when {
+            checkPermissions() -> {
+                navigateToImportAudio()
+            }
+            else -> {
+                requestMultiplePermissions.launch(permissionStrings)
+            }
+        }
+    }
+
+    private fun startCheckPermissions() {
+        main(::startCheckPermission)
+    }
+
+    private suspend fun startCheckPermission(
+        @Suppress("UNUSED_PARAMETER")
+        coroutineScope: CoroutineScope
+    ) {
+        if (checkPermissions()) {
+            navigateToImportAudio()
+        }
+    }
+
+    private suspend fun checkPermissions(): Boolean {
+        return defaultBlocking {
+            checkPermissions(permissions)
+        }
+    }
+
+    private fun checkPermissions(permissions: List<Permission>): Boolean {
+        return requireContext().let { context ->
+            for (permission in permissions) {
+                if (!permission.isGranted(context)) {
+                    return@let false
+                }
+            }
+            true
+        }
+    }
+
+    private fun navigateToImportAudio() {
+        findNavController().navigate(
+            PermissionsFragmentDirections.toImportAudio()
+        )
     }
 
 }
