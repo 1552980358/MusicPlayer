@@ -1,12 +1,23 @@
 package projekt.cloud.piece.cloudy.util
 
+import android.content.Context
 import android.view.View
 import com.google.android.material.elevation.SurfaceColors
 
 object SurfaceColorUtil {
 
+    val Context.surfaceColor2: Int
+        get() = SurfaceColors.SURFACE_2.getColor(this)
+
+    val Context.surfaceColor3: Int
+        get() = SurfaceColors.SURFACE_3.getColor(this)
+
     fun View.setSurface2BackgroundColor() {
-        setBackgroundColor(SurfaceColors.SURFACE_2.getColor(context))
+        setBackgroundColor(context.surfaceColor2)
+    }
+
+    fun View.setSurface3BackgroundColor() {
+        setBackgroundColor(context.surfaceColor3)
     }
 
 }
