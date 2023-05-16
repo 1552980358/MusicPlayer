@@ -23,19 +23,15 @@ class Permission private constructor(
 
     companion object PermissionUtil {
 
-        private val permissionList = arrayListOf<Permission>()
-        val permissions: List<Permission>
-            get() = permissionList
-        val permissionStrings: Array<String>
-            get() = permissionList.map { it.permission }
-                .toTypedArray()
+        val permissionList: ArrayList<Permission>
+            get() = ArrayList<Permission>().apply(
+                ::setupPermissionList
+            )
 
-        init {
-            permissionList.let { permissionList ->
-                permissionList += readStoragePermission
-                setPostNotificationsPermission(permissionList)
-                setForegroundServicePermission(permissionList)
-            }
+        private fun setupPermissionList(permissionList: ArrayList<Permission>) {
+            permissionList += readStoragePermission
+            setPostNotificationsPermission(permissionList)
+            setForegroundServicePermission(permissionList)
         }
 
         private val readStoragePermission: Permission

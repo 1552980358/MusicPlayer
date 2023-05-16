@@ -11,13 +11,13 @@ import projekt.cloud.piece.cloudy.databinding.ActivityGuideBinding
 import projekt.cloud.piece.cloudy.storage.audio.AudioDatabase.AudioDatabaseUtil.audioDatabase
 import projekt.cloud.piece.cloudy.storage.runtime.RuntimeDatabase.RuntimeDatabaseUtil.runtimeDatabase
 import projekt.cloud.piece.cloudy.storage.util.PreferenceUtil.defaultSharedPreference
+import projekt.cloud.piece.cloudy.ui.activity.guide.GuideViewModel.GuideViewModelUtil.guideViewModel
 import projekt.cloud.piece.cloudy.ui.activity.main.MainActivity
 import projekt.cloud.piece.cloudy.util.CoroutineUtil.defaultBlocking
 import projekt.cloud.piece.cloudy.util.CoroutineUtil.ioAsync
 import projekt.cloud.piece.cloudy.util.CoroutineUtil.ioBlocking
 import projekt.cloud.piece.cloudy.util.LifecycleOwnerUtil.main
 import projekt.cloud.piece.cloudy.util.Permission
-import projekt.cloud.piece.cloudy.util.Permission.PermissionUtil.permissions
 
 class GuideActivity: AppCompatActivity() {
 
@@ -32,6 +32,12 @@ class GuideActivity: AppCompatActivity() {
      * @type [androidx.core.splashscreen.SplashScreen]
      **/
     private val splashScreen by lazy { installSplashScreen() }
+
+    /**
+     * [GuideActivity.viewModel]
+     * @type [GuideViewModel]
+     **/
+    private val viewModel by guideViewModel()
 
     /**
      * [android.app.Activity.onCreate]
@@ -108,7 +114,7 @@ class GuideActivity: AppCompatActivity() {
      **/
     private suspend fun checkPermissions(): Boolean {
         return defaultBlocking {
-            checkPermissions(permissions)
+            checkPermissions(viewModel.permissions)
         }
     }
 

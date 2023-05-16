@@ -12,11 +12,10 @@ import projekt.cloud.piece.cloudy.base.BaseFragment
 import projekt.cloud.piece.cloudy.base.BaseMultiLayoutFragment
 import projekt.cloud.piece.cloudy.base.LayoutAdapterBuilder
 import projekt.cloud.piece.cloudy.databinding.FragmentPermissionsBinding
+import projekt.cloud.piece.cloudy.ui.activity.guide.GuideViewModel.GuideViewModelUtil.guideViewModel
 import projekt.cloud.piece.cloudy.util.CoroutineUtil.defaultBlocking
 import projekt.cloud.piece.cloudy.util.LifecycleOwnerUtil.main
 import projekt.cloud.piece.cloudy.util.Permission
-import projekt.cloud.piece.cloudy.util.Permission.PermissionUtil.permissionStrings
-import projekt.cloud.piece.cloudy.util.Permission.PermissionUtil.permissions
 import projekt.cloud.piece.cloudy.util.ViewBindingInflater
 
 private typealias BasePermissionsFragment = BaseMultiLayoutFragment<FragmentPermissionsBinding, PermissionsLayoutAdapter>
@@ -78,6 +77,8 @@ class PermissionsFragment: BasePermissionsFragment() {
         startCheckPermissions()
     }
 
+    private val viewModel by guideViewModel()
+
     /**
      * [androidx.fragment.app.Fragment.onCreate]
      * @param savedInstanceState [android.os.Bundle]
@@ -137,7 +138,7 @@ class PermissionsFragment: BasePermissionsFragment() {
     ) {
         requireLayoutAdapter { layoutAdapter ->
             layoutAdapter.setRecyclerViewAdapter(
-                getRecyclerViewAdapter(permissions)
+                getRecyclerViewAdapter(viewModel.permissions)
             )
         }
     }
@@ -186,7 +187,7 @@ class PermissionsFragment: BasePermissionsFragment() {
                 navigateToImportAudio()
             }
             else -> {
-                requestMultiplePermissions.launch(permissionStrings)
+                requestMultiplePermissions.launch(viewModel.permissionStrings())
             }
         }
     }
@@ -206,7 +207,7 @@ class PermissionsFragment: BasePermissionsFragment() {
 
     private suspend fun checkPermissions(): Boolean {
         return defaultBlocking {
-            checkPermissions(permissions)
+            checkPermissions(viewModel.permissions)
         }
     }
 
