@@ -1,4 +1,4 @@
-package projekt.cloud.piece.cloudy.ui.fragment.permission
+package projekt.cloud.piece.cloudy.ui.fragment.permissions
 
 import android.content.Context
 import projekt.cloud.piece.cloudy.base.BaseRecyclerViewAdapter

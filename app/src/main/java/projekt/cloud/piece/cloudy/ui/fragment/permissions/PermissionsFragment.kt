@@ -1,4 +1,4 @@
-package projekt.cloud.piece.cloudy.ui.fragment.permission
+package projekt.cloud.piece.cloudy.ui.fragment.permissions
 
 import android.os.Bundle
 import android.view.View
@@ -17,7 +17,7 @@ import projekt.cloud.piece.cloudy.util.Permission.PermissionUtil.permissionStrin
 import projekt.cloud.piece.cloudy.util.Permission.PermissionUtil.permissions
 import projekt.cloud.piece.cloudy.util.ViewBindingInflater
 
-private typealias BasePermissionsFragment = BaseMultiLayoutFragment<FragmentPermissionsBinding, PermissionLayoutAdapter>
+private typealias BasePermissionsFragment = BaseMultiLayoutFragment<FragmentPermissionsBinding, PermissionsLayoutAdapter>
 
 class PermissionsFragment: BasePermissionsFragment() {
 
@@ -25,8 +25,8 @@ class PermissionsFragment: BasePermissionsFragment() {
      * [BaseMultiLayoutFragment.layoutAdapterInflater]
      * @type [LayoutAdapterInflater]
      **/
-    override val layoutAdapterInflater: LayoutAdapterInflater<FragmentPermissionsBinding, PermissionLayoutAdapter>
-        get() = PermissionLayoutAdapter.inflater
+    override val layoutAdapterInflater: LayoutAdapterInflater<FragmentPermissionsBinding, PermissionsLayoutAdapter>
+        get() = PermissionsLayoutAdapter.inflater
 
     /**
      * [PermissionsFragment.requestPermission]
@@ -98,10 +98,10 @@ class PermissionsFragment: BasePermissionsFragment() {
 
     /**
      * [BaseMultiLayoutFragment.onSetupLayoutAdapter]
-     * @param layoutAdapter [PermissionLayoutAdapter]
+     * @param layoutAdapter [PermissionsLayoutAdapter]
      * @param savedInstanceState [android.os.Bundle]
      **/
-    override fun onSetupLayoutAdapter(layoutAdapter: PermissionLayoutAdapter, savedInstanceState: Bundle?) {
+    override fun onSetupLayoutAdapter(layoutAdapter: PermissionsLayoutAdapter, savedInstanceState: Bundle?) {
         layoutAdapter.setupRootColor()
         main(::startShowRequiredPermissions)
     }

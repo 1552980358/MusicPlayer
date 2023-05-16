@@ -1,4 +1,4 @@
-package projekt.cloud.piece.cloudy.ui.fragment.permission
+package projekt.cloud.piece.cloudy.ui.fragment.permissions
 
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -12,18 +12,18 @@ import projekt.cloud.piece.cloudy.util.Updatable
 import projekt.cloud.piece.cloudy.util.SurfaceColorUtil.setSurface2BackgroundColor
 import projekt.cloud.piece.cloudy.util.WindowInsetUtil.applySystemBarsInsets
 
-abstract class PermissionLayoutAdapter(
+abstract class PermissionsLayoutAdapter(
     binding: FragmentPermissionsBinding
 ): BaseLayoutAdapter<FragmentPermissionsBinding>(binding), Updatable {
 
     companion object PermissionLayoutAdapterUtil {
 
-        val inflater: (PixelDensity, FragmentPermissionsBinding) -> PermissionLayoutAdapter
+        val inflater: (PixelDensity, FragmentPermissionsBinding) -> PermissionsLayoutAdapter
             get() = ::inflate
 
         private fun inflate(
             pixelDensity: PixelDensity, binding: FragmentPermissionsBinding
-        ): PermissionLayoutAdapter {
+        ): PermissionsLayoutAdapter {
             return when (pixelDensity) {
                 COMPAT -> CompatImpl(binding)
                 MEDIUM, EXPANDED -> W600dpImpl(binding)
@@ -37,14 +37,14 @@ abstract class PermissionLayoutAdapter(
         get() = binding.recyclerView
 
     /**
-     * [PermissionLayoutAdapter.setupRootColor]
+     * [PermissionsLayoutAdapter.setupRootColor]
      *
      * @pixelDensity [PixelDensity.MEDIUM], [PixelDensity.EXPANDED]
      **/
     open fun setupRootColor() = Unit
 
     /**
-     * [PermissionLayoutAdapter.setRecyclerViewAdapter]
+     * [PermissionsLayoutAdapter.setRecyclerViewAdapter]
      * @param adapter [androidx.recyclerview.widget.RecyclerView.Adapter]
      *
      * Set adapter for [androidx.recyclerview.widget.RecyclerView]
@@ -65,9 +65,9 @@ abstract class PermissionLayoutAdapter(
         recyclerView.adapter?.notifyItemChanged(position)
     }
 
-    private class CompatImpl(binding: FragmentPermissionsBinding): PermissionLayoutAdapter(binding)
+    private class CompatImpl(binding: FragmentPermissionsBinding): PermissionsLayoutAdapter(binding)
 
-    private class W600dpImpl(binding: FragmentPermissionsBinding): PermissionLayoutAdapter(binding) {
+    private class W600dpImpl(binding: FragmentPermissionsBinding): PermissionsLayoutAdapter(binding) {
 
         private val constraintLayoutRoot: ConstraintLayout
             get() = binding.constraintLayoutRoot

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/permissions"
-        android:name="projekt.cloud.piece.cloudy.ui.fragment.permission.PermissionsFragment"
+        android:name="projekt.cloud.piece.cloudy.ui.fragment.permissions.PermissionsFragment"
         tools:layout="@layout/fragment_permissions" />
 
 </navigation>
