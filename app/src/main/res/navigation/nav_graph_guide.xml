@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph_guide"
@@ -7,7 +8,20 @@
 
     <fragment
         android:id="@+id/permissions"
+        android:label="@string/permissions_title"
         android:name="projekt.cloud.piece.cloudy.ui.fragment.permissions.PermissionsFragment"
-        tools:layout="@layout/fragment_permissions" />
+        tools:layout="@layout/fragment_permissions">
+
+        <action
+            android:id="@+id/to_import_audio"
+            app:destination="@id/import_audio" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/import_audio"
+        android:label="@string/import_audio_title"
+        android:name="projekt.cloud.piece.cloudy.ui.fragment.import_audio.ImportAudioFragment"
+        tools:layout="@layout/fragment_import_audio" />
 
 </navigation>
