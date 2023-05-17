@@ -6,6 +6,7 @@ import android.database.Cursor
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.edit
+import com.google.android.material.transition.platform.MaterialFadeThrough
 import kotlinx.coroutines.CoroutineScope
 import projekt.cloud.piece.cloudy.R
 import projekt.cloud.piece.cloudy.base.BaseFragment
@@ -63,6 +64,26 @@ class ImportAudioFragment: BaseMultiLayoutFragment<FragmentImportAudioBinding, I
      * @type [android.content.SharedPreferences]
      **/
     private val sharedPreferences by defaultSharedPreference()
+
+    /**
+     * [androidx.fragment.app.Fragment.onCreate]
+     * @param savedInstanceState [android.os.Bundle]
+     **/
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupTransitions()
+    }
+
+    /**
+     * [ImportAudioFragment.setupTransitions]
+     *
+     * Setup transition of this fragment
+     **/
+    private fun setupTransitions() {
+        exitTransition = MaterialFadeThrough()
+        reenterTransition = MaterialFadeThrough()
+        enterTransition = MaterialFadeThrough()
+    }
 
     /**
      * [BaseFragment.setupBinding]
