@@ -36,9 +36,7 @@ class MediaStoreUtilTest {
     fun testQueryMusic() {
         log("===== Call testQueryMusic() =====")
         context.musicCursor {
-            while (it.moveToNext()) {
-                logCursor(it)
-            }
+            logCursor(it)
         }
         log("===== End testQueryMusic() =====")
     }

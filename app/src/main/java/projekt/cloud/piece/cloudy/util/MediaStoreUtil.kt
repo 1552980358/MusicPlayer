@@ -1,6 +1,5 @@
 package projekt.cloud.piece.cloudy.util
 
-import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore.Audio.AudioColumns.ARTIST
@@ -36,13 +35,13 @@ object MediaStoreUtil {
     val Cursor.musicSize: Long
         get() = getLong(getColumnIndexOrThrow(SIZE))
 
-    fun Context.musicCursor(block: (Cursor) -> Unit) {
-        contentResolver.queryMusic()
-            ?.use(block)
-    }
-
-    private fun ContentResolver.queryMusic(): Cursor? {
-        return query(EXTERNAL_CONTENT_URI, null, null, null, IS_MUSIC)
+    inline fun Context.musicCursor(block: (Cursor) -> Unit) {
+        contentResolver.query(EXTERNAL_CONTENT_URI, null, null, null, IS_MUSIC)
+            ?.use { cursor ->
+                while (cursor.moveToNext()) {
+                    block.invoke(cursor)
+                }
+            }
     }
 
 }
