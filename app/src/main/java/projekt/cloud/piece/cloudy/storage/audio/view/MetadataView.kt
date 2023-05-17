@@ -24,6 +24,8 @@ import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataC
 import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataConstant.METADATA_SIZE
 import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataConstant.METADATA_TITLE
 import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataConstant.VIEW_METADATA
+import projekt.cloud.piece.cloudy.util.DurationFormat.DurationFormatUtil.format
+import projekt.cloud.piece.cloudy.util.DurationFormat.SHORT
 
 @DatabaseView(
     value = "SELECT " +
@@ -82,6 +84,25 @@ class MetadataView(
         const val METADATA_DURATION = "duration"
         const val METADATA_SIZE = "size"
 
+        private const val SUBTITLE_DIVIDER = " - "
     }
+
+    /**
+     * [MetadataView.subtitle]
+     * @type [String]
+     *
+     * Subtitle of listing metadata
+     **/
+    val subtitle: String
+        get() = artistName + SUBTITLE_DIVIDER + albumTitle
+
+    /**
+     * [MetadataView.durationShortText]
+     * @type [String]
+     *
+     * Formatted short duration text in [0:00]
+     **/
+    val durationShortText: String
+        get() = duration.format(SHORT)
 
 }
