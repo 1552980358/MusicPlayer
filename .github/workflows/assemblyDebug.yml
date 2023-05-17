@@ -1,0 +1,54 @@
+name: Gradle Build 'assemblyDebug'
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+    branches:
+      - dev
+
+jobs:
+  gradle_build:
+    name: Gradle build 'assemblyDebug' of 'Push' on 'dev' branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Microsoft Build of OpenJDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'microsoft'
+          java-version: '17'
+
+      - name: Checkout Project Repo
+        uses: actions/checkout@v3
+
+      - name: Download and unzip Android Command Line Tool
+        run: |
+          curl -s https://developer.android.com/studio\#command-tools | \
+          grep -Eo 'https://dl.google.com/android/repository/commandlinetools-linux-[0-9]*_latest.zip' | \
+          head -n 1 | \
+          xargs wget -O ./command_line_tools.zip
+          unzip ./command_line_tools.zip
+          
+          echo "ANDROID_HOME=./cmdline-tools/sdk" >> $GITHUB_ENV
+          echo "cmd_line_tools_root=./cmdline-tools" >> $GITHUB_ENV
+          echo "sdk_root=./cmdline-tools/sdk" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Setup Android Build Tool
+        continue-on-error: true
+        run: |
+          mkdir -p ${{ env.sdk_root }}
+          yes 2>/dev/null | ${{ env.cmd_line_tools_root }}/bin/sdkmanager --sdk_root=${{ env.sdk_root }} --licenses
+        shell: bash
+
+      - name: Setup File 'local.properties'
+        run: |
+          echo "sdk.dir=${{ env.sdk_root }}" > ./local.properties
+          chmod +x ./local.properties
+        shell: bash
+
+      - name: Run Gradle Build
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assembleDebug
+        shell: bash
