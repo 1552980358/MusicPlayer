@@ -13,7 +13,7 @@
 
     <string name="import_audio_title">Import Audio</string>
     <string name="import_audio_loading">Loading, please wait…</string>
-    <string name="import_audio_result">%d songs with totally %d artists and %d albums found.</string>
+    <string name="import_audio_result">%d songs, %d artists and %d albums found.</string>
     <string name="import_audio_button_retry">Retry</string>
     <string name="import_audio_button_retry_loading">Loading…</string>
     <string name="import_audio_button_complete">COMPLETE</string>
