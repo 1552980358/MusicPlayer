@@ -16,6 +16,11 @@
 
     <dimen name="material_checkbox_disable_paddings">0dp</dimen>
 
-    <dimen name="permission_max_width">568dp</dimen>
+    <dimen name="layout_max_width">568dp</dimen>
+
+    <dimen name="permission_max_width">@dimen/layout_max_width</dimen>
+
+    <dimen name="import_audio_max_width">@dimen/layout_max_width</dimen>
+    <dimen name="import_audio_banner_icon_size">36dp</dimen>
 
 </resources>

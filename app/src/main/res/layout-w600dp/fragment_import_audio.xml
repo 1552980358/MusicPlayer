@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="projekt.cloud.piece.cloudy.ui.fragment.import_audio.ImportAudioViewModel" />
+
+        <variable
+            name="view_model"
+            type="ImportAudioViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.activity.guide.GuideActivity">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/material_card_view_root"
+            android:layout_width="@dimen/constraint"
+            android:layout_height="@dimen/constraint"
+            android:layout_marginVertical="@dimen/md_spec_spacing_8"
+            app:layout_constraintWidth_max="@dimen/import_audio_max_width"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/material_toolbar"
+                    android:layout_width="@dimen/constraint"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/material_card_view_banner"
+                    app:title="@string/import_audio_title" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/material_card_view_banner"
+                    android:layout_width="@dimen/constraint"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/md_spec_spacing_16"
+                    android:layout_marginVertical="@dimen/md_spec_spacing_8"
+                    app:cardBackgroundColor="?attr/colorSurface"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/material_toolbar"
+                    app:layout_constraintBottom_toTopOf="@id/material_card_view_list">
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/colorPrimary"
+                            android:paddingVertical="@dimen/md_spec_spacing_24"
+                            android:orientation="horizontal"
+                            android:gravity="center">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="@dimen/import_audio_banner_icon_size"
+                                android:layout_height="@dimen/import_audio_banner_icon_size"
+                                app:srcCompat="@drawable/ic_round_android_24"
+                                app:tint="?attr/colorOnPrimary" />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="@dimen/md_spec_spacing_16"
+                                app:srcCompat="@drawable/ic_round_arrow_forward_24"
+                                app:tint="?attr/colorOnPrimary" />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="@dimen/import_audio_banner_icon_size"
+                                android:layout_height="@dimen/import_audio_banner_icon_size"
+                                app:srcCompat="@drawable/ic_round_library_music_24"
+                                app:tint="?attr/colorOnPrimary" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/md_spec_spacing_16"
+                            android:layout_marginVertical="@dimen/md_spec_spacing_8"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@{view_model.loadingStatus ? @string/import_audio_loading : @string/import_audio_result(view_model.statistics.audio, view_model.statistics.artist, view_model.statistics.album)}"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/material_button_retry"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="end"
+                                android:text="@{view_model.loadingStatus ? @string/import_audio_button_retry_loading : @string/import_audio_button_retry}"
+                                app:iconTint="?attr/colorOnPrimary"
+                                style="@style/Widget.Material3.Button.TextButton" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/material_card_view_list"
+                    android:layout_width="@dimen/constraint"
+                    android:layout_height="@dimen/constraint"
+                    android:layout_marginHorizontal="@dimen/md_spec_spacing_16"
+                    app:cardBackgroundColor="?attr/colorSurface"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/material_card_view_banner"
+                    app:layout_constraintBottom_toTopOf="@id/material_button_complete">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recycler_view"
+                            android:layout_width="@dimen/constraint"
+                            android:layout_height="@dimen/constraint"
+                            android:visibility="invisible"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:id="@+id/circular_progress_indicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:indeterminate="true"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/material_button_complete"
+                    android:layout_width="@dimen/constraint"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/md_spec_spacing_16"
+                    android:layout_marginVertical="@dimen/md_spec_spacing_8"
+                    android:text="@{view_model.loadingStatus ? @string/import_audio_button_complete_loading : @string/import_audio_button_complete}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/material_card_view_list"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

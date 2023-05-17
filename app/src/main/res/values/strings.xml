@@ -11,4 +11,12 @@
     <string name="permissions_foreground_service">Apply a foreground service for audio playback</string>
     <string name="permissions_post_notifications">Posting notification to notification drawer for controlling audio playback</string>
 
+    <string name="import_audio_title">Import Audio</string>
+    <string name="import_audio_loading">Loading, please wait…</string>
+    <string name="import_audio_result">%d songs with totally %d artists and %d albums found.</string>
+    <string name="import_audio_button_retry">Retry</string>
+    <string name="import_audio_button_retry_loading">Loading…</string>
+    <string name="import_audio_button_complete">COMPLETE</string>
+    <string name="import_audio_button_complete_loading">LOADING</string>
+
 </resources>
