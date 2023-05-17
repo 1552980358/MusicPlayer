@@ -2,6 +2,7 @@ package projekt.cloud.piece.cloudy.ui.fragment.import_audio
 
 import android.app.Activity
 import android.content.Intent
+import android.database.Cursor
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.edit
@@ -83,6 +84,7 @@ class ImportAudioFragment: BaseMultiLayoutFragment<FragmentImportAudioBinding, I
     override fun onSetupLayoutAdapter(layoutAdapter: ImportAudioLayoutAdapter, savedInstanceState: Bundle?) {
         layoutAdapter.setupBackgroundColor()
         layoutAdapter.setupRetryButton(this, viewModel, ::onRetryButtonClicked)
+        layoutAdapter.setupRecyclerView(viewLifecycleOwner, viewModel)
         main(::startQuerying)
     }
 
@@ -119,31 +121,75 @@ class ImportAudioFragment: BaseMultiLayoutFragment<FragmentImportAudioBinding, I
     private suspend fun queryAndGetStatistics(
         audioDatabase: AudioDatabase
     ): StatisticsView {
-        queryMusic(audioDatabase.metadata)
+        updateRecyclerAdapterMetadataList(
+            queryMusic(audioDatabase.metadata)
+        )
         return getStatistics(audioDatabase.statistics)
+    }
+
+    /**
+     * [ImportAudioFragment.updateRecyclerAdapterMetadataList]
+     * @param metadataList [List]
+     *
+     * Update metadata list of [R.id.recycler_view]
+     **/
+    private fun updateRecyclerAdapterMetadataList(metadataList: List<MetadataView>) {
+        requireLayoutAdapter { layoutAdapter ->
+            layoutAdapter.updateMetadataList(metadataList)
+        }
     }
 
     /**
      * [ImportAudioFragment.queryMusic]
      * @param metadataDao [MetadataDao]
      **/
-    private suspend fun queryMusic(metadataDao: MetadataDao) {
+    private suspend fun queryMusic(metadataDao: MetadataDao): List<MetadataView> {
         return ioBlocking {
-            requireContext().musicCursor { cursor ->
-                metadataDao.insert(
-                    MetadataView(
-                        id = cursor.musicId,
-                        title = cursor.musicTitle,
-                        artist = cursor.musicArtistId,
-                        artistName = cursor.musicArtistName,
-                        album = cursor.musicAlbumId,
-                        albumTitle = cursor.musicAlbumTitle,
-                        duration = cursor.musicDuration,
-                        size = cursor.musicSize
+            ArrayList<MetadataView>().also { metadataList ->
+                requireContext().musicCursor { cursor ->
+                    addMetadata(
+                        getMetadataView(cursor),
+                        metadataList,
+                        metadataDao
                     )
-                )
+                }
             }
         }
+    }
+
+    /**
+     * [ImportAudioFragment.getMetadataView]
+     * @param cursor [android.database.Cursor]
+     * @return [MetadataView]
+     **/
+    private fun getMetadataView(cursor: Cursor): MetadataView {
+        return MetadataView(
+            id = cursor.musicId,
+            title = cursor.musicTitle,
+            artist = cursor.musicArtistId,
+            artistName = cursor.musicArtistName,
+            album = cursor.musicAlbumId,
+            albumTitle = cursor.musicAlbumTitle,
+            duration = cursor.musicDuration,
+            size = cursor.musicSize
+        )
+    }
+
+    /**
+     * [ImportAudioFragment.addMetadata]
+     * @param metadata [MetadataView]
+     * @param metadataList [ArrayList]
+     * @param metadataDao [MetadataDao]
+     *
+     * Add [MetadataView] into both [metadataList] and [metadataDao]
+     **/
+    private suspend fun addMetadata(
+        metadata: MetadataView,
+        metadataList: ArrayList<MetadataView>,
+        metadataDao: MetadataDao
+    ) {
+        metadataList += metadata
+        metadataDao.insert(metadata)
     }
 
     /**

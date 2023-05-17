@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="count"
+            type="String" />
+        
+        <import type="projekt.cloud.piece.cloudy.storage.audio.view.MetadataView" />
+        <variable
+            name="metadata"
+            type="MetadataView" />
+        
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:paddingVertical="@dimen/md_spec_spacing_8">
+        
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/material_text_view_count"
+            android:layout_width="@dimen/md_spec_leading_40"
+            android:layout_height="@dimen/md_spec_leading_40"
+            android:layout_marginHorizontal="@dimen/md_spec_spacing_16"
+            android:gravity="center"
+            android:text="@{count}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/linear_layout_text"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+        
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/linear_layout_text"
+            android:layout_width="@dimen/constraint"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintStart_toEndOf="@id/material_text_view_count"
+            app:layout_constraintEnd_toStartOf="@id/material_text_view_duration"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+            
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{metadata.title}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
+            
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{metadata.subtitle}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+            
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/material_text_view_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/md_spec_spacing_16"
+            android:layout_marginEnd="@dimen/md_spec_trailing_24"
+            android:text="@{metadata.durationShortText}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            app:layout_constraintStart_toEndOf="@id/linear_layout_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
