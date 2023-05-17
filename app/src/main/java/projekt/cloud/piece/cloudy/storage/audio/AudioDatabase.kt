@@ -6,15 +6,17 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import projekt.cloud.piece.cloudy.storage.audio.AudioDatabase.AudioDatabaseUtil.AUDIO_DATABASE_VERSION
 import projekt.cloud.piece.cloudy.storage.audio.dao.MetadataDao
+import projekt.cloud.piece.cloudy.storage.audio.dao.StatisticsDao
 import projekt.cloud.piece.cloudy.storage.audio.entity.AlbumEntity
 import projekt.cloud.piece.cloudy.storage.audio.entity.ArtistEntity
 import projekt.cloud.piece.cloudy.storage.audio.entity.AudioEntity
 import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView
+import projekt.cloud.piece.cloudy.storage.audio.view.StatisticsView
 import projekt.cloud.piece.cloudy.storage.util.SingleDatabaseInstance
 
 @Database(
     entities = [AudioEntity::class, ArtistEntity::class, AlbumEntity::class],
-    views = [MetadataView::class],
+    views = [MetadataView::class, StatisticsView::class],
     version = AUDIO_DATABASE_VERSION
 )
 abstract class AudioDatabase: RoomDatabase() {
@@ -41,5 +43,9 @@ abstract class AudioDatabase: RoomDatabase() {
     val metadata: MetadataDao
         get() = metadata()
     protected abstract fun metadata(): MetadataDao
+
+    val statistics: StatisticsDao
+        get() = statistics()
+    protected abstract fun statistics(): StatisticsDao
 
 }
