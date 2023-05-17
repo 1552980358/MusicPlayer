@@ -13,6 +13,12 @@ import projekt.cloud.piece.cloudy.util.ViewBindingUtil.inflate
 
 abstract class BaseRecyclerViewAdapter<B: ViewBinding>: Adapter<BaseRecyclerViewHolder>() {
 
+    companion object BaseRecyclerViewAdapterConstant {
+
+        const val ITEM_EMPTY = 0
+
+    }
+
     /**
      * [BaseRecyclerViewAdapter.BaseRecyclerViewHolder]
      *
