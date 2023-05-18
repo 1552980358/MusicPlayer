@@ -19,4 +19,6 @@
     <string name="import_audio_button_complete">COMPLETE</string>
     <string name="import_audio_button_complete_loading">LOADING</string>
 
+    <string name="home_title">Home</string>
+
 </resources>
