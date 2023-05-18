@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="md_spec_spacing_8">8dp</dimen>
+    <dimen name="md_spec_spacing_12">12dp</dimen>
+    <dimen name="md_spec_spacing_16">16dp</dimen>
+    <dimen name="md_spec_spacing_24">24dp</dimen>
+
+    <dimen name="md_spec_leading_24">24dp</dimen>
+    <dimen name="md_spec_leading_40">40dp</dimen>
+    <dimen name="md_spec_leading_56">56dp</dimen>
+
+    <dimen name="md_spec_trailing_24">24dp</dimen>
+
+    <dimen name="md_spec_elevation_0">0dp</dimen>
+
+</resources>
