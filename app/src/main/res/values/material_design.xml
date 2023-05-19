@@ -8,10 +8,44 @@
 
     <dimen name="md_spec_leading_24">24dp</dimen>
     <dimen name="md_spec_leading_40">40dp</dimen>
+    <dimen name="md_spec_leading_48">48dp</dimen>
     <dimen name="md_spec_leading_56">56dp</dimen>
 
     <dimen name="md_spec_trailing_24">24dp</dimen>
+    <dimen name="md_spec_trailing_32">32dp</dimen>
 
     <dimen name="md_spec_elevation_0">0dp</dimen>
+
+    <!--
+     Look at
+        package com.google.android.material.bottomnavigation.BottomNavigationView;
+        ...
+        public class BottomNavigationView extends NavigationBarView {
+            ...
+            public BottomNavigationView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+                this(context, attrs, defStyleAttr, R.style.Widget_Design_BottomNavigationView);
+            }
+            ...
+        }
+
+     where
+        <style name="Widget.Material3.BottomNavigationView" parent="Base.Widget.Material3.BottomNavigationView">
+            ...
+        </style>
+
+     where
+        <style name="Base.Widget.Material3.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+            ...
+            <item name="android:minHeight">@dimen/m3_bottom_nav_min_height</item>
+            ...
+        </style>
+
+     where
+        <dimen name="m3_bottom_nav_min_height">@dimen/m3_comp_navigation_bar_container_height</dimen>
+
+     where
+        <dimen name="m3_comp_navigation_bar_container_height">80dp</dimen>
+     -->
+    <dimen name="md_spec_bottom_nav_height">80dp</dimen>
 
 </resources>
