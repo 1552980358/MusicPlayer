@@ -1,3 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <dimen name="main_container_mini_player_leading">@dimen/md_spec_leading_56</dimen>
+    <!-- 56 + 8 + 8 + 8 -->
+    <dimen name="main_container_mini_player_height">80dp</dimen>
+    <dimen name="main_container_mini_player_trailing">@dimen/md_spec_trailing_32</dimen>
+
 </resources>

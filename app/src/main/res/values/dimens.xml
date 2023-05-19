@@ -12,4 +12,10 @@
     <dimen name="import_audio_max_width">@dimen/layout_max_width</dimen>
     <dimen name="import_audio_banner_icon_size">36dp</dimen>
 
+    <dimen name="main_container_mini_player_leading">@dimen/md_spec_leading_40</dimen>
+    <!-- 40 + 8 + 8 -->
+    <dimen name="main_container_mini_player_height">56dp</dimen>
+    <dimen name="main_container_mini_player_peek">136dp</dimen>
+    <dimen name="main_container_mini_player_trailing">@dimen/md_spec_trailing_24</dimen>
+
 </resources>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/fragment_main_container">
+
+    <data>
+
+        <import type="projekt.cloud.piece.cloudy.storage.audio.view.MetadataView" />
+        <variable
+            name="metadata"
+            type="MetadataView" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout_root"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/main_container_mini_player_height"
+        android:paddingHorizontal="@dimen/md_spec_spacing_16"
+        android:paddingBottom="@dimen/md_spec_spacing_8"
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="@dimen/main_container_mini_player_height"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="@dimen/constraint"
+            android:layout_height="@dimen/constraint"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/shapeable_image_view_leading"
+                    android:layout_width="@dimen/main_container_mini_player_leading"
+                    android:layout_height="@dimen/main_container_mini_player_leading"
+                    android:layout_marginHorizontal="@dimen/md_spec_spacing_16"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/linear_layout_text"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/linear_layout_text"
+                    android:layout_width="@dimen/constraint"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintStart_toEndOf="@id/shapeable_image_view_leading"
+                    app:layout_constraintEnd_toStartOf="@id/app_compat_image_button_prev"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{metadata.title}"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{metadata.subtitle}"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/app_compat_image_button_prev"
+                    android:layout_width="@dimen/main_container_mini_player_trailing"
+                    android:layout_height="@dimen/main_container_mini_player_trailing"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:layout_marginStart="@dimen/md_spec_spacing_16"
+                    app:layout_constraintStart_toEndOf="@id/linear_layout_text"
+                    app:layout_constraintEnd_toStartOf="@id/app_compat_image_button_playback"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:srcCompat="@drawable/ic_round_skip_previous_24" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/app_compat_image_button_playback"
+                    android:layout_width="@dimen/main_container_mini_player_trailing"
+                    android:layout_height="@dimen/main_container_mini_player_trailing"
+                    android:layout_marginHorizontal="@dimen/md_spec_spacing_8"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:layout_constraintStart_toEndOf="@id/app_compat_image_button_prev"
+                    app:layout_constraintEnd_toStartOf="@id/app_compat_image_button_next"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:src="@drawable/ic_round_play_arrow_24" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/app_compat_image_button_next"
+                    android:layout_width="@dimen/main_container_mini_player_trailing"
+                    android:layout_height="@dimen/main_container_mini_player_trailing"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:layout_marginEnd="@dimen/md_spec_spacing_16"
+                    app:layout_constraintStart_toEndOf="@id/app_compat_image_button_playback"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:srcCompat="@drawable/ic_round_skip_next_24" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
