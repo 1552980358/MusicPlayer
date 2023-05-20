@@ -1,19 +1,21 @@
 package projekt.cloud.piece.cloudy.ui.fragment.main_container
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import projekt.cloud.piece.cloudy.base.BaseMultiLayoutFragment
+import projekt.cloud.piece.cloudy.base.LayoutAdapterBuilder
 import projekt.cloud.piece.cloudy.databinding.FragmentMainContainerBinding
+import projekt.cloud.piece.cloudy.util.ViewBindingInflater
 
-class MainContainerFragment: Fragment() {
+class MainContainerFragment: BaseMultiLayoutFragment<FragmentMainContainerBinding, MainContainerLayoutAdapter>() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
-        return FragmentMainContainerBinding.inflate(inflater, container, false)
-            .root
+    override val viewBindingInflater: ViewBindingInflater<FragmentMainContainerBinding>
+        get() = FragmentMainContainerBinding::inflate
+
+    override val layoutAdapterBuilder: LayoutAdapterBuilder<FragmentMainContainerBinding, MainContainerLayoutAdapter>
+        get() = MainContainerLayoutAdapter.builder
+
+    override fun onSetupLayoutAdapter(layoutAdapter: MainContainerLayoutAdapter, savedInstanceState: Bundle?) {
+        layoutAdapter.setupNavigation()
     }
 
 }
