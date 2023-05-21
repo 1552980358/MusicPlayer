@@ -1,10 +1,14 @@
 package projekt.cloud.piece.cloudy.ui.fragment.home
 
 import android.content.Context
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import projekt.cloud.piece.cloudy.R
 import projekt.cloud.piece.cloudy.base.BaseRecyclerViewAdapter
 import projekt.cloud.piece.cloudy.databinding.HomeRecyclerLayoutBinding
 import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView
+import projekt.cloud.piece.cloudy.util.GlideUtil.roundCorners
 import projekt.cloud.piece.cloudy.util.ViewBindingInflater
 
 class HomeRecyclerAdapter(
@@ -70,7 +74,7 @@ class HomeRecyclerAdapter(
         fragment: Fragment, binding: HomeRecyclerLayoutBinding, metadata: MetadataView
     ) {
         binding.metadata = metadata
-        setImage(fragment, metadata)
+        setImage(fragment, binding.appCompatImageViewLeading, metadata)
     }
 
     /**
@@ -80,8 +84,11 @@ class HomeRecyclerAdapter(
      *
      * Set image of audio
      **/
-    private fun setImage(fragment: Fragment, metadata: MetadataView) {
-        // TODO: Will be implemented future
+    private fun setImage(fragment: Fragment, imageView: ImageView, metadata: MetadataView) {
+        Glide.with(fragment)
+            .load(metadata.albumUri)
+            .roundCorners(fragment.requireContext(), R.dimen.md_spec_round_radius)
+            .into(imageView)
     }
 
     /**
