@@ -68,6 +68,8 @@ dependencies {
     implementation("androidx.room:room-ktx:2.5.1")
     ksp("androidx.room:room-compiler:2.5.1")
 
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+
     implementation("com.google.android.material:material:1.9.0")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.10")
