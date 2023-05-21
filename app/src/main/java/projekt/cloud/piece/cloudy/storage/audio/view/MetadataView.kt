@@ -1,7 +1,10 @@
 package projekt.cloud.piece.cloudy.storage.audio.view
 
+import android.net.Uri
+import android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 import androidx.room.ColumnInfo
 import androidx.room.DatabaseView
+import java.io.File
 import projekt.cloud.piece.cloudy.storage.audio.entity.AlbumEntity.AlbumEntityConstants.ALBUM_ID
 import projekt.cloud.piece.cloudy.storage.audio.entity.AlbumEntity.AlbumEntityConstants.ALBUM_TITLE
 import projekt.cloud.piece.cloudy.storage.audio.entity.AlbumEntity.AlbumEntityConstants.TABLE_ALBUM
@@ -104,5 +107,11 @@ class MetadataView(
      **/
     val durationShortText: String
         get() = duration.format(SHORT)
+
+    val audioUri: Uri
+        get() = Uri.parse(EXTERNAL_CONTENT_URI.toString() + File.separatorChar + id)
+
+    val albumUri: Uri
+        get() = Uri.parse("content://media/external/audio/albumart/$album")
 
 }
