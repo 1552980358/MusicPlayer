@@ -1,9 +1,16 @@
 package projekt.cloud.piece.cloudy.storage.audio.view
 
 import android.net.Uri
+import android.os.Bundle
 import android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+import androidx.core.os.bundleOf
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaItem.RequestMetadata
+import androidx.media3.common.MediaMetadata
+import androidx.media3.common.MediaMetadata.MEDIA_TYPE_MUSIC
 import androidx.room.ColumnInfo
 import androidx.room.DatabaseView
+import androidx.room.Ignore
 import java.io.File
 import projekt.cloud.piece.cloudy.storage.audio.entity.AlbumEntity.AlbumEntityConstants.ALBUM_ID
 import projekt.cloud.piece.cloudy.storage.audio.entity.AlbumEntity.AlbumEntityConstants.ALBUM_TITLE
@@ -90,6 +97,24 @@ class MetadataView(
         private const val SUBTITLE_DIVIDER = " - "
     }
 
+    @Ignore
+    constructor(mediaItem: MediaItem): this(mediaItem.mediaId, mediaItem.mediaMetadata)
+    @Ignore
+    private constructor(id: String, mediaMetadata: MediaMetadata): this(id, mediaMetadata, mediaMetadata.extras!!)
+    @Ignore
+    private constructor(
+        id: String, mediaMetadata: MediaMetadata, extras: Bundle
+    ): this(
+        id = id,
+        title = mediaMetadata.title.toString(),
+        artist = extras.getString(METADATA_ARTIST).toString(),
+        artistName = mediaMetadata.artist.toString(),
+        album = extras.getString(METADATA_ALBUM).toString(),
+        albumTitle = mediaMetadata.albumTitle.toString(),
+        duration = extras.getLong(METADATA_DURATION),
+        size = extras.getLong(METADATA_SIZE)
+    )
+
     /**
      * [MetadataView.subtitle]
      * @type [String]
@@ -108,10 +133,87 @@ class MetadataView(
     val durationShortText: String
         get() = duration.format(SHORT)
 
-    val audioUri: Uri
+    /**
+     * [MetadataView.audioUri]
+     * @type [android.net.Uri]
+     **/
+    private val audioUri: Uri
         get() = Uri.parse(EXTERNAL_CONTENT_URI.toString() + File.separatorChar + id)
 
+    /**
+     * [MetadataView.albumUri]
+     * @type [android.net.Uri]
+     **/
     val albumUri: Uri
         get() = Uri.parse("content://media/external/audio/albumart/$album")
+
+    /**
+     * [MetadataView.mediaItem]
+     * @type [androidx.media3.common.MediaItem]
+     **/
+    val mediaItem: MediaItem
+        get() = buildMediaItem(audioUri)
+
+    /**
+     * [MetadataView.buildMediaItem]
+     * @param audioUri [android.net.Uri]
+     * @return [androidx.media3.common.MediaItem]
+     *
+     * Build [androidx.media3.common.MediaItem] with metadata stored in [MetadataView]
+     **/
+    private fun buildMediaItem(audioUri: Uri): MediaItem {
+        return MediaItem.Builder()
+            .setMediaId(id)
+            .setUri(audioUri)
+            .setRequestMetadata(buildRequestMetadata(audioUri))
+            .setMediaMetadata(buildMediaMetadata())
+            .build()
+    }
+
+    /**
+     * [MetadataView.buildRequestMetadata]
+     * @param audioUri [android.net.Uri]
+     * @return [androidx.media3.common.MediaItem.RequestMetadata]
+     *
+     * Build [androidx.media3.common.MediaItem.RequestMetadata] with [audioUri]
+     **/
+    private fun buildRequestMetadata(audioUri: Uri): RequestMetadata {
+        return RequestMetadata.Builder()
+            .setMediaUri(audioUri)
+            .build()
+    }
+
+    /**
+     * [MetadataView.buildMediaMetadata]
+     * @return [androidx.media3.common.MediaMetadata]
+     *
+     * Build [androidx.media3.common.MediaMetadata] with metadata stored in [MetadataView]
+     **/
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+    private fun buildMediaMetadata(): MediaMetadata {
+        return MediaMetadata.Builder()
+            .setTitle(title)
+            .setArtist(artistName)
+            .setAlbumTitle(albumTitle)
+            .setMediaType(MEDIA_TYPE_MUSIC)
+            .setExtras(metadataExtra)
+            .setIsBrowsable(true)
+            .setIsPlayable(true)
+            .build()
+    }
+
+    /**
+     * [MetadataView.metadataExtra]
+     * @type [android.os.Bundle]
+     *
+     * Extra metadata to be stored in [android.os.Bundle] for recovery
+     **/
+    private val metadataExtra: Bundle
+        get() = bundleOf(
+            METADATA_ARTIST to artist,
+            METADATA_ALBUM to album,
+            METADATA_DURATION to duration,
+            METADATA_SIZE to size
+        )
 
 }
