@@ -183,17 +183,21 @@ class ImportAudioFragment: BaseMultiLayoutFragment<FragmentImportAudioBinding, I
      * @param cursor [android.database.Cursor]
      * @return [MetadataView]
      **/
-    private fun getMetadataView(cursor: Cursor): MetadataView {
-        return MetadataView(
-            id = cursor.musicId,
-            title = cursor.musicTitle,
-            artist = cursor.musicArtistId,
-            artistName = cursor.musicArtistName,
-            album = cursor.musicAlbumId,
-            albumTitle = cursor.musicAlbumTitle,
-            duration = cursor.musicDuration,
-            size = cursor.musicSize
-        )
+    private fun getMetadataView(cursor: Cursor): MetadataView? {
+        return cursor.musicArtistId?.let { musicArtistId ->     // Check artist is null or not
+            cursor.musicAlbumId?.let { musicAlbumId ->          // Check album is null or not
+                MetadataView(
+                    id = cursor.musicId,
+                    title = cursor.musicTitle,
+                    artist = musicArtistId,
+                    artistName = cursor.musicArtistName,
+                    album = musicAlbumId,
+                    albumTitle = cursor.musicAlbumTitle,
+                    duration = cursor.musicDuration,
+                    size = cursor.musicSize
+                )
+            }
+        }
     }
 
     /**
@@ -205,12 +209,14 @@ class ImportAudioFragment: BaseMultiLayoutFragment<FragmentImportAudioBinding, I
      * Add [MetadataView] into both [metadataList] and [metadataDao]
      **/
     private suspend fun addMetadata(
-        metadata: MetadataView,
+        metadata: MetadataView?,
         metadataList: ArrayList<MetadataView>,
         metadataDao: MetadataDao
     ) {
-        metadataList += metadata
-        metadataDao.insert(metadata)
+        metadata?.let {
+            metadataList += metadata
+            metadataDao.insert(metadata)
+        }
     }
 
     /**

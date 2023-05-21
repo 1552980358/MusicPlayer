@@ -12,6 +12,7 @@ import android.provider.MediaStore.Audio.AudioColumns._ID
 import android.provider.MediaStore.Audio.AudioColumns.TITLE
 import android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 import android.provider.MediaStore.Audio.Media.IS_MUSIC
+import androidx.core.database.getStringOrNull
 
 object MediaStoreUtil {
 
@@ -22,12 +23,12 @@ object MediaStoreUtil {
         get() = getString(getColumnIndexOrThrow(_ID))
     val Cursor.musicTitle: String
         get() = getString(getColumnIndexOrThrow(TITLE))
-    val Cursor.musicArtistId: String
-        get() = getString(getColumnIndexOrThrow(ARTIST_ID))
+    val Cursor.musicArtistId: String?
+        get() = getStringOrNull(getColumnIndex(ARTIST_ID))
     val Cursor.musicArtistName: String
         get() = getString(getColumnIndexOrThrow(ARTIST))
-    val Cursor.musicAlbumId: String
-        get() = getString(getColumnIndexOrThrow(ALBUM_ID))
+    val Cursor.musicAlbumId: String?
+        get() = getStringOrNull(getColumnIndex(ALBUM_ID))
     val Cursor.musicAlbumTitle: String
         get() = getString(getColumnIndexOrThrow(ALBUM))
     val Cursor.musicDuration: Long
