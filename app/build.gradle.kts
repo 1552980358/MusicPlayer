@@ -59,6 +59,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.media3:media3-common:1.0.2")
     implementation("androidx.media3:media3-exoplayer:1.0.2")
     implementation("androidx.media3:media3-session:1.0.2")
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
