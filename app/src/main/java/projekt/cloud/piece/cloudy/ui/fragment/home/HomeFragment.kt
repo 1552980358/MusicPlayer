@@ -54,7 +54,7 @@ class HomeFragment: BaseMultiLayoutFragment<FragmentHomeBinding, HomeLayoutAdapt
      *
      * Triggered when [R.id.recycler_view] list content items are clicked
      **/
-    private fun onRecyclerViewItemClicked(id: String) {
+    private fun onRecyclerViewItemClicked(pos: Int) {
         // TODO: To be implemented for starting playing audio with id
     }
 

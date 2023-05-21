@@ -58,11 +58,11 @@ abstract class HomeLayoutAdapter(
     /**
      * [HomeLayoutAdapter.setupRecyclerView]
      * @param fragment
-     * @param onClicked [kotlin.jvm.functions.Function1]<[String], [Unit]>
+     * @param onClicked [kotlin.jvm.functions.Function1]<[Int], [Unit]>
      *
      * Setup adapter for [HomeLayoutAdapter.recyclerView]
      **/
-    fun setupRecyclerView(fragment: Fragment, onClicked: (String) -> Unit) {
+    fun setupRecyclerView(fragment: Fragment, onClicked: (Int) -> Unit) {
         recyclerView.adapter = HomeRecyclerAdapter(fragment, onClicked)
     }
 

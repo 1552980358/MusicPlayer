@@ -13,7 +13,7 @@ import projekt.cloud.piece.cloudy.util.ViewBindingInflater
 
 class HomeRecyclerAdapter(
     private val fragment: Fragment,
-    private val onClicked: (String) -> Unit
+    private val onClicked: (Int) -> Unit
 ): BaseRecyclerViewAdapter<HomeRecyclerLayoutBinding>() {
 
     /**
@@ -59,7 +59,7 @@ class HomeRecyclerAdapter(
      * @param position [Int]
      **/
     override fun onBindViewHolder(context: Context, binding: HomeRecyclerLayoutBinding, position: Int) {
-        setMetadata(fragment, binding, metadataList[position])
+        setMetadata(fragment, binding, metadataList[position], position)
     }
 
     /**
@@ -71,9 +71,13 @@ class HomeRecyclerAdapter(
      * Set metadata to binding
      **/
     private fun setMetadata(
-        fragment: Fragment, binding: HomeRecyclerLayoutBinding, metadata: MetadataView
+        fragment: Fragment,
+        binding: HomeRecyclerLayoutBinding,
+        metadata: MetadataView,
+        position: Int
     ) {
         binding.metadata = metadata
+        binding.position = position
         setImage(fragment, binding.appCompatImageViewLeading, metadata)
     }
 

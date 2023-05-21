@@ -8,12 +8,16 @@
         <import type="kotlin.Unit" />
         <variable
             name="onClicked"
-            type="Function1&lt;String, Unit>" />
+            type="Function1&lt;Integer, Unit>" />
 
         <import type="projekt.cloud.piece.cloudy.storage.audio.view.MetadataView" />
         <variable
             name="metadata"
             type="MetadataView" />
+
+        <variable
+            name="position"
+            type="Integer" />
 
     </data>
 
@@ -22,7 +26,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
         android:focusable="true"
-        android:onClick="@{() -> onClicked.invoke(metadata.id)}">
+        android:onClick="@{() -> onClicked.invoke(position)}">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/app_compat_image_view_leading"
