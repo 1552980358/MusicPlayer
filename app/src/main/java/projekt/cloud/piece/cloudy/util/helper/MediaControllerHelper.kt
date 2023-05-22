@@ -1,4 +1,4 @@
-package projekt.cloud.piece.cloudy.util
+package projekt.cloud.piece.cloudy.util.helper
 
 import android.content.Context
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -9,6 +9,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import projekt.cloud.piece.cloudy.service.playback.PlaybackService.PlaybackServiceUtil.playbackServiceToken
 import projekt.cloud.piece.cloudy.util.LifecycleOwnerUtil.requireContext
+import projekt.cloud.piece.cloudy.util.implementation.Releasable
 
 class MediaControllerHelper: DefaultLifecycleObserver, Releasable {
 

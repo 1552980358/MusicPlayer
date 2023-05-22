@@ -5,7 +5,7 @@ import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C.AUDIO_CONTENT_TYPE_MUSIC
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import projekt.cloud.piece.cloudy.util.Releasable
+import projekt.cloud.piece.cloudy.util.implementation.Releasable
 
 class AudioPlayer: Releasable {
 

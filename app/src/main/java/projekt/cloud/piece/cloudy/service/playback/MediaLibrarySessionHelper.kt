@@ -14,7 +14,7 @@ import androidx.media3.session.MediaSession.ControllerInfo
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import projekt.cloud.piece.cloudy.ui.activity.main.MainActivity.MainActivityUtil.mainActivityIntent
-import projekt.cloud.piece.cloudy.util.Releasable
+import projekt.cloud.piece.cloudy.util.implementation.Releasable
 
 class MediaLibrarySessionHelper: Releasable, MediaLibrarySession.Callback {
 

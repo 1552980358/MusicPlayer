@@ -7,7 +7,7 @@ import projekt.cloud.piece.cloudy.base.BaseMultiLayoutFragment
 import projekt.cloud.piece.cloudy.base.LayoutAdapterBuilder
 import projekt.cloud.piece.cloudy.databinding.FragmentMainContainerBinding
 import projekt.cloud.piece.cloudy.ui.fragment.main_container.MainContainerViewModel.MainContainerViewModelUtil.mainContainerViewModel
-import projekt.cloud.piece.cloudy.util.MediaControllerHelper
+import projekt.cloud.piece.cloudy.util.helper.MediaControllerHelper
 import projekt.cloud.piece.cloudy.util.ViewBindingInflater
 
 private typealias BaseMainContainerFragment =

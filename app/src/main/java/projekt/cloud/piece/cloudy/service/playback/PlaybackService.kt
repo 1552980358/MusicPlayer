@@ -7,7 +7,7 @@ import androidx.media3.session.MediaLibraryService.MediaLibrarySession
 import androidx.media3.session.MediaSession.ControllerInfo
 import androidx.media3.session.SessionToken
 import projekt.cloud.piece.cloudy.base.BaseLifecycleMediaLibraryService
-import projekt.cloud.piece.cloudy.util.Releasable
+import projekt.cloud.piece.cloudy.util.implementation.Releasable
 
 class PlaybackService: BaseLifecycleMediaLibraryService(), MediaLibrarySession.Callback {
 

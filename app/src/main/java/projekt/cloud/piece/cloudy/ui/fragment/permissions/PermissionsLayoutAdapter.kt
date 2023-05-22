@@ -8,7 +8,7 @@ import projekt.cloud.piece.cloudy.base.LayoutAdapterConstructor
 import projekt.cloud.piece.cloudy.databinding.FragmentPermissionsBinding
 import projekt.cloud.piece.cloudy.util.PixelDensity
 import projekt.cloud.piece.cloudy.util.PixelDensity.COMPAT
-import projekt.cloud.piece.cloudy.util.Updatable
+import projekt.cloud.piece.cloudy.util.implementation.ListUpdatable
 import projekt.cloud.piece.cloudy.util.SurfaceColorUtil.setSurface2BackgroundColor
 import projekt.cloud.piece.cloudy.util.WindowInsetUtil.applySystemBarsInsets
 
@@ -17,7 +17,7 @@ private typealias PermissionsLayoutAdapterConstructor =
 
 abstract class PermissionsLayoutAdapter(
     binding: FragmentPermissionsBinding
-): BaseLayoutAdapter<FragmentPermissionsBinding>(binding), Updatable {
+): BaseLayoutAdapter<FragmentPermissionsBinding>(binding), ListUpdatable {
 
     companion object {
 

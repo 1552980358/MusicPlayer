@@ -8,7 +8,7 @@ import projekt.cloud.piece.cloudy.databinding.FragmentHomeBinding
 import projekt.cloud.piece.cloudy.R
 import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView
 import projekt.cloud.piece.cloudy.ui.fragment.home.HomeViewModel.HomeViewModelUtil.homeViewModel
-import projekt.cloud.piece.cloudy.util.MediaControllerHelper
+import projekt.cloud.piece.cloudy.util.helper.MediaControllerHelper
 import projekt.cloud.piece.cloudy.util.ViewBindingInflater
 
 class HomeFragment: BaseMultiLayoutFragment<FragmentHomeBinding, HomeLayoutAdapter>() {
