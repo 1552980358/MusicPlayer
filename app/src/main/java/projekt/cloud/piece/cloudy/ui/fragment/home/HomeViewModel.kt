@@ -5,9 +5,12 @@ import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
+import androidx.media3.common.MediaItem
+import androidx.media3.session.MediaController
 import projekt.cloud.piece.cloudy.storage.audio.AudioDatabase
 import projekt.cloud.piece.cloudy.storage.audio.AudioDatabase.AudioDatabaseUtil.audioDatabase
 import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView
+import projekt.cloud.piece.cloudy.util.CoroutineUtil.defaultBlocking
 import projekt.cloud.piece.cloudy.util.CoroutineUtil.ioBlocking
 import projekt.cloud.piece.cloudy.util.LifecycleOwnerUtil.main
 
@@ -95,6 +98,43 @@ class HomeViewModel: ViewModel() {
     ) {
         _metadataList = metadataList
         onComplete.invoke(metadataList)
+    }
+
+    /**
+     * [HomeViewModel.playAudioAtPos]
+     * @param fragment [androidx.fragment.app.Fragment]
+     * @param mediaController [androidx.media3.session.MediaController]
+     * @param pos [Int]
+     **/
+    fun playAudioAtPos(
+        fragment: Fragment,
+        mediaController: MediaController,
+        pos: Int
+    ) {
+        fragment.main {
+            mediaController.setMediaItems(getMediaItemList())
+            mediaController.seekToDefaultPosition(pos)
+            mediaController.prepare()
+            mediaController.play()
+        }
+    }
+
+    /**
+     * [HomeViewModel.getMediaItemList]
+     * @return [List]<[MediaItem]>
+     *
+     * Map all [MetadataView] into [MediaItem] in [metadataList]
+     **/
+    private suspend fun getMediaItemList(): List<MediaItem> {
+        return defaultBlocking {
+            /**
+             * [metadataList] should be non-null,
+             * otherwise [HomeViewModel.getMediaItemList] will never be triggered
+             **/
+            metadataList.map { metadataView ->
+                metadataView.mediaItem
+            }
+        }
     }
 
 }
