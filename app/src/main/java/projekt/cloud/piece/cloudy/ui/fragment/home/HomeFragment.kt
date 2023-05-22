@@ -55,6 +55,7 @@ class HomeFragment: BaseMultiLayoutFragment<FragmentHomeBinding, HomeLayoutAdapt
      * @param savedInstanceState [android.os.Bundle]
      **/
     override fun onSetupLayoutAdapter(layoutAdapter: HomeLayoutAdapter, savedInstanceState: Bundle?) {
+        layoutAdapter.setupWindowInsets()
         layoutAdapter.setupRecyclerView(this, ::onRecyclerViewItemClicked)
         viewModel.requireMetadataList(this, ::onCompleteRequireMetadataList)
     }
