@@ -1,7 +1,5 @@
 package projekt.cloud.piece.cloudy.util
 
-import android.app.Activity
-import android.app.Service
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -61,8 +59,11 @@ object LifecycleOwnerUtil {
     val LifecycleOwner.context: Context?
         get() = when (this) {
             is Fragment -> requireContext()
-            is Activity -> this
-            is Service -> this
+            /**
+             * [android.app.Activity] and [android.app.Service] are both
+             * children of [android.content.Context]
+             **/
+            is Context -> this
             else -> null
         }
 
