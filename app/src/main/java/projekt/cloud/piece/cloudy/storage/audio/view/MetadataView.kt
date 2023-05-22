@@ -10,7 +10,6 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.MediaMetadata.MEDIA_TYPE_MUSIC
 import androidx.room.ColumnInfo
 import androidx.room.DatabaseView
-import androidx.room.Ignore
 import java.io.File
 import projekt.cloud.piece.cloudy.storage.audio.entity.AlbumEntity.AlbumEntityConstants.ALBUM_ID
 import projekt.cloud.piece.cloudy.storage.audio.entity.AlbumEntity.AlbumEntityConstants.ALBUM_TITLE
@@ -25,15 +24,15 @@ import projekt.cloud.piece.cloudy.storage.audio.entity.AudioEntity.AudioEntityCo
 import projekt.cloud.piece.cloudy.storage.audio.entity.AudioEntity.AudioEntityConstant.AUDIO_SIZE
 import projekt.cloud.piece.cloudy.storage.audio.entity.AudioEntity.AudioEntityConstant.AUDIO_TITLE
 import projekt.cloud.piece.cloudy.storage.audio.entity.AudioEntity.AudioEntityConstant.TABLE_AUDIO
-import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataConstant.METADATA_ALBUM
-import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataConstant.METADATA_ALBUM_TITLE
-import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataConstant.METADATA_ARTIST
-import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataConstant.METADATA_ARTIST_NAME
-import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataConstant.METADATA_DURATION
-import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataConstant.METADATA_ID
-import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataConstant.METADATA_SIZE
-import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataConstant.METADATA_TITLE
-import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataConstant.VIEW_METADATA
+import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataUtil.METADATA_ALBUM
+import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataUtil.METADATA_ALBUM_TITLE
+import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataUtil.METADATA_ARTIST
+import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataUtil.METADATA_ARTIST_NAME
+import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataUtil.METADATA_DURATION
+import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataUtil.METADATA_ID
+import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataUtil.METADATA_SIZE
+import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataUtil.METADATA_TITLE
+import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataUtil.VIEW_METADATA
 import projekt.cloud.piece.cloudy.util.DurationFormat.DurationFormatUtil.format
 import projekt.cloud.piece.cloudy.util.DurationFormat.SHORT
 
@@ -81,7 +80,7 @@ class MetadataView(
     val size: Long
 ) {
 
-    companion object AudioMetadataConstant {
+    companion object AudioMetadataUtil {
 
         const val VIEW_METADATA = "metadata"
 
@@ -95,25 +94,31 @@ class MetadataView(
         const val METADATA_SIZE = "size"
 
         private const val SUBTITLE_DIVIDER = " - "
-    }
 
-    @Ignore
-    constructor(mediaItem: MediaItem): this(mediaItem.mediaId, mediaItem.mediaMetadata)
-    @Ignore
-    private constructor(id: String, mediaMetadata: MediaMetadata): this(id, mediaMetadata, mediaMetadata.extras!!)
-    @Ignore
-    private constructor(
-        id: String, mediaMetadata: MediaMetadata, extras: Bundle
-    ): this(
-        id = id,
-        title = mediaMetadata.title.toString(),
-        artist = extras.getString(METADATA_ARTIST).toString(),
-        artistName = mediaMetadata.artist.toString(),
-        album = extras.getString(METADATA_ALBUM).toString(),
-        albumTitle = mediaMetadata.albumTitle.toString(),
-        duration = extras.getLong(METADATA_DURATION),
-        size = extras.getLong(METADATA_SIZE)
-    )
+        fun fromMediaItem(mediaItem: MediaItem): MetadataView {
+            return fromMediaMetadata(mediaItem.mediaId, mediaItem.mediaMetadata)
+        }
+
+        private fun fromMediaMetadata(id: String, mediaMetadata: MediaMetadata): MetadataView {
+            return fromMediaMetadataWithExtra(id, mediaMetadata, mediaMetadata.extras!!)
+        }
+
+        private fun fromMediaMetadataWithExtra(
+            id: String, mediaMetadata: MediaMetadata, extras: Bundle
+        ): MetadataView {
+            return MetadataView(
+                id = id,
+                title = mediaMetadata.title.toString(),
+                artist = extras.getString(METADATA_ARTIST).toString(),
+                artistName = mediaMetadata.artist.toString(),
+                album = extras.getString(METADATA_ALBUM).toString(),
+                albumTitle = mediaMetadata.albumTitle.toString(),
+                duration = extras.getLong(METADATA_DURATION),
+                size = extras.getLong(METADATA_SIZE)
+            )
+        }
+
+    }
 
     /**
      * [MetadataView.subtitle]

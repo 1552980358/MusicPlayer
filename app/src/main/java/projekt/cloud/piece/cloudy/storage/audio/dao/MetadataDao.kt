@@ -14,7 +14,7 @@ import projekt.cloud.piece.cloudy.storage.audio.entity.ArtistEntity.ArtistEntity
 import projekt.cloud.piece.cloudy.storage.audio.entity.AudioEntity
 import projekt.cloud.piece.cloudy.storage.audio.entity.AudioEntity.AudioEntityConstant.TABLE_AUDIO
 import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView
-import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataConstant.VIEW_METADATA
+import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView.AudioMetadataUtil.VIEW_METADATA
 
 @Dao
 interface MetadataDao {
