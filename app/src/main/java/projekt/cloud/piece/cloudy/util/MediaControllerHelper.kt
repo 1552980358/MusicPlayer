@@ -8,7 +8,7 @@ import androidx.media3.session.MediaController
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import projekt.cloud.piece.cloudy.service.playback.PlaybackService.PlaybackServiceUtil.playbackServiceToken
-import projekt.cloud.piece.cloudy.util.LifecycleUtil.requireContext
+import projekt.cloud.piece.cloudy.util.LifecycleOwnerUtil.requireContext
 
 class MediaControllerHelper: DefaultLifecycleObserver, Releasable {
 
