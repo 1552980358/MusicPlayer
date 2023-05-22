@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Base.Theme.Cloudy" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="Q">?attr/isLightTheme</item>
     </style>
 
     <style name="Theme.Cloudy" parent="Base.Theme.Cloudy" />
