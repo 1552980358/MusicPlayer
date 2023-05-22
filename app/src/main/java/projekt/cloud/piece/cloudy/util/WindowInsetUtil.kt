@@ -75,7 +75,7 @@ object WindowInsetUtil {
     fun View.applyStatusBarInset() {
         paddingTop.let { paddingTop ->
             requestInsets { windowInsetsCompat ->
-                updatePadding(bottom = paddingTop + windowInsetsCompat.insetStatusBar)
+                updatePadding(top = paddingTop + windowInsetsCompat.insetStatusBar)
             }
         }
     }
