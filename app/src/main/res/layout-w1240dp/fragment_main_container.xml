@@ -6,7 +6,7 @@
 
         <import type="projekt.cloud.piece.cloudy.ui.fragment.main_container.MainContainerViewModel" />
         <variable
-            name="view_model"
+            name="viewModel"
             type="MainContainerViewModel" />
 
     </data>
@@ -39,12 +39,13 @@
                 android:id="@+id/fragment_container_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingBottom="@{view_model.miniPlayerHeight}"
+                android:paddingBottom="@{viewModel.miniPlayerHeight}"
                 android:name="androidx.navigation.fragment.NavHostFragment"
                 app:navGraph="@navigation/nav_graph_main_container" />
 
             <include
                 android:id="@+id/mini_player"
+                app:metadata="@{viewModel.metadata}"
                 layout="@layout/main_container_mini_player" />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
