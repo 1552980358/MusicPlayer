@@ -1,5 +1,10 @@
 package projekt.cloud.piece.cloudy.ui.fragment.main_container
 
+import android.view.ViewGroup.MarginLayoutParams
+import androidx.core.view.marginLeft
+import androidx.core.view.marginRight
+import androidx.core.view.marginTop
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentContainerView
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -40,12 +45,14 @@ abstract class MainContainerLayoutAdapter(
 
     }
 
-    private val fragmentContainerView: FragmentContainerView
+    protected val fragmentContainerView: FragmentContainerView
         get() = binding.fragmentContainerView
 
     protected val childNavController: NavController
         get() = fragmentContainerView.getFragment<NavHostFragment>()
             .navController
+
+    open fun setupFragmentContainerViewMargins() = Unit
 
     /**
      * [MainContainerLayoutAdapter.setupNavigation]
@@ -59,6 +66,19 @@ abstract class MainContainerLayoutAdapter(
         private val bottomNavigationView: BottomNavigationView
             get() = binding.bottomNavigationView!!
 
+        override fun setupFragmentContainerViewMargins() {
+            bottomNavigationView.addOnLayoutChangeListener { _, _, top, _, bottom, _, _, _, _ ->
+                fragmentContainerView.updateLayoutParams<MarginLayoutParams> {
+                    setMargins(
+                        fragmentContainerView.marginLeft,
+                        fragmentContainerView.marginTop,
+                        fragmentContainerView.marginRight,
+                        bottom - top
+                    )
+                }
+            }
+        }
+
         /**
          * [MainContainerLayoutAdapter.setupNavigation]
          **/
@@ -67,8 +87,6 @@ abstract class MainContainerLayoutAdapter(
         }
 
     }
-
-
 
     private class W600dpImpl(binding: FragmentMainContainerBinding): MainContainerLayoutAdapter(binding) {
 

@@ -15,6 +15,7 @@ class MainContainerFragment: BaseMultiLayoutFragment<FragmentMainContainerBindin
         get() = MainContainerLayoutAdapter.builder
 
     override fun onSetupLayoutAdapter(layoutAdapter: MainContainerLayoutAdapter, savedInstanceState: Bundle?) {
+        layoutAdapter.setupFragmentContainerViewMargins()
         layoutAdapter.setupNavigation()
     }
 
