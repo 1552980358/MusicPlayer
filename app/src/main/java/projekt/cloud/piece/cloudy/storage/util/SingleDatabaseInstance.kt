@@ -21,13 +21,15 @@ class SingleDatabaseInstance<DATABASE: RoomDatabase>(
 
     @Synchronized
     private fun createDatabase(context: Context): DATABASE {
-        return createDatabase.invoke(context)
-            .apply(::setDatabase)
+        return setDatabase(
+            createDatabase.invoke(context)
+        )
     }
 
     @Synchronized
-    private fun setDatabase(instance: DATABASE) {
+    private fun setDatabase(instance: DATABASE): DATABASE {
         database = instance
+        return instance
     }
 
 }
