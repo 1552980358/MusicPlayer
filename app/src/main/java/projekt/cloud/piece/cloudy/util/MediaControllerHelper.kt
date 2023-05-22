@@ -1,50 +1,94 @@
 package projekt.cloud.piece.cloudy.util
 
 import android.content.Context
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.media3.common.Player.Listener
 import androidx.media3.session.MediaController
 import com.google.common.util.concurrent.ListenableFuture
+import com.google.common.util.concurrent.MoreExecutors
 import projekt.cloud.piece.cloudy.service.playback.PlaybackService.PlaybackServiceUtil.playbackServiceToken
+import projekt.cloud.piece.cloudy.util.LifecycleUtil.requireContext
 
 class MediaControllerHelper: DefaultLifecycleObserver, Releasable {
 
-    private var listenableFuture: ListenableFuture<MediaController>? = null
+    private var _listenableFuture: ListenableFuture<MediaController>? = null
     val mediaController: MediaController?
-        get() = listenableFuture?.get()
+        get() = _listenableFuture?.get()
 
-    fun setupWithLifecycleOwner(lifecycleOwner: LifecycleOwner) {
-        lifecycleOwner.lifecycle.addObserver(this)
-    }
-
-    override fun onStart(owner: LifecycleOwner) {
-        setupMediaController(getContext(owner))
-    }
-
-    override fun onDestroy(owner: LifecycleOwner) {
-        release()
-    }
-
-    private fun getContext(lifecycleOwner: LifecycleOwner): Context {
-        return when (lifecycleOwner) {
-            is Fragment -> lifecycleOwner.requireContext()
-            is Context -> lifecycleOwner
-            else -> throw IllegalAccessException("Host class of 'LifecycleOwner' should be able to gain 'Context'.")
-        }
-    }
-
-    private fun setupMediaController(context: Context) {
-        listenableFuture = MediaController.Builder(context, context.playbackServiceToken)
-            .buildAsync()
-    }
-
+    /**
+     * [MediaControllerHelper.requireMediaController]
+     * @param block [kotlin.jvm.functions.Function1]<[androidx.media3.session.MediaController], [Unit]>
+     *
+     * Require [androidx.media3.session.MediaController] in a safer way
+     **/
     inline fun requireMediaController(block: (MediaController) -> Unit) {
         mediaController?.also(block)
     }
 
+    /**
+     * [MediaControllerHelper.setupWithLifecycleOwner]
+     * @param lifecycleOwner [androidx.lifecycle.LifecycleOwner]
+     * @param listener [androidx.media3.common.Player.Listener]
+     **/
+    fun setupWithLifecycleOwner(lifecycleOwner: LifecycleOwner, listener: Listener) {
+        lifecycleOwner.lifecycle.addObserver(this)
+        setupMediaController(lifecycleOwner.requireContext(), listener)
+    }
+
+    /**
+     * [MediaControllerHelper.setupWithLifecycleOwner]
+     * @param context [android.content.Context]
+     * @param listener [androidx.media3.common.Player.Listener]
+     **/
+    private fun setupMediaController(context: Context, listener: Listener) {
+        setupMediaController(
+            buildMediaControllerListenableFuture(context),
+            listener
+        )
+    }
+
+    /**
+     * [MediaControllerHelper.buildMediaControllerListenableFuture]
+     * @param context [android.content.Context]
+     * @return [com.google.common.util.concurrent.ListenableFuture]<[androidx.media3.session.MediaController]>
+     *
+     * Build [androidx.media3.session.MediaController] in async with [com.google.common.util.concurrent.ListenableFuture]
+     **/
+    private fun buildMediaControllerListenableFuture(context: Context): ListenableFuture<MediaController> {
+        return MediaController.Builder(context, context.playbackServiceToken)
+            .buildAsync()
+    }
+
+    /**
+     * [MediaControllerHelper.setupMediaController]
+     * @param listenableFuture [com.google.common.util.concurrent.ListenableFuture]<[androidx.media3.session.MediaController]>
+     * @param listener [androidx.media3.common.Player.Listener]
+     *
+     * Setup [androidx.media3.session.MediaController] with assigning [androidx.media3.common.Player.Listener],
+     * and store [com.google.common.util.concurrent.ListenableFuture] instance
+     **/
+    private fun setupMediaController(listenableFuture: ListenableFuture<MediaController>, listener: Listener) {
+        listenableFuture.addListener(
+            { listenableFuture.get().addListener(listener) },
+            MoreExecutors.directExecutor()
+        )
+        _listenableFuture = listenableFuture
+    }
+
+    /**
+     * [androidx.lifecycle.DefaultLifecycleObserver.onDestroy]
+     * @param owner [androidx.lifecycle.LifecycleOwner]
+     **/
+    override fun onDestroy(owner: LifecycleOwner) {
+        release()
+    }
+
+    /**
+     * [Releasable.release]
+     **/
     override fun release() {
-        listenableFuture?.cancel(true)
+        _listenableFuture?.cancel(true)
     }
 
 }
