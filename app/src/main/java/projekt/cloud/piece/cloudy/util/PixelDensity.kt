@@ -1,13 +1,10 @@
 package projekt.cloud.piece.cloudy.util
 
-import android.app.Activity
-import android.app.Service
 import android.content.Context
 import android.content.res.Resources
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import java.lang.IllegalArgumentException
 import projekt.cloud.piece.cloudy.R
+import projekt.cloud.piece.cloudy.util.LifecycleOwnerUtil.requireContext
 
 enum class PixelDensity {
     COMPAT,
@@ -16,9 +13,17 @@ enum class PixelDensity {
 
     companion object PixelDensityUtil {
 
+        /**
+         * [android.content.Context.pixelDensity]
+         * @type [PixelDensity]
+         **/
         val Context.pixelDensity: PixelDensity
             get() = resources.pixelDensity
 
+        /**
+         * [android.content.res.Resources.pixelDensity]
+         * @type [PixelDensity]
+         **/
         val Resources.pixelDensity
             get() = when {
                 getBoolean(R.bool.pixel_density_medium) -> MEDIUM
@@ -26,22 +31,28 @@ enum class PixelDensity {
                 else -> COMPAT
             }
 
+        /**
+         * [PixelDensity.pixelDensity]
+         * @return [LifecycleOwnerProperty]<[PixelDensity]>
+         **/
         fun pixelDensity(): LifecycleOwnerProperty<PixelDensity> {
             return PixelDensityProperty()
         }
 
+        /**
+         * [PixelDensity.PixelDensityProperty]
+         * @parent [LifecycleOwnerProperty]
+         **/
         private class PixelDensityProperty: LifecycleOwnerProperty<PixelDensity>() {
 
+            /**
+             * [LifecycleOwnerProperty.syncCreateValue]
+             * @param thisRef [androidx.lifecycle.LifecycleOwner]
+             * @return [PixelDensity]
+             **/
             override fun syncCreateValue(thisRef: LifecycleOwner): PixelDensity {
-                return getContext(thisRef).pixelDensity
-            }
-
-            private fun getContext(thisRef: LifecycleOwner): Context {
-                return when (thisRef) {
-                    is Activity, is Service -> { thisRef as Context }
-                    is Fragment -> { thisRef.requireContext() }
-                    else -> throw IllegalArgumentException("Unknown $thisRef: Host class should be the subclass of android.content.Context")
-                }
+                return thisRef.requireContext()
+                    .pixelDensity
             }
 
         }
