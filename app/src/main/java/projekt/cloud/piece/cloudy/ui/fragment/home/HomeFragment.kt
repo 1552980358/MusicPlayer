@@ -1,20 +1,18 @@
 package projekt.cloud.piece.cloudy.ui.fragment.home
 
 import android.os.Bundle
-import kotlinx.coroutines.CoroutineScope
+import androidx.media3.common.Player
 import projekt.cloud.piece.cloudy.base.BaseFragment
 import projekt.cloud.piece.cloudy.base.BaseMultiLayoutFragment
 import projekt.cloud.piece.cloudy.base.LayoutAdapterBuilder
 import projekt.cloud.piece.cloudy.databinding.FragmentHomeBinding
 import projekt.cloud.piece.cloudy.R
-import projekt.cloud.piece.cloudy.storage.audio.AudioDatabase
-import projekt.cloud.piece.cloudy.storage.audio.AudioDatabase.AudioDatabaseUtil.audioDatabase
 import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView
-import projekt.cloud.piece.cloudy.util.CoroutineUtil.ioBlocking
-import projekt.cloud.piece.cloudy.util.LifecycleOwnerUtil.main
+import projekt.cloud.piece.cloudy.ui.fragment.home.HomeViewModel.HomeViewModelUtil.homeViewModel
+import projekt.cloud.piece.cloudy.util.MediaControllerHelper
 import projekt.cloud.piece.cloudy.util.ViewBindingInflater
 
-class HomeFragment: BaseMultiLayoutFragment<FragmentHomeBinding, HomeLayoutAdapter>() {
+class HomeFragment: BaseMultiLayoutFragment<FragmentHomeBinding, HomeLayoutAdapter>(), Player.Listener {
 
     /**
      * [BaseFragment.viewBindingInflater]
@@ -31,10 +29,25 @@ class HomeFragment: BaseMultiLayoutFragment<FragmentHomeBinding, HomeLayoutAdapt
         get() = HomeLayoutAdapter.builder
 
     /**
-     * [HomeFragment._metadataList]
-     * @type [List]<[MetadataView]>
+     * [HomeFragment.viewModel]
+     * @type [HomeViewModel]
      **/
-    private var _metadataList: List<MetadataView>? = null
+    private val viewModel by homeViewModel()
+
+    /**
+     * [HomeFragment.mediaControllerHelper]
+     * @type [MediaControllerHelper]
+     **/
+    private val mediaControllerHelper = MediaControllerHelper()
+
+    /**
+     * [androidx.fragment.app.Fragment.onCreate]
+     * @param savedInstanceState [android.os.Bundle]
+     **/
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mediaControllerHelper.setupWithLifecycleOwner(this, this)
+    }
 
     /**
      * [BaseMultiLayoutFragment.onSetupLayoutAdapter]
@@ -43,61 +56,30 @@ class HomeFragment: BaseMultiLayoutFragment<FragmentHomeBinding, HomeLayoutAdapt
      **/
     override fun onSetupLayoutAdapter(layoutAdapter: HomeLayoutAdapter, savedInstanceState: Bundle?) {
         layoutAdapter.setupRecyclerView(this, ::onRecyclerViewItemClicked)
-        if (!layoutAdapter.updateMetadataList(_metadataList)) {
-            main(::setupMetadataList)
+        viewModel.requireMetadataList(this, ::onCompleteRequireMetadataList)
+    }
+
+    /**
+     * [HomeFragment.onCompleteRequireMetadataList]
+     * @param metadataList [List]<[MetadataView]>
+     *
+     * Triggered when [metadataList] is obtained in non-null instance
+     * by [HomeViewModel.requireMetadataList]
+     **/
+    private fun onCompleteRequireMetadataList(metadataList: List<MetadataView>) {
+        requireLayoutAdapter { layoutAdapter ->
+            layoutAdapter.updateMetadataList(metadataList)
         }
     }
 
     /**
      * [HomeFragment.onRecyclerViewItemClicked]
-     * @param id [String]
+     * @param pos [Int]
      *
      * Triggered when [R.id.recycler_view] list content items are clicked
      **/
     private fun onRecyclerViewItemClicked(pos: Int) {
-        // TODO: To be implemented for starting playing audio with id
-    }
-
-    /**
-     * [HomeFragment.setupMetadataList]
-     * @param coroutineScope [CoroutineScope]
-     *
-     * Setup metadata list
-     **/
-    private suspend fun setupMetadataList(
-        @Suppress("UNUSED_PARAMETER")
-        coroutineScope: CoroutineScope
-    ) {
-        updateMetadataList(
-            queryMetadata(requireContext().audioDatabase)
-        )
-    }
-
-    /**
-     * [HomeFragment.queryMetadata]
-     * @param audioDatabase [AudioDatabase]
-     * @return [List]
-     *
-     * Query metadata list from [AudioDatabase]
-     **/
-    private suspend fun queryMetadata(audioDatabase: AudioDatabase): List<MetadataView> {
-        return ioBlocking {
-            audioDatabase.metadata
-                .query()
-        }
-    }
-
-    /**
-     * [HomeFragment.updateMetadataList]
-     * @param metadataList [List]<[MetadataView]>
-     *
-     * Update metadata list to [R.id.recycler_view]
-     **/
-    private fun updateMetadataList(metadataList: List<MetadataView>) {
-        _metadataList = metadataList
-        requireLayoutAdapter { layoutAdapter ->
-            layoutAdapter.updateMetadataList(metadataList)
-        }
+        // TODO: To be implemented for starting playing audio with pos
     }
 
 }

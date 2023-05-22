@@ -100,9 +100,8 @@ class HomeRecyclerAdapter(
      * @param metadataList [List]<[MetadataView]>
      * @return [Boolean]
      **/
-    fun updateMetadataList(metadataList: List<MetadataView>?): Boolean {
+    fun updateMetadataList(metadataList: List<MetadataView>?) {
         _metadataList = metadataList
-        return metadataList != null
     }
 
 }
