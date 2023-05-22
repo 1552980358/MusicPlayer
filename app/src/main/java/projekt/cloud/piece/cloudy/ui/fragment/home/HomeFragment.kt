@@ -1,7 +1,6 @@
 package projekt.cloud.piece.cloudy.ui.fragment.home
 
 import android.os.Bundle
-import androidx.media3.common.Player
 import projekt.cloud.piece.cloudy.base.BaseFragment
 import projekt.cloud.piece.cloudy.base.BaseMultiLayoutFragment
 import projekt.cloud.piece.cloudy.base.LayoutAdapterBuilder
@@ -12,7 +11,7 @@ import projekt.cloud.piece.cloudy.ui.fragment.home.HomeViewModel.HomeViewModelUt
 import projekt.cloud.piece.cloudy.util.MediaControllerHelper
 import projekt.cloud.piece.cloudy.util.ViewBindingInflater
 
-class HomeFragment: BaseMultiLayoutFragment<FragmentHomeBinding, HomeLayoutAdapter>(), Player.Listener {
+class HomeFragment: BaseMultiLayoutFragment<FragmentHomeBinding, HomeLayoutAdapter>() {
 
     /**
      * [BaseFragment.viewBindingInflater]
@@ -46,7 +45,7 @@ class HomeFragment: BaseMultiLayoutFragment<FragmentHomeBinding, HomeLayoutAdapt
      **/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mediaControllerHelper.setupWithLifecycleOwner(this, this)
+        mediaControllerHelper.setupWithLifecycleOwner(this)
     }
 
     /**

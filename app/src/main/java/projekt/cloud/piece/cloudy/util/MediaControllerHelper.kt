@@ -31,7 +31,13 @@ class MediaControllerHelper: DefaultLifecycleObserver, Releasable {
      * @param lifecycleOwner [androidx.lifecycle.LifecycleOwner]
      * @param listener [androidx.media3.common.Player.Listener]
      **/
-    fun setupWithLifecycleOwner(lifecycleOwner: LifecycleOwner, listener: Listener) {
+    fun setupWithLifecycleOwner(
+        lifecycleOwner: LifecycleOwner,
+        /**
+         * Try casting into [androidx.media3.common.Player.Listener]
+         **/
+        listener: Listener? = lifecycleOwner as? Listener
+    ) {
         lifecycleOwner.lifecycle.addObserver(this)
         setupMediaController(lifecycleOwner.requireContext(), listener)
     }
@@ -41,7 +47,7 @@ class MediaControllerHelper: DefaultLifecycleObserver, Releasable {
      * @param context [android.content.Context]
      * @param listener [androidx.media3.common.Player.Listener]
      **/
-    private fun setupMediaController(context: Context, listener: Listener) {
+    private fun setupMediaController(context: Context, listener: Listener?) {
         setupMediaController(
             buildMediaControllerListenableFuture(context),
             listener
@@ -68,11 +74,13 @@ class MediaControllerHelper: DefaultLifecycleObserver, Releasable {
      * Setup [androidx.media3.session.MediaController] with assigning [androidx.media3.common.Player.Listener],
      * and store [com.google.common.util.concurrent.ListenableFuture] instance
      **/
-    private fun setupMediaController(listenableFuture: ListenableFuture<MediaController>, listener: Listener) {
-        listenableFuture.addListener(
-            { listenableFuture.get().addListener(listener) },
-            MoreExecutors.directExecutor()
-        )
+    private fun setupMediaController(listenableFuture: ListenableFuture<MediaController>, listener: Listener?) {
+        listener?.let {
+            listenableFuture.addListener(
+                { listenableFuture.get()?.addListener(listener) },
+                MoreExecutors.directExecutor()
+            )
+        }
         _listenableFuture = listenableFuture
     }
 
