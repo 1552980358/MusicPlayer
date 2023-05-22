@@ -6,6 +6,7 @@ import androidx.viewbinding.ViewBinding
 import projekt.cloud.piece.cloudy.base.BaseLayoutAdapter.LayoutAdapterUtil.build
 import projekt.cloud.piece.cloudy.util.PixelDensity
 import projekt.cloud.piece.cloudy.util.PixelDensity.PixelDensityUtil.pixelDensity
+import projekt.cloud.piece.cloudy.util.helper.NullableHelper.NullableHelperUtil.nullable
 
 abstract class BaseMultiLayoutFragment<B: ViewBinding, A: BaseLayoutAdapter<B>>: BaseFragment<B>() {
 
@@ -15,40 +16,7 @@ abstract class BaseMultiLayoutFragment<B: ViewBinding, A: BaseLayoutAdapter<B>>:
      **/
     protected abstract val layoutAdapterBuilder: LayoutAdapterBuilder<B, A>
 
-    /**
-     * [BaseMultiLayoutFragment._layoutAdapter]
-     * @type [A]
-     **/
-    private var _layoutAdapter: A? = null
-
-    /**
-     * [BaseMultiLayoutFragment.layoutAdapterNullable]
-     * @type [A]
-     *
-     * Modifier `protected` is set for
-     * allowing `inline` modifier set to [BaseMultiLayoutFragment.requireLayoutAdapter]
-     * Don't call this call [BaseMultiLayoutFragment.requireLayoutAdapter]
-     **/
-    protected val layoutAdapterNullable: A?
-        get() = _layoutAdapter
-
-    /**
-     * [BaseMultiLayoutFragment.layoutAdapter]
-     * @type [A]
-     **/
-    protected val layoutAdapter: A
-        get() = _layoutAdapter!!
-
-    /**
-     * [BaseMultiLayoutFragment.requireLayoutAdapter]
-     * @param block [kotlin.jvm.functions.Function1]<[A], [Unit]>
-     *
-     * Require binding in a safe way prevent null pointer exception
-     * if LayoutAdapter required after the calling of [androidx.fragment.app.Fragment.onDestroyView]
-     **/
-    protected inline fun requireLayoutAdapter(block: (A) -> Unit): A? {
-        return layoutAdapterNullable?.apply(block)
-    }
+    protected val layoutAdapter = nullable<A>()
 
     /**
      * [BaseMultiLayoutFragment.pixelDensity]
@@ -63,8 +31,10 @@ abstract class BaseMultiLayoutFragment<B: ViewBinding, A: BaseLayoutAdapter<B>>:
      **/
     @CallSuper
     override fun onSetupBinding(binding: B, savedInstanceState: Bundle?) {
-        _layoutAdapter = createLayoutAdapter(pixelDensity, binding)
-        onSetupLayoutAdapter(layoutAdapter, savedInstanceState)
+        onSetupLayoutAdapter(
+            layoutAdapter valued createLayoutAdapter(pixelDensity, binding),
+            savedInstanceState
+        )
     }
 
     /**
@@ -95,7 +65,7 @@ abstract class BaseMultiLayoutFragment<B: ViewBinding, A: BaseLayoutAdapter<B>>:
      * and before [androidx.fragment.app.Fragment.onDestroy]
      **/
     override fun onDestroyView() {
-        _layoutAdapter = null
+        layoutAdapter.release()
         super.onDestroyView()
     }
 

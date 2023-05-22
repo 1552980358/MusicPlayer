@@ -71,7 +71,7 @@ class PermissionsFragment: BasePermissionsFragment() {
     private fun requestMultiplePermissionsCallback(
         @Suppress("UNUSED_PARAMETER") map: Map<String, Boolean>
     ) {
-        requireLayoutAdapter { layoutAdapter ->
+        layoutAdapter safely { layoutAdapter ->
             layoutAdapter.update()
         }
         startCheckPermissions()
@@ -136,7 +136,7 @@ class PermissionsFragment: BasePermissionsFragment() {
         @Suppress("UNUSED_PARAMETER")
         coroutineScope: CoroutineScope
     ) {
-        requireLayoutAdapter { layoutAdapter ->
+        layoutAdapter safely { layoutAdapter ->
             layoutAdapter.setRecyclerViewAdapter(
                 getRecyclerViewAdapter(viewModel.permissions)
             )
@@ -169,7 +169,7 @@ class PermissionsFragment: BasePermissionsFragment() {
         main {
             if (!permission.isGranted(requireContext())) {
                 requestPermissionCallback = {
-                    requireLayoutAdapter { layoutAdapter ->
+                    layoutAdapter safely { layoutAdapter ->
                         layoutAdapter.update(pos)
                     }
                 }

@@ -155,7 +155,7 @@ class ImportAudioFragment: BaseMultiLayoutFragment<FragmentImportAudioBinding, I
      * Update metadata list of [R.id.recycler_view]
      **/
     private fun updateRecyclerAdapterMetadataList(metadataList: List<MetadataView>) {
-        requireLayoutAdapter { layoutAdapter ->
+        layoutAdapter safely { layoutAdapter ->
             layoutAdapter.updateMetadataList(metadataList)
         }
     }

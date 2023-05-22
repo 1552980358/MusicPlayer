@@ -13,6 +13,8 @@ import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView
 import projekt.cloud.piece.cloudy.util.CoroutineUtil.defaultBlocking
 import projekt.cloud.piece.cloudy.util.CoroutineUtil.ioBlocking
 import projekt.cloud.piece.cloudy.util.LifecycleOwnerUtil.main
+import projekt.cloud.piece.cloudy.util.helper.NullableHelper
+import projekt.cloud.piece.cloudy.util.helper.NullableHelper.NullableHelperUtil.nullable
 
 class HomeViewModel: ViewModel() {
 
@@ -30,12 +32,10 @@ class HomeViewModel: ViewModel() {
     }
 
     /**
-     * [HomeViewModel.metadataList]
-     * @type [List]<[MetadataView]>
+     * [HomeViewModel._metadataList]
+     * @type [NullableHelper]<[List]<[MetadataView]>>
      **/
-    private var _metadataList: List<MetadataView>? = null
-    private val metadataList: List<MetadataView>
-        get() = _metadataList!!
+    private val _metadataList = nullable<List<MetadataView>>()
 
     /**
      * [HomeViewModel.requireMetadataList]
@@ -46,7 +46,7 @@ class HomeViewModel: ViewModel() {
      **/
     @MainThread
     fun requireMetadataList(fragment: Fragment, onComplete: (List<MetadataView>) -> Unit) {
-        when (val metadataList = _metadataList) {
+        when (val metadataList = _metadataList.nullable()) {
             null -> { setupMetadataList(fragment, onComplete) }
             else -> { onComplete.invoke(metadataList) }
         }
@@ -96,7 +96,7 @@ class HomeViewModel: ViewModel() {
     private fun completeRequireMetadataList(
         metadataList: List<MetadataView>, onComplete: (List<MetadataView>) -> Unit
     ) {
-        _metadataList = metadataList
+        _metadataList valued metadataList
         onComplete.invoke(metadataList)
     }
 
@@ -123,18 +123,27 @@ class HomeViewModel: ViewModel() {
      * [HomeViewModel.getMediaItemList]
      * @return [List]<[MediaItem]>
      *
-     * Map all [MetadataView] into [MediaItem] in [metadataList]
+     * Map all [MetadataView] into [MediaItem] in [_metadataList]
      **/
     private suspend fun getMediaItemList(): List<MediaItem> {
         return defaultBlocking {
             /**
-             * [metadataList] should be non-null,
+             * [_metadataList] should be non-null,
              * otherwise [HomeViewModel.getMediaItemList] will never be triggered
              **/
-            metadataList.map { metadataView ->
-                metadataView.mediaItem
-            }
+            _metadataList.nonnull(::getMediaItemList)
         }
+    }
+
+    /**
+     * [HomeViewModel.getMediaItemList]
+     * @param metadataList [List]<[MetadataView]>
+     * @return [List]<[MediaItem]>
+     **/
+    private fun getMediaItemList(
+        metadataList: List<MetadataView>
+    ): List<MediaItem> {
+        return metadataList.map { it.mediaItem }
     }
 
 }

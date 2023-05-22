@@ -32,18 +32,23 @@ class NullableHelper<T> private constructor(
      *
      * Store instance [value] to [_value]
      **/
-    fun setValue(value: T) {
+    fun setValue(value: T): T {
         _value = value
+        return value
     }
 
     /**
-     * [NullableHelper.getValue]
+     * [NullableHelper.nonnull]
      * @return [T]
      *
-     * Getting non-null [_value]
+     * Getting nonnull [_value]
      **/
-    fun getValue(): T {
+    fun nonnull(): T {
         return nullable()!!
+    }
+
+    inline fun <R> nonnull(block: (T) -> R): R {
+        return block.invoke(nonnull())
     }
 
     /**
@@ -57,21 +62,21 @@ class NullableHelper<T> private constructor(
     }
 
     /**
-     * [NullableHelper.value]
+     * [NullableHelper.safely]
      * @param block [kotlin.jvm.functions.Function1]<[T], [Unit]>
      *
      * Get value
      **/
-    inline infix fun value(block: (T) -> Unit) {
+    inline infix fun safely(block: (T) -> Unit) {
         nullable()?.let(block)
     }
 
     /**
-     * [NullableHelper.value]
+     * [NullableHelper.valued]
      * @param value [T]
      **/
-    infix fun value(value: T) {
-        setValue(value)
+    infix fun valued(value: T): T {
+        return setValue(value)
     }
 
     /**

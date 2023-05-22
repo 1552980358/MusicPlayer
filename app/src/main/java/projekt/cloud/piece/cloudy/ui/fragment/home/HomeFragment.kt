@@ -67,7 +67,7 @@ class HomeFragment: BaseMultiLayoutFragment<FragmentHomeBinding, HomeLayoutAdapt
      * by [HomeViewModel.requireMetadataList]
      **/
     private fun onCompleteRequireMetadataList(metadataList: List<MetadataView>) {
-        requireLayoutAdapter { layoutAdapter ->
+        layoutAdapter safely { layoutAdapter ->
             layoutAdapter.updateMetadataList(metadataList)
         }
     }
