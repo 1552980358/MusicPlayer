@@ -16,6 +16,7 @@ import projekt.cloud.piece.cloudy.base.BaseLayoutAdapter
 import projekt.cloud.piece.cloudy.base.LayoutAdapterBuilder
 import projekt.cloud.piece.cloudy.base.LayoutAdapterConstructor
 import projekt.cloud.piece.cloudy.databinding.FragmentMainContainerBinding
+import projekt.cloud.piece.cloudy.R
 import projekt.cloud.piece.cloudy.util.PixelDensity
 import projekt.cloud.piece.cloudy.util.PixelDensity.COMPAT
 import projekt.cloud.piece.cloudy.util.PixelDensity.EXPANDED
@@ -52,6 +53,14 @@ abstract class MainContainerLayoutAdapter(
         get() = fragmentContainerView.getFragment<NavHostFragment>()
             .navController
 
+    /**
+     * [MainContainerLayoutAdapter.setupFragmentContainerViewMargins]
+     *
+     * Setup bottom margins to [R.id.fragment_container_view]
+     * relative to [R.id.bottom_navigation_view]'s height
+     *
+     * @impl [CompatImpl.setupFragmentContainerViewMargins]
+     **/
     open fun setupFragmentContainerViewMargins() = Unit
 
     /**
@@ -66,6 +75,9 @@ abstract class MainContainerLayoutAdapter(
         private val bottomNavigationView: BottomNavigationView
             get() = binding.bottomNavigationView!!
 
+        /**
+         * [MainContainerLayoutAdapter.setupFragmentContainerViewMargins]
+         **/
         override fun setupFragmentContainerViewMargins() {
             bottomNavigationView.addOnLayoutChangeListener { _, _, top, _, bottom, _, _, _, _ ->
                 fragmentContainerView.updateLayoutParams<MarginLayoutParams> {
