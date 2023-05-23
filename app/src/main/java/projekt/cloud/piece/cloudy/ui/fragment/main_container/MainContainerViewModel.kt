@@ -20,12 +20,42 @@ class MainContainerViewModel: ViewModel() {
 
     }
 
-    private val _miniPlayerHeight = MutableLiveData(0)
-    val miniPlayerHeight: LiveData<Int>
-        get() = _miniPlayerHeight
+    /**
+     * [MainContainerViewModel.miniPlayerHidingHeight]
+     * @wrap [androidx.lifecycle.MutableLiveData]
+     * @type [Int]
+     **/
+    private val _miniPlayerHidingHeight = MutableLiveData(0)
+    val miniPlayerHidingHeight: LiveData<Int>
+        get() = _miniPlayerHidingHeight
 
-    fun updateMiniPlayerHeight(newHeight: Int) {
-        _miniPlayerHeight.value = newHeight
+    /**
+     * [MainContainerViewModel.updateMiniPlayerHidingHeight]
+     * @param newHeight [Int]
+     *
+     * Update [MainContainerViewModel.miniPlayerHidingHeight]
+     **/
+    fun updateMiniPlayerHidingHeight(newHeight: Int) {
+        _miniPlayerHidingHeight.value = newHeight
+    }
+
+    /**
+     * [MainContainerViewModel.miniPlayerExpandingHeight]
+     * @wrap [androidx.lifecycle.MutableLiveData]
+     * @type [Int]
+     **/
+    private val _miniPlayerExpandingHeight = MutableLiveData(0)
+    val miniPlayerExpandingHeight: LiveData<Int>
+        get() = _miniPlayerExpandingHeight
+
+    /**
+     * [MainContainerViewModel.updateMiniPlayerHidingHeight]
+     * @param newHeight [Int]
+     *
+     * Update [MainContainerViewModel.miniPlayerHidingHeight]
+     **/
+    fun updateMiniPlayerExpandingHeight(newHeight: Int) {
+        _miniPlayerExpandingHeight.value = newHeight
     }
 
     private var _metadata = MutableLiveData<MetadataView>()

@@ -74,7 +74,7 @@ abstract class HomeLayoutAdapter(
      * Set metadata list for [HomeLayoutAdapter.recyclerView]
      **/
     fun updateMetadataList(metadataList: List<MetadataView>?) {
-        recyclerView.adapter.toType<HomeRecyclerAdapter>()
+        recyclerView.adapter.cast<HomeRecyclerAdapter>()
             .updateMetadataList(metadataList)
     }
 

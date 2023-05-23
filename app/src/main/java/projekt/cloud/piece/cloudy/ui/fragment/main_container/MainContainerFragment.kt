@@ -36,12 +36,23 @@ class MainContainerFragment: BaseMainContainerFragment(), Player.Listener {
     }
 
     override fun onSetupLayoutAdapter(layoutAdapter: MainContainerLayoutAdapter, savedInstanceState: Bundle?) {
-        layoutAdapter.setupFragmentContainerViewMargins()
+        layoutAdapter.setupDynamicLayout(resources)
+        layoutAdapter.setupMiniPlayer(viewModel)
         layoutAdapter.setupNavigation()
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+        mediaItem?.let {
+            viewModel.setMetadata(this, mediaItem)
+        }
+    }
 
+    override fun onIsPlayingChanged(isPlaying: Boolean) {
+        if (isPlaying) {
+            layoutAdapter.safely { layoutAdapter ->
+                layoutAdapter.ensureMiniPlayVisible()
+            }
+        }
     }
 
 }

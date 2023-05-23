@@ -214,7 +214,7 @@ abstract class ImportAudioLayoutAdapter(
      */
     fun updateMetadataList(metadataList: List<MetadataView>) {
         recyclerView.adapter
-            .mayType<ImportAudioRecyclerViewAdapter>()
+            .safeCast<ImportAudioRecyclerViewAdapter>()
             ?.update(metadataList)
     }
 
