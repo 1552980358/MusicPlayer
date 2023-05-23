@@ -22,7 +22,7 @@ import projekt.cloud.piece.cloudy.util.PixelDensity
 import projekt.cloud.piece.cloudy.util.PixelDensity.COMPAT
 import projekt.cloud.piece.cloudy.util.SurfaceColorUtil.setSurface3BackgroundColor
 import projekt.cloud.piece.cloudy.util.SurfaceColorUtil.surfaceColor2
-import projekt.cloud.piece.cloudy.util.TypeUtil.mayType
+import projekt.cloud.piece.cloudy.util.CastUtil.safeCast
 
 private typealias ImportAudioLayoutAdapterBuilder =
     LayoutAdapterBuilder<FragmentImportAudioBinding, ImportAudioLayoutAdapter>

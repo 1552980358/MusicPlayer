@@ -12,7 +12,7 @@ import projekt.cloud.piece.cloudy.R
 import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView
 import projekt.cloud.piece.cloudy.util.PixelDensity
 import projekt.cloud.piece.cloudy.util.PixelDensity.COMPAT
-import projekt.cloud.piece.cloudy.util.TypeUtil.toType
+import projekt.cloud.piece.cloudy.util.CastUtil.cast
 import projekt.cloud.piece.cloudy.util.WindowInsetUtil.applyStatusBarInset
 
 private typealias HomeLayoutAdapterBuilder =
