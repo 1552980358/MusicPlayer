@@ -29,7 +29,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/placeholder_mini_player"
+            app:layout_constraintBottom_toTopOf="@id/constraint_layout_placeholder"
             style="@style/Widget.MainContainer.MiniPlayer.MaterialCardView">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -75,10 +75,11 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <androidx.constraintlayout.widget.Placeholder
-            android:id="@+id/placeholder_mini_player"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_layout_placeholder"
             android:layout_width="@dimen/constraint"
             android:layout_height="@dimen/constraint"
+            android:background="?attr/colorSurfaceVariant"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/material_card_view_mini_player"
