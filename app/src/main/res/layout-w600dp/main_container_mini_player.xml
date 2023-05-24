@@ -25,6 +25,7 @@
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/material_card_view_mini_player"
             android:layout_width="@dimen/constraint"
             android:layout_height="@dimen/constraint"
             app:cardBackgroundColor="?attr/colorSurface"

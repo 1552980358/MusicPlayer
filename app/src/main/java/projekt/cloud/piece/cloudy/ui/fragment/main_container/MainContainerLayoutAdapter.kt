@@ -17,6 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigationrail.NavigationRailView
 import kotlin.math.max
@@ -413,8 +414,8 @@ abstract class MainContainerLayoutAdapter(
         private val bottomNavigationView: BottomNavigationView
             get() = binding.bottomNavigationView!!
 
-        private val miniPlayerContainer: ConstraintLayout
-            get() = miniPlayer.constraintLayoutMiniPlayer!!
+        private val miniPlayerContainer: MaterialCardView
+            get() = miniPlayer.materialCardViewMiniPlayer
 
         /**
          * [MainContainerLayoutAdapter.setupDynamicLayout]

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style
+        name="Widget.MainContainer.MiniPlayer.MaterialCardView"
+        parent="Widget.Material3.CardView.Filled">
+        <item name="shapeAppearance">
+            @style/Widget.MainContainer.MiniPlayer.MaterialCardView.ShapeAppearance
+        </item>
+    </style>
+
+    <style
+        name="Widget.MainContainer.MiniPlayer.MaterialCardView.ShapeAppearance"
+        parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">@dimen/md_spec_round_radius</item>
+        <item name="cornerSizeTopLeft">@dimen/md_spec_round_radius</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+    </style>
+
+</resources>
