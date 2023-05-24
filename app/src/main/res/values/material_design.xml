@@ -50,4 +50,6 @@
      -->
     <dimen name="md_spec_bottom_nav_height">80dp</dimen>
 
+    <integer name="md_spec_transition_duration_400">400</integer>
+
 </resources>

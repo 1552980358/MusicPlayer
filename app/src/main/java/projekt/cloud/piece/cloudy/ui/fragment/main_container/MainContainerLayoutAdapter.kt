@@ -1,17 +1,23 @@
 package projekt.cloud.piece.cloudy.ui.fragment.main_container
 
+import android.content.Context
 import android.content.res.Resources
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.doOnLayout
 import androidx.core.view.marginBottom
 import androidx.core.view.updateLayoutParams
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestBuilder
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
@@ -26,12 +32,15 @@ import projekt.cloud.piece.cloudy.base.LayoutAdapterBuilder
 import projekt.cloud.piece.cloudy.base.LayoutAdapterConstructor
 import projekt.cloud.piece.cloudy.databinding.FragmentMainContainerBinding
 import projekt.cloud.piece.cloudy.R
+import projekt.cloud.piece.cloudy.R.dimen
 import projekt.cloud.piece.cloudy.databinding.MainContainerMiniPlayerBinding
 import projekt.cloud.piece.cloudy.util.PixelDensity
 import projekt.cloud.piece.cloudy.util.PixelDensity.COMPAT
 import projekt.cloud.piece.cloudy.util.PixelDensity.EXPANDED
 import projekt.cloud.piece.cloudy.util.PixelDensity.MEDIUM
 import projekt.cloud.piece.cloudy.util.CastUtil.cast
+import projekt.cloud.piece.cloudy.util.GlideUtil.crossFade
+import projekt.cloud.piece.cloudy.util.GlideUtil.roundCorners
 import projekt.cloud.piece.cloudy.util.helper.NullableHelper.NullableHelperUtil.nullable
 
 private typealias MainContainerLayoutAdapterBuilder =
@@ -78,6 +87,8 @@ abstract class MainContainerLayoutAdapter(
 
     protected val miniPlayer: MainContainerMiniPlayerBinding
         get() = binding.miniPlayer
+    private val miniPlayerLeading: AppCompatImageView
+        get() = miniPlayer.appCompatImageViewLeading
     private val miniPlayerRoot: ConstraintLayout
         get() = miniPlayer.constraintLayoutRoot
 
@@ -129,6 +140,59 @@ abstract class MainContainerLayoutAdapter(
             layoutParams.cast<CoordinatorLayout.LayoutParams>()
                 .behavior
                 .cast()
+        }
+    }
+
+    /**
+     * [MainContainerLayoutAdapter.setupMiniPlayerCoverObserving]
+     * @param fragment [androidx.fragment.app.Fragment]
+     * @param viewModel [MainContainerViewModel]
+     **/
+    fun setupMiniPlayerCoverObserving(
+        fragment: Fragment, viewModel: MainContainerViewModel
+    ) {
+        val context = fragment.requireContext()
+        viewModel.metadata.observe(fragment.viewLifecycleOwner) { metadata ->
+            Glide.with(fragment)
+                .load(metadata.albumUri)
+                .roundCorners(context, dimen.md_spec_round_radius)
+                .apply(::setCrossFade)
+                .into(miniPlayerLeading)
+        }
+    }
+
+    /**
+     * [MainContainerLayoutAdapter.setCrossFade]
+     * @param requestBuilder [com.bumptech.glide.RequestBuilder]<[android.graphics.drawable.Drawable]>
+     *
+     * Setting cross fade if required
+     */
+    private fun setCrossFade(requestBuilder: RequestBuilder<Drawable>) {
+        miniPlayerLeading.let { miniPlayerLeading ->
+            setCrossFade(
+                requestBuilder,
+                miniPlayerLeading.context,
+                miniPlayerLeading.drawable
+            )
+        }
+    }
+
+    /**
+     * [MainContainerLayoutAdapter.setCrossFade]
+     * @param requestBuilder [com.bumptech.glide.RequestBuilder]<[android.graphics.drawable.Drawable]>
+     * @param context [android.content.Context]
+     * @param drawable [android.graphics.drawable.Drawable]
+     *
+     * Actual implement of [MainContainerLayoutAdapter.setCrossFade]
+     */
+    private fun setCrossFade(
+        requestBuilder: RequestBuilder<Drawable>,
+        context: Context,
+        drawable: Drawable?
+    ) {
+        if (drawable != null) {
+            requestBuilder.placeholder(drawable)
+                .crossFade(context, R.integer.md_spec_transition_duration_400)
         }
     }
 

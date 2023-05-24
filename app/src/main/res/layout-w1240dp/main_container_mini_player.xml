@@ -38,8 +38,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/shapeable_image_view_leading"
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/app_compat_image_view_leading"
                     android:layout_width="@dimen/main_container_mini_player_leading"
                     android:layout_height="@dimen/main_container_mini_player_leading"
                     android:layout_marginHorizontal="@dimen/md_spec_spacing_16"
@@ -53,7 +53,7 @@
                     android:layout_width="@dimen/constraint"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintStart_toEndOf="@id/shapeable_image_view_leading"
+                    app:layout_constraintStart_toEndOf="@id/app_compat_image_view_leading"
                     app:layout_constraintEnd_toStartOf="@id/app_compat_image_button_prev"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent">
