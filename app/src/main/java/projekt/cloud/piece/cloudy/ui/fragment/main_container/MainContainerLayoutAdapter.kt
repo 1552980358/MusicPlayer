@@ -48,6 +48,15 @@ private typealias MainContainerLayoutAdapterBuilder =
 private typealias MainContainerLayoutAdapterConstructor =
     LayoutAdapterConstructor<FragmentMainContainerBinding, MainContainerLayoutAdapter>
 
+/**
+ * [MainContainerLayoutAdapter]
+ * @abstractExtends [BaseLayoutAdapter]
+ *   @typeParam [FragmentMainContainerBinding]
+ * @param binding [FragmentMainContainerBinding]
+ *
+ * @abstractImpl [MainContainerLayoutAdapter.LargeScreenCommonImpl]
+ * @impl [MainContainerLayoutAdapter.CompatImpl], [MainContainerLayoutAdapter.W600dpImpl], [MainContainerLayoutAdapter.W600dpImpl]
+ **/
 abstract class MainContainerLayoutAdapter(
     binding: FragmentMainContainerBinding
 ): BaseLayoutAdapter<FragmentMainContainerBinding>(binding) {
@@ -223,11 +232,15 @@ abstract class MainContainerLayoutAdapter(
         }
     }
 
+    /**
+     * [MainContainerLayoutAdapter.CompatImpl]
+     * @extends [MainContainerLayoutAdapter]
+     **/
     private class CompatImpl(binding: FragmentMainContainerBinding): MainContainerLayoutAdapter(binding) {
 
         /**
          * [MainContainerLayoutAdapter.CompatImpl.CompatImplHidingCallback]
-         * @parent [com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback]
+         * @abstractExtends [com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback]
          *
          * This is implement for handling with hiding of [R.id.mini_player]
          **/
@@ -383,7 +396,7 @@ abstract class MainContainerLayoutAdapter(
 
         /**
          * [MainContainerLayoutAdapter.CompatImpl.CompatImplExpandingCallback]
-         * @parent [com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback]
+         * @abstractExtends [com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback]
          *
          * This is implement for handling with expanding of [R.id.mini_player]
          **/
@@ -548,7 +561,123 @@ abstract class MainContainerLayoutAdapter(
 
     }
 
-    private class W600dpImpl(binding: FragmentMainContainerBinding): MainContainerLayoutAdapter(binding) {
+    /**
+     * [MainContainerLayoutAdapter.LargeScreenCommonImpl]
+     * @abstractExtends [MainContainerLayoutAdapter]
+     **/
+    private abstract class LargeScreenCommonImpl(
+        binding: FragmentMainContainerBinding
+    ): MainContainerLayoutAdapter(binding) {
+
+        /**
+         * [MainContainerLayoutAdapter.LargeScreenCommonImpl.LargeScreenCommonHidingCallback]
+         * @abstractExtends [com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback]
+         *
+         * This is implement for handling with hiding of [R.id.mini_player]
+         **/
+        private abstract class LargeScreenCommonHidingCallback private constructor(): BottomSheetCallback() {
+
+            companion object LargeScreenCommonHidingCallbackUtil {
+
+                /**
+                 * [LargeScreenCommonHidingCallback.getImpl]
+                 * @param viewModel [MainContainerViewModel]
+                 * @param miniPlayerBehavior [com.google.android.material.bottomsheet.BottomSheetBehavior]
+                 * @return [LargeScreenCommonHidingCallback]
+                 *
+                 * Return an implemented [LargeScreenCommonHidingCallback] instance
+                 **/
+                fun getImpl(
+                    viewModel: MainContainerViewModel,
+                    miniPlayerBehavior: BottomSheetBehavior<*>
+                ): LargeScreenCommonHidingCallback {
+                    return object: LargeScreenCommonHidingCallback() {
+
+                        /**
+                         * [LargeScreenCommonHidingCallback.viewModel]
+                         **/
+                        override val viewModel: MainContainerViewModel
+                            get() = viewModel
+
+                        /**
+                         * [LargeScreenCommonHidingCallback.miniPlayerBehavior]
+                         **/
+                        override val miniPlayerBehavior: BottomSheetBehavior<*>
+                            get() = miniPlayerBehavior
+
+                    }
+                }
+
+                /**
+                 * [LargeScreenCommonHidingCallback.BOTTOM_SHEET_OFFSET_COLLAPSED]
+                 * @type [Int]
+                 **/
+                private const val BOTTOM_SHEET_OFFSET_COLLAPSED = 0
+
+            }
+
+            /**
+             * [LargeScreenCommonHidingCallback.miniPlayerBehavior]
+             * @type [MainContainerViewModel]
+             **/
+            protected abstract val viewModel: MainContainerViewModel
+
+            /**
+             * [LargeScreenCommonHidingCallback.miniPlayerBehavior]
+             * @type [com.google.android.material.bottomsheet.BottomSheetBehavior]
+             **/
+            protected abstract val miniPlayerBehavior: BottomSheetBehavior<*>
+
+            /**
+             * [com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback.onStateChanged]
+             * @param bottomSheet [android.view.View]
+             * @param newState [Int]
+             **/
+            override fun onStateChanged(bottomSheet: View, newState: Int) = Unit
+
+            /**
+             * [com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback.onSlide]
+             * @param bottomSheet [android.view.View]
+             * @param slideOffset [Float]
+             **/
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                if (slideOffset <= BOTTOM_SHEET_OFFSET_COLLAPSED) {
+                    viewModel.updateMiniPlayerHidingHeight(
+                        getSlidedHeight(miniPlayerBehavior.peekHeight, slideOffset)
+                    )
+                }
+            }
+
+            /**
+             * [LargeScreenCommonHidingCallback.getSlidedHeight]
+             * @param peekHeight [Int]
+             * @param slideOffset [Float]
+             * @return [Int]
+             **/
+            private fun getSlidedHeight(peekHeight: Int, slideOffset: Float): Int {
+                return (peekHeight * slideOffset.inc()).toInt()
+            }
+
+        }
+
+        /**
+         * [MainContainerLayoutAdapter.onSetupMiniPlayer]
+         * @param viewModel [MainContainerViewModel]
+         * @param miniPlayerBehavior [com.google.android.material.bottomsheet.BottomSheetBehavior]
+         **/
+        override fun onSetupMiniPlayer(viewModel: MainContainerViewModel, miniPlayerBehavior: BottomSheetBehavior<*>) {
+            miniPlayerBehavior.addBottomSheetCallback(
+                LargeScreenCommonHidingCallback.getImpl(viewModel, miniPlayerBehavior)
+            )
+        }
+
+    }
+
+    /**
+     * [MainContainerLayoutAdapter.W600dpImpl]
+     * @extends [MainContainerLayoutAdapter.LargeScreenCommonImpl]
+     **/
+    private class W600dpImpl(binding: FragmentMainContainerBinding): LargeScreenCommonImpl(binding) {
 
         /**
          * [W600dpImpl.navigationRailView]
@@ -566,7 +695,11 @@ abstract class MainContainerLayoutAdapter(
 
     }
 
-    private class W1240dpImpl(binding: FragmentMainContainerBinding): MainContainerLayoutAdapter(binding) {
+    /**
+     * [MainContainerLayoutAdapter.W1240dpImpl]
+     * @extends [MainContainerLayoutAdapter.LargeScreenCommonImpl]
+     **/
+    private class W1240dpImpl(binding: FragmentMainContainerBinding): LargeScreenCommonImpl(binding) {
 
         /**
          * [W1240dpImpl.navigationView]
