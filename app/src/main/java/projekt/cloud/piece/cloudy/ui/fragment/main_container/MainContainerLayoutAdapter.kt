@@ -74,12 +74,6 @@ abstract class MainContainerLayoutAdapter(
             }
         }
 
-        /**
-         * [MainContainerLayoutAdapter.BOTTOM_SHEET_OFFSET_COLLAPSED]
-         * @type [Int]
-         **/
-        private const val BOTTOM_SHEET_OFFSET_COLLAPSED = 0
-
     }
 
     protected val fragmentContainerView: FragmentContainerView
@@ -280,10 +274,18 @@ abstract class MainContainerLayoutAdapter(
                 }
 
                 /**
+                 * [CompatImplHidingCallback.MINIMUM_MINI_PLAYER_HEIGHT]
                  * Limit the height calculated, prevent drawing below bottom margin,
                  * causing bottom item below [R.id.bottom_navigation_view]
                  **/
                 private const val MINIMUM_MINI_PLAYER_HEIGHT = 0F
+
+
+                /**
+                 * [CompatImplHidingCallback.BOTTOM_SHEET_OFFSET_COLLAPSED]
+                 * @type [Int]
+                 **/
+                private const val BOTTOM_SHEET_OFFSET_COLLAPSED = 0
 
             }
 
@@ -409,6 +411,12 @@ abstract class MainContainerLayoutAdapter(
 
                     }
                 }
+
+                /**
+                 * [CompatImplExpandingCallback.BOTTOM_SHEET_OFFSET_COLLAPSED]
+                 * @type [Int]
+                 **/
+                private const val BOTTOM_SHEET_OFFSET_COLLAPSED = 0
 
             }
 
