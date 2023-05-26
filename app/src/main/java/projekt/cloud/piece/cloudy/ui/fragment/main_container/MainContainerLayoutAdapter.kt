@@ -5,6 +5,10 @@ import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
+import androidx.annotation.CallSuper
+import androidx.annotation.ColorInt
+import androidx.annotation.MainThread
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -24,8 +28,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCa
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigationrail.NavigationRailView
+import com.google.android.material.progressindicator.CircularProgressIndicatorSpec
+import com.google.android.material.progressindicator.IndeterminateDrawable
 import kotlin.math.max
 import projekt.cloud.piece.cloudy.base.BaseLayoutAdapter
 import projekt.cloud.piece.cloudy.base.LayoutAdapterBuilder
@@ -41,7 +48,9 @@ import projekt.cloud.piece.cloudy.util.PixelDensity.MEDIUM
 import projekt.cloud.piece.cloudy.util.CastUtil.cast
 import projekt.cloud.piece.cloudy.util.GlideUtil.crossFade
 import projekt.cloud.piece.cloudy.util.GlideUtil.roundCorners
+import projekt.cloud.piece.cloudy.util.helper.MediaControllerHelper
 import projekt.cloud.piece.cloudy.util.helper.NullableHelper.NullableHelperUtil.nullable
+import projekt.cloud.piece.cloudy.util.helper.PlaybackControllerHelper
 
 private typealias MainContainerLayoutAdapterBuilder =
     LayoutAdapterBuilder<FragmentMainContainerBinding, MainContainerLayoutAdapter>
@@ -94,6 +103,8 @@ abstract class MainContainerLayoutAdapter(
         get() = miniPlayer.appCompatImageViewLeading
     private val miniPlayerRoot: ConstraintLayout
         get() = miniPlayer.constraintLayoutRoot
+    private val playbackControl: AppCompatImageButton
+        get() = miniPlayer.appCompatImageButtonPlayback
 
     protected val childNavController: NavController
         get() = fragmentContainerView.getFragment<NavHostFragment>()
@@ -164,6 +175,21 @@ abstract class MainContainerLayoutAdapter(
         }
     }
 
+    @MainThread
+    @CallSuper
+    open fun setupMiniPlayerControl(
+        mainControllerHelper: MediaControllerHelper
+    ) {
+        playbackControl.setOnClickListener {
+            mainControllerHelper.requireMediaController { mediaController ->
+                when {
+                    mediaController.isPlaying -> { mediaController.pause() }
+                    else -> { mediaController.play() }
+                }
+            }
+        }
+    }
+
     /**
      * [MainContainerLayoutAdapter.setCrossFade]
      * @param requestBuilder [com.bumptech.glide.RequestBuilder]<[android.graphics.drawable.Drawable]>
@@ -230,6 +256,128 @@ abstract class MainContainerLayoutAdapter(
                 miniPlayerBehavior.state = STATE_COLLAPSED
             }
         }
+    }
+
+    /**
+     * [MainContainerLayoutAdapter.playbackControllerHelper]
+     * @type [PlaybackControllerHelper]
+     **/
+    private val playbackControllerHelper = PlaybackControllerHelper(
+        ::getColorOnSurface,
+        ::onBufferingState,
+        ::onPlayingState, ::onPausedState,
+        ::onPlayToPauseState, ::onPauseToPlayState
+    )
+
+    /**
+     * [MainContainerLayoutAdapter.getColorOnSurface]
+     * @param view [android.view.View]
+     * @return [Int]
+     *
+     * Get color on surface attribute color int value
+     **/
+    @ColorInt
+    private fun getColorOnSurface(view: View): Int {
+        return MaterialColors.getColor(
+            view, com.google.android.material.R.attr.colorOnSurface
+        )
+    }
+
+    /**
+     * [MainContainerLayoutAdapter.onBufferingState]
+     * @param appCompatImageButton [androidx.appcompat.widget.AppCompatImageButton]
+     * @param color [Int]
+     *
+     * Triggered when buffering state changed
+     **/
+    private fun onBufferingState(appCompatImageButton: AppCompatImageButton, @ColorInt color: Int) {
+        appCompatImageButton.setImageDrawable(
+            getBufferingAnimatedDrawable(
+                appCompatImageButton.context, color
+            )
+        )
+    }
+
+    /**
+     * [MainContainerLayoutAdapter.getBufferingAnimatedDrawable]
+     * @param context [android.content.Context]
+     * @param color [Int]
+     * @return [android.graphics.drawable.Drawable]
+     *
+     * Get [com.google.android.material.progressindicator.IndeterminateDrawable] instance
+     **/
+    private fun getBufferingAnimatedDrawable(context: Context, color: Int): Drawable {
+        return CircularProgressIndicatorSpec(context, null).let { spec ->
+            // Set Color
+            spec.indicatorColors = intArrayOf(color)
+
+            // Create drawable
+            return@let IndeterminateDrawable.createCircularDrawable(context, spec)
+        }
+    }
+
+    /**
+     * [MainContainerLayoutAdapter.onPlayingState]
+     * @param appCompatImageButton [androidx.appcompat.widget.AppCompatImageButton]
+     * @param color [Int]
+     *
+     * On playing
+     **/
+    private fun onPlayingState(appCompatImageButton: AppCompatImageButton, color: Int) {
+        appCompatImageButton.setImageResource(R.drawable.ic_round_pause_24)
+        appCompatImageButton.setColorFilter(color)
+    }
+
+    /**
+     * [MainContainerLayoutAdapter.onPausedState]
+     * @param appCompatImageButton [androidx.appcompat.widget.AppCompatImageButton]
+     * @param color [Int]
+     *
+     * On paused
+     **/
+    private fun onPausedState(appCompatImageButton: AppCompatImageButton, color: Int) {
+        appCompatImageButton.setImageResource(R.drawable.ic_round_play_24)
+        appCompatImageButton.setColorFilter(color)
+    }
+
+    /**
+     * [MainContainerLayoutAdapter.onPlayToPauseState]
+     * @param appCompatImageButton [androidx.appcompat.widget.AppCompatImageButton]
+     * @param color [Int]
+     *
+     * Switch from playing to paused
+     **/
+    private fun onPlayToPauseState(appCompatImageButton: AppCompatImageButton, color: Int) {
+        appCompatImageButton.setImageResource(R.drawable.av_round_pause_to_play_24)
+        appCompatImageButton.setColorFilter(color)
+    }
+
+    /**
+     * [MainContainerLayoutAdapter.onPauseToPlayState]
+     * @param appCompatImageButton [androidx.appcompat.widget.AppCompatImageButton]
+     * @param color [Int]
+     *
+     * Switch from paused to playing
+     **/
+    private fun onPauseToPlayState(appCompatImageButton: AppCompatImageButton, color: Int) {
+        appCompatImageButton.setImageResource(R.drawable.av_round_play_to_pause_24)
+        appCompatImageButton.setColorFilter(color)
+    }
+
+    /**
+     * [MainContainerLayoutAdapter.notifyBufferingStateChanged]
+     * @param isBuffering [Boolean]
+     **/
+    fun notifyBufferingStateChanged(isBuffering: Boolean) {
+        playbackControllerHelper.updateBufferingState(playbackControl, isBuffering)
+    }
+
+    /**
+     * [MainContainerLayoutAdapter.notifyPlayingStateChanged]
+     * @param isPlaying [Boolean]
+     **/
+    fun notifyPlayingStateChanged(isPlaying: Boolean) {
+        playbackControllerHelper.updatePlayingState(playbackControl, isPlaying)
     }
 
     /**

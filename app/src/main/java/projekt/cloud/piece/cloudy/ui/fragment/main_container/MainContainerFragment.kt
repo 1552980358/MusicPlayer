@@ -1,8 +1,12 @@
 package projekt.cloud.piece.cloudy.ui.fragment.main_container
 
 import android.os.Bundle
+import android.util.Log
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.Player.STATE_BUFFERING
+import androidx.media3.common.Player.STATE_READY
+import androidx.media3.common.Player.State
 import projekt.cloud.piece.cloudy.base.BaseFragment
 import projekt.cloud.piece.cloudy.base.BaseMultiLayoutFragment
 import projekt.cloud.piece.cloudy.base.LayoutAdapterBuilder
@@ -70,6 +74,7 @@ class MainContainerFragment: BaseMainContainerFragment(), Player.Listener {
         layoutAdapter.setupDynamicLayout(resources)
         layoutAdapter.setupMiniPlayer(viewModel)
         layoutAdapter.setupMiniPlayerCoverObserving(this, viewModel)
+        layoutAdapter.setupMiniPlayerControl(mediaControllerHelper)
         layoutAdapter.setupNavigation()
     }
 
@@ -89,10 +94,37 @@ class MainContainerFragment: BaseMainContainerFragment(), Player.Listener {
      * @param isPlaying [Boolean]
      **/
     override fun onIsPlayingChanged(isPlaying: Boolean) {
-        if (isPlaying) {
-            layoutAdapter.safely { layoutAdapter ->
+        Log.d("onIsPlayingChanged", isPlaying.toString())
+        layoutAdapter safely { layoutAdapter ->
+            layoutAdapter.notifyPlayingStateChanged(isPlaying)
+            if (isPlaying) {
                 layoutAdapter.ensureMiniPlayVisible()
             }
+        }
+    }
+
+    /**
+     * [androidx.media3.common.Player.Listener.onIsPlayingChanged]
+     * @param playbackState [Int]
+     **/
+    override fun onPlaybackStateChanged(@State playbackState: Int) {
+        Log.d("onPlaybackStateChanged", playbackState.toString())
+        layoutAdapter safely { layoutAdapter ->
+            layoutAdapter.notifyBufferingStateChanged(getIsBuffering(playbackState))
+        }
+    }
+
+    /**
+     * [MainContainerFragment.getIsBuffering]
+     * @param playbackState [Int]
+     * @return [Boolean]
+     *
+     * Check is now in buffering state
+     **/
+    private fun getIsBuffering(@State playbackState: Int): Boolean {
+        return when (playbackState) {
+            STATE_BUFFERING, STATE_READY -> { true }
+            else -> { false }
         }
     }
 
