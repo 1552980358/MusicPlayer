@@ -1,5 +1,7 @@
 package projekt.cloud.piece.cloudy.util.helper
 
+import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageButton
 
@@ -101,6 +103,7 @@ class PlaybackControllerHelper(
                 notifyStatesChanged(appCompatImageButton, false)
             }
         }
+        animateAnimatedVectorDrawable(appCompatImageButton.drawable)
     }
 
     private fun notifyStatesChanged(
@@ -189,6 +192,18 @@ class PlaybackControllerHelper(
         return when {
             _isPlaying -> pauseToPlayDrawable
             else -> playToPauseDrawable
+        }
+    }
+
+    /**
+     * [PlaybackControllerHelper.animateAnimatedVectorDrawable]
+     * @param drawable [android.graphics.drawable.Drawable]
+     *
+     * Start animation of [drawable] is [android.graphics.drawable.AnimatedVectorDrawable]
+     **/
+    private fun animateAnimatedVectorDrawable(drawable: Drawable?) {
+        if (drawable is AnimatedVectorDrawable) {
+            drawable.start()
         }
     }
 
