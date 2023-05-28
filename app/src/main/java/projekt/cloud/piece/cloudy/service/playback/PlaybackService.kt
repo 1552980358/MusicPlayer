@@ -3,13 +3,16 @@ package projekt.cloud.piece.cloudy.service.playback
 import android.content.ComponentName
 import android.content.Context
 import androidx.media3.common.Player
-import androidx.media3.session.MediaLibraryService.MediaLibrarySession
 import androidx.media3.session.MediaSession.ControllerInfo
 import androidx.media3.session.SessionToken
 import projekt.cloud.piece.cloudy.base.BaseLifecycleMediaLibraryService
 import projekt.cloud.piece.cloudy.util.implementation.Releasable
 
-class PlaybackService: BaseLifecycleMediaLibraryService(), MediaLibrarySession.Callback {
+/**
+ * [PlaybackService]
+ * @extends [BaseLifecycleMediaLibraryService]
+ **/
+class PlaybackService: BaseLifecycleMediaLibraryService() {
 
     companion object PlaybackServiceUtil {
 
