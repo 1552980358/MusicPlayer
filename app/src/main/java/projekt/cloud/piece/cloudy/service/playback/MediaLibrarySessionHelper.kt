@@ -7,15 +7,24 @@ import android.content.Context
 import androidx.core.app.TaskStackBuilder
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
+import androidx.media3.session.MediaLibraryService.LibraryParams
 import androidx.media3.session.MediaLibraryService.MediaLibrarySession
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSession.ControllerInfo
+import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import projekt.cloud.piece.cloudy.ui.activity.main.MainActivity.MainActivityUtil.mainActivityIntent
+import projekt.cloud.piece.cloudy.util.implementation.ListUtil.mutableList
+import projekt.cloud.piece.cloudy.util.implementation.ListUtil.mutableListWithIndex
 import projekt.cloud.piece.cloudy.util.implementation.Releasable
 
+/**
+ * [MediaLibrarySessionHelper]
+ * @interface [Releasable], [androidx.media3.session.MediaLibraryService.MediaLibrarySession.Callback]
+ **/
 class MediaLibrarySessionHelper: Releasable, MediaLibrarySession.Callback {
 
     private companion object {
@@ -129,24 +138,11 @@ class MediaLibrarySessionHelper: Releasable, MediaLibrarySession.Callback {
      * set up uris for [mediaItems]
      **/
     private fun setupMediaItemsUri(mediaItems: List<MediaItem>): MutableList<MediaItem> {
-        return setupMediaItemsUri(ArrayList(), mediaItems)
-    }
-
-    /**
-     * [MediaLibrarySessionHelper.setupMediaItemsUri]
-     * @param mutableList [MutableList]<[androidx.media3.common.MediaItem]>
-     * @param mediaItems [List]
-     * @return [MutableList]<[androidx.media3.common.MediaItem]>
-     *
-     * Implementation of setting up uris for [mediaItems]
-     **/
-    private fun setupMediaItemsUri(
-        mutableList: MutableList<MediaItem>, mediaItems: List<MediaItem>
-    ): MutableList<MediaItem> {
-        mediaItems.forEach { mediaItem ->
-            mutableList += setupMediaItemUri(mediaItem)
+        return mutableList { mutableList ->
+            mediaItems.forEach { mediaItem ->
+                mutableList += setupMediaItemUri(mediaItem)
+            }
         }
-        return mutableList
     }
 
     /**
@@ -160,6 +156,67 @@ class MediaLibrarySessionHelper: Releasable, MediaLibrarySession.Callback {
         return mediaItem.buildUpon()
             .setUri(mediaItem.requestMetadata.mediaUri)
             .build()
+    }
+
+    /**
+     * [androidx.media3.session.MediaLibraryService.MediaLibrarySession.Callback.onGetChildren]
+     * @param session [androidx.media3.session.MediaLibraryService.MediaLibrarySession]
+     * @param browser [androidx.media3.session.MediaSession.ControllerInfo]
+     * @param parentId [String]
+     * @param page [Int]
+     * @param pageSize [Int]
+     * @param params [androidx.media3.session.MediaLibraryService.LibraryParams]
+     * @return [com.google.common.util.concurrent.ListenableFuture]<
+     *   [androidx.media3.session.LibraryResult]<[com.google.common.collect.ImmutableList]<[androidx.media3.common.MediaItem]>>
+     * >
+     **/
+    override fun onGetChildren(
+        session: MediaLibrarySession,
+        browser: ControllerInfo,
+        parentId: String,
+        page: Int,
+        pageSize: Int,
+        params: LibraryParams?
+    ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+        return Futures.immediateFuture(
+            getLibraryResult(session)
+        )
+    }
+
+    /**
+     * [MediaLibrarySessionHelper.getLibraryResult]
+     * @param session [androidx.media3.session.MediaLibraryService.MediaLibrarySession]
+     * @return [androidx.media3.session.LibraryResult]<[com.google.common.collect.ImmutableList]<[androidx.media3.common.MediaItem]>>
+     **/
+    private fun getLibraryResult(
+        session: MediaLibrarySession
+    ): LibraryResult<ImmutableList<MediaItem>> {
+        return LibraryResult.ofItemList(
+            queryPlaylist(session.player), null
+        )
+    }
+
+    /**
+     * [MediaLibrarySessionHelper.getLibraryResult]
+     * @param player [androidx.media3.common.Player]
+     * @return [List]<[androidx.media3.common.MediaItem]>
+     **/
+    private fun queryPlaylist(player: Player): List<MediaItem> {
+        return queryPlaylist(player, player.mediaItemCount)
+    }
+
+    /**
+     * [MediaLibrarySessionHelper.getLibraryResult]
+     * @param player [androidx.media3.common.Player]
+     * @param itemCount [Int]
+     * @return [List]<[androidx.media3.common.MediaItem]>
+     **/
+    private fun queryPlaylist(
+        player: Player, itemCount: Int
+    ): List<MediaItem> {
+        return mutableListWithIndex(itemCount) { index ->
+            player.getMediaItemAt(index)
+        }
     }
 
     /**
