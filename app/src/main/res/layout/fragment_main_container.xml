@@ -11,43 +11,32 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraint_layout_root"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:id="@+id/coordinator_layout_root"
-            android:layout_width="@dimen/constraint"
-            android:layout_height="@dimen/constraint"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_container_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@{viewModel.miniPlayerHidingHeight}"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            app:navGraph="@navigation/nav_graph_main_container" />
 
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/fragment_container_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingBottom="@{viewModel.miniPlayerHidingHeight}"
-                android:name="androidx.navigation.fragment.NavHostFragment"
-                app:navGraph="@navigation/nav_graph_main_container" />
+        <include
+            android:id="@+id/mini_player"
+            app:metadata="@{viewModel.metadata}"
+            layout="@layout/main_container_mini_player" />
 
-            <include
-                android:id="@+id/mini_player"
-                app:metadata="@{viewModel.metadata}"
-                layout="@layout/main_container_mini_player" />
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:translationY="@{viewModel.miniPlayerExpandingHeight}"
+            app:menu="@menu/nav_main_container" />
 
-            <com.google.android.material.bottomnavigation.BottomNavigationView
-                android:id="@+id/bottom_navigation_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:translationY="@{viewModel.miniPlayerExpandingHeight}"
-                app:menu="@menu/nav_main_container" />
-
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

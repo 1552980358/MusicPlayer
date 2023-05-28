@@ -1,7 +1,6 @@
 package projekt.cloud.piece.cloudy.ui.fragment.main_container
 
 import android.os.Bundle
-import android.util.Log
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Player.STATE_BUFFERING
@@ -75,6 +74,7 @@ class MainContainerFragment: BaseMainContainerFragment(), Player.Listener {
         layoutAdapter.setupMiniPlayer(viewModel)
         layoutAdapter.setupMiniPlayerCoverObserving(this, viewModel)
         layoutAdapter.setupMiniPlayerControl(mediaControllerHelper)
+        layoutAdapter.setupPlayer()
         layoutAdapter.setupNavigation()
     }
 
@@ -94,7 +94,6 @@ class MainContainerFragment: BaseMainContainerFragment(), Player.Listener {
      * @param isPlaying [Boolean]
      **/
     override fun onIsPlayingChanged(isPlaying: Boolean) {
-        Log.d("onIsPlayingChanged", isPlaying.toString())
         layoutAdapter safely { layoutAdapter ->
             layoutAdapter.notifyPlayingStateChanged(isPlaying)
             if (isPlaying) {
@@ -108,7 +107,6 @@ class MainContainerFragment: BaseMainContainerFragment(), Player.Listener {
      * @param playbackState [Int]
      **/
     override fun onPlaybackStateChanged(@State playbackState: Int) {
-        Log.d("onPlaybackStateChanged", playbackState.toString())
         layoutAdapter safely { layoutAdapter ->
             layoutAdapter.notifyBufferingStateChanged(getIsBuffering(playbackState))
         }

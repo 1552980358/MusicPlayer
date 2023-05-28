@@ -28,6 +28,7 @@
             android:id="@+id/material_card_view_mini_player"
             android:layout_width="@dimen/constraint"
             android:layout_height="@dimen/constraint"
+            android:foreground="?attr/selectableItemBackground"
             app:cardBackgroundColor="?attr/colorSurface"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

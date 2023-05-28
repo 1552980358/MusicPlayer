@@ -11,45 +11,56 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraint_layout_root"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.navigationrail.NavigationRailView
-            android:id="@+id/navigation_rail_view"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/constraint"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/coordinator_layout_root"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:menu="@menu/nav_main_container" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_layout_root"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:id="@+id/coordinator_layout_root"
-            android:layout_width="@dimen/constraint"
-            android:layout_height="@dimen/constraint"
-            app:layout_constraintStart_toEndOf="@id/navigation_rail_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            <com.google.android.material.navigationrail.NavigationRailView
+                android:id="@+id/navigation_rail_view"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/constraint"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/coordinator_layout_container"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:menu="@menu/nav_main_container" />
 
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/fragment_container_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingBottom="@{viewModel.miniPlayerHidingHeight}"
-                android:name="androidx.navigation.fragment.NavHostFragment"
-                app:navGraph="@navigation/nav_graph_main_container" />
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:id="@+id/coordinator_layout_container"
+                android:layout_width="@dimen/constraint"
+                android:layout_height="@dimen/constraint"
+                app:layout_constraintStart_toEndOf="@id/navigation_rail_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
 
-            <include
-                android:id="@+id/mini_player"
-                app:metadata="@{viewModel.metadata}"
-                layout="@layout/main_container_mini_player" />
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/fragment_container_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingBottom="@{viewModel.miniPlayerHidingHeight}"
+                    android:name="androidx.navigation.fragment.NavHostFragment"
+                    app:navGraph="@navigation/nav_graph_main_container" />
 
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+                <include
+                    android:id="@+id/mini_player"
+                    app:metadata="@{viewModel.metadata}"
+                    layout="@layout/main_container_mini_player" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <include
+            android:id="@+id/player"
+            layout="@layout/main_container_player" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

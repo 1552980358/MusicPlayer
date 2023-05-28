@@ -26,6 +26,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
@@ -41,6 +42,7 @@ import projekt.cloud.piece.cloudy.databinding.FragmentMainContainerBinding
 import projekt.cloud.piece.cloudy.R
 import projekt.cloud.piece.cloudy.R.dimen
 import projekt.cloud.piece.cloudy.databinding.MainContainerMiniPlayerBinding
+import projekt.cloud.piece.cloudy.databinding.MainContainerPlayerBinding
 import projekt.cloud.piece.cloudy.util.PixelDensity
 import projekt.cloud.piece.cloudy.util.PixelDensity.COMPAT
 import projekt.cloud.piece.cloudy.util.PixelDensity.EXPANDED
@@ -49,6 +51,7 @@ import projekt.cloud.piece.cloudy.util.CastUtil.cast
 import projekt.cloud.piece.cloudy.util.GlideUtil.crossFade
 import projekt.cloud.piece.cloudy.util.GlideUtil.roundCorners
 import projekt.cloud.piece.cloudy.util.helper.MediaControllerHelper
+import projekt.cloud.piece.cloudy.util.helper.NullableHelper
 import projekt.cloud.piece.cloudy.util.helper.NullableHelper.NullableHelperUtil.nullable
 import projekt.cloud.piece.cloudy.util.helper.PlaybackControllerHelper
 
@@ -94,22 +97,91 @@ abstract class MainContainerLayoutAdapter(
 
     }
 
+    /**
+     * [MainContainerLayoutAdapter.fragmentContainerView]
+     * @type [androidx.fragment.app.FragmentContainerView]
+     * @layout [R.layout.fragment_main_container]
+     * @id [R.id.fragment_container_view]
+     **/
     protected val fragmentContainerView: FragmentContainerView
         get() = binding.fragmentContainerView
 
+    /**
+     * [MainContainerLayoutAdapter.miniPlayer]
+     * @type [MainContainerMiniPlayerBinding]
+     * @layout [R.layout.fragment_main_container]
+     * @id [R.id.mini_player]
+     **/
     protected val miniPlayer: MainContainerMiniPlayerBinding
         get() = binding.miniPlayer
+
+    /**
+     * [MainContainerLayoutAdapter.miniPlayerLeading]
+     * @type [androidx.appcompat.widget.AppCompatImageView]
+     * @layout [R.layout.main_container_mini_player]
+     * @id [R.id.app_compat_image_view_leading]
+     **/
     private val miniPlayerLeading: AppCompatImageView
         get() = miniPlayer.appCompatImageViewLeading
+
+    /**
+     * [MainContainerLayoutAdapter.miniPlayerRoot]
+     * @type [androidx.constraintlayout.widget.ConstraintLayout]
+     * @layout [R.layout.main_container_mini_player]
+     * @id [R.id.constraint_layout_root]
+     **/
     private val miniPlayerRoot: ConstraintLayout
         get() = miniPlayer.constraintLayoutRoot
+
+    /**
+     * [MainContainerLayoutAdapter.miniPlayerContainer]
+     * @type [com.google.android.material.card.MaterialCardView]
+     * @layout [R.layout.main_container_mini_player]
+     * @id [R.id.material_card_view_mini_player]
+     **/
+    protected val miniPlayerContainer: MaterialCardView
+        get() = miniPlayer.materialCardViewMiniPlayer
+
+    /**
+     * [MainContainerLayoutAdapter.playbackControl]
+     * @type [androidx.appcompat.widget.AppCompatImageButton]
+     * @layout [R.layout.main_container_mini_player]
+     * @id [R.id.app_compat_image_button_playback]
+     **/
     private val playbackControl: AppCompatImageButton
         get() = miniPlayer.appCompatImageButtonPlayback
 
+    /**
+     * [MainContainerLayoutAdapter.player]
+     * @type [MainContainerPlayerBinding]
+     * @layout [R.layout.main_container_player]
+     * @id [R.id.player]
+     **/
+    private val player: MainContainerPlayerBinding
+        get() = binding.player!!
+
+    /**
+     * [MainContainerLayoutAdapter.playerRoot]
+     * @type [androidx.constraintlayout.widget.ConstraintLayout]
+     * @layout [R.layout.main_container_player]
+     * @id [R.id.constraint_layout_root]
+     **/
+    protected val playerRoot: ConstraintLayout
+        get() = player.constraintLayoutRoot
+
+    /**
+     * [MainContainerLayoutAdapter.childNavController]
+     * @type [androidx.navigation.NavController]
+     **/
     protected val childNavController: NavController
         get() = fragmentContainerView.getFragment<NavHostFragment>()
             .navController
 
+    /**
+     * [MainContainerLayoutAdapter.fragmentContainerView]
+     * @wrap [NullableHelper]
+     * @type [com.google.android.material.bottomsheet.BottomSheetBehavior]
+     **/
     protected val miniPlayerBehavior = nullable<BottomSheetBehavior<*>>()
 
     /**
@@ -128,6 +200,8 @@ abstract class MainContainerLayoutAdapter(
             miniPlayerBehavior.maxHeight = miniPlayerRoot.height
         }
 
+        miniPlayerContainer.setOnClickListener(::onMiniPlayerContainerClicked)
+
         onSetupMiniPlayer(viewModel, miniPlayerBehavior)
     }
 
@@ -141,6 +215,16 @@ abstract class MainContainerLayoutAdapter(
     protected open fun onSetupMiniPlayer(
         viewModel: MainContainerViewModel, miniPlayerBehavior: BottomSheetBehavior<*>
     ) = Unit
+
+    /**
+     * [MainContainerLayoutAdapter.onMiniPlayerContainerClicked]
+     * @param view [android.view.View]
+     *
+     * Triggered when [R.id.material_card_view_mini_player] clicked
+     *
+     * @impl [CompatImpl.onMiniPlayerContainerClicked], [LargeScreenCommonImpl.onMiniPlayerContainerClicked]
+     **/
+    protected open fun onMiniPlayerContainerClicked(view: View) = Unit
 
     /**
      * [MainContainerLayoutAdapter.getMiniPlayerBehavior]
@@ -175,9 +259,13 @@ abstract class MainContainerLayoutAdapter(
         }
     }
 
+    /**
+     * [MainContainerLayoutAdapter.setupMiniPlayerControl]
+     * @param mainControllerHelper [MediaControllerHelper]
+     **/
     @MainThread
     @CallSuper
-    open fun setupMiniPlayerControl(
+    fun setupMiniPlayerControl(
         mainControllerHelper: MediaControllerHelper
     ) {
         playbackControl.setOnClickListener {
@@ -224,6 +312,15 @@ abstract class MainContainerLayoutAdapter(
                 .crossFade(context, R.integer.md_spec_transition_duration_400)
         }
     }
+
+    /**
+     * [MainContainerLayoutAdapter.setupPlayer]
+     *
+     * Setup player
+     *
+     * @impl [LargeScreenCommonImpl.setupPlayer]
+     **/
+    open fun setupPlayer() = Unit
 
     /**
      * [MainContainerLayoutAdapter.setupDynamicLayout]
@@ -647,9 +744,6 @@ abstract class MainContainerLayoutAdapter(
         private val bottomNavigationView: BottomNavigationView
             get() = binding.bottomNavigationView!!
 
-        private val miniPlayerContainer: MaterialCardView
-            get() = miniPlayer.materialCardViewMiniPlayer
-
         /**
          * [MainContainerLayoutAdapter.setupDynamicLayout]
          **/
@@ -698,6 +792,18 @@ abstract class MainContainerLayoutAdapter(
                 // Sliding up
                 CompatImplExpandingCallback.getImpl(viewModel, miniPlayerBehavior)
             )
+        }
+
+        /**
+         * [MainContainerLayoutAdapter.onMiniPlayerContainerClicked]
+         * @param view [android.view.View]
+         **/
+        override fun onMiniPlayerContainerClicked(view: View) {
+            miniPlayerBehavior safely { miniPlayerBehavior ->
+                if (miniPlayerBehavior.state != STATE_EXPANDED) {
+                    miniPlayerBehavior.state = STATE_EXPANDED
+                }
+            }
         }
 
         /**
@@ -817,6 +923,43 @@ abstract class MainContainerLayoutAdapter(
             miniPlayerBehavior.addBottomSheetCallback(
                 LargeScreenCommonHidingCallback.getImpl(viewModel, miniPlayerBehavior)
             )
+        }
+
+        /**
+         * [LargeScreenCommonImpl.playerBehavior]
+         * @wrap [NullableHelper]
+         * @type [com.google.android.material.bottomsheet.BottomSheetBehavior]
+         **/
+        private val playerBehavior = nullable<BottomSheetBehavior<*>>()
+
+        /**
+         * [MainContainerLayoutAdapter.onMiniPlayerContainerClicked]
+         * @param view [android.view.View]
+         **/
+        override fun onMiniPlayerContainerClicked(view: View) {
+            playerBehavior safely { playerBehavior ->
+                if (playerBehavior.state != STATE_EXPANDED) {
+                    playerBehavior.state = STATE_EXPANDED
+                }
+            }
+        }
+
+        /**
+         * [MainContainerLayoutAdapter.setupPlayer]
+         **/
+        override fun setupPlayer() {
+            playerBehavior valued getPlayerBehavior()
+        }
+
+        /**
+         * [LargeScreenCommonImpl.getPlayerBehavior]
+         * @return [com.google.android.material.bottomsheet.BottomSheetBehavior]
+         **/
+        private fun getPlayerBehavior(): BottomSheetBehavior<*> {
+            return playerRoot.layoutParams
+                .cast<CoordinatorLayout.LayoutParams>()
+                .behavior
+                .cast()
         }
 
     }

@@ -26,6 +26,7 @@
             android:id="@+id/material_card_view_mini_player"
             android:layout_width="@dimen/constraint"
             android:layout_height="@dimen/main_container_mini_player_height"
+            android:foreground="?attr/selectableItemBackground"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -84,6 +85,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/material_card_view_mini_player"
             app:layout_constraintBottom_toBottomOf="parent" />
+
+        <include
+            android:id="@+id/player"
+            layout="@layout/main_container_player" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
