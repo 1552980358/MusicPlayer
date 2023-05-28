@@ -12,6 +12,7 @@ import projekt.cloud.piece.cloudy.base.BaseFragment
 import projekt.cloud.piece.cloudy.base.BaseMultiLayoutFragment
 import projekt.cloud.piece.cloudy.base.LayoutAdapterBuilder
 import projekt.cloud.piece.cloudy.databinding.FragmentPermissionsBinding
+import projekt.cloud.piece.cloudy.R
 import projekt.cloud.piece.cloudy.ui.activity.guide.GuideViewModel.GuideViewModelUtil.guideViewModel
 import projekt.cloud.piece.cloudy.util.CoroutineUtil.defaultBlocking
 import projekt.cloud.piece.cloudy.util.LifecycleOwnerUtil.main
@@ -20,6 +21,12 @@ import projekt.cloud.piece.cloudy.util.ViewBindingInflater
 
 private typealias BasePermissionsFragment = BaseMultiLayoutFragment<FragmentPermissionsBinding, PermissionsLayoutAdapter>
 
+/**
+ * [PermissionsFragment]
+ * @extends [BaseMultiLayoutFragment]
+ *   @typeParam [FragmentPermissionsBinding]
+ *   @typeParam [PermissionsLayoutAdapter]
+ **/
 class PermissionsFragment: BasePermissionsFragment() {
 
     /**
@@ -122,6 +129,7 @@ class PermissionsFragment: BasePermissionsFragment() {
      * @param savedInstanceState [android.os.Bundle]
      **/
     override fun onSetupLayoutAdapter(layoutAdapter: PermissionsLayoutAdapter, savedInstanceState: Bundle?) {
+        layoutAdapter.setupWindowInsets()
         layoutAdapter.setupRootColor()
         main(::startShowRequiredPermissions)
     }
@@ -178,6 +186,10 @@ class PermissionsFragment: BasePermissionsFragment() {
         }
     }
 
+    /**
+     * [PermissionsFragment.checkPermissionsAndStartRequest]
+     * @param coroutineScope [CoroutineScope]
+     **/
     private suspend fun checkPermissionsAndStartRequest(
         @Suppress("UNUSED_PARAMETER")
         coroutineScope: CoroutineScope
@@ -192,10 +204,17 @@ class PermissionsFragment: BasePermissionsFragment() {
         }
     }
 
+    /**
+     * [PermissionsFragment.startCheckPermissions]
+     **/
     private fun startCheckPermissions() {
         main(::startCheckPermission)
     }
 
+    /**
+     * [PermissionsFragment.checkPermissions]
+     * @return [Boolean]
+     **/
     private suspend fun startCheckPermission(
         @Suppress("UNUSED_PARAMETER")
         coroutineScope: CoroutineScope
@@ -205,12 +224,21 @@ class PermissionsFragment: BasePermissionsFragment() {
         }
     }
 
+    /**
+     * [PermissionsFragment.checkPermissions]
+     * @return [Boolean]
+     **/
     private suspend fun checkPermissions(): Boolean {
         return defaultBlocking {
             checkPermissions(viewModel.permissions)
         }
     }
 
+    /**
+     * [PermissionsFragment.checkPermissions]
+     * @param permissions [List]<[Permission]>
+     * @return [Boolean]
+     **/
     private fun checkPermissions(permissions: List<Permission>): Boolean {
         return requireContext().let { context ->
             for (permission in permissions) {
@@ -222,6 +250,11 @@ class PermissionsFragment: BasePermissionsFragment() {
         }
     }
 
+    /**
+     * [PermissionsFragment.navigateToImportAudio]
+     *
+     * Navigate to [R.id.import_audio]
+     **/
     private fun navigateToImportAudio() {
         findNavController().navigate(
             PermissionsFragmentDirections.toImportAudio()
