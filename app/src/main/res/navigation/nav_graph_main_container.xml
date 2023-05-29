@@ -11,4 +11,9 @@
         android:name="projekt.cloud.piece.cloudy.ui.fragment.home.HomeFragment"
         tools:layout="@layout/fragment_home" />
 
+    <fragment
+        android:id="@+id/library"
+        android:name="projekt.cloud.piece.cloudy.ui.fragment.library.LibraryFragment"
+        tools:layout="@layout/fragment_library" />
+
 </navigation>

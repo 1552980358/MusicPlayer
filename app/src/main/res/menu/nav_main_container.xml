@@ -7,4 +7,9 @@
         android:title="@string/home_title"
         android:icon="@drawable/ic_selector_home_24" />
 
+    <item
+        android:id="@+id/library"
+        android:title="@string/library_title"
+        android:icon="@drawable/ic_selector_library_music_24" />
+
 </menu>
