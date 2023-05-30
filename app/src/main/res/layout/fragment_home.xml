@@ -16,8 +16,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator_layout_root"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="@{mainContainerViewModel.miniPlayerHidingHeight}">
+        android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
@@ -47,6 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="?attr/colorSurface"
+            android:paddingBottom="@{mainContainerViewModel.miniPlayerHidingHeight}"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/home_recycler_layout" />
