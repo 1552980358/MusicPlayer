@@ -1,42 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinator_layout_root"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:layout_width="match_parent"
-            android:layout_height="?attr/collapsingToolbarLayoutMediumSize"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-            style="?attr/collapsingToolbarLayoutMediumStyle">
+    <data>
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/material_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:elevation="@dimen/md_spec_elevation_0"
-                app:layout_collapseMode="pin"
-                app:title="@string/home_title" />
+        <import type="projekt.cloud.piece.cloudy.ui.fragment.main_container.MainContainerViewModel" />
+        <variable
+            name="mainContainerViewModel"
+            type="MainContainerViewModel" />
 
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </data>
 
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/colorSurface"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/home_recycler_layout" />
+        android:paddingBottom="@{mainContainerViewModel.miniPlayerHidingHeight}">
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="?attr/collapsingToolbarLayoutMediumSize"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+                style="?attr/collapsingToolbarLayoutMediumStyle">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/material_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:elevation="@dimen/md_spec_elevation_0"
+                    app:layout_collapseMode="pin"
+                    app:title="@string/home_title" />
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/colorSurface"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/home_recycler_layout" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

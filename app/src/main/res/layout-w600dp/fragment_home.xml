@@ -1,45 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinator_layout_root"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.card.MaterialCardView
+    <data>
+
+        <import type="projekt.cloud.piece.cloudy.ui.fragment.main_container.MainContainerViewModel" />
+        <variable
+            name="viewModel"
+            type="MainContainerViewModel" />
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout_root"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:cardBackgroundColor="?attr/colorSurface"
-        android:layout_marginHorizontal="@dimen/md_spec_spacing_16"
-        android:layout_marginVertical="@dimen/md_spec_spacing_8">
+        android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:cardBackgroundColor="?attr/colorSurface"
+            android:layout_marginHorizontal="@dimen/md_spec_spacing_16"
+            android:layout_marginVertical="@dimen/md_spec_spacing_8">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/material_toolbar"
-                android:layout_width="@dimen/constraint"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:title="@string/home_title" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view"
-                android:layout_width="@dimen/constraint"
-                android:layout_height="@dimen/constraint"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/material_toolbar"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/home_recycler_layout" />
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/material_toolbar"
+                    android:layout_width="@dimen/constraint"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:title="@string/home_title" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="@dimen/constraint"
+                    android:layout_height="@dimen/constraint"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/material_toolbar"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/home_recycler_layout" />
 
-    </com.google.android.material.card.MaterialCardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

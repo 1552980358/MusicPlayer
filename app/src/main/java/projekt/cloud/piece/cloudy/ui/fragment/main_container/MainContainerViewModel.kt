@@ -1,11 +1,16 @@
 package projekt.cloud.piece.cloudy.ui.fragment.main_container
 
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.media3.common.MediaItem
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.navGraphViewModels
+import kotlin.jvm.Throws
+import projekt.cloud.piece.cloudy.R
 import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView
 import projekt.cloud.piece.cloudy.util.CoroutineUtil.defaultBlocking
 import projekt.cloud.piece.cloudy.util.LifecycleOwnerUtil.main
@@ -14,8 +19,38 @@ class MainContainerViewModel: ViewModel() {
 
     companion object MainContainerViewModelUtil {
 
+        /**
+         * [MainContainerViewModel.mainContainerViewModel]
+         * @extends [MainContainerFragment]
+         * @return [Lazy]<[MainContainerViewModel]>
+         **/
         fun MainContainerFragment.mainContainerViewModel(): Lazy<MainContainerViewModel> {
-            return viewModels()
+            return viewModels(
+                ownerProducer = {
+                    /**
+                     * // DataBindingUtil.bind<FragmentMainContainerBinding>(requireView())!!
+                     * //     .fragmentContainerView
+                     *
+                     * Maybe using [android.view.View.findViewById] is faster?
+                     **/
+                    requireView().findViewById<FragmentContainerView>(R.id.fragment_container_view)
+                        .getFragment<NavHostFragment>()
+                        .navController
+                        .getViewModelStoreOwner(R.id.nav_graph_main_container)
+                }
+            )
+        }
+
+        /**
+         * [MainContainerViewModel.mainContainerViewModel]
+         * @extends [androidx.fragment.app.Fragment]
+         * @return [Lazy]<[MainContainerViewModel]>
+         *
+         * Should be member of [R.id.nav_graph_main_container]
+         **/
+        @Throws(IllegalArgumentException::class, IllegalStateException::class)
+        fun Fragment.mainContainerViewModel(): Lazy<MainContainerViewModel> {
+            return navGraphViewModels(R.id.nav_graph_main_container)
         }
 
     }
