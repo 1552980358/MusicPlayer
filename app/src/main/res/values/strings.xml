@@ -27,5 +27,6 @@
         <item>Album</item>
         <item>Playlist</item>
     </string-array>
+    <string name="library_songs_count">%d songs</string>
 
 </resources>
