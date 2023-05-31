@@ -34,7 +34,7 @@
             android:layout_height="@dimen/md_spec_leading_56"
             android:layout_marginHorizontal="@dimen/md_spec_spacing_16"
             android:layout_marginVertical="@dimen/md_spec_spacing_8"
-            app:srcCompat="@drawable/ic_round_person_24"
+            app:srcCompat="@drawable/ic_round_artist_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/linear_layout_text"
             app:layout_constraintTop_toTopOf="parent"
