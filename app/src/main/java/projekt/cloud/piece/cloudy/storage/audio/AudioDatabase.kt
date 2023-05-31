@@ -11,6 +11,7 @@ import projekt.cloud.piece.cloudy.storage.audio.dao.StatisticsDao
 import projekt.cloud.piece.cloudy.storage.audio.entity.AlbumEntity
 import projekt.cloud.piece.cloudy.storage.audio.entity.ArtistEntity
 import projekt.cloud.piece.cloudy.storage.audio.entity.AudioEntity
+import projekt.cloud.piece.cloudy.storage.audio.view.AlbumView
 import projekt.cloud.piece.cloudy.storage.audio.view.ArtistView
 import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView
 import projekt.cloud.piece.cloudy.storage.audio.view.StatisticsView
@@ -18,7 +19,7 @@ import projekt.cloud.piece.cloudy.storage.util.SingleDatabaseInstance
 
 @Database(
     entities = [AudioEntity::class, ArtistEntity::class, AlbumEntity::class],
-    views = [MetadataView::class, StatisticsView::class, ArtistView::class],
+    views = [MetadataView::class, StatisticsView::class, ArtistView::class, AlbumView::class],
     version = AUDIO_DATABASE_VERSION
 )
 abstract class AudioDatabase: RoomDatabase() {
