@@ -76,6 +76,7 @@ class MainContainerFragment: BaseMainContainerFragment(), Player.Listener {
         layoutAdapter.setupMiniPlayerControl(mediaControllerHelper)
         layoutAdapter.setupPlayer()
         layoutAdapter.setupNavigation()
+        layoutAdapter.setupSurfaceColors()
     }
 
     /**

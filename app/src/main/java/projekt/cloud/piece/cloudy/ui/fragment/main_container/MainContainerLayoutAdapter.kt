@@ -50,6 +50,7 @@ import projekt.cloud.piece.cloudy.util.PixelDensity.MEDIUM
 import projekt.cloud.piece.cloudy.util.CastUtil.cast
 import projekt.cloud.piece.cloudy.util.GlideUtil.crossFade
 import projekt.cloud.piece.cloudy.util.GlideUtil.roundCorners
+import projekt.cloud.piece.cloudy.util.SurfaceColorUtil.setSurface2BackgroundColor
 import projekt.cloud.piece.cloudy.util.helper.MediaControllerHelper
 import projekt.cloud.piece.cloudy.util.helper.NullableHelper
 import projekt.cloud.piece.cloudy.util.helper.NullableHelper.NullableHelperUtil.nullable
@@ -338,6 +339,13 @@ abstract class MainContainerLayoutAdapter(
      * @impl [CompatImpl.setupNavigation], [W600dpImpl.setupNavigation], [W1240dpImpl.setupNavigation]
      **/
     open fun setupNavigation() = Unit
+
+    /**
+     * [MainContainerLayoutAdapter.setupSurfaceColors]
+     *
+     * @impl [LargeScreenCommonImpl.setupPlayer], [W600dpImpl.setupSurfaceColors], [W1240dpImpl.setupSurfaceColors]
+     **/
+    open fun setupSurfaceColors() = Unit
 
     /** Non-setup functions **/
 
@@ -962,6 +970,16 @@ abstract class MainContainerLayoutAdapter(
                 .cast()
         }
 
+        private val root: CoordinatorLayout
+            get() = binding.coordinatorLayoutRoot
+
+        /**
+         * [MainContainerLayoutAdapter.setupSurfaceColors]
+         **/
+        override fun setupSurfaceColors() {
+            root.setSurface2BackgroundColor()
+        }
+
     }
 
     /**
@@ -984,6 +1002,16 @@ abstract class MainContainerLayoutAdapter(
             navigationRailView.setupWithNavController(childNavController)
         }
 
+        /**
+         * [MainContainerLayoutAdapter.setupPlayer]
+         *
+         * Extra addition setup of surface color above [LargeScreenCommonImpl.setupSurfaceColors]
+         **/
+        override fun setupSurfaceColors() {
+            super.setupSurfaceColors()
+            navigationRailView.setSurface2BackgroundColor()
+        }
+
     }
 
     /**
@@ -1004,6 +1032,16 @@ abstract class MainContainerLayoutAdapter(
          **/
         override fun setupNavigation() {
             navigationView.setupWithNavController(childNavController)
+        }
+
+        /**
+         * [MainContainerLayoutAdapter.setupPlayer]
+         *
+         * Extra addition setup of surface color above [LargeScreenCommonImpl.setupSurfaceColors]
+         **/
+        override fun setupSurfaceColors() {
+            super.setupSurfaceColors()
+            navigationView.setSurface2BackgroundColor()
         }
 
     }
