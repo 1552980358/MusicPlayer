@@ -8,7 +8,6 @@ import projekt.cloud.piece.cloudy.databinding.FragmentHomeBinding
 import projekt.cloud.piece.cloudy.R
 import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView
 import projekt.cloud.piece.cloudy.ui.fragment.home.HomeViewModel.HomeViewModelUtil.homeViewModel
-import projekt.cloud.piece.cloudy.ui.fragment.main_container.MainContainerViewModel.MainContainerViewModelUtil.mainContainerViewModel
 import projekt.cloud.piece.cloudy.util.helper.MediaControllerHelper
 import projekt.cloud.piece.cloudy.util.ViewBindingInflater
 
@@ -47,19 +46,6 @@ class HomeFragment: BaseMultiLayoutFragment<FragmentHomeBinding, HomeLayoutAdapt
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mediaControllerHelper.setupWithLifecycleOwner(this)
-    }
-
-    /**
-     * [BaseFragment.onSetupBinding]
-     * @param binding [FragmentHomeBinding]
-     * @param savedInstanceState [android.os.Bundle]
-     **/
-    override fun onSetupBinding(binding: FragmentHomeBinding, savedInstanceState: Bundle?) {
-        // Set MainContainerViewModel
-        val mainContainerViewModel by mainContainerViewModel()
-        binding.mainContainerViewModel = mainContainerViewModel
-
-        super.onSetupBinding(binding, savedInstanceState)
     }
 
     /**

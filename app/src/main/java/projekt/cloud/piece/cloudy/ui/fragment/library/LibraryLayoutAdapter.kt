@@ -1,7 +1,6 @@
 package projekt.cloud.piece.cloudy.ui.fragment.library
 
 import android.content.res.Resources
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -15,7 +14,6 @@ import projekt.cloud.piece.cloudy.util.PixelDensity
 import projekt.cloud.piece.cloudy.util.PixelDensity.COMPAT
 import projekt.cloud.piece.cloudy.util.PixelDensity.EXPANDED
 import projekt.cloud.piece.cloudy.util.PixelDensity.MEDIUM
-import projekt.cloud.piece.cloudy.util.SurfaceColorUtil.setSurface2BackgroundColor
 
 typealias LibraryLayoutAdapterBuilder =
     LayoutAdapterBuilder<FragmentLibraryBinding, LibraryLayoutAdapter>
@@ -107,20 +105,6 @@ abstract class LibraryLayoutAdapter(
         TabLayoutMediator(tabs, viewPager) { tab, index ->
             tab.text = tabLabels[index]
         }.attach()
-    }
-
-    /**
-     * [LibraryLayoutAdapter.rootLayout]
-     * @type [androidx.constraintlayout.widget.ConstraintLayout]
-     * @layout [R.layout.fragment_library]
-     * @id [R.id.constraint_layout_root]
-     **/
-    private val rootLayout: ConstraintLayout
-        get() = binding.constraintLayoutRoot
-
-    open fun setupLayoutColors() {
-        rootLayout.setSurface2BackgroundColor()
-        tabs.setSurface2BackgroundColor()
     }
 
     /**

@@ -8,8 +8,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.media3.common.MediaItem
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.navGraphViewModels
-import kotlin.jvm.Throws
 import projekt.cloud.piece.cloudy.R
 import projekt.cloud.piece.cloudy.storage.audio.view.MetadataView
 import projekt.cloud.piece.cloudy.util.CoroutineUtil.defaultBlocking
@@ -39,18 +37,6 @@ class MainContainerViewModel: ViewModel() {
                         .getViewModelStoreOwner(R.id.nav_graph_main_container)
                 }
             )
-        }
-
-        /**
-         * [MainContainerViewModel.mainContainerViewModel]
-         * @extends [androidx.fragment.app.Fragment]
-         * @return [Lazy]<[MainContainerViewModel]>
-         *
-         * Should be member of [R.id.nav_graph_main_container]
-         **/
-        @Throws(IllegalArgumentException::class, IllegalStateException::class)
-        fun Fragment.mainContainerViewModel(): Lazy<MainContainerViewModel> {
-            return navGraphViewModels(R.id.nav_graph_main_container)
         }
 
     }

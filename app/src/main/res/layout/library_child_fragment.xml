@@ -5,24 +5,15 @@
     android:id="@+id/constraint_layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    
-    <com.google.android.material.card.MaterialCardView
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="@dimen/constraint"
         android:layout_height="@dimen/constraint"
-        android:layout_marginHorizontal="@dimen/md_spec_spacing_16"
-        android:layout_marginVertical="@dimen/md_spec_spacing_8"
-        app:cardBackgroundColor="?attr/colorSurface"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-    </com.google.android.material.card.MaterialCardView>
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
