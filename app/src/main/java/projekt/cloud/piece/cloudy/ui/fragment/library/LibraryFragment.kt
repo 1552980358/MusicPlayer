@@ -33,8 +33,6 @@ class LibraryFragment: BaseMultiLayoutFragment<FragmentLibraryBinding, LibraryLa
      * @param savedInstanceState [android.os.Bundle]
      **/
     override fun onSetupLayoutAdapter(layoutAdapter: LibraryLayoutAdapter, savedInstanceState: Bundle?) {
-        layoutAdapter.setupViewPager(this)
-        layoutAdapter.setupTabs(resources)
     }
 
 }
