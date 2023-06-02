@@ -32,7 +32,7 @@ where LC: BaseLayoutAdapter<LibraryChildFragmentBinding> {
      * @id [R.id.recycler_view]
      **/
     private val recyclerView: RecyclerView
-        get() = binding.recyclerView
+        get() = binding.nonnull().recyclerView
 
     /**
      * [BaseLibraryChildFragment.requestItemAtPos]

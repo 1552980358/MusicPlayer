@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import projekt.cloud.piece.cloudy.util.ViewBindingInflater
 import projekt.cloud.piece.cloudy.util.ViewBindingUtil.inflate
+import projekt.cloud.piece.cloudy.util.helper.NullableHelper
+import projekt.cloud.piece.cloudy.util.helper.NullableHelper.NullableHelperUtil.nullable
 
 abstract class BaseFragment<B>: Fragment() where B: ViewBinding {
 
@@ -22,40 +24,11 @@ abstract class BaseFragment<B>: Fragment() where B: ViewBinding {
     protected abstract val viewBindingInflater: ViewBindingInflater<B>
 
     /**
-     * [BaseFragment._binding]
-     * @type Nullable [B]
-     **/
-    private var _binding: B? = null
-
-    /**
-     * [BaseFragment.bindingNullable]
-     * @type Nullable [B]
-     *
-     * Modifier `protected` is set for
-     * allowing `inline` modifier set to [BaseFragment.requireBinding].
-     *
-     * So, Don't call this,
-     * call [BaseFragment.requireBinding]
-     **/
-    protected val bindingNullable: B?
-        get() = _binding
-    /**
      * [BaseFragment.binding]
+     * @wrap [NullableHelper]
      * @type [B]
      **/
-    protected val binding: B
-        get() = _binding!!
-
-    /**
-     * [BaseFragment.requireBinding]
-     * @param block [kotlin.jvm.functions.Function1]
-     *
-     * Require binding in a safe way prevent null pointer exception
-     * if binding required after the calling of [androidx.fragment.app.Fragment.onDestroyView]
-     **/
-    protected inline fun requireBinding(block: (B) -> Unit = {}): B? {
-        return bindingNullable?.apply(block)
-    }
+    protected val binding = nullable<B>()
 
     /**
      * [BaseFragment.inflateBinding]
@@ -82,11 +55,11 @@ abstract class BaseFragment<B>: Fragment() where B: ViewBinding {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        return when (val binding = _binding) {
+        return when (val binding = binding.nullable()) {
             null -> {
-                inflateBinding(inflater, container)
-                    .apply(::setupBinding)
-                    .root
+                setupBinding(
+                    inflateBinding(inflater, container)
+                ).root
             }
             else -> {
                 setupViewDataBinding(binding)
@@ -97,13 +70,15 @@ abstract class BaseFragment<B>: Fragment() where B: ViewBinding {
 
     /**
      * [BaseFragment.setupBinding]
-     * @param binding [B]
+     * @param viewBinding [B]
+     * @return [B]
      *
      * Setup binding
      **/
-    private fun setupBinding(binding: B) {
-        _binding = binding
-        setupViewDataBinding(binding)
+    private fun setupBinding(viewBinding: B): B {
+        binding valued viewBinding
+        setupViewDataBinding(viewBinding)
+        return viewBinding
     }
 
     /**
@@ -128,7 +103,7 @@ abstract class BaseFragment<B>: Fragment() where B: ViewBinding {
      **/
     @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        onSetupBinding(binding, savedInstanceState)
+        onSetupBinding(binding.nonnull(), savedInstanceState)
     }
 
     /**
@@ -148,7 +123,7 @@ abstract class BaseFragment<B>: Fragment() where B: ViewBinding {
      **/
     @CallSuper
     override fun onDestroyView() {
-        _binding = null
+        binding.release()
         super.onDestroyView()
     }
 
