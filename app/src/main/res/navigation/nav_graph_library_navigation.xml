@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_library_navigation"
+    app:startDestination="@id/artist">
+
+    <action
+        android:id="@+id/to_artist"
+        app:destination="@id/artist"
+        app:popUpTo="@id/artist"
+        app:popUpToInclusive="true" />
+    <fragment
+        android:id="@+id/artist"
+        android:name="projekt.cloud.piece.cloudy.ui.fragment.library.artist.ArtistLibraryFragment"
+        tools:layout="@layout/library_child_fragment" />
+
+    <action
+        android:id="@+id/to_album"
+        app:destination="@id/album"
+        app:popUpTo="@id/album"
+        app:popUpToInclusive="true" />
+    <fragment
+        android:id="@+id/album"
+        android:name="projekt.cloud.piece.cloudy.ui.fragment.library.album.AlbumLibraryFragment"
+        tools:layout="@layout/library_child_fragment" />
+
+</navigation>
