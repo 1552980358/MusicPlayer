@@ -18,7 +18,7 @@
         android:id="@+id/constraint_layout_root"
         android:layout_width="match_parent"
         android:layout_height="@dimen/main_container_mini_player_height"
-        android:paddingHorizontal="@dimen/md_spec_spacing_16"
+        android:layout_marginEnd="@dimen/md_spec_spacing_24"
         android:paddingBottom="@dimen/md_spec_spacing_8"
         app:behavior_hideable="true"
         app:behavior_peekHeight="@dimen/main_container_mini_player_height"
