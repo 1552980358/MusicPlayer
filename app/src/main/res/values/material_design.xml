@@ -18,6 +18,8 @@
 
     <dimen name="md_spec_elevation_0">0dp</dimen>
 
+    <dimen name="md_spec_layout_fixed_pane_360">360dp</dimen>
+
     <!--
      Look at
         package com.google.android.material.bottomnavigation.BottomNavigationView;
