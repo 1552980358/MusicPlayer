@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/constraint_layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.slidingpanelayout.widget.SlidingPaneLayout
+        android:id="@+id/sliding_pane_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginVertical="@dimen/md_spec_spacing_8"
+        android:layout_marginEnd="@dimen/md_spec_spacing_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="@dimen/md_spec_layout_fixed_pane_360"
+            android:layout_height="match_parent"
+            android:layout_gravity="start">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragment_container_view_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:name="projekt.cloud.piece.cloudy.ui.fragment.library.pager.PagerLibraryFragment" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="@dimen/library_body_pane_size"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/material_card_view_detail"
+                android:layout_width="@dimen/constraint"
+                android:layout_height="@dimen/constraint"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/fragment_container_view_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        
+    </androidx.slidingpanelayout.widget.SlidingPaneLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

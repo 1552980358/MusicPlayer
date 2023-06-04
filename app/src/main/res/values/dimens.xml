@@ -17,5 +17,7 @@
     <dimen name="main_container_mini_player_height">56dp</dimen>
     <dimen name="main_container_mini_player_peek">136dp</dimen>
     <dimen name="main_container_mini_player_trailing">@dimen/md_spec_trailing_24</dimen>
+    
+    <dimen name="library_body_pane_size">432dp</dimen>
 
 </resources>
