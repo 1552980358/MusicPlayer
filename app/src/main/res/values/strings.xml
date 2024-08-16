@@ -1,32 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Cloudy</string>
-
-    <string name="guide_setup">guide_setup</string>
-
-    <string name="permissions_title">Permissions</string>
-    <string name="permissions_grant_all">GRANT ALL</string>
-    <string name="permissions_read_storage">Access audio file located at external storage</string>
-    <string name="permissions_read_media_audio">Access audio file by querying OS database</string>
-    <string name="permissions_foreground_service">Apply a foreground service for audio playback</string>
-    <string name="permissions_post_notifications">Posting notification to notification drawer for controlling audio playback</string>
-
-    <string name="import_audio_title">Import Audio</string>
-    <string name="import_audio_loading">Loading, please wait…</string>
-    <string name="import_audio_result">%d songs, %d artists and %d albums found.</string>
-    <string name="import_audio_button_retry">Retry</string>
-    <string name="import_audio_button_retry_loading">Loading…</string>
-    <string name="import_audio_button_complete">COMPLETE</string>
-    <string name="import_audio_button_complete_loading">LOADING</string>
-
-    <string name="home_title">Home</string>
-
-    <string name="library_title">Library</string>
-    <string-array name="library_tabs">
-        <item>Artist</item>
-        <item>Album</item>
-        <item>Playlist</item>
-    </string-array>
-    <string name="library_songs_count">%d songs</string>
-
+    <string name="app_name">MusicPlayer</string>
 </resources>
